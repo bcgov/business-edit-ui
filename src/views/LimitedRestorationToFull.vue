@@ -46,7 +46,7 @@
               :isCourtOrderOnly="isCourtOrderOnly"
               :isCourtOrderRadio="showCourtOrderRadio"
               :invalidSection="!getApprovalTypeValid"
-              @courtNumberChange="setRestorationCourtOrder({ 'fileNumber': $event })"
+              @courtNumberChange="setRestorationCourtOrder({ fileNumber: $event })"
               @valid="setValidComponent({ key: 'isValidApprovalType', value: $event })"
             />
           </QuestionWrapper>
@@ -159,6 +159,7 @@ import { ApprovalType } from '@bcrs-shared-components/approval-type'
 import { FeeSummary as FeeSummaryShared } from '@bcrs-shared-components/fee-summary/'
 import ViewWrapper from '@/components/ViewWrapper.vue'
 import { useStore } from '@/store/store'
+import { FilingDataIF } from '@bcrs-shared-components/interfaces'
 
 @Component({
   components: {
@@ -210,7 +211,7 @@ export default class LimitedRestorationToFull extends Mixins(
   @Action(useStore) setFilingId!: (x: number) => void
   @Action(useStore) setHaveUnsavedChanges!: (x: boolean) => void
   @Action(useStore) setResource!: (x: ResourceIF) => void
-  @Action(useStore) setStateFilingRestoration!: (x: Promise<any>) => void
+  @Action(useStore) setStateFilingRestoration!: () => Promise<void>
   @Action(useStore) setValidComponent!: (x: ActionKvIF) => void
 
   /** Whether App is ready. */
@@ -297,12 +298,12 @@ export default class LimitedRestorationToFull extends Mixins(
 
       this.setEntitySnapshot(entitySnapshot)
 
-      // parse draft restoration filing into store
-      this.parseRestorationFiling(restorationFiling)
-
       // set the previously filed limited restoration in the store
       // (will throw on error)
       await this.setStateFilingRestoration()
+
+      // parse draft restoration filing into store
+      this.parseRestorationFiling(restorationFiling)
 
       if (!this.restorationResource) {
         throw new Error(`Invalid restoration resource entity type = ${this.getEntityType}`)
@@ -312,7 +313,7 @@ export default class LimitedRestorationToFull extends Mixins(
       this.setResource(this.restorationResource)
 
       // initialize Fee Summary data
-      this.setFilingData([this.restorationResource.filingData])
+      this.setFilingData([this.restorationResource.filingData as unknown as FilingDataIF])
 
       // update the current fees for this filing
       await this.setCurrentFeesFromFilingData()

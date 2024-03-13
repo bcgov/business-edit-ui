@@ -1247,7 +1247,7 @@ export const useStore = defineStore('store', {
      * Only applicable to limited restoration extension filing.
      */
     getRestorationExpiryDate (): string {
-      return this.stateModel.restoration?.expiry
+      return this.getRestoration.expiry
     },
 
     /** The restoration expiry text. */
@@ -1265,15 +1265,16 @@ export const useStore = defineStore('store', {
 
     /** The court order draft file number. */
     getCourtOrderNumberText (): string {
-      return this.stateModel.restoration.courtOrder?.fileNumber || ''
+      // NB: although initialized in the state, courtOrder may be absent in a draft restoration filing
+      return this.getRestoration.courtOrder?.fileNumber || ''
     },
 
     getRelationships (): RelationshipTypes[] {
-      return this.stateModel.restoration.relationships
+      return this.getRestoration.relationships
     },
 
     getIsRestorationTypeCourtOrder (): boolean {
-      return !!this.stateModel.restoration.courtOrder?.fileNumber
+      return !!this.getCourtOrderNumberText
     },
 
     /** The special resolution object. */
@@ -1596,14 +1597,15 @@ export const useStore = defineStore('store', {
       this.stateModel.restoration.approvalType = approvalType
     },
     setStateFilingRestoration (): Promise<any> {
+      // need to return a promise because action is called via dispatch
       return new Promise((resolve, reject) => {
         LegalServices.fetchFiling(this.getStateFilingUrl)
-          .then((response) => {
-            const stateFilingRestoration = response.restoration
+          .then(filing => {
+            const restoration = filing.restoration
             // commit data to store
-            this.stateModel.stateFilingRestoration = stateFilingRestoration
+            this.stateModel.stateFilingRestoration = restoration
             // return the state filing restoration object
-            resolve(stateFilingRestoration)
+            resolve(restoration)
           })
           .catch(error => {
             // eslint-disable-next-line no-console

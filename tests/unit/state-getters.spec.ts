@@ -564,22 +564,22 @@ describe('test restoration expiry date', () => {
 })
 
 describe('test getIsRestorationTypeCourtOrder', () => {
-  it('getIsRestorationTypeCourtOrder returns true when set', () => {
+  it('getIsRestorationTypeCourtOrder returns true when file number is set', () => {
     store.stateModel.restoration.courtOrder.fileNumber = '1234'
     expect(store.getIsRestorationTypeCourtOrder).toBe(true)
   })
 
-  it('getIsRestorationTypeCourtOrder returns false when empty', () => {
+  it('getIsRestorationTypeCourtOrder returns false when file number is empty', () => {
     store.stateModel.restoration.courtOrder.fileNumber = ''
     expect(store.getIsRestorationTypeCourtOrder).toBe(false)
   })
 
-  it('getIsRestorationTypeCourtOrder returns false when null', () => {
+  it('getIsRestorationTypeCourtOrder returns false when file number is null', () => {
     store.stateModel.restoration.courtOrder.fileNumber = null
     expect(store.getIsRestorationTypeCourtOrder).toBe(false)
   })
 
-  it('getIsRestorationTypeCourtOrder returns false when courtOrder property missing', () => {
+  it('getIsRestorationTypeCourtOrder returns false when courtOrder property is absent', () => {
     store.stateModel.restoration = {
       approvalType: ApprovalTypes.VIA_REGISTRAR,
       approvalTypeValid: true,

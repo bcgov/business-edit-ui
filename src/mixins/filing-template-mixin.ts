@@ -971,9 +971,11 @@ export default class FilingTemplateMixin extends DateMixin {
 
     // store Approval Type
     if (filing.restoration.approvalType) {
+      // get approval type from draft
       this.setRestorationApprovalType(filing.restoration.approvalType)
-    } else {
-      this.setRestorationApprovalType(this.getStateFilingRestoration?.approvalType)
+    } else if (this.getStateFilingRestoration?.approvalType) {
+      // get approval type from state filing
+      this.setRestorationApprovalType(this.getStateFilingRestoration.approvalType)
     }
 
     // store Court Order data
