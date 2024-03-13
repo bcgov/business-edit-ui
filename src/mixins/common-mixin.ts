@@ -16,9 +16,9 @@ export default class CommonMixin extends Vue {
    * Scrolls the window to the top of the specified element.
    * @param element the element to scroll to the top of
    */
-  async scrollToTop (element: any): Promise<void> {
+  scrollToTop (element: Element): void {
     // don't call window.scrollTo during Vitest tests because jsdom doesn't implement it
-    if (!this.isVitestRunning) await element.scrollIntoView({ behavior: 'smooth' })
+    if (!this.isVitestRunning) element.scrollIntoView({ behavior: 'smooth' })
   }
 
   /**
@@ -27,7 +27,7 @@ export default class CommonMixin extends Vue {
    * @param components list of current component IDs
    * @return whether all components are valid
    */
-  async validateAndScroll (flags: object, components: object): Promise<boolean> {
+  validateAndScroll (flags: object, components: object): boolean {
     // Create an array of the _ordered_ validity flags
     const validFlagArray = Object.keys(flags).map(key => flags[key])
 
@@ -37,7 +37,7 @@ export default class CommonMixin extends Vue {
     // If there is an invalid component, scroll to it
     if (component) {
       const element = document.getElementById(component)
-      await this.scrollToTop(element)
+      this.scrollToTop(element)
       return false
     }
     return true
