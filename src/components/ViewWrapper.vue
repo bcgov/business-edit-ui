@@ -220,7 +220,7 @@ export default class ViewWrapper extends Mixins(CommonMixin, FilingTemplateMixin
     switch (action) {
       case FeeSummaryActions.BACK:
         this.setSummaryMode(false)
-        await this.scrollToTop(document.getElementById('app'))
+        this.scrollToTop(document.getElementById('app'))
         break
       case FeeSummaryActions.SAVE_RESUME_LATER:
         // Save filing and return to dashboard.
@@ -283,11 +283,14 @@ export default class ViewWrapper extends Mixins(CommonMixin, FilingTemplateMixin
 
   /** Perform high level component validations before proceeding to summary page. */
   private async validateCompanyInfoPage (): Promise<void> {
-    // awaited so watch hooks can run before it executes validateAndScroll.
-    await this.setComponentValidate(true)
+    // Prompt component validations.
+    this.setComponentValidate(true)
+
+    // Wait to allow component validation to complete.
+    await this.$nextTick()
 
     // Evaluate valid flags. Scroll to invalid components or continue to review.
-    if (await this.validateAndScroll(this.getFlagsCompanyInfo, ComponentsCompanyInfo)) {
+    if (this.validateAndScroll(this.getFlagsCompanyInfo, ComponentsCompanyInfo)) {
       // show summary page
       this.setSummaryMode(true)
 
@@ -301,7 +304,7 @@ export default class ViewWrapper extends Mixins(CommonMixin, FilingTemplateMixin
       await this.$nextTick()
 
       // We don't change views, just interchange components, so scroll to top for better UX.
-      await this.scrollToTop(document.getElementById('app'))
+      this.scrollToTop(document.getElementById('app'))
     }
   }
 
@@ -310,11 +313,11 @@ export default class ViewWrapper extends Mixins(CommonMixin, FilingTemplateMixin
     // Prompt app validations.
     this.setAppValidate(true)
 
-    // Wait to allow app validation.
+    // Wait to allow app validation to complete.
     await this.$nextTick()
 
     // Evaluate valid flags. Scroll to invalid components or file alteration.
-    if (await this.validateAndScroll(this.getFlagsReviewCertify, ComponentsReviewCertify)) {
+    if (this.validateAndScroll(this.getFlagsReviewCertify, ComponentsReviewCertify)) {
       await this.onClickSave(false)
     }
   }

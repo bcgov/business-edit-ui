@@ -131,6 +131,7 @@ import ExtendTimeLimit from '@/components/Restoration/ExtendTimeLimit.vue'
 import ViewWrapper from '@/components/ViewWrapper.vue'
 import { AuthServices, LegalServices } from '@/services'
 import { useStore } from '@/store/store'
+import { FilingDataIF } from '@bcrs-shared-components/interfaces'
 
 @Component({
   components: {
@@ -176,7 +177,7 @@ export default class LimitedRestorationExtension extends Mixins(
   @Action(useStore) setFilingId!: (x: number) => void
   @Action(useStore) setHaveUnsavedChanges!: (x: boolean) => void
   @Action(useStore) setResource!: (x: ResourceIF) => void
-  @Action(useStore) setStateFilingRestoration!: (x: Promise<any>) => void
+  @Action(useStore) setStateFilingRestoration!: () => Promise<void>
 
   /** Whether App is ready. */
   @Prop({ default: false }) readonly appReady!: boolean
@@ -262,16 +263,22 @@ export default class LimitedRestorationExtension extends Mixins(
 
       this.setEntitySnapshot(entitySnapshot)
 
-      // Please refer to ticket# 15862 for more information (Reactivity issue)
+      // Please refer to ticket# 15862 for more information (Reactivity issue).
       if (!restorationFiling.restoration.expiry) {
-        // new limited restoration extension
+        // this is a new limited restoration extension
+
         // set the previously filed limited restoration in the store
         // (will throw on error)
         await this.setStateFilingRestoration()
+
         // parse draft restoration filing into store
         this.parseRestorationFiling(restorationFiling)
       } else {
+        // this is an extension for a previous limited restoration extension
+
+        // parse draft restoration filing into store
         this.parseRestorationFiling(restorationFiling)
+
         // set the previously filed limited restoration in the store
         // (will throw on error)
         await this.setStateFilingRestoration()
@@ -285,7 +292,7 @@ export default class LimitedRestorationExtension extends Mixins(
       this.setResource(this.restorationResource)
 
       // initialize Fee Summary data
-      this.setFilingData([this.restorationResource.filingData])
+      this.setFilingData([this.restorationResource.filingData as unknown as FilingDataIF])
 
       // update the current fees for this filing
       await this.setCurrentFeesFromFilingData()

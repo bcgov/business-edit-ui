@@ -314,7 +314,8 @@ describe('People And Roles component for Change of Registration', () => {
       vuetify
     })
     const vm = wrapper.vm as any
-    const mockScrollToTop = vi.spyOn(vm, 'scrollToTop').mockImplementation()
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const mockScrollToTop = vi.spyOn(vm, 'scrollToTop').mockImplementation(x => {})
 
     // call reset, restoring the removed-replaced item
     await vm.reset(true)

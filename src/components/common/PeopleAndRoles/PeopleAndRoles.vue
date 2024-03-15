@@ -667,7 +667,7 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin, OrgPe
    * Resets state properties after a change is completed (or to cancel).
    * @param restore whether to restore the replaced-removed item (if any)
    */
-  async reset (restore = false): Promise<void> {
+  reset (restore = false): void {
     if (restore) {
       // make a copy so Vue reacts when we set the new list
       const tempList = cloneDeep(this.getOrgPeople)
@@ -687,7 +687,7 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin, OrgPe
     this.isAddingEditingOrgPerson = false
 
     // as Vue has updated the visible sections, scroll back to the top of this component
-    await this.scrollToTop(this.$el)
+    this.scrollToTop(this.$el)
   }
 
   /**

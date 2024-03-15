@@ -1,7 +1,8 @@
 /**
  * List of components on Company Info page. Note:
- * - these values MUST match component IDs to scroll correctly
+ * - these values must match component IDs to scroll correctly
  * - order this according to component layout
+ * - order must match stateModel.validationFlags.flagsCompanyInfo
  * - this list must match `FlagsCompanyInfoIF`
  */
 export enum ComponentsCompanyInfo {
