@@ -12,6 +12,7 @@ export * from './partyTypes'
 export * from './pagesSizes'
 export * from './periodTypes'
 export * from './nameRequestStates'
+export * from './nameType'
 export * from './roleTypes'
 export * from './routeNames'
 

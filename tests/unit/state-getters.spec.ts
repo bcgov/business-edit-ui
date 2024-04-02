@@ -436,7 +436,7 @@ describe('SP/GP correction getters', () => {
         alternateNames: [
           {
             identifier: 'FM1234567',
-            operatingName: 'My Operating Name'
+            name: 'My Operating Name'
           }
         ]
       },

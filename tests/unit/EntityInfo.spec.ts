@@ -169,7 +169,7 @@ describe('Entity Info component for a firm', () => {
         entitySnapshot: {
           businessInfo: {
             alternateNames: [
-              { identifier: 'FM1234567', operatingName: 'My Operating Name' }
+              { identifier: 'FM1234567', name: 'My Operating Name' }
             ],
             legalName: 'My Legal Name'
           }

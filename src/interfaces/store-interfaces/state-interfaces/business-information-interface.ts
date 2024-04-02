@@ -1,4 +1,4 @@
-import { CoopTypes } from '@/enums'
+import { CoopTypes, NameType } from '@/enums'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 import { IsoDatePacific, ApiDateTimeUtc } from '@bcrs-shared-components/interfaces'
 
@@ -6,9 +6,10 @@ import { IsoDatePacific, ApiDateTimeUtc } from '@bcrs-shared-components/interfac
 export interface AlternateNameIF {
   entityType: CorpTypeCd
   identifier: string
+  name: string
   nameRegisteredDate: ApiDateTimeUtc
   nameStartDate: IsoDatePacific
-  operatingName: string
+  nameType: NameType
 }
 
 /**

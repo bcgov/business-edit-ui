@@ -174,7 +174,7 @@ describe('Change of Registration Filing', () => {
         alternateNames: [
           {
             identifier: 'FM1234567',
-            operatingName: 'My Operating Name'
+            name: 'My Operating Name'
           }
         ]
       },
