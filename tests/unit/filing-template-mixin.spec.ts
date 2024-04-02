@@ -162,7 +162,7 @@ describe('Change of Registration Filing', () => {
         addressCountry: 'CA'
       }
     }
-    store.stateModel.nameRequest.legalName = 'My Operating Name'
+    store.stateModel.nameRequest.legalName = 'My Alternate Name'
     store.stateModel.entitySnapshot = {
       businessInfo: {
         foundingDate: 'Jan 01, 2000',
@@ -174,7 +174,7 @@ describe('Change of Registration Filing', () => {
         alternateNames: [
           {
             identifier: 'FM1234567',
-            name: 'My Operating Name'
+            name: 'My Alternate Name'
           }
         ]
       },

@@ -2,7 +2,7 @@ import { CoopTypes, NameType } from '@/enums'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 import { IsoDatePacific, ApiDateTimeUtc } from '@bcrs-shared-components/interfaces'
 
-/** The Alternate Name (aka operating name) object. */
+/** The Alternate Name object. */
 export interface AlternateNameIF {
   entityType: CorpTypeCd
   identifier: string
