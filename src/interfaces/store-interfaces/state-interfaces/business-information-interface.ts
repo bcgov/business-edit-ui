@@ -1,4 +1,4 @@
-import { CoopTypes, NameType } from '@/enums'
+import { CoopTypes, NameTypes } from '@/enums'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 import { IsoDatePacific, ApiDateTimeUtc } from '@bcrs-shared-components/interfaces'
 
@@ -9,7 +9,7 @@ export interface AlternateNameIF {
   name: string
   nameRegisteredDate: ApiDateTimeUtc
   nameStartDate: IsoDatePacific
-  nameType: NameType
+  nameType: NameTypes
 }
 
 /**
