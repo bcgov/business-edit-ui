@@ -161,7 +161,7 @@ describe('Entity Info component in a Correction as a numbered Benefit Company', 
 })
 
 describe('Entity Info component for a firm', () => {
-  it('displays operating name correctly for a SP Change filing', () => {
+  it('displays alternate name correctly for a SP Change filing', () => {
     const wrapper = shallowWrapperFactory(
       EntityInfo,
       null,
@@ -169,7 +169,7 @@ describe('Entity Info component for a firm', () => {
         entitySnapshot: {
           businessInfo: {
             alternateNames: [
-              { identifier: 'FM1234567', operatingName: 'My Operating Name' }
+              { identifier: 'FM1234567', name: 'My Alternate Name' }
             ],
             legalName: 'My Legal Name'
           }
@@ -182,7 +182,7 @@ describe('Entity Info component for a firm', () => {
       }
     )
 
-    expect(wrapper.find('#entity-legal-name').text()).toBe('My Operating Name')
+    expect(wrapper.find('#entity-legal-name').text()).toBe('My Alternate Name')
 
     wrapper.destroy()
   })
