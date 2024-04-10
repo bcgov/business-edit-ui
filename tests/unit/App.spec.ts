@@ -23,8 +23,8 @@ import ViewWrapper from '@/components/ViewWrapper.vue'
 import mockRouter from './MockRouter'
 import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
-import { CorpTypeCd, FilingTypes } from '@/enums'
-import { vi } from 'vitest'
+import { FilingTypes } from '@/enums'
+import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 
 const vuetify = new Vuetify({})
 
@@ -378,29 +378,29 @@ describe.skip('Numbered company setup', () => {
   })
 
   it('does not load a name request into the store', () => {
-    // All Name request specific fields should be empty
-    expect(store.stateModel.nameRequest.nrNumber).toEqual('')
+    // Validate tombstone data
     expect(store.stateModel.tombstone.filingId).toBe(54321)
 
-    // Validate no NR Details
-    expect(store.stateModel.nameRequest.details.approvedName).toBeUndefined()
-    expect(store.stateModel.nameRequest.details.status).toBeUndefined()
-    expect(store.stateModel.nameRequest.details.consentFlag).toBeUndefined()
-    expect(store.stateModel.nameRequest.details.expirationDate).toBeUndefined()
+    // Validate no NR data
+    expect(store.stateModel.nameRequest.nrNum).toEqual('')
+    expect(store.stateModel.nameRequest.state).toBeUndefined()
+    expect(store.stateModel.nameRequest.consentFlag).toBeUndefined()
+    expect(store.stateModel.nameRequest.expirationDate).toBeUndefined()
+    expect(store.stateModel.nameRequestLegalName).toBeNull()
 
     // Validate no NR Applicant
-    expect(store.stateModel.nameRequest.applicant.firstName).toBeUndefined()
-    expect(store.stateModel.nameRequest.applicant.middleName).toBeUndefined()
-    expect(store.stateModel.nameRequest.applicant.lastName).toBeUndefined()
-    expect(store.stateModel.nameRequest.applicant.emailAddress).toBeUndefined()
-    expect(store.stateModel.nameRequest.applicant.phoneNumber).toBeUndefined()
-    expect(store.stateModel.nameRequest.applicant.addressLine1).toBeUndefined()
-    expect(store.stateModel.nameRequest.applicant.addressLine2).toBeUndefined()
-    expect(store.stateModel.nameRequest.applicant.addressLine3).toBeUndefined()
-    expect(store.stateModel.nameRequest.applicant.city).toBeUndefined()
-    expect(store.stateModel.nameRequest.applicant.countryTypeCode).toBeUndefined()
-    expect(store.stateModel.nameRequest.applicant.postalCode).toBeUndefined()
-    expect(store.stateModel.nameRequest.applicant.stateProvinceCode).toBeUndefined()
+    expect(store.stateModel.nameRequest.applicants.firstName).toBeUndefined()
+    expect(store.stateModel.nameRequest.applicants.middleName).toBeUndefined()
+    expect(store.stateModel.nameRequest.applicants.lastName).toBeUndefined()
+    expect(store.stateModel.nameRequest.applicants.emailAddress).toBeUndefined()
+    expect(store.stateModel.nameRequest.applicants.phoneNumber).toBeUndefined()
+    expect(store.stateModel.nameRequest.applicants.addrLine1).toBeUndefined()
+    expect(store.stateModel.nameRequest.applicants.addrLine2).toBeUndefined()
+    expect(store.stateModel.nameRequest.applicants.addrLine3).toBeUndefined()
+    expect(store.stateModel.nameRequest.applicants.city).toBeUndefined()
+    expect(store.stateModel.nameRequest.applicants.countryTypeCd).toBeUndefined()
+    expect(store.stateModel.nameRequest.applicants.postalCd).toBeUndefined()
+    expect(store.stateModel.nameRequest.applicants.stateProvinceCd).toBeUndefined()
   })
 })
 
@@ -507,32 +507,30 @@ describe.skip('App component', () => {
   })
 
   it('loads a name request into the store', () => {
-    // Validate Name Request
+    // Validate tombstone data
     expect(store.stateModel.tombstone.entityType).toBe(nrData.requestTypeCd)
-    expect(store.stateModel.nameRequest.nrNumber).toBe(nrData.nrNum)
     expect(store.stateModel.tombstone.filingId).toBe(12345)
-    expect(store.stateModel.nameRequest.details).toBeDefined()
-    expect(store.stateModel.nameRequest.applicant).toBeDefined()
 
-    // Validate NR Details
-    expect((store.stateModel.nameRequest.details as any).approvedName).toBe(nrData.names[0].name)
-    expect((store.stateModel.nameRequest.details as any).status).toBe(nrData.state)
-    expect((store.stateModel.nameRequest.details as any).consentFlag).toBe(nrData.consentFlag)
-    expect((store.stateModel.nameRequest.details as any).expirationDate).toBe(nrData.expirationDate)
+    // Validate NR data
+    expect(store.stateModel.nameRequest.nrNum).toBe(nrData.nrNum)
+    expect(store.stateModel.nameRequest.state).toBe(nrData.state)
+    expect(store.stateModel.nameRequest.consentFlag).toBe(nrData.consentFlag)
+    expect(store.stateModel.nameRequest.expirationDate).toBe(nrData.expirationDate)
+    expect(store.stateModel.nameRequestLegalName).toBe(nrData.names[0].name)
 
     // Validate NR Applicant
-    expect(store.stateModel.nameRequest.applicant.firstName).toBe(nrData.applicants.firstName)
-    expect(store.stateModel.nameRequest.applicant.middleName).toBe(nrData.applicants.middleName)
-    expect(store.stateModel.nameRequest.applicant.lastName).toBe(nrData.applicants.lastName)
-    expect(store.stateModel.nameRequest.applicant.emailAddress).toBe(nrData.applicants.emailAddress)
-    expect(store.stateModel.nameRequest.applicant.phoneNumber).toBe(nrData.applicants.phoneNumber)
-    expect(store.stateModel.nameRequest.applicant.addressLine1).toBe(nrData.applicants.addrLine1)
-    expect(store.stateModel.nameRequest.applicant.addressLine2).toBe(nrData.applicants.addrLine2)
-    expect(store.stateModel.nameRequest.applicant.addressLine3).toBe(nrData.applicants.addrLine3)
-    expect(store.stateModel.nameRequest.applicant.city).toBe(nrData.applicants.city)
-    expect(store.stateModel.nameRequest.applicant.countryTypeCode).toBe(nrData.applicants.countryTypeCd)
-    expect(store.stateModel.nameRequest.applicant.postalCode).toBe(nrData.applicants.postalCd)
-    expect(store.stateModel.nameRequest.applicant.stateProvinceCode).toBe(nrData.applicants.stateProvinceCd)
+    expect(store.stateModel.nameRequest.applicants.firstName).toBe(nrData.applicants.firstName)
+    expect(store.stateModel.nameRequest.applicants.middleName).toBe(nrData.applicants.middleName)
+    expect(store.stateModel.nameRequest.applicants.lastName).toBe(nrData.applicants.lastName)
+    expect(store.stateModel.nameRequest.applicants.emailAddress).toBe(nrData.applicants.emailAddress)
+    expect(store.stateModel.nameRequest.applicants.phoneNumber).toBe(nrData.applicants.phoneNumber)
+    expect(store.stateModel.nameRequest.applicants.addrLine1).toBe(nrData.applicants.addrLine1)
+    expect(store.stateModel.nameRequest.applicants.addrLine2).toBe(nrData.applicants.addrLine2)
+    expect(store.stateModel.nameRequest.applicants.addrLine3).toBe(nrData.applicants.addrLine3)
+    expect(store.stateModel.nameRequest.applicants.city).toBe(nrData.applicants.city)
+    expect(store.stateModel.nameRequest.applicants.countryTypeCd).toBe(nrData.applicants.countryTypeCd)
+    expect(store.stateModel.nameRequest.applicants.postalCd).toBe(nrData.applicants.postalCd)
+    expect(store.stateModel.nameRequest.applicants.stateProvinceCd).toBe(nrData.applicants.stateProvinceCd)
   })
 
   it('shows confirm popup if exiting before saving changes', async () => {

@@ -21,9 +21,7 @@
 import Vue from 'vue'
 import { Component, Prop, Watch, Emit } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
-
-// Interfaces && enums
-import { NameRequestIF } from '@/interfaces/'
+import { NameRequestIF } from '@bcrs-shared-components/interfaces'
 import { CorrectNameOptions } from '@/enums/'
 import { useStore } from '@/store/store'
 
@@ -33,12 +31,13 @@ export default class CorrectNameToNumber extends Vue {
   @Prop({ default: null }) readonly formType!: CorrectNameOptions
 
   @Action(useStore) setNameRequest!: (x: NameRequestIF) => void
+  @Action(useStore) setNameRequestLegalName!: (x: string) => void
 
   @Getter(useStore) getNameRequest!: NameRequestIF
   @Getter(useStore) getBusinessId!: string
 
   // Local properties
-  protected correctToNumbered = false
+  correctToNumbered = false
 
   get businessId (): string {
     return this.getBusinessId && this.getBusinessId.substring(2)
@@ -49,24 +48,25 @@ export default class CorrectNameToNumber extends Vue {
   private async onSubmit (): Promise<any> {
     // this component should only see correct-name-to-number form type
     if (this.formType === CorrectNameOptions.CORRECT_NAME_TO_NUMBER) {
-      // delete the current legal name and NR number
+      // delete the current NR number (if any)
       this.setNameRequest({
         ...this.getNameRequest,
-        legalName: undefined,
-        nrNumber: undefined
-      })
-      this.emitIsSaved(true)
+        nrNum: undefined
+      } as any)
+      // delete the current legal name (if any)
+      this.setNameRequestLegalName(null)
+      this.emitSaved(true)
     }
   }
 
   /** Inform parent the process is complete. */
-  @Emit('isSaved')
+  @Emit('saved')
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  private emitIsSaved (isSaved: boolean): void {}
+  private emitSaved (saved: boolean): void {}
 
   /** Inform parent when form is valid and ready for submission. */
   @Watch('correctToNumbered')
-  @Emit('isValid')
+  @Emit('valid')
   private emitValid (): boolean {
     return this.correctToNumbered
   }

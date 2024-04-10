@@ -88,7 +88,7 @@ export default class CertifySection extends Mixins(DateMixin) {
   }
 
   /** Handler for Valid change event. */
-  protected onIsCertified (val: boolean): void {
+  onIsCertified (val: boolean): void {
     this.setCertifyState(
       {
         valid: val,
@@ -99,7 +99,7 @@ export default class CertifySection extends Mixins(DateMixin) {
   }
 
   /** Handler for CertifiedBy change event. */
-  protected onCertifiedBy (val: string): void {
+  onCertifiedBy (val: string): void {
     this.setCertifyState(
       {
         valid: this.getCertifyState.valid,

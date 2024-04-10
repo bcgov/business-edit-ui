@@ -11,11 +11,9 @@ export * from './filingStatus'
 export * from './partyTypes'
 export * from './pagesSizes'
 export * from './periodTypes'
-export * from './nameRequestStates'
 export * from './roleTypes'
 export * from './routeNames'
 
 // external enum
-export { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 export { ActionTypes, ApprovalTypes, CorrectNameOptions, EntityStates, FilingCodes, FilingNames, FilingTypes,
   RestorationTypes, RelationshipTypes } from '@bcrs-shared-components/enums'

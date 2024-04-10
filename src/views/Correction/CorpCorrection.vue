@@ -163,7 +163,7 @@ export default class CorpCorrection extends Mixins(CommonMixin, DateMixin, FeeMi
       this.setFilingData([this.correctionResource.filingData])
 
       // pre-select No Fee option
-      this.setStaffPayment({ option: StaffPaymentOptions.NO_FEE })
+      this.setStaffPayment({ option: StaffPaymentOptions.NO_FEE } as any)
 
       // tell App that we're finished loading
       this.emitHaveData()

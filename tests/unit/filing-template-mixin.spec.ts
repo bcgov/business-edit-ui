@@ -2,12 +2,13 @@ import { shallowMount } from '@vue/test-utils'
 import MixinTester from '@/mixin-tester.vue'
 import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
-import { CorpTypeCd, FilingTypes } from '@/enums'
+import { FilingTypes } from '@/enums'
+import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 
 setActivePinia(createPinia())
 const store = useStore()
 
-describe('Correction Filing', () => {
+describe('Filing Template Mixin', () => {
   let wrapper: any
 
   beforeEach(() => {
@@ -18,7 +19,7 @@ describe('Correction Filing', () => {
     wrapper.destroy()
   })
 
-  it('correctly builds a special resolution filing', () => {
+  it('correctly builds a Special Resolution filing', () => {
     store.stateModel.tombstone.businessId = 'CP1234567'
     store.stateModel.tombstone.filingType = FilingTypes.SPECIAL_RESOLUTION
     store.stateModel.tombstone.entityType = CorpTypeCd.COOP
@@ -102,22 +103,29 @@ describe('Correction Filing', () => {
           },
           contactPoint: {
             email: '',
+            extension: undefined,
             phone: ''
           },
           cooperativeAssociationType: null,
-          rulesFileKey: undefined,
-          rulesFileName: undefined,
-          rulesUploadedOn: undefined,
-          memorandumloadedOn: undefined,
-          rulesInResolution: true,
-          memorandumInResolution: true
+          memorandumInResolution: true,
+          rulesInResolution: true
         },
         changeOfName: {
           legalName: null,
           nameRequest: {
-            legalName: null,
+            applicants: {},
+            consentFlag: null,
+            expirationDate: null,
+            furnished: null,
+            legalName: undefined,
             legalType: null,
-            nrNumber: null
+            names: [],
+            nrNum: '',
+            nrNumber: '',
+            priorityCd: null,
+            requestTypeCd: null,
+            request_action_cd: null,
+            state: null
           }
         },
         header: {
@@ -129,24 +137,8 @@ describe('Correction Filing', () => {
       })
     )
   })
-})
 
-// FUTURE
-describe.skip('Alteration Filing', () => {
-})
-
-describe('Change of Registration Filing', () => {
-  let wrapper: any
-
-  beforeEach(() => {
-    wrapper = shallowMount(MixinTester)
-  })
-
-  afterEach(() => {
-    wrapper.destroy()
-  })
-
-  it('correctly builds a change of registration filing', () => {
+  it('correctly builds a Change of Registration filing', () => {
     store.stateModel.tombstone.businessId = 'BC1234567'
     store.stateModel.tombstone.filingType = FilingTypes.CHANGE_OF_REGISTRATION
     store.stateModel.tombstone.entityType = CorpTypeCd.SOLE_PROP
@@ -162,7 +154,7 @@ describe('Change of Registration Filing', () => {
         addressCountry: 'CA'
       }
     }
-    store.stateModel.nameRequest.legalName = 'SomeMockBusiness'
+    store.stateModel.nameRequestLegalName = 'SomeMockBusiness'
     store.stateModel.entitySnapshot = {
       businessInfo: {
         foundingDate: 'Jan 01, 2000',
@@ -241,6 +233,7 @@ describe('Change of Registration Filing', () => {
           },
           contactPoint: {
             email: '',
+            extension: undefined,
             phone: ''
           },
           offices: {
@@ -298,8 +291,12 @@ describe('Change of Registration Filing', () => {
       })
     )
   })
-})
 
-// FUTURE
-describe.skip('Conversion Filing', () => {
+  // FUTURE
+  it.skip('correctly builds an Alteration filing', () => {
+  })
+
+  // FUTURE
+  it.skip('correctly builds a Conversion filing', () => {
+  })
 })

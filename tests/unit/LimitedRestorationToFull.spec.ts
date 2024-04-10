@@ -16,7 +16,6 @@ import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
 import { BusinessContactInfo, EntityName, FolioInformation, NameTranslation, OfficeAddresses, RecognitionDateTime,
   YourCompanyWrapper } from '@/components/common'
-import { vi } from 'vitest'
 
 const vuetify = new Vuetify({})
 

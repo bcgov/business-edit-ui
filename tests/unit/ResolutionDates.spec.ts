@@ -4,7 +4,8 @@ import { mount } from '@vue/test-utils'
 import ResolutionDates from '@/components/Alteration/Articles/ResolutionDates.vue'
 import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
-import { CorpTypeCd, FilingTypes } from '@/enums'
+import { FilingTypes } from '@/enums'
+import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 
 const vuetify = new Vuetify({})
 
@@ -76,8 +77,14 @@ describe('Resolution Dates component - edit mode', () => {
   beforeAll(() => {
     store.stateModel.tombstone.filingType = FilingTypes.ALTERATION
     store.stateModel.shareStructureStep.shareClasses = shareClasses as any
-    wrapperFactory = (propsData: any) => {
-      return mount(ResolutionDates, { propsData: { ...propsData, isEditMode: true }, vuetify })
+    wrapperFactory = (propsData = {}) => {
+      return mount(ResolutionDates, {
+        propsData: {
+          ...propsData,
+          isEditMode: true
+        },
+        vuetify
+      })
     }
   })
 
@@ -342,8 +349,14 @@ describe('Resolution Dates component - review mode', () => {
 
   beforeAll(() => {
     store.stateModel.shareStructureStep.shareClasses = shareClasses as any
-    wrapperFactory = (propsData: any) => {
-      return mount(ResolutionDates, { propsData: { ...propsData, isEditMode: false }, vuetify })
+    wrapperFactory = (propsData = {}) => {
+      return mount(ResolutionDates, {
+        propsData: {
+          ...propsData,
+          isEditMode: false
+        },
+        vuetify
+      })
     }
   })
 

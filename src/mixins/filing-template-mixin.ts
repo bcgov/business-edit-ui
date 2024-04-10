@@ -2,14 +2,15 @@ import { Component } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
 import { cloneDeep } from 'lodash'
 import { DateMixin } from '@/mixins/'
-import { AddressesIF, AlterationFilingIF, BusinessInformationIF, CertifyIF, CoopAlterationIF, CorrectionInformationIF,
-  CorrectionFilingIF, CourtOrderIF, EffectiveDateTimeIF, EntitySnapshotIF, ChgRegistrationFilingIF, ConversionFilingIF,
-  NameRequestIF, NameTranslationIF, OrgPersonIF, RestorationFilingIF, RestorationStateIF,
-  SpecialResolutionFilingIF, StateFilingRestorationIF, RulesMemorandumIF } from '@/interfaces/'
-import { CompletingPartyIF, ContactPointIF, NaicsIF, ShareClassIF, SpecialResolutionIF,
+import { AddressesIF, AlterationFilingIF, BusinessInformationIF, CertifyIF, CoopAlterationIF,
+  CorrectionInformationIF, CorrectionFilingIF, CourtOrderIF, EffectiveDateTimeIF, EntitySnapshotIF,
+  ChgRegistrationFilingIF, ConversionFilingIF, NameTranslationIF, OrgPersonIF, RestorationFilingIF,
+  RestorationStateIF, SpecialResolutionFilingIF, StateFilingRestorationIF, RulesMemorandumIF }
+  from '@/interfaces/'
+import { CompletingPartyIF, ContactPointIF, NaicsIF, NameRequestIF, ShareClassIF, SpecialResolutionIF,
   StaffPaymentIF } from '@bcrs-shared-components/interfaces/'
-import { ActionTypes, ApprovalTypes, CoopTypes, CorrectionErrorTypes, EffectOfOrders, FilingTypes, PartyTypes,
-  RelationshipTypes, RestorationTypes, RoleTypes } from '@/enums/'
+import { ActionTypes, ApprovalTypes, CoopTypes, CorrectionErrorTypes, EffectOfOrders, FilingTypes,
+  PartyTypes, RelationshipTypes, RestorationTypes, RoleTypes } from '@/enums/'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 import { StaffPaymentOptions } from '@bcrs-shared-components/enums/'
 import { FilingTypeToName } from '@/utils'
@@ -24,100 +25,95 @@ export default class FilingTemplateMixin extends DateMixin {
   // Ref: https://pinia.vuejs.org/cookbook/options-api.html#giving-access-to-the-whole-store
 
   // Global getters
-  @Getter(useStore) getEntityType!: CorpTypeCd
-  @Getter(useStore) getNameRequestNumber!: string
-  @Getter(useStore) getNameRequestLegalName!: string
+  @Getter(useStore) areProvisionsRemoved!: boolean
+  @Getter(useStore) getAssociationType!: CoopTypes
+  @Getter(useStore) getBusinessContact!: ContactPointIF
   @Getter(useStore) getBusinessId!: string
-  @Getter(useStore) getCurrentDate!: string
+  @Getter(useStore) getCertifyState!: CertifyIF
+  @Getter(useStore) getCompletingParty!: CompletingPartyIF
   @Getter(useStore) getCorrectedFilingDate!: string
   @Getter(useStore) getCorrectedFilingId!: number
   @Getter(useStore) getCorrectedFilingType!: FilingTypes
   @Getter(useStore) getCorrectionErrorType!: CorrectionErrorTypes
   @Getter(useStore) getCorrectionStartDate!: string
-  @Getter(useStore) getEffectiveDateTime!: EffectiveDateTimeIF
-  @Getter(useStore) getDocumentOptionalEmail: string
-  @Getter(useStore) hasBusinessNameChanged!: boolean
-  @Getter(useStore) hasBusinessTypeChanged!: boolean
-  @Getter(useStore) hasNaicsChanged!: boolean
-  @Getter(useStore) haveNameTranslationsChanged!: boolean
-  @Getter(useStore) hasShareStructureChanged!: boolean
-  @Getter(useStore) getOrgPeople!: OrgPersonIF[]
-  @Getter(useStore) getShareClasses!: ShareClassIF[]
-  @Getter(useStore) getFolioNumber!: string
-  @Getter(useStore) getTransactionalFolioNumber!: string
-  @Getter(useStore) getStaffPayment!: StaffPaymentIF
-  @Getter(useStore) getDetailComment!: string
+  @Getter(useStore) getCurrentDate!: string
   @Getter(useStore) getCurrentNaics!: NaicsIF
-  @Getter(useStore) getNameTranslations!: NameTranslationIF[]
-  @Getter(useStore) getNameRequest!: NameRequestIF
-  @Getter(useStore) getCertifyState!: CertifyIF
-  @Getter(useStore) getOfficeAddresses!: AddressesIF
-  @Getter(useStore) getBusinessContact!: ContactPointIF
+  @Getter(useStore) getDetailComment!: string
+  @Getter(useStore) getDocumentOptionalEmail: string
+  @Getter(useStore) getEffectiveDateTime!: EffectiveDateTimeIF
   @Getter(useStore) getEntitySnapshot!: EntitySnapshotIF
-  @Getter(useStore) getNewResolutionDates!: string[]
-  @Getter(useStore) areProvisionsRemoved!: boolean
+  @Getter(useStore) getEntityType!: CorpTypeCd
   @Getter(useStore) getFileNumber!: string
+  @Getter(useStore) getFolioNumber!: string
   @Getter(useStore) getHasPlanOfArrangement!: boolean
-  @Getter(useStore) haveOfficeAddressesChanged!: boolean
-  @Getter(useStore) getCompletingParty!: CompletingPartyIF
-  @Getter(useStore) isBenBcCccUlcCorrectionFiling!: boolean
-  @Getter(useStore) isFirmCorrectionFiling!: boolean
-  @Getter(useStore) isClientErrorCorrection!: boolean
-  @Getter(useStore) getAssociationType!: CoopTypes
-  @Getter(useStore) hasAssociationTypeChanged!: boolean
-  @Getter(useStore) getSpecialResolution!: SpecialResolutionIF
-  @Getter(useStore) hasBusinessStartDateChanged!: boolean
+  @Getter(useStore) getLatestResolutionForBusiness!: SpecialResolutionIF
+  @Getter(useStore) getNameRequest!: NameRequestIF
+  @Getter(useStore) getNameRequestNumber!: string
+  @Getter(useStore) getNameRequestLegalName!: string
+  @Getter(useStore) getNameTranslations!: NameTranslationIF[]
+  @Getter(useStore) getNewResolutionDates!: string[]
+  @Getter(useStore) getOfficeAddresses!: AddressesIF
+  @Getter(useStore) getOrgPeople!: OrgPersonIF[]
   @Getter(useStore) getRestoration!: RestorationStateIF
-  @Getter(useStore) getStateFilingRestoration!: StateFilingRestorationIF
-  @Getter(useStore) isLimitedRestorationToFull!: boolean
-  @Getter(useStore) isEntityTypeFirm!: boolean
-  @Getter(useStore) hasSpecialResolutionMemorandumChanged!: boolean
-  @Getter(useStore) hasSpecialResolutionRulesChanged!: boolean
+  @Getter(useStore) getShareClasses!: ShareClassIF[]
+  @Getter(useStore) getSpecialResolution!: SpecialResolutionIF
   @Getter(useStore) getSpecialResolutionMemorandum!: RulesMemorandumIF
   @Getter(useStore) getSpecialResolutionRules!: RulesMemorandumIF
-  @Getter(useStore) isCoopCorrectionFiling!: boolean
-  @Getter(useStore) getLatestResolutionForBusiness!: SpecialResolutionIF
+  @Getter(useStore) getStaffPayment!: StaffPaymentIF
+  @Getter(useStore) getStateFilingRestoration!: StateFilingRestorationIF
+  @Getter(useStore) getTransactionalFolioNumber!: string
+  @Getter(useStore) hasAssociationTypeChanged!: boolean
+  @Getter(useStore) hasBusinessNameChanged!: boolean
+  @Getter(useStore) hasBusinessStartDateChanged!: boolean
+  @Getter(useStore) hasBusinessTypeChanged!: boolean
+  @Getter(useStore) hasNaicsChanged!: boolean
+  @Getter(useStore) hasShareStructureChanged!: boolean
+  @Getter(useStore) hasSpecialResolutionMemorandumChanged!: boolean
   @Getter(useStore) hasSpecialResolutionResolutionChanged!: boolean
+  @Getter(useStore) hasSpecialResolutionRulesChanged!: boolean
+  @Getter(useStore) haveNameTranslationsChanged!: boolean
+  @Getter(useStore) haveOfficeAddressesChanged!: boolean
+  @Getter(useStore) isBenBcCccUlcCorrectionFiling!: boolean
+  @Getter(useStore) isClientErrorCorrection!: boolean
+  @Getter(useStore) isCoopCorrectionFiling!: boolean
+  @Getter(useStore) isEntityTypeFirm!: boolean
+  @Getter(useStore) isFirmCorrectionFiling!: boolean
+  @Getter(useStore) isLimitedRestorationToFull!: boolean
 
   // Global actions
   @Action(useStore) setBusinessContact!: (x: ContactPointIF) => void
   @Action(useStore) setBusinessInformation!: (x: BusinessInformationIF) => void
   @Action(useStore) setCertifyState!: (x: CertifyIF) => void
   @Action(useStore) setCorrectionInformation!: (x: CorrectionInformationIF) => void
+  @Action(useStore) setCorrectionStartDate!: (x: string) => void
+  @Action(useStore) setEffectiveDateTimeString!: (x: string) => void
+  @Action(useStore) setDetailComment!: (x: string) => void
+  @Action(useStore) setDocumentOptionalEmail!: (x: string) => void
+  @Action(useStore) setEntitySnapshot!: (x: EntitySnapshotIF) => void
   @Action(useStore) setEntityType!: (x: CorpTypeCd) => void
+  @Action(useStore) setFileNumber!: (x: string) => void
+  @Action(useStore) setFolioNumber!: (x: string) => void
+  @Action(useStore) setHasPlanOfArrangement!: (x: boolean) => void
+  @Action(useStore) setIsFutureEffective!: (x: boolean) => void
   @Action(useStore) setOfficeAddresses!: (x: AddressesIF) => void
   @Action(useStore) setNaics!: (x: NaicsIF) => void
   @Action(useStore) setNameTranslations!: (x: NameTranslationIF[]) => void
   @Action(useStore) setNameRequest!: (x: NameRequestIF) => void
-  @Action(useStore) setPeopleAndRoles!: (x: OrgPersonIF[]) => void
-  @Action(useStore) setShareClasses!: (x: ShareClassIF[]) => void
-  @Action(useStore) setEffectiveDateTimeString!: (x: string) => void
-  @Action(useStore) setIsFutureEffective!: (x: boolean) => void
-  @Action(useStore) setFolioNumber!: (x: string) => void
-  @Action(useStore) setTransactionalFolioNumber!: (x: string) => void
-  @Action(useStore) setStaffPayment!: (x: StaffPaymentIF) => void
-  @Action(useStore) setDetailComment!: (x: string) => void
-  @Action(useStore) setEntitySnapshot!: (x: EntitySnapshotIF) => void
-  @Action(useStore) setDocumentOptionalEmail!: (x: string) => void
-  @Action(useStore) setProvisionsRemoved!: (x: boolean) => void
+  @Action(useStore) setNameRequestLegalName!: (x: string) => void
   @Action(useStore) setNewResolutionDates!: (x: string[]) => void
-  @Action(useStore) setFileNumber!: (x: string) => void
-  @Action(useStore) setHasPlanOfArrangement!: (x: boolean) => void
-  @Action(useStore) setSpecialResolution!: (x: SpecialResolutionIF) => void
-  @Action(useStore) setCorrectionStartDate!: (x: string) => void
+  @Action(useStore) setPeopleAndRoles!: (x: OrgPersonIF[]) => void
+  @Action(useStore) setProvisionsRemoved!: (x: boolean) => void
   @Action(useStore) setRestorationApprovalType!: (x: ApprovalTypes) => void
   @Action(useStore) setRestorationCourtOrder!: (x: CourtOrderIF) => void
   @Action(useStore) setRestorationExpiryDate!: (x: string) => void
-  @Action(useStore) setRestorationType!: (x: RestorationTypes) => void
   @Action(useStore) setRestorationRelationships!: (x: RelationshipTypes[]) => void
+  @Action(useStore) setRestorationType!: (x: RestorationTypes) => void
+  @Action(useStore) setShareClasses!: (x: ShareClassIF[]) => void
+  @Action(useStore) setSpecialResolution!: (x: SpecialResolutionIF) => void
   @Action(useStore) setSpecialResolutionMemorandum!: (x: RulesMemorandumIF) => void
   @Action(useStore) setSpecialResolutionRules!: (x: RulesMemorandumIF) => void
-
-  /** The default (hard-coded first line) correction detail comment. */
-  public get defaultCorrectionDetailComment (): string {
-    const correctedFilingName = FilingTypeToName(this.getCorrectedFilingType)
-    return `Correction for ${correctedFilingName} filed on ${this.correctedFilingDate}`
-  }
+  @Action(useStore) setStaffPayment!: (x: StaffPaymentIF) => void
+  @Action(useStore) setTransactionalFolioNumber!: (x: string) => void
 
   //
   // Filing builders (for saving a filing)
@@ -153,7 +149,13 @@ export default class FilingTemplateMixin extends DateMixin {
         correctedFilingDate: this.correctedFilingDate,
         comment: `${this.defaultCorrectionDetailComment}\n${this.getDetailComment}`,
         contactPoint: this.getContactPoint,
-        nameRequest: this.getNameRequest,
+        nameRequest: {
+          // add in the fields needed by Legal API
+          // don't save legal name if it's empty
+          ...this.getNameRequest,
+          legalName: this.getNameRequestLegalName || undefined,
+          nrNumber: this.getNameRequestNumber
+        },
         offices: this.getOfficeAddresses,
         parties: null, // applied below
         type: this.getCorrectionErrorType
@@ -294,7 +296,13 @@ export default class FilingTemplateMixin extends DateMixin {
 
     // Apply NR / business name / business type change to filing
     if (this.getNameRequestNumber || this.hasBusinessNameChanged || this.hasBusinessTypeChanged) {
-      filing.alteration.nameRequest = this.getNameRequest
+      filing.alteration.nameRequest = {
+        // add in the fields needed by Legal API
+        // don't save legal name if it's empty
+        ...this.getNameRequest,
+        legalName: this.getNameRequestLegalName || undefined,
+        nrNumber: this.getNameRequestNumber
+      }
     }
 
     // Apply name translation changes to filing
@@ -395,13 +403,19 @@ export default class FilingTemplateMixin extends DateMixin {
     if (this.isLimitedRestorationToFull) {
       // Apply NR / business name change to filing
       if (this.getNameRequestNumber || this.hasBusinessNameChanged) {
-        filing.restoration.nameRequest = this.getNameRequest
+        filing.restoration.nameRequest = {
+          // add in the fields needed by Legal API
+          // don't save legal name if it's empty
+          ...this.getNameRequest,
+          legalName: this.getNameRequestLegalName || undefined,
+          nrNumber: this.getNameRequestNumber
+        }
       } else {
         // Otherwise save default data
         filing.restoration.nameRequest = {
           legalName: this.getEntitySnapshot.businessInfo.legalName,
           legalType: this.getEntitySnapshot.businessInfo.legalType
-        }
+        } as any
       }
     }
 
@@ -510,8 +524,14 @@ export default class FilingTemplateMixin extends DateMixin {
     // Apply NR / business name / business type change to filing
     if (this.getNameRequestNumber || this.hasBusinessNameChanged || this.hasBusinessTypeChanged) {
       filing.changeOfName = {
-        nameRequest: this.getNameRequest,
-        legalName: this.getNameRequest.legalName
+        nameRequest: {
+          // add in the fields needed by Legal API
+          // don't save legal name if it's empty
+          ...this.getNameRequest,
+          legalName: this.getNameRequestLegalName || undefined,
+          nrNumber: this.getNameRequestNumber
+        },
+        legalName: this.getNameRequestLegalName
       }
     }
 
@@ -569,7 +589,13 @@ export default class FilingTemplateMixin extends DateMixin {
 
     // Apply business name change to filing
     if (this.hasBusinessNameChanged) {
-      filing.changeOfRegistration.nameRequest = this.getNameRequest
+      filing.changeOfRegistration.nameRequest = {
+        // add in the fields needed by Legal API
+        // don't save legal name if it's empty
+        ...this.getNameRequest,
+        legalName: this.getNameRequestLegalName || undefined,
+        nrNumber: this.getNameRequestNumber
+      }
     }
 
     // Apply business address changes to filing
@@ -672,8 +698,15 @@ export default class FilingTemplateMixin extends DateMixin {
     }
 
     // Apply business name change to filing
+    // FUTURE: can probably delete this as Record Conversion doesn't allow name change
     if (this.hasBusinessNameChanged) {
-      filing.conversion.nameRequest = this.getNameRequest
+      filing.conversion.nameRequest = {
+        // add in the fields needed by Legal API
+        // don't save legal name if it's empty
+        ...this.getNameRequest,
+        legalName: this.getNameRequestLegalName || undefined,
+        nrNumber: this.getNameRequestNumber
+      }
     }
 
     // Apply parties to filing
@@ -770,15 +803,18 @@ export default class FilingTemplateMixin extends DateMixin {
       }
     }
 
-    // store Name Request
-    this.setNameRequest(cloneDeep(
-      filing.correction.nameRequest ||
-      {
+    // store Name Request data
+    if (filing.correction.nameRequest) {
+      this.setNameRequest(filing.correction.nameRequest)
+      this.setNameRequestLegalName(filing.correction.nameRequest.legalName || null)
+    } else {
+      // store default data
+      this.setNameRequest({
         legalType: entitySnapshot.businessInfo.legalType,
-        legalName: entitySnapshot.businessInfo.legalName,
-        nrNumber: entitySnapshot.businessInfo.nrNumber
-      }
-    ))
+        nrNum: entitySnapshot.businessInfo.nrNumber
+      } as any)
+      this.setNameRequestLegalName(entitySnapshot.businessInfo.legalName)
+    }
 
     if (this.isCoopCorrectionFiling) {
       this.storeSpecialResolutionRulesAndMemorandum(filing.correction, entitySnapshot)
@@ -883,14 +919,17 @@ export default class FilingTemplateMixin extends DateMixin {
     })
 
     // store Name Request data
-    this.setNameRequest(cloneDeep(
-      filing.alteration.nameRequest ||
-      {
+    if (filing.alteration.nameRequest) {
+      this.setNameRequest(filing.alteration.nameRequest)
+      this.setNameRequestLegalName(filing.alteration.nameRequest.legalName || null)
+    } else {
+      // store default data
+      this.setNameRequest({
         legalType: entitySnapshot.businessInfo.legalType,
-        legalName: entitySnapshot.businessInfo.legalName,
-        nrNumber: entitySnapshot.businessInfo.nrNumber
-      }
-    ))
+        nrNum: entitySnapshot.businessInfo.nrNumber
+      } as any)
+      this.setNameRequestLegalName(entitySnapshot.businessInfo.legalName)
+    }
 
     // store Name Translations
     this.setNameTranslations(cloneDeep(
@@ -990,14 +1029,17 @@ export default class FilingTemplateMixin extends DateMixin {
     }
 
     // store Name Request data
-    this.setNameRequest(cloneDeep(
-      filing.restoration.nameRequest ||
-      {
+    if (filing.restoration.nameRequest) {
+      this.setNameRequest(filing.restoration.nameRequest)
+      this.setNameRequestLegalName(filing.restoration.nameRequest.legalName || null)
+    } else {
+      // store default data
+      this.setNameRequest({
         legalType: entitySnapshot.businessInfo.legalType,
-        legalName: entitySnapshot.businessInfo.legalName,
-        nrNumber: entitySnapshot.businessInfo.nrNumber
-      }
-    ))
+        nrNum: entitySnapshot.businessInfo.nrNumber
+      } as any)
+      this.setNameRequestLegalName(entitySnapshot.businessInfo.legalName)
+    }
 
     // store relationships
     if (filing.restoration.relationships?.length > 0) {
@@ -1075,14 +1117,17 @@ export default class FilingTemplateMixin extends DateMixin {
     })
 
     // store Name Request data
-    this.setNameRequest(cloneDeep(
-      filing.changeOfName?.nameRequest ||
-      {
+    if (filing.changeOfName?.nameRequest) {
+      this.setNameRequest(filing.changeOfName.nameRequest)
+      this.setNameRequestLegalName(filing.changeOfName.nameRequest.legalName || null)
+    } else {
+      // store default data
+      this.setNameRequest({
         legalType: entitySnapshot.businessInfo.legalType,
-        legalName: entitySnapshot.businessInfo.legalName,
-        nrNumber: entitySnapshot.businessInfo.nrNumber
-      }
-    ))
+        nrNum: entitySnapshot.businessInfo.nrNumber
+      } as any)
+      this.setNameRequestLegalName(entitySnapshot.businessInfo.legalName)
+    }
 
     this.storeSpecialResolutionRulesAndMemorandum(filing.alteration, entitySnapshot)
 
@@ -1144,14 +1189,17 @@ export default class FilingTemplateMixin extends DateMixin {
     }
 
     // store Name Request data
-    this.setNameRequest(cloneDeep(
-      filing.changeOfRegistration.nameRequest ||
-      {
+    if (filing.changeOfRegistration.nameRequest) {
+      this.setNameRequest(filing.changeOfRegistration.nameRequest)
+      this.setNameRequestLegalName(filing.changeOfRegistration.nameRequest.legalName || null)
+    } else {
+      // store default data
+      this.setNameRequest({
         legalType: entitySnapshot.businessInfo.legalType,
-        legalName: entitySnapshot.businessInfo.legalName,
-        nrNumber: entitySnapshot.businessInfo.nrNumber
-      }
-    ))
+        nrNum: entitySnapshot.businessInfo.nrNumber
+      } as any)
+      this.setNameRequestLegalName(entitySnapshot.businessInfo.legalName)
+    }
 
     // store Office Addresses
     let addresses
@@ -1228,14 +1276,17 @@ export default class FilingTemplateMixin extends DateMixin {
     }
 
     // store Name Request data
-    this.setNameRequest(cloneDeep(
-      filing.conversion.nameRequest ||
-      {
+    if (filing.conversion.nameRequest) {
+      this.setNameRequest(filing.conversion.nameRequest)
+      this.setNameRequestLegalName(filing.conversion.nameRequest.legalName || null)
+    } else {
+      // store default data
+      this.setNameRequest({
         legalType: entitySnapshot.businessInfo.legalType,
-        legalName: entitySnapshot.businessInfo.legalName,
-        nrNumber: entitySnapshot.businessInfo.nrNumber
-      }
-    ))
+        nrNum: entitySnapshot.businessInfo.nrNumber
+      } as any)
+      this.setNameRequestLegalName(entitySnapshot.businessInfo.legalName)
+    }
 
     // store Office Addresses
     let addresses = null
@@ -1284,12 +1335,12 @@ export default class FilingTemplateMixin extends DateMixin {
     // store Business Information
     this.setBusinessInformation({ ...entitySnapshot.businessInfo })
 
-    // store Name Request data
+    // store default Name Request data
     this.setNameRequest({
       legalType: entitySnapshot.businessInfo.legalType,
-      legalName: entitySnapshot.businessInfo.legalName,
-      nrNumber: entitySnapshot.businessInfo.nrNumber
-    })
+      nrNum: entitySnapshot.businessInfo.nrNumber
+    } as any)
+    this.setNameRequestLegalName(entitySnapshot.businessInfo.legalName)
 
     // store People and Roles
     this.setPeopleAndRoles(cloneDeep(entitySnapshot.orgPersons))
@@ -1354,6 +1405,12 @@ export default class FilingTemplateMixin extends DateMixin {
   //
   // Local helper methods
   //
+
+  /** The default (hard-coded first line) correction detail comment. */
+  public get defaultCorrectionDetailComment (): string {
+    const correctedFilingName = FilingTypeToName(this.getCorrectedFilingType)
+    return `Correction for ${correctedFilingName} filed on ${this.correctedFilingDate}`
+  }
 
   // FUTURE: probably don't need this becayse Corrected Filing Date is already YYYY-MM-DD
   /** The corrected filing date as YYYY-MM-DD. */
@@ -1608,8 +1665,10 @@ export default class FilingTemplateMixin extends DateMixin {
    * @param filingInformation the filing information to parse.
    * @param entitySnapshot the entity snapshot.
    */
-  storeSpecialResolutionRulesAndMemorandum (filingInformation: CoopAlterationIF | CorrectionInformationIF,
-    entitySnapshot: EntitySnapshotIF) :void {
+  private storeSpecialResolutionRulesAndMemorandum (
+    filingInformation: CoopAlterationIF | CorrectionInformationIF,
+    entitySnapshot: EntitySnapshotIF
+  ): void {
     // Documents Info can possibly be undefined, if the co-op was created via paper.
     const documentsInfo = entitySnapshot.businessDocuments?.documentsInfo
     if (filingInformation?.rulesFileKey) {

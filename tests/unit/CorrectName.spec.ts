@@ -10,22 +10,20 @@ const vuetify = new Vuetify({})
 
 describe('Correct Name component', () => {
   let wrapperFactory: any
-  let correctionNameChoices: any
+  let correctNameChoices: any
 
   beforeEach(() => {
-    wrapperFactory = (propsData: any) => {
+    wrapperFactory = (propsData = {}) => {
       return shallowMount(CorrectName, {
-        propsData: {
-          ...propsData
-        },
+        propsData,
         vuetify
       })
     }
   })
 
   it('renders the appropriate choices for a numbered company', async () => {
-    correctionNameChoices = ['correct-new-nr']
-    const wrapper = wrapperFactory({ correctionNameChoices })
+    correctNameChoices = ['correct-new-nr']
+    const wrapper = wrapperFactory({ correctNameChoices })
     await Vue.nextTick()
 
     // Verify correct components are rendered
@@ -38,8 +36,8 @@ describe('Correct Name component', () => {
   })
 
   it('renders the appropriate choices for a named company', async () => {
-    correctionNameChoices = ['correct-name', 'correct-new-nr', 'correct-name-to-number']
-    const wrapper = wrapperFactory({ correctionNameChoices })
+    correctNameChoices = ['correct-name', 'correct-new-nr', 'correct-name-to-number']
+    const wrapper = wrapperFactory({ correctNameChoices })
     await Vue.nextTick()
 
     // Verify correct components are rendered

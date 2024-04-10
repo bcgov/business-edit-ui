@@ -34,7 +34,7 @@
                 {{ companyName }}
               </div>
               <div class="company-name mt-2">
-                {{ getNameRequest.nrNum }}
+                {{ getNameRequestNumber }}
               </div>
             </v-col>
           </v-row>
@@ -105,7 +105,6 @@ import { Getter } from 'pinia-class'
 import { useStore } from '@/store/store'
 import { ApprovalTypes, RelationshipTypes } from '@bcrs-shared-components/enums'
 import { OfficeAddresses, NameTranslation } from '@/components/common/'
-import { NameRequestIF } from '@bcrs-shared-components/interfaces'
 import { CourtOrderIF } from '@/interfaces/alteration-interfaces'
 import { RestorationStateIF } from '@/interfaces'
 
@@ -122,8 +121,8 @@ export default class YourCompanySummary extends Vue {
   @Getter(useStore) getBusinessNumber!: string
   @Getter(useStore) getCourtOrderNumberText!: string
   @Getter(useStore) getIsRestorationTypeCourtOrder!: boolean
-  @Getter(useStore) getNameRequest!: NameRequestIF
   @Getter(useStore) getNameRequestLegalName!: string
+  @Getter(useStore) getNameRequestNumber!: string
   @Getter(useStore) getRelationships!: RelationshipTypes[]
   @Getter(useStore) getRestoration!: RestorationStateIF
   @Getter(useStore) getRestorationExpiryText!: string

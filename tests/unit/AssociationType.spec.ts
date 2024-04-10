@@ -3,7 +3,7 @@ import { shallowMount } from '@vue/test-utils'
 import { AssociationType } from '@/components/common'
 import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
-import { CorpTypeCd } from '@/enums'
+import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 
 const vuetify = new Vuetify({})
 

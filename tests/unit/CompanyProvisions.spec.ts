@@ -4,7 +4,8 @@ import { shallowMount, mount } from '@vue/test-utils'
 import CompanyProvisions from '@/components/Alteration/Articles/CompanyProvisions.vue'
 import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
-import { CorpTypeCd, FilingTypes } from '@/enums'
+import { FilingTypes } from '@/enums'
+import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 
 const vuetify = new Vuetify({})
 

@@ -6,8 +6,8 @@ import { AddressIF, AddressesIF } from '@/interfaces/stepper-interfaces/YourComp
 import { BenAlterationResource } from '@/resources/Alteration/BEN'
 import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
-import { CorpTypeCd, FilingTypes } from '@/enums'
-import { vi } from 'vitest'
+import { FilingTypes } from '@/enums'
+import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 
 // mock the console.warn function to hide "[Vuetify] Unable to locate target XXX"
 console.warn = vi.fn()

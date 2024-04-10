@@ -7,8 +7,8 @@ import { SpChangeResource } from '@/resources/Change/SP'
 import { GpChangeResource } from '@/resources/Change/GP'
 import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
-import { CorpTypeCd, FilingTypes } from '@/enums'
-import { vi } from 'vitest'
+import { FilingTypes } from '@/enums'
+import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 
 // mock the console.warn function to hide "[Vuetify] Unable to locate target XXX"
 console.warn = vi.fn()

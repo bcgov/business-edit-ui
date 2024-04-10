@@ -3,7 +3,7 @@ import { shallowMount } from '@vue/test-utils'
 import FileAndPayInvalidNameRequestDialog from '@/dialogs/FileAndPayInvalidNameRequestDialog.vue'
 import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
-import { CorpTypeCd as CorpTypeModuleCd } from '@bcrs-shared-components/corp-type-module'
+import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 
 const vuetify = new Vuetify({})
 
@@ -11,10 +11,10 @@ setActivePinia(createPinia())
 const store = useStore()
 
 store.stateModel.nameRequest = {
-  entityType: CorpTypeModuleCd.BENEFIT_COMPANY,
-  nrNumber: 'NR 1234567',
-  details: { approvedName: 'My Name Request Inc.' }
+  legalType: CorpTypeCd.BENEFIT_COMPANY,
+  nrNum: 'NR 1234567'
 } as any
+store.stateModel.nameRequestLegalName = 'My Name Request Inc.'
 
 describe.skip('FileAndPayInvalidNameRequestDialog - Verify that dialog is displayed correctly', () => {
   it('displays dialog with the proper store data', async () => {

@@ -1,7 +1,7 @@
 import { ApprovalTypes, RestorationTypes, RelationshipTypes } from '@/enums'
-import { AddressesIF, CourtOrderIF, NameRequestIF, NameTranslationIF, OrgPersonIF } from '@/interfaces/'
+import { AddressesIF, CourtOrderIF, NameTranslationIF, OrgPersonIF } from '@/interfaces/'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
-import { ContactPointIF } from '@bcrs-shared-components/interfaces/'
+import { ContactPointIF, NameRequestIF } from '@bcrs-shared-components/interfaces/'
 
 //
 // Ref: https://github.com/bcgov/business-schemas/blob/main/src/registry_schemas/schemas/restoration.json
@@ -16,7 +16,8 @@ export interface RestorationIF {
   contactPoint: ContactPointIF
   courtOrder?: CourtOrderIF
   expiry?: string // YYYY-MM-DD
-  nameRequest?: NameRequestIF
+  // intersection type so we can save original NR + properties needed by Legal API:
+  nameRequest?: NameRequestIF & { legalName: string, nrNumber?: string }
   nameTranslations?: NameTranslationIF[]
   noticeDate?: string // YYYY-MM-DD
   offices: AddressesIF

@@ -156,10 +156,8 @@ import { ApprovalTypes, FilingStatus, RoleTypes } from '@/enums/'
 import { RelationshipTypes } from '@bcrs-shared-components/enums'
 import { RelationshipsPanel } from '@bcrs-shared-components/relationships-panel'
 import { ApprovalType } from '@bcrs-shared-components/approval-type'
-import { FeeSummary as FeeSummaryShared } from '@bcrs-shared-components/fee-summary/'
 import ViewWrapper from '@/components/ViewWrapper.vue'
 import { useStore } from '@/store/store'
-import { FilingDataIF } from '@bcrs-shared-components/interfaces'
 
 @Component({
   components: {
@@ -169,7 +167,6 @@ import { FilingDataIF } from '@bcrs-shared-components/interfaces'
     CourtOrderPoa,
     DocumentsDelivery,
     EntityName,
-    FeeSummaryShared,
     FolioInformation,
     ListPeopleAndRoles,
     NameTranslation,
@@ -313,7 +310,7 @@ export default class LimitedRestorationToFull extends Mixins(
       this.setResource(this.restorationResource)
 
       // initialize Fee Summary data
-      this.setFilingData([this.restorationResource.filingData as unknown as FilingDataIF])
+      this.setFilingData([this.restorationResource.filingData])
 
       // update the current fees for this filing
       await this.setCurrentFeesFromFilingData()

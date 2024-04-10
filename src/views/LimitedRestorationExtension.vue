@@ -126,12 +126,10 @@ import { EntitySnapshotIF, OrgPersonIF, ResourceIF, RestorationFilingIF }
 import { FilingStatus, RoleTypes } from '@/enums/'
 import { BcRestorationResource, BenRestorationResource, CccRestorationResource, UlcRestorationResource }
   from '@/resources/LimitedRestorationExtension/'
-import { FeeSummary as FeeSummaryShared } from '@bcrs-shared-components/fee-summary/'
 import ExtendTimeLimit from '@/components/Restoration/ExtendTimeLimit.vue'
 import ViewWrapper from '@/components/ViewWrapper.vue'
 import { AuthServices, LegalServices } from '@/services'
 import { useStore } from '@/store/store'
-import { FilingDataIF } from '@bcrs-shared-components/interfaces'
 
 @Component({
   components: {
@@ -140,7 +138,6 @@ import { FilingDataIF } from '@bcrs-shared-components/interfaces'
     DocumentsDelivery,
     EntityName,
     ExtendTimeLimit,
-    FeeSummaryShared,
     FolioInformation,
     ListPeopleAndRoles,
     NameTranslation,
@@ -292,7 +289,7 @@ export default class LimitedRestorationExtension extends Mixins(
       this.setResource(this.restorationResource)
 
       // initialize Fee Summary data
-      this.setFilingData([this.restorationResource.filingData as unknown as FilingDataIF])
+      this.setFilingData([this.restorationResource.filingData])
 
       // update the current fees for this filing
       await this.setCurrentFeesFromFilingData()

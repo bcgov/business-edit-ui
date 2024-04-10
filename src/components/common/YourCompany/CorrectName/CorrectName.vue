@@ -44,8 +44,8 @@
             :key="item.id"
             :formType="formType"
             :validate="validateNameChange"
-            @isSaved="emitIsSaved($event)"
-            @isValid="isFormValid = $event"
+            @saved="emitIsSaved($event)"
+            @valid="isFormValid = $event"
           />
         </v-expansion-panel-content>
       </v-expansion-panel>
@@ -101,7 +101,7 @@ import CorrectNameToNumber from './CorrectNameToNumber.vue'
 })
 export default class CorrectName extends Vue {
   /** The options to display */
-  @Prop() readonly correctionNameChoices!: Array<string>
+  @Prop() readonly correctNameChoices!: Array<string>
 
   // local properties
   displayedOptions: Array<CorrectNameOptionIF> = []
@@ -139,7 +139,7 @@ export default class CorrectName extends Vue {
   mounted (): void {
     // Filter the options to be displayed by what id's were passed from the parent component
     this.displayedOptions = this.correctionNameOptions.filter(
-      option => this.correctionNameChoices.includes(option.id)
+      option => this.correctNameChoices.includes(option.id)
     )
     // open by default and assign id if only 1 option
     if (this.isOneOption) {
@@ -149,7 +149,7 @@ export default class CorrectName extends Vue {
   }
 
   get isOneOption (): boolean {
-    return (this.correctionNameChoices.length === 1)
+    return (this.correctNameChoices.length === 1)
   }
 
   /** Trigger form submission */

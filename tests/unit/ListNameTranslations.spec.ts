@@ -36,12 +36,12 @@ describe('List Name Translation component', () => {
     // init store
     store.stateModel.nameTranslations = []
 
-    wrapperFactory = async (propsData: any) => {
+    wrapperFactory = async (propsData = {}) => {
       const wrapper = mount(ListNameTranslation, {
         localVue,
         router,
         vuetify,
-        propsData: { ...propsData }
+        propsData
       })
       await Vue.nextTick()
       return wrapper

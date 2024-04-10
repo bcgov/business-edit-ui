@@ -4,7 +4,6 @@ import { createPinia, setActivePinia } from 'pinia'
 import { mount } from '@vue/test-utils'
 import SigningParty from '@/components/SpecialResolution/SigningParty.vue'
 import { useStore } from '@/store/store'
-import { vi } from 'vitest'
 
 const vuetify = new Vuetify({})
 

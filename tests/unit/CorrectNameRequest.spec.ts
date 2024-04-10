@@ -6,8 +6,7 @@ import { mount, Wrapper } from '@vue/test-utils'
 import CorrectNameRequest from '@/components/common/YourCompany/CorrectName/CorrectNameRequest.vue'
 import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
-import { CorpTypeCd } from '@/enums'
-import { vi } from 'vitest'
+import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 
 // mock the console.warn function to hide "[Vuetify] Unable to locate target XXX"
 console.warn = vi.fn()
@@ -27,11 +26,9 @@ function getLastEvent (wrapper: Wrapper<any>, name: string): any {
 }
 
 describe('CorrectNameRequest', () => {
-  const wrapperFactory = (props: any = {}) => {
+  const wrapperFactory = (propsData = {}) => {
     return mount(CorrectNameRequest, {
-      propsData: {
-        props
-      },
+      propsData,
       vuetify
     })
   }
@@ -262,7 +259,7 @@ describe('CorrectNameRequest', () => {
     await flushPromises()
 
     expect(vm.isFormValid).toBe(true)
-    expect(getLastEvent(wrapper, 'isValid')).toBe(true)
+    expect(getLastEvent(wrapper, 'valid')).toBe(true)
 
     wrapper.destroy()
   })
@@ -281,7 +278,7 @@ describe('CorrectNameRequest', () => {
     await flushPromises()
 
     expect(vm.isFormValid).toBe(false)
-    expect(getLastEvent(wrapper, 'isValid')).toBe(false)
+    expect(getLastEvent(wrapper, 'valid')).toBe(false)
 
     wrapper.destroy()
   })
@@ -307,7 +304,6 @@ describe('CorrectNameRequest', () => {
             requestTypeCd: 'BC',
             legalType: 'BC',
             request_action_cd: 'CNV',
-            entity_type_cd: 'CR',
             applicants: {
               phoneNumber: '250 516 8257',
               emailAddress: 'mock@example.com'
@@ -328,7 +324,7 @@ describe('CorrectNameRequest', () => {
     expect(vm.isFormValid).toBe(true)
 
     // verify form emission
-    expect(getLastEvent(wrapper, 'isSaved')).toBe(true)
+    expect(getLastEvent(wrapper, 'saved')).toBe(true)
 
     wrapper.destroy()
   })
@@ -373,7 +369,7 @@ describe('CorrectNameRequest', () => {
     expect(vm.isFormValid).toBe(true)
 
     // verify form emission
-    expect(getLastEvent(wrapper, 'isSaved')).toBe(false)
+    expect(getLastEvent(wrapper, 'saved')).toBe(false)
 
     wrapper.destroy()
   })
@@ -418,7 +414,7 @@ describe('CorrectNameRequest', () => {
     expect(vm.isFormValid).toBe(true)
 
     // verify form emission
-    expect(getLastEvent(wrapper, 'isSaved')).toBe(false)
+    expect(getLastEvent(wrapper, 'saved')).toBe(false)
 
     wrapper.destroy()
   })
@@ -443,7 +439,6 @@ describe('CorrectNameRequest', () => {
             nrNum: 'NR 1234567',
             requestTypeCd: 'BC',
             request_action_cd: 'CNV',
-            entity_type_cd: 'BC',
             applicants: {
               phoneNumber: '250 516 8257',
               emailAddress: 'mock@example.com'
@@ -497,7 +492,6 @@ describe('CorrectNameRequest', () => {
             requestTypeCd: 'GP',
             legalType: 'GP',
             request_action_cd: 'CHG',
-            entity_type_cd: 'GP',
             applicants: {
               phoneNumber: '250 516 8257',
               emailAddress: 'mock@example.com'
@@ -518,7 +512,7 @@ describe('CorrectNameRequest', () => {
     expect(vm.isFormValid).toBe(true)
 
     // verify form emission
-    expect(getLastEvent(wrapper, 'isSaved')).toBe(true)
+    expect(getLastEvent(wrapper, 'saved')).toBe(true)
 
     wrapper.destroy()
   })
@@ -544,7 +538,6 @@ describe('CorrectNameRequest', () => {
             nrNum: 'NR 1234567',
             requestTypeCd: 'SP',
             request_action_cd: 'CHG',
-            entity_type_cd: 'SP',
             applicants: {
               phoneNumber: '250 516 8257',
               emailAddress: 'mock@example.com'

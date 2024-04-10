@@ -23,7 +23,6 @@
 import { Component, Prop, Watch, Emit, Mixins } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
 import { CommonMixin } from '@/mixins/'
-import { NameRequestIF } from '@/interfaces/'
 import { CorrectNameOptions } from '@/enums/'
 import { useStore } from '@/store/store'
 
@@ -32,14 +31,13 @@ export default class CorrectCompanyName extends Mixins(CommonMixin) {
   /** Form Submission Prop */
   @Prop({ default: null }) readonly formType!: CorrectNameOptions
 
-  @Action(useStore) setNameRequest!: (x: NameRequestIF) => void
+  @Action(useStore) setNameRequestLegalName!: (x: string) => void
 
   @Getter(useStore) getNameRequestLegalName!: string
-  @Getter(useStore) getNameRequest!: NameRequestIF
 
   // Local properties
-  protected valid = false
-  protected companyName = ''
+  valid = false
+  companyName = ''
 
   // Form Ref
   $refs: { correctNameForm: HTMLFormElement }
@@ -63,22 +61,19 @@ export default class CorrectCompanyName extends Mixins(CommonMixin) {
     // this component should only see correct-name form type
     if (this.formType === CorrectNameOptions.CORRECT_NAME) {
       // set the new company name
-      this.setNameRequest({
-        ...this.getNameRequest,
-        legalName: this.companyName
-      })
-      this.emitIsSaved(true)
+      this.setNameRequestLegalName(this.companyName)
+      this.emitSaved(true)
     }
   }
 
   /** Inform parent the process is complete. */
-  @Emit('isSaved')
+  @Emit('saved')
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  private emitIsSaved (isSaved: boolean): void {}
+  private emitSaved (isSaved: boolean): void {}
 
   /** Inform parent when form is valid and ready for submission. */
   @Watch('valid')
-  @Emit('isValid')
+  @Emit('valid')
   private emitValid (): boolean {
     return this.valid
   }

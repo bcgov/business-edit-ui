@@ -54,7 +54,7 @@
               {{ companyName }}
             </div>
             <div class="company-name mt-2">
-              {{ getNameRequest.nrNumber }}
+              {{ getNameRequestNumber }}
             </div>
           </v-col>
         </v-row>
@@ -192,6 +192,8 @@ export default class AlterationSummary extends Mixins(DateMixin, FeeMixin, Filin
   @Getter(useStore) getBusinessNumber!: string
   @Getter(useStore) getCurrentFees!: FeesIF[]
   @Getter(useStore) getFlagsReviewCertify!: FlagsReviewCertifyIF
+  // @Getter(useStore) getNameRequestLegalName!: string
+  // @Getter(useStore) getNameRequestNumber!: string
   @Getter(useStore) getOriginalResolutions!: ResolutionsIF[]
   @Getter(useStore) haveNewResolutionDates!: boolean
   @Getter(useStore) isBusySaving!: boolean
@@ -218,7 +220,6 @@ export default class AlterationSummary extends Mixins(DateMixin, FeeMixin, Filin
   /** The company name (from NR, or incorporation number). */
   get companyName (): string {
     if (this.getNameRequestLegalName) return this.getNameRequestLegalName
-
     return `${this.getBusinessNumber || '[Incorporation Number]'} B.C. Ltd.`
   }
 

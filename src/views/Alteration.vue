@@ -222,7 +222,7 @@ export default class Alteration extends Mixins(CommonMixin, FeeMixin, FilingTemp
         this.getEntityType === CorpTypeCd.BC_ULC_COMPANY) {
       this.setFilingData([{
         filingTypeCode: BcAlterationResource.additionalFilingData.filingTypeCode,
-        entityType: BcAlterationResource.additionalFilingData.entityType,
+        entityType: BcAlterationResource.additionalFilingData.entityType as any,
         priority: filingData[0].priority,
         futureEffective: filingData[0].futureEffective
       }])
@@ -230,7 +230,7 @@ export default class Alteration extends Mixins(CommonMixin, FeeMixin, FilingTemp
       const resourceFilingData = this.alterationResource.filingData as FilingDataIF
       this.setFilingData([{
         filingTypeCode: resourceFilingData.filingTypeCode,
-        entityType: resourceFilingData.entityType,
+        entityType: resourceFilingData.entityType as any,
         priority: filingData[0].priority,
         futureEffective: filingData[0].futureEffective
       }])

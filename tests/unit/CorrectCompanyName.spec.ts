@@ -23,13 +23,11 @@ describe('CorrectCompanyName', () => {
   let wrapperFactory: any
 
   beforeEach(() => {
-    store.stateModel.nameRequest.legalName = 'Bobs Plumbing'
+    store.stateModel.nameRequestLegalName = 'Bobs Plumbing'
 
-    wrapperFactory = (props: any) => {
+    wrapperFactory = (propsData = {}) => {
       return mount(CorrectCompanyName, {
-        propsData: {
-          props
-        },
+        propsData,
         vuetify
       })
     }
@@ -51,7 +49,7 @@ describe('CorrectCompanyName', () => {
 
     // Verify data from Store
     expect(companyNameInput.element.value).toBe('Bobs Plumbing')
-    expect(getLastEvent(wrapper, 'isValid')).toBe(true)
+    expect(getLastEvent(wrapper, 'valid')).toBe(true)
 
     wrapper.destroy()
   })
@@ -65,7 +63,7 @@ describe('CorrectCompanyName', () => {
 
     // Verify data from Store
     expect(companyNameInput.element.value).toBe('')
-    expect(getLastEvent(wrapper, 'isValid')).toBe(false)
+    expect(getLastEvent(wrapper, 'valid')).toBe(false)
 
     wrapper.destroy()
   })
@@ -79,16 +77,16 @@ describe('CorrectCompanyName', () => {
 
     // Verify data from Store
     expect(companyNameInput.element.value).toBe('Bob\'s Plumbing Ltd.')
-    expect(getLastEvent(wrapper, 'isValid')).toBe(true)
+    expect(getLastEvent(wrapper, 'valid')).toBe(true)
 
     // Submit Change
     await wrapper.setProps({ formType: 'correct-name' })
     await flushPromises()
 
-    expect(getLastEvent(wrapper, 'isSaved')).toBe(true)
+    expect(getLastEvent(wrapper, 'saved')).toBe(true)
 
     // Verify Data change in store
-    expect(store.stateModel.nameRequest.legalName).toBe('Bob\'s Plumbing Ltd.')
+    expect(wrapper.vm.getNameRequestLegalName).toBe('Bob\'s Plumbing Ltd.')
 
     wrapper.destroy()
   })

@@ -5,7 +5,8 @@ import { GpChangeResource } from '@/resources/Change/GP'
 import { BenCorrectionResource } from '@/resources/Correction/BEN'
 import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
-import { CorpTypeCd, FilingTypes } from '@/enums'
+import { FilingTypes } from '@/enums'
+import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 
 const vuetify = new Vuetify({})
 
@@ -341,7 +342,7 @@ describe('List People And Roles component for Corrections', () => {
     store.stateModel.tombstone.entityType = CorpTypeCd.BENEFIT_COMPANY
     store.resourceModel = BenCorrectionResource
     store.stateModel.peopleAndRoles.orgPeople = orgPeople
-    return mount(ListPeopleAndRoles, { propsData: { ...propsData }, vuetify })
+    return mount(ListPeopleAndRoles, { propsData, vuetify })
   }
 
   it('does not show the list if there is no data to display', () => {
@@ -491,7 +492,7 @@ describe('List People And Roles component for Change of Registration', () => {
     store.stateModel.tombstone.filingType = FilingTypes.CHANGE_OF_REGISTRATION
     store.resourceModel = GpChangeResource
     store.stateModel.peopleAndRoles.orgPeople = orgPeople
-    return mount(ListPeopleAndRoles, { propsData: { ...propsData }, vuetify })
+    return mount(ListPeopleAndRoles, { propsData, vuetify })
   }
 
   it('does not show the list if there is no data to display', () => {

@@ -4,10 +4,10 @@ import { mount } from '@vue/test-utils'
 import ChangeBusinessType from '@/components/common/YourCompany/ChangeBusinessType.vue'
 import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
-import { CorpTypeCd, FilingTypes, RoleTypes } from '@/enums'
+import { FilingTypes, RoleTypes } from '@/enums'
+import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 import { EntitySnapshotIF, OrgPersonIF } from '@/interfaces'
 import { mockFeatureFlagsForAlterationChangeBusinessTypes } from './utils'
-import { vi } from 'vitest'
 
 const vuetify = new Vuetify({})
 
@@ -119,38 +119,38 @@ describe('Change Business Type component', () => {
         legalName: '1234567 LTD.'
       }
     } as EntitySnapshotIF
-    store.stateModel.nameRequest.legalName = '1234567 LTD.'
+    store.stateModel.nameRequestLegalName = '1234567 LTD.'
     store.stateModel.tombstone.entityType = CorpTypeCd.BC_ULC_COMPANY
     const wrapper: any = mount(ChangeBusinessType, { vuetify })
     wrapper.vm.selectedEntityType = CorpTypeCd.BC_ULC_COMPANY
     wrapper.vm.submitTypeChange()
 
-    expect(store.stateModel.nameRequest.legalName).toBe('1234567 UNLIMITED LIABILITY COMPANY')
+    expect(wrapper.vm.getNameRequestLegalName).toBe('1234567 UNLIMITED LIABILITY COMPANY')
 
     store.stateModel.entitySnapshot.businessInfo.legalType = CorpTypeCd.BC_COMPANY
     store.stateModel.entitySnapshot.businessInfo.legalName = '1234567 LTD.'
-    store.stateModel.nameRequest.legalName = '1234567 LTD.'
+    store.stateModel.nameRequestLegalName = '1234567 LTD.'
     store.stateModel.tombstone.entityType = CorpTypeCd.BC_CCC
     wrapper.vm.selectedEntityType = CorpTypeCd.BC_CCC
     wrapper.vm.submitTypeChange()
 
-    expect(store.stateModel.nameRequest.legalName).toBe('1234567 COMMUNITY CONTRIBUTION COMPANY')
+    expect(wrapper.vm.getNameRequestLegalName).toBe('1234567 COMMUNITY CONTRIBUTION COMPANY')
 
     store.stateModel.entitySnapshot.businessInfo.legalType = CorpTypeCd.BC_ULC_COMPANY
     store.stateModel.entitySnapshot.businessInfo.legalName = '1234567 COMMUNITY CONTRIBUTION COMPANY'
-    store.stateModel.nameRequest.legalName = '1234567 COMMUNITY CONTRIBUTION COMPANY'
+    store.stateModel.nameRequestLegalName = '1234567 COMMUNITY CONTRIBUTION COMPANY'
     wrapper.vm.selectedEntityType = CorpTypeCd.BC_COMPANY
     wrapper.vm.submitTypeChange()
 
-    expect(store.stateModel.nameRequest.legalName).toBe('1234567 LTD.')
+    expect(wrapper.vm.getNameRequestLegalName).toBe('1234567 LTD.')
 
     store.stateModel.entitySnapshot.businessInfo.legalType = CorpTypeCd.BC_ULC_COMPANY
     store.stateModel.entitySnapshot.businessInfo.legalName = '1234567 UNLIMITED LIABILITY COMPANY'
-    store.stateModel.nameRequest.legalName = '1234567 UNLIMITED LIABILITY COMPANY'
+    store.stateModel.nameRequestLegalName = '1234567 UNLIMITED LIABILITY COMPANY'
     wrapper.vm.selectedEntityType = CorpTypeCd.BENEFIT_COMPANY
     wrapper.vm.submitTypeChange()
 
-    expect(store.stateModel.nameRequest.legalName).toBe('1234567 LTD.')
+    expect(wrapper.vm.getNameRequestLegalName).toBe('1234567 LTD.')
   })
 
   it('should have name request required error for business type change', async () => {

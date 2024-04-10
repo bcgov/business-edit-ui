@@ -4,7 +4,7 @@ import { AddressesIF, AlterationFilingIF, BusinessInformationIF, ChgRegistration
   SpecialResolutionFilingIF }
   from '@/interfaces/'
 import { RoleTypes } from '@/enums'
-import { ShareStructureIF } from '@bcrs-shared-components/interfaces/'
+import { NameRequestIF, ShareStructureIF } from '@bcrs-shared-components/interfaces/'
 
 import { BusinessDocumentsIF } from '@/interfaces/business-document-interface'
 import { AxiosResponse } from 'axios'
@@ -316,7 +316,7 @@ export default class LegalServices {
    * @param email the name request email (eg, nr@example.com)
    * @returns a promise to return the NR data, or null if not found
    */
-  static async fetchNameRequest (nrNumber: string, phone = '', email = ''): Promise<any> {
+  static async fetchNameRequest (nrNumber: string, phone = '', email = ''): Promise<NameRequestIF> {
     const url = `nameRequests/${nrNumber}/validate?phone=${phone}&email=${email}`
 
     return axios.get(url)

@@ -14,7 +14,6 @@ import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 import { ActionTypes, FilingTypes } from '@/enums'
-import { vi } from 'vitest'
 
 const vuetify = new Vuetify({})
 

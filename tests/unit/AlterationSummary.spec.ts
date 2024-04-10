@@ -11,7 +11,6 @@ import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 import BusinessType from '@/components/Alteration/summary/BusinessType.vue'
-import { vi } from 'vitest'
 
 const vuetify = new Vuetify({})
 
@@ -45,7 +44,7 @@ describe('Alteration Summary component', () => {
 
   beforeEach(() => {
     // Set Original business Data
-    store.stateModel.nameRequest.legalName = entitySnapshot.businessInfo.legalName
+    store.stateModel.nameRequestLegalName = entitySnapshot.businessInfo.legalName
     store.stateModel.tombstone.entityType = entitySnapshot.businessInfo.legalType
     store.stateModel.summaryMode = true
     store.stateModel.nameTranslations = nameTranslationsListChanged as any
@@ -92,7 +91,7 @@ describe('Alteration Summary component', () => {
   })
 
   it('renders the name summary section when changes have been made', async () => {
-    store.stateModel.nameRequest.legalName = 'Mock New Name'
+    store.stateModel.nameRequestLegalName = 'Mock New Name'
     await Vue.nextTick()
 
     expect(wrapper.find('.business-name-summary').exists()).toBe(true)

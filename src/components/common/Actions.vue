@@ -74,6 +74,7 @@ import { useStore } from '@/store/store'
 export default class Actions extends Mixins(DateMixin, FilingTemplateMixin, NameRequestMixin) {
   // Global getters
   @Getter(useStore) getFilingId!: number
+  // @Getter(useStore) getNameRequestNumber!: string
   @Getter(useStore) hasAlterationDataChanged!: boolean // for testing state-getters
   @Getter(useStore) hasCorrectionDataChanged!: boolean
   @Getter(useStore) havePeopleAndRolesChanged!: boolean // for testing state-getters
@@ -167,16 +168,16 @@ export default class Actions extends Mixins(DateMixin, FilingTemplateMixin, Name
     // Request is invalid, and clicking OK in the pop up redirects to My Business Registry.
     if (this.getNameRequestNumber) {
       try {
-        if (this.getNameRequest.applicant) {
-          await this.validateNameRequest(
+        if (this.getNameRequest.applicants) {
+          await this.fetchValidateNameRequest(
             this.getNameRequestNumber,
-            this.getNameRequest.applicant.phoneNumber,
-            this.getNameRequest.applicant.emailAddress)
+            this.getNameRequest.applicants.phoneNumber,
+            this.getNameRequest.applicants.emailAddress)
         } else {
-          await this.validateNameRequest(this.getNameRequestNumber)
+          await this.fetchValidateNameRequest(this.getNameRequestNumber)
         }
       } catch (error) {
-        // "validateNameRequest" handles its own errors
+        // "fetchValidateNameRequest" handles its own errors
         this.setIsFilingPaying(false)
         return
       }

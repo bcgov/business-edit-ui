@@ -54,6 +54,8 @@ export default class RestorationSummary extends Mixins(DateMixin, FeeMixin, Fili
   // Global getters
   @Getter(useStore) getBusinessNumber!: string
   @Getter(useStore) getCurrentFees!: FeesIF[]
+  // @Getter(useStore) getNameRequestLegalName!: string
+  // @Getter(useStore) getNameRequestNumber!: string
   @Getter(useStore) isBusySaving!: boolean
 
   /** Whether to perform validation. */
@@ -62,7 +64,6 @@ export default class RestorationSummary extends Mixins(DateMixin, FeeMixin, Fili
   /** The company name (from NR, or incorporation number). */
   get companyName (): string {
     if (this.getNameRequestLegalName) return this.getNameRequestLegalName
-
     return `${this.getBusinessNumber || '[Incorporation Number]'} B.C. Ltd.`
   }
 }

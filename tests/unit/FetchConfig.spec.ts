@@ -1,5 +1,4 @@
 import { AxiosInstance, FetchConfig } from '@/utils'
-import { vi } from 'vitest'
 
 // mock the console.info function to hide the output
 console.info = vi.fn()
