@@ -54,7 +54,7 @@ export default class FolioInformation extends Mixins(CommonMixin) {
   @Action(useStore) setValidComponent!: (x: ActionKvIF) => void
 
   // local properties
-  protected isEditingFolioNumber = false
+  isEditingFolioNumber = false
 
   /** The section validity state (when prompted by app). */
   get invalidSection (): boolean {
@@ -84,7 +84,7 @@ export default class FolioInformation extends Mixins(CommonMixin) {
   }
 
   /** On New Folio Number event, updates auth db and store. */
-  protected async onNewFolioNumber (folioNumber: string): Promise<void> {
+  async onNewFolioNumber (folioNumber: string): Promise<void> {
     // do nothing if folio number was not changed
     if (folioNumber === this.getFolioNumber) return
 

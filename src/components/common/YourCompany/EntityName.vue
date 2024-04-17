@@ -250,7 +250,7 @@
 import { Component, Mixins, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
 import { CoopTypes, CorrectNameOptions } from '@/enums/'
-import { ActionKvIF, BusinessInformationIF, EntitySnapshotIF } from '@/interfaces/'
+import { ActionKvIF, BusinessInformationIF } from '@/interfaces/'
 import { NameRequestIF } from '@bcrs-shared-components/interfaces'
 import CorrectName from '@/components/common/YourCompany/CorrectName/CorrectName.vue'
 import { CommonMixin, NameRequestMixin } from '@/mixins'
@@ -274,11 +274,14 @@ export default class EntityName extends Mixins(CommonMixin, NameRequestMixin) {
   @Getter(useStore) getComponentValidate!: boolean
   @Getter(useStore) getEditLabel!: string
   @Getter(useStore) getEditedLabel!: string
-  @Getter(useStore) getEntitySnapshot!: EntitySnapshotIF
   @Getter(useStore) getEntityType!: CorpTypeCd
   @Getter(useStore) getNameRequest!: NameRequestIF
   @Getter(useStore) getNameRequestLegalName!: string
   @Getter(useStore) getNameRequestNumber!: string
+  @Getter(useStore) getOriginalBusinessInfo!: BusinessInformationIF
+  @Getter(useStore) getOriginalLegalName!: string
+  @Getter(useStore) getOriginalLegalType!: CorpTypeCd
+  @Getter(useStore) getOriginalNrNumber!: string
   @Getter(useStore) hasBusinessNameChanged!: boolean
   @Getter(useStore) isAlterationFiling!: boolean
   @Getter(useStore) isConflictingLegalType!: boolean
@@ -373,7 +376,7 @@ export default class EntityName extends Mixins(CommonMixin, NameRequestMixin) {
   /** Whether a new business legal name was entered.. */
   get isNewName () {
     const originalName = this.getNameRequestLegalName
-    const currentName = this.getEntitySnapshot?.businessInfo.legalName
+    const currentName = this.getOriginalLegalName
     return (originalName !== currentName)
   }
 
@@ -436,19 +439,19 @@ export default class EntityName extends Mixins(CommonMixin, NameRequestMixin) {
 
   /** Reset company name values to original. */
   resetName () {
-    // reset business information, except for association type.
-    const businessInfo = { ...this.getEntitySnapshot.businessInfo, associationType: this.getAssociationType }
+    // reset business information, except for association type
+    const businessInfo = { ...this.getOriginalBusinessInfo, associationType: this.getAssociationType }
     this.setBusinessInformation(businessInfo)
 
     // reset name request
     this.setNameRequest({
-      legalType: this.getEntitySnapshot.businessInfo.legalType,
-      nrNum: this.getEntitySnapshot.businessInfo.nrNumber
+      legalType: this.getOriginalLegalType,
+      nrNum: this.getOriginalNrNumber
     } as any)
-    this.setNameRequestLegalName(this.getEntitySnapshot.businessInfo.legalName)
+    this.setNameRequestLegalName(this.getOriginalLegalName)
 
     if (this.isEntityTypeChangedByName) {
-      this.setEntityType(this.getEntitySnapshot.businessInfo.legalType)
+      this.setEntityType(this.getOriginalLegalType || null)
       this.setEntityTypeChangedByName(false)
     }
 

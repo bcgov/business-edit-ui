@@ -122,7 +122,7 @@ export default class FirmCorrection extends Mixins(CommonMixin, FeeMixin, Filing
       this.setResource(this.correctionResource)
 
       // initialize Fee Summary data
-      this.setFilingData([this.correctionResource.filingData])
+      this.setFilingData([this.correctionResource.filingData as any])
 
       // pre-select No Fee option
       this.setStaffPayment({ option: StaffPaymentOptions.NO_FEE } as any)

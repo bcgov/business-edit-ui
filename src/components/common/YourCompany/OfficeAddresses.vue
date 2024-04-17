@@ -999,7 +999,7 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
     // reset store value
     // NB: this will cause setLocalProperties() to be called to reset local properties
     // NB: this will cause updateAddresses() to be called to update state
-    this.setOfficeAddresses(this.getOriginalOfficeAddresses)
+    this.setOfficeAddresses(this.getOriginalOfficeAddresses || null)
   }
 
   /**

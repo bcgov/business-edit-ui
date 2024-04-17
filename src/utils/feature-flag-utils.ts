@@ -9,6 +9,7 @@ declare const window: any
  */
 export const defaultFlagSet: LDFlagSet = {
   'banner-text': '', // by default, there is no banner text
+  'enable-legal-name-fix': false, // by default, the easy legal name changes are disabled
   'restoration-ui-enabled': false,
   'sentry-enable': false, // by default, no sentry logs
   'supported-correction-entities': [],

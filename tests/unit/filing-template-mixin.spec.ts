@@ -138,7 +138,7 @@ describe('Filing Template Mixin', () => {
     )
   })
 
-  it('correctly builds a Change of Registration filing', () => {
+  it('correctly builds a change of registration filing', () => {
     store.stateModel.tombstone.businessId = 'BC1234567'
     store.stateModel.tombstone.filingType = FilingTypes.CHANGE_OF_REGISTRATION
     store.stateModel.tombstone.entityType = CorpTypeCd.SOLE_PROP
@@ -159,10 +159,16 @@ describe('Filing Template Mixin', () => {
       businessInfo: {
         foundingDate: 'Jan 01, 2000',
         legalType: CorpTypeCd.SOLE_PROP,
-        identifier: 'BC1234567',
+        identifier: 'FM1234567',
         legalName: 'SomeMockBusiness',
         naicsCode: '',
-        naicsDescription: ''
+        naicsDescription: '',
+        alternateNames: [
+          {
+            identifier: 'FM1234567',
+            name: 'My Alternate Name'
+          }
+        ]
       },
       addresses: {
         businessOffice: {
@@ -219,13 +225,13 @@ describe('Filing Template Mixin', () => {
       expect.objectContaining({
         business: {
           foundingDate: 'Jan 01, 2000',
-          identifier: 'BC1234567',
+          identifier: 'FM1234567',
           legalName: 'SomeMockBusiness',
           legalType: 'SP'
         },
         changeOfRegistration: {
           business: {
-            identifier: 'BC1234567',
+            identifier: 'FM1234567',
             naics: {
               naicsCode: '123456',
               naicsDescription: 'Mock Description'
