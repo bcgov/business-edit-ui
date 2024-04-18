@@ -1,17 +1,6 @@
 import { CoopTypes } from '@/enums'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
-import { IsoDatePacific, ApiDateTimeUtc } from '@bcrs-shared-components/interfaces'
-import { NameTypes } from '@bcrs-shared-components/enums'
-
-/** The Alternate Name object. */
-export interface AlternateNameIF {
-  entityType: CorpTypeCd
-  identifier: string
-  name: string
-  nameRegisteredDate: ApiDateTimeUtc
-  nameStartDate: IsoDatePacific
-  nameType: NameTypes
-}
+import { AlternateNameIF, ApiDateTimeUtc, IsoDatePacific } from '@bcrs-shared-components/interfaces'
 
 /**
  * Interface for business information object in store
