@@ -7,6 +7,7 @@ import { useStore } from '@/store/store'
 import { ActionTypes, CorrectionErrorTypes, FilingTypes } from '@/enums'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 import { ApprovalTypes, RestorationTypes } from '@bcrs-shared-components/enums'
+import * as FeatureFlags from '@/utils/feature-flag-utils'
 
 // Vuetify is needed for Actions component
 const vuetify = new Vuetify({})
@@ -400,7 +401,7 @@ describe('BEN correction getters', () => {
   })
 })
 
-describe('SP/GP correction getters', () => {
+describe('SP/GP correction getters - with easy legal name fix', () => {
   let wrapper: any
   let vm: any
 
@@ -414,6 +415,10 @@ describe('SP/GP correction getters', () => {
   }
 
   beforeAll(async () => {
+    vi.spyOn(FeatureFlags, 'GetFeatureFlag').mockImplementation(flag => {
+      if (flag === 'enable-legal-name-fix') return true
+      return null
+    })
     // initialize store
     store.stateModel.tombstone.entityType = CorpTypeCd.SOLE_PROP
     store.stateModel.tombstone.filingType = FilingTypes.CORRECTION

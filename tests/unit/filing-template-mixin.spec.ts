@@ -4,6 +4,7 @@ import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
 import { FilingTypes } from '@/enums'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
+import * as FeatureFlags from '@/utils/feature-flag-utils'
 
 setActivePinia(createPinia())
 const store = useStore()
@@ -136,6 +137,26 @@ describe('Filing Template Mixin', () => {
         }
       })
     )
+  })
+})
+
+// FUTURE
+describe.skip('Alteration Filing', () => {
+})
+
+describe('Change of Registration Filing', () => {
+  let wrapper: any
+
+  beforeEach(() => {
+    vi.spyOn(FeatureFlags, 'GetFeatureFlag').mockImplementation(flag => {
+      if (flag === 'enable-legal-name-fix') return true
+      return null
+    })
+    wrapper = shallowMount(MixinTester)
+  })
+
+  afterEach(() => {
+    wrapper.destroy()
   })
 
   it('correctly builds a change of registration filing', () => {
