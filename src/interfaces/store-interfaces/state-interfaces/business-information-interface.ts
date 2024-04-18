@@ -1,6 +1,6 @@
 import { CoopTypes } from '@/enums'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
-import { AlternateNameIF, ApiDateTimeUtc, IsoDatePacific } from '@bcrs-shared-components/interfaces'
+import { AlternateNameIF } from '@bcrs-shared-components/interfaces'
 
 /**
  * Interface for business information object in store
