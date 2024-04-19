@@ -320,14 +320,14 @@ export const useStore = defineStore('store', {
 
     /** The original legal name (or alternate name if this is a firm). */
     getOriginalLegalName (): string {
-      if (!GetFeatureFlag('enable-legal-name-fix')) return this.getOriginalBusinessInfo?.legalName || ''
+      if (!GetFeatureFlag('enable-legal-name-fix')) return this.getOriginalBusinessInfo?.legalName
       if (this.isFirm) {
         // return the alternate name, if it exists
         const alternateNames = this.getOriginalBusinessInfo?.alternateNames || []
         const alternateName = alternateNames.find(x => x.identifier === this.getBusinessId)
         return alternateName?.name || 'Unknown'
       }
-      return this.getOriginalBusinessInfo?.legalName || ''
+      return this.getOriginalBusinessInfo?.legalName
     },
 
     /** The appropriate edit label for corrections, alterations, change or conversion filings. */
