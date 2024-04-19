@@ -6,7 +6,8 @@ import { mount } from '@vue/test-utils'
 import Memorandum from '@/components/SpecialResolution/Memorandum.vue'
 import UploadRulesOrMemorandum from '@/components/SpecialResolution/UploadRulesOrMemorandum.vue'
 import flushPromises from 'flush-promises'
-import { CorpTypeCd, FilingTypes } from '@/enums'
+import { FilingTypes } from '@/enums'
+import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 
 const vuetify = new Vuetify({})
 

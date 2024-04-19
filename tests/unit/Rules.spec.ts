@@ -5,7 +5,6 @@ import { useStore } from '@/store/store'
 import { mount } from '@vue/test-utils'
 import Rules from '@/components/SpecialResolution/Rules.vue'
 import UploadRulesOrMemorandum from '@/components/SpecialResolution/UploadRulesOrMemorandum.vue'
-import { vi } from 'vitest'
 
 const vuetify = new Vuetify({})
 

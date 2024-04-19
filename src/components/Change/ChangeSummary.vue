@@ -39,7 +39,7 @@
               {{ companyName }}
             </div>
             <div class="company-name mt-2">
-              {{ getNameRequest.nrNumber }}
+              {{ getNameRequestNumber }}
             </div>
           </v-col>
         </v-row>
@@ -115,7 +115,6 @@ import Vue from 'vue'
 import { Component, Prop } from 'vue-property-decorator'
 import { Getter } from 'pinia-class'
 import { OfficeAddresses, ListPeopleAndRoles } from '@/components/common/'
-import { NameRequestIF } from '@/interfaces/'
 import { NaicsIF } from '@bcrs-shared-components/interfaces/'
 import { useStore } from '@/store/store'
 
@@ -127,14 +126,14 @@ import { useStore } from '@/store/store'
 })
 export default class ChangeSummary extends Vue {
   // Global getters
+  @Getter(useStore) getBusinessNumber!: string
+  @Getter(useStore) getCurrentNaics!: NaicsIF
+  @Getter(useStore) getNameRequestLegalName!: string
+  @Getter(useStore) getNameRequestNumber!: string
   @Getter(useStore) hasBusinessNameChanged!: boolean
   @Getter(useStore) hasNaicsChanged!: boolean
   @Getter(useStore) haveOfficeAddressesChanged!: boolean
   @Getter(useStore) havePeopleAndRolesChanged!: boolean
-  @Getter(useStore) getBusinessNumber!: string
-  @Getter(useStore) getCurrentNaics!: NaicsIF
-  @Getter(useStore) getNameRequest!: NameRequestIF
-  @Getter(useStore) getNameRequestLegalName!: string
   @Getter(useStore) isSoleProp!: boolean
 
   /** Whether to perform validation. */
@@ -143,7 +142,6 @@ export default class ChangeSummary extends Vue {
   /** The company name (from NR, or incorporation number). */
   get companyName (): string {
     if (this.getNameRequestLegalName) return this.getNameRequestLegalName
-
     return `${this.getBusinessNumber || '[Incorporation Number]'} B.C. Ltd.`
   }
 }

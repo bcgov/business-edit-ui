@@ -16,7 +16,6 @@ describe('Special Resolution Review', () => {
 
   beforeEach(() => {
     store.stateModel.entitySnapshot = {
-      ...store.stateModel.entitySnapshot,
       businessDocuments: {
         documents: {
           certifiedMemorandum: 'url',
@@ -37,7 +36,7 @@ describe('Special Resolution Review', () => {
           }
         }
       }
-    }
+    } as any
     store.stateModel.rules = {}
     store.stateModel.memorandum = {}
     wrapper = mount(SpecialResolutionSummary, { vuetify })
@@ -100,8 +99,8 @@ describe('Special Resolution Review', () => {
   })
 
   it('business name', async () => {
-    store.stateModel.nameRequest.legalName = 'Mock name'
-    store.stateModel.nameRequest.nrNumber = 'NR 12345678'
+    store.stateModel.nameRequestLegalName = 'Mock name'
+    store.stateModel.nameRequest.nrNum = 'NR 12345678'
     await Vue.nextTick()
     expect(wrapper.find('.company-name').text()).toBe('Mock name')
     expect(wrapper.find('.company-nr').text()).toBe('NR 12345678')
@@ -114,25 +113,29 @@ describe('Special Resolution Review', () => {
   })
 
   it('rules', async () => {
-    await store.setSpecialResolutionRules({
+    store.setSpecialResolutionRules({
       ...store.getSpecialResolutionRules,
       includedInResolution: true
     })
+    await Vue.nextTick()
     expect(wrapper.find('#rules-included-resolution').text()).toContain('described in the special resolution')
-    await store.setSpecialResolutionRules({
+
+    store.setSpecialResolutionRules({
       ...store.getSpecialResolutionRules,
       key: '123',
       name: '12',
       includedInResolution: false
     })
+    await Vue.nextTick()
     expect(wrapper.find('#rules-uploaded').text()).toBe('12')
   })
 
   it('memorandum', async () => {
-    await store.setSpecialResolutionMemorandum({
+    store.setSpecialResolutionMemorandum({
       ...store.getSpecialResolutionMemorandum,
       includedInResolution: true
     })
+    await Vue.nextTick()
     expect(wrapper.find('#memorandum-included-resolution').text()).toContain('described in the special resolution')
   })
 })

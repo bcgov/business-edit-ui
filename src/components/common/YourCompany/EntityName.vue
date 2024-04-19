@@ -21,8 +21,7 @@
           class="pa-0"
         >
           <v-chip
-            v-if="hasCompanyNameChanged || (hasBusinessNameChanged && (isAlterationFiling || isFirmChangeFiling ||
-              isFirmConversionFiling || isSpecialResolutionFiling))"
+            v-if="shouldShowEditedLabel"
             id="corrected-lbl"
             x-small
             label
@@ -89,7 +88,7 @@
               <span
                 :class="{ 'has-conflict': isConflictingLegalType}"
                 class="info-text"
-              >{{ GetCorpFullDescription(getNameRequest.legalType) }}
+              >{{ corpFullDescription }}
               </span>
               <v-tooltip
                 v-if="isConflictingLegalType"
@@ -113,7 +112,7 @@
             </div>
             <div class="company-info">
               <span class="subtitle">Request Type: </span>
-              <span class="info-text">{{ getNrRequestDesc(getNameRequest.requestType) }}</span>
+              <span class="info-text">{{ getNrRequestDesc(getNameRequest.request_action_cd) }}</span>
             </div>
             <div class="company-info">
               <span class="subtitle">Expiry Date: </span>
@@ -207,7 +206,7 @@
         cols="9"
       >
         <CorrectName
-          :correctionNameChoices="correctionNameChoices"
+          :correctNameChoices="correctNameChoices"
           @isSaved="nameChangeHandler($event)"
           @cancel="isEditingNames = false"
         />
@@ -228,15 +227,15 @@
       <v-col cols="7">
         <div class="name-request-applicant-info">
           <span class="subtitle">Name: </span>
-          <span class="info-text">{{ nrApplicant.fullName }}</span>
+          <span class="info-text">{{ nrFullName }}</span>
         </div>
         <div class="name-request-applicant-info">
           <span class="subtitle">Address: </span>
-          <span class="info-text">{{ nrApplicant.fullAddress }}</span>
+          <span class="info-text">{{ nrFullAddress }}</span>
         </div>
         <div class="name-request-applicant-info">
           <span class="subtitle">Email: </span>
-          <span class="info-text">{{ nrApplicant.emailAddress || 'N/A' }}</span>
+          <span class="info-text">{{ nrEmailAddress || 'N/A' }}</span>
         </div>
         <div class="name-request-applicant-info">
           <span class="subtitle">Phone: </span>
@@ -251,13 +250,13 @@
 import { Component, Mixins, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
 import { CoopTypes, CorrectNameOptions } from '@/enums/'
-import { ActionKvIF, BusinessInformationIF, EntitySnapshotIF, NameRequestApplicantIF, NameRequestIF }
-  from '@/interfaces/'
+import { ActionKvIF, BusinessInformationIF, EntitySnapshotIF } from '@/interfaces/'
+import { NameRequestIF } from '@bcrs-shared-components/interfaces'
 import CorrectName from '@/components/common/YourCompany/CorrectName/CorrectName.vue'
-import { NameRequestMixin } from '@/mixins'
+import { CommonMixin, NameRequestMixin } from '@/mixins'
 import DateUtilities from '@/services/date-utilities'
 import { ToDisplayPhone } from '@/utils'
-import { CorpTypeCd, GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module/'
+import { CorpTypeCd, GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module'
 import { useStore } from '@/store/store'
 
 @Component({
@@ -265,7 +264,7 @@ import { useStore } from '@/store/store'
     CorrectName
   }
 })
-export default class EntityName extends Mixins(NameRequestMixin) {
+export default class EntityName extends Mixins(CommonMixin, NameRequestMixin) {
   // for template
   readonly GetCorpFullDescription = GetCorpFullDescription
 
@@ -295,38 +294,69 @@ export default class EntityName extends Mixins(NameRequestMixin) {
   @Action(useStore) setBusinessInformation!: (x: BusinessInformationIF) => void
   @Action(useStore) setEditingCompanyName!: (x: boolean) => void
   @Action(useStore) setNameRequest!: (x: NameRequestIF) => void
+  @Action(useStore) setNameRequestLegalName!: (x: string) => void
   @Action(useStore) setValidComponent!: (x: ActionKvIF) => void
   @Action(useStore) setEntityType!: (x: CorpTypeCd) => void
   @Action(useStore) setEntityTypeChangedByName!: (x: boolean) => void
-
-  // Returns true if the undo button should be displayed. This is the case when the company name has changed,
-  // or the business name has changed during an alteration, firm change, or special resolution filing,
-  // and the name has not been changed by type.
-  get shouldShowUndoButton (): boolean {
-    return (this.hasCompanyNameChanged ||
-            (this.hasBusinessNameChanged &&
-             (this.isAlterationFiling || this.isFirmChangeFiling || this.isSpecialResolutionFiling))) &&
-            !this.isNameChangedByType
-  }
-
-  // Returns true if the type details should be displayed. This is the case when there is no new NR,
-  // the business name has changed, and the filing is an alteration, firm change, or firm conversion filing,
-  // and the name has not been changed by type.
-  get shouldShowTypeDetail (): boolean {
-    return !this.hasNewNr && this.hasBusinessNameChanged &&
-           (this.isAlterationFiling || this.isFirmChangeFiling || this.isFirmConversionFiling) &&
-           !this.isNameChangedByType
-  }
 
   // local properties
   dropdown = false // v-model for dropdown menu
   hasCompanyNameChanged = false // only used by corrections
   isEditingNames = false
 
+  /** The corp full description. */
+  get corpFullDescription (): string {
+    return GetCorpFullDescription(this.getNameRequest.legalType as any)
+  }
+
+  /** Whether the edited label should be displayed. */
+  get shouldShowEditedLabel (): boolean {
+    return (
+      this.hasCompanyNameChanged ||
+      (
+        this.hasBusinessNameChanged &&
+        (this.isAlterationFiling || this.isFirmChangeFiling || this.isSpecialResolutionFiling)
+      )
+    )
+  }
+
+  /**
+   * Whether the undo button should be displayed. This is the case when the company name has changed,
+   * or the business name has changed during an alteration, firm change, or special resolution filing,
+   * and the name has not been changed by type.
+   */
+  get shouldShowUndoButton (): boolean {
+    return (
+      (
+        this.hasCompanyNameChanged ||
+        (
+          this.hasBusinessNameChanged &&
+          (this.isAlterationFiling || this.isFirmChangeFiling || this.isSpecialResolutionFiling)
+        )
+      ) &&
+      !this.isNameChangedByType
+    )
+  }
+
+  /**
+   * Whether the type details should be displayed. This is the case when:
+   * - there is no new NR, and
+   * - the business name has changed, and
+   * - the filing is an alteration or firm change filing, and
+   * - the name has not been changed by type
+   */
+  get shouldShowTypeDetail (): boolean {
+    return (
+      !this.hasNewNr &&
+      this.hasBusinessNameChanged &&
+      (this.isAlterationFiling || this.isFirmChangeFiling) &&
+      !this.isNameChangedByType
+    )
+  }
+
   /** The company name (from NR, or incorporation number). */
   get companyName (): string {
     if (this.getNameRequestLegalName) return this.getNameRequestLegalName
-
     return `${this.getBusinessNumber || '[Incorporation Number]'} B.C. Ltd.`
   }
 
@@ -348,7 +378,7 @@ export default class EntityName extends Mixins(NameRequestMixin) {
   }
 
   /** The current options for name changes. */
-  get correctionNameChoices (): Array<CorrectNameOptions> {
+  get correctNameChoices (): Array<CorrectNameOptions> {
     // safety check
     if (!this.getResource.changeData) return []
 
@@ -364,17 +394,24 @@ export default class EntityName extends Mixins(NameRequestMixin) {
 
   /** Whether to show the name options button and component. */
   get showNameOptions (): boolean {
-    return (this.correctionNameChoices.length > 0)
+    return (this.correctNameChoices.length > 0)
   }
 
-  /** The Name Request applicant info. */
-  get nrApplicant (): NameRequestApplicantIF {
-    return this.getNameRequest?.applicant
+  get nrFullName (): string {
+    return this.formatFullName(this.getNameRequest.applicants)
+  }
+
+  get nrFullAddress (): string {
+    return this.formatFullAddress(this.getNameRequest.applicants)
+  }
+
+  get nrEmailAddress (): string {
+    return this.getNameRequest.applicants.emailAddress
   }
 
   /** The Name Request expiry date. */
   get nrExpiryDate (): string {
-    const expiry = this.getNameRequest?.expiry
+    const expiry = this.getNameRequest.expirationDate
     if (expiry) {
       return DateUtilities.apiToPacificDateTime(expiry)
     }
@@ -383,12 +420,12 @@ export default class EntityName extends Mixins(NameRequestMixin) {
 
   /** The Name Request phone number. */
   get nrPhoneNumber (): string {
-    return ToDisplayPhone(this.nrApplicant.phoneNumber)
+    return ToDisplayPhone(this.getNameRequest.applicants.phoneNumber)
   }
 
   /** The Name Request status. */
   get nrStatus (): string {
-    return (this.getNameRequest?.status || '').toLowerCase()
+    return (this.getNameRequest.state || '').toLowerCase()
   }
 
   /** Updates UI when correct name options are done.  */
@@ -406,9 +443,9 @@ export default class EntityName extends Mixins(NameRequestMixin) {
     // reset name request
     this.setNameRequest({
       legalType: this.getEntitySnapshot.businessInfo.legalType,
-      legalName: this.getEntitySnapshot.businessInfo.legalName,
-      nrNumber: this.getEntitySnapshot.businessInfo.nrNumber
-    })
+      nrNum: this.getEntitySnapshot.businessInfo.nrNumber
+    } as any)
+    this.setNameRequestLegalName(this.getEntitySnapshot.businessInfo.legalName)
 
     if (this.isEntityTypeChangedByName) {
       this.setEntityType(this.getEntitySnapshot.businessInfo.legalType)

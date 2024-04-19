@@ -10,11 +10,11 @@ import mockRouter from './MockRouter'
 import ViewWrapper from '@/components/ViewWrapper.vue'
 import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
-import { AccountTypes, ActionTypes, CorpTypeCd, FilingCodes, FilingTypes } from '@/enums'
+import { AccountTypes, ActionTypes, FilingCodes, FilingTypes } from '@/enums'
 import { BusinessContactInfo, BusinessType, EntityName, FolioInformation, NameTranslation, OfficeAddresses,
   RecognitionDateTime, YourCompanyWrapper } from '@/components/common'
+import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 import { EntitySnapshotIF } from '@/interfaces'
-import { vi } from 'vitest'
 
 const vuetify = new Vuetify({})
 

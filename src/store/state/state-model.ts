@@ -1,6 +1,6 @@
-import { EmptyFees, EmptyNameRequest, StateModelIF } from '@/interfaces/'
+import { EmptyFees, StateModelIF } from '@/interfaces/'
 import { StaffPaymentOptions } from '@bcrs-shared-components/enums/'
-import { EmptyContactPoint } from '@bcrs-shared-components/interfaces/'
+import { EmptyContactPoint, EmptyNameRequest } from '@bcrs-shared-components/interfaces/'
 import { cloneDeep } from 'lodash'
 
 export const stateModel: StateModelIF = {
@@ -95,7 +95,8 @@ export const stateModel: StateModelIF = {
     startDate: null,
     type: null
   },
-  nameRequest: { ...EmptyNameRequest },
+  nameRequest: cloneDeep(EmptyNameRequest),
+  nameRequestLegalName: null,
   nameTranslations: [],
   certifyState: {
     valid: false,

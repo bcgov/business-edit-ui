@@ -92,7 +92,6 @@ import { CpCorrectionResource } from '@/resources/Correction'
 import { LegalServices, AuthServices } from '@/services'
 import { StaffPaymentOptions } from '@bcrs-shared-components/enums'
 import { CorrectionErrorTypes } from '@/enums'
-import { FilingDataIF } from '@bcrs-shared-components/interfaces'
 
 @Component({
   components: {
@@ -168,12 +167,12 @@ export default class CoopCorrection extends Mixins(CommonMixin, DateMixin, FeeMi
       // initialize Fee Summary data
       const filingData = [this.correctionResource.filingData]
       if (this.correctionFiling.correction.type === CorrectionErrorTypes.STAFF) {
-        (filingData[0] as FilingDataIF).waiveFees = true
+        filingData[0].waiveFees = true
       }
       this.setFilingData(filingData)
 
       // pre-select FAS, this will display a dollar amount in the fee summary.
-      this.setStaffPayment({ option: StaffPaymentOptions.FAS })
+      this.setStaffPayment({ option: StaffPaymentOptions.FAS } as any)
 
       // tell App that we're finished loading
       this.emitHaveData()

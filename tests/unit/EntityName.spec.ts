@@ -25,9 +25,9 @@ import { CpSpecialResolutionResource } from '@/resources/SpecialResolution/CP'
 
 import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
-import { CorrectNameOptions, FilingTypes, NrRequestActionCodes } from '@bcrs-shared-components/enums'
+import { CorrectNameOptions, FilingTypes, NameRequestStates, NrRequestActionCodes }
+  from '@bcrs-shared-components/enums'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
-import { NameRequestStates } from '@/enums'
 
 const vuetify = new Vuetify({})
 
@@ -262,7 +262,7 @@ function runTest (test: any) {
       const vm = wrapper.vm as any
 
       // verify
-      expect(vm.correctionNameChoices).toEqual(test.expectedOptions)
+      expect(vm.correctNameChoices).toEqual(test.expectedOptions)
 
       // verify name edit section (if rendered)
       const btn = wrapper.find('#btn-correct-company-name')
@@ -308,7 +308,7 @@ describe('Name Changes for a SP alteration', () => {
   beforeEach(() => {
     // Set original business Data
     store.stateModel.summaryMode = false
-    store.stateModel.nameRequest.legalName = entitySnapshot.businessInfo.legalName
+    store.stateModel.nameRequestLegalName = entitySnapshot.businessInfo.legalName
     store.stateModel.tombstone.entityType = entitySnapshot.businessInfo.legalType
     store.stateModel.entitySnapshot = entitySnapshot as any
     store.stateModel.tombstone.filingType = FilingTypes.ALTERATION
@@ -326,7 +326,7 @@ describe('Name Changes for a SP alteration', () => {
     expect(wrapper.find('.company-name').text()).toBe('Mock Original Name')
 
     // Set new Name
-    store.stateModel.nameRequest.legalName = 'My Benefit Company'
+    store.stateModel.nameRequestLegalName = 'My Benefit Company'
     await Vue.nextTick()
 
     const companyInfo = wrapper.findAll('.info-text')
@@ -338,15 +338,24 @@ describe('Name Changes for a SP alteration', () => {
   })
 
   it('displays the Name Request information when NR data changes', async () => {
-    store.stateModel.nameRequest.nrNumber = 'NR1234567'
-    store.stateModel.nameRequest.legalType = CorpTypeCd.BC_COMPANY
-    store.stateModel.nameRequest.expiry = '2021-03-10T08:00:00+00:00'
-    store.stateModel.nameRequest.status = NameRequestStates.APPROVED
-    store.stateModel.nameRequest.requestType = NrRequestActionCodes.NEW_BUSINESS
-    store.stateModel.nameRequest.applicant = {
-      fullName: 'Mock Full Name',
-      fullAddress: '123 Mock Lane, Victoria, BC, 1t2 3t4, CA',
-      phoneNumber: '2501234567'
+    store.stateModel.nameRequest.nrNum = 'NR1234567'
+    store.stateModel.nameRequest.legalType = CorpTypeCd.BC_COMPANY as any
+    store.stateModel.nameRequest.expirationDate = '2021-03-10T08:00:00+00:00'
+    store.stateModel.nameRequest.state = NameRequestStates.APPROVED
+    store.stateModel.nameRequest.request_action_cd = NrRequestActionCodes.NEW_BUSINESS
+    store.stateModel.nameRequest.applicants = {
+      addrLine1: '123 Mock Lane',
+      addrLine2: null,
+      addrLine3: null,
+      city: 'Victoria',
+      countryTypeCd: 'CA',
+      emailAddress: null,
+      firstName: 'Mock',
+      lastName: 'Name',
+      middleName: 'Full',
+      phoneNumber: '2501234567',
+      postalCd: '1t2 3t4',
+      stateProvinceCd: 'BC'
     } as any
     await Vue.nextTick()
 

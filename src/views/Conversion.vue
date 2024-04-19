@@ -122,7 +122,7 @@ export default class Conversion extends Mixins(CommonMixin, FeeMixin, FilingTemp
   }
 
   /** The resource object for a firm conversion filing. */
-  get firmConversionResource (): any {
+  get firmConversionResource (): ResourceIF {
     if (this.isPartnership) return GpConversionResource
     if (this.isSoleProp) return SpConversionResource
     return null

@@ -1,5 +1,4 @@
 import * as util from '@/utils/'
-import { vi } from 'vitest'
 
 // Mock feature flags for unit tests.
 export function mockFeatureFlagsForAlterationChangeBusinessTypes () {

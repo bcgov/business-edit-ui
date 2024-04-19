@@ -5,7 +5,8 @@ import Resolution from '@/components/SpecialResolution/Resolution.vue'
 import { CpSpecialResolutionResource } from '@/resources/SpecialResolution/CP'
 import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
-import { CorpTypeCd, FilingTypes } from '@/enums'
+import { FilingTypes } from '@/enums'
+import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 import {
   HelpResolution, InstructionalText, ResolutionEditor, SigningParty
 } from '@/components/SpecialResolution'
@@ -43,7 +44,7 @@ describe('Special Resolution Form component', () => {
       }
     }
     store.resourceModel = CpSpecialResolutionResource
-    store.stateModel.nameRequest.legalName = entitySnapshot.businessInfo.legalName
+    store.stateModel.nameRequestLegalName = entitySnapshot.businessInfo.legalName
     store.stateModel.tombstone.entityType = entitySnapshot.businessInfo.legalType as CorpTypeCd
     store.stateModel.summaryMode = false
     store.stateModel.rules = {}

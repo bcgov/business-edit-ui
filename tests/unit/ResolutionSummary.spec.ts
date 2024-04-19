@@ -4,7 +4,7 @@ import { shallowMount } from '@vue/test-utils'
 import ResolutionSummary from '@/components/SpecialResolution/ResolutionSummary.vue'
 import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
-import { CorpTypeCd } from '@/enums'
+import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 
 const vuetify = new Vuetify({})
 
@@ -41,7 +41,7 @@ describe('Special Resolution Summary component', () => {
 
   beforeEach(() => {
     // Set Original business Data
-    store.stateModel.nameRequest.legalName = entitySnapshot.businessInfo.legalName
+    store.stateModel.nameRequestLegalName = entitySnapshot.businessInfo.legalName
     store.stateModel.tombstone.entityType = entitySnapshot.businessInfo.legalType as CorpTypeCd
     store.stateModel.summaryMode = false
 

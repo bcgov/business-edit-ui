@@ -35,12 +35,12 @@ describe('Name Translation component', () => {
     localVue.use(VueRouter)
     const router = mockRouter.mock()
 
-    wrapperFactory = async (propsData: any) => {
+    wrapperFactory = async (propsData = {}) => {
       const wrapper = mount(NameTranslation, {
         localVue,
         router,
         vuetify,
-        propsData: { ...propsData }
+        propsData
       })
       await Vue.nextTick()
       return wrapper

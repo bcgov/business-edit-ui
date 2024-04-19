@@ -26,11 +26,7 @@
           The specified name request has already been consumed.
         </p>
 
-        <p
-          v-else-if="type === NameRequestStates.NOT_FOUND ||
-            type === NameRequestStates.INCORRECT_CONTACT ||
-            type === NameRequestStates.NO_CONTACT"
-        >
+        <p v-else-if="isMatchNotFound">
           We could not find a match for the information you have entered.
           Please verify the NR Number and the phone number or email address and try again.
         </p>
@@ -64,7 +60,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Component, Emit, Prop } from 'vue-property-decorator'
-import { NameRequestStates } from '@/enums/'
+import { NameRequestStates } from '@bcrs-shared-components/enums'
 
 @Component({})
 export default class NameRequestErrorDialog extends Vue {
@@ -80,8 +76,17 @@ export default class NameRequestErrorDialog extends Vue {
   /** Enum definition for use in template. */
   readonly NameRequestStates = NameRequestStates
 
+  /** True if a match was not found for the NR number and provided phone/email. */
+  get isMatchNotFound (): boolean {
+    return (
+      this.type === NameRequestStates.NOT_FOUND ||
+      this.type === ('INCORRECT_CONTACT' as NameRequestStates) ||
+      this.type === ('NO_CONTACT' as NameRequestStates)
+    )
+  }
+
   @Emit('close')
-  protected emitClose (): void {}
+  emitClose (): void {}
 }
 </script>
 

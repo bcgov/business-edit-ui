@@ -2,7 +2,6 @@ import sinon from 'sinon'
 import { AxiosInstance as axios } from '@/utils/'
 import LegalServices from '@/services/legal-services'
 import { DocumentIF } from '@/interfaces'
-import { vi } from 'vitest'
 
 describe('Legal Services', () => {
   let del: any

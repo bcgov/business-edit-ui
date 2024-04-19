@@ -233,6 +233,7 @@
                 </div>
               </v-col>
             </template>
+
             <!-- Editing Mode -->
             <v-col
               v-else
@@ -297,6 +298,7 @@
                 </div>
               </section>
             </v-col>
+
             <!-- Actions -->
             <v-col
               v-if="!isEditing && !hasChanged"
@@ -323,7 +325,6 @@
               cols="1"
               class="pt-0 mt-n2 align-right"
             >
-              <!-- Actions -->
               <div class="actions mr-4">
                 <v-btn
                   id="rules-undo"

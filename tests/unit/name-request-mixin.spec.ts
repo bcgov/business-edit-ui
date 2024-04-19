@@ -5,9 +5,8 @@ import { AxiosInstance as axios } from '@/utils/'
 import MixinTester from '@/mixin-tester.vue'
 import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
-import { CorpTypeCd } from '@/enums'
+import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 import { NrRequestActionCodes } from '@bcrs-shared-components/enums'
-import { vi } from 'vitest'
 
 setActivePinia(createPinia())
 const store = useStore()
@@ -53,7 +52,7 @@ describe('Name Request Mixin', () => {
     get.withArgs('nameRequests/NR 1234567/validate?phone=phone&email=email').returns(Promise.resolve(null))
 
     try {
-      await vm.validateNameRequest('NR 1234567', 'phone', 'email')
+      await vm.fetchValidateNameRequest('NR 1234567', 'phone', 'email')
     } catch (err) {
       // verify thrown error
       expect((err as any).message).toContain('Fetch Name Request error:')
@@ -73,7 +72,7 @@ describe('Name Request Mixin', () => {
       } }))
 
     try {
-      await vm.validateNameRequest('NR 1234567', 'phone', 'email')
+      await vm.fetchValidateNameRequest('NR 1234567', 'phone', 'email')
     } catch (err) {
       // verify thrown error
       expect((err as any).message).toBe('Invalid Name Request')
@@ -96,7 +95,7 @@ describe('Name Request Mixin', () => {
       } }))
 
     try {
-      await vm.validateNameRequest('NR 1234567', 'phone', 'email')
+      await vm.fetchValidateNameRequest('NR 1234567', 'phone', 'email')
     } catch (err) {
       // verify thrown error
       expect((err as any).message).toBe('Invalid Name request state: NOT_APPROVED')
@@ -120,7 +119,7 @@ describe('Name Request Mixin', () => {
       } }))
 
     try {
-      await vm.validateNameRequest('NR 1234567', 'phone', 'email')
+      await vm.fetchValidateNameRequest('NR 1234567', 'phone', 'email')
     } catch (err) {
       // verify thrown error
       expect((err as any).message).toBe('Invalid Name request state: NEED_CONSENT')
@@ -143,75 +142,82 @@ describe('Name Request Mixin', () => {
         request_action_cd: 'CHG'
       } }))
 
-    const nr = await vm.validateNameRequest('NR 1234567', 'phone', 'email')
+    const nr = await vm.fetchValidateNameRequest('NR 1234567', 'phone', 'email')
     expect(nr).not.toBeUndefined()
   })
 
-  it('identifies valid and invalid NRs', () => {
+  it('identifies valid and invalid NRs - default types', () => {
+    store.resourceModel.changeData.nameRequestTypes = null
+
     let nr = null
-    expect(vm.isNrValid(nr)).toBe(false)
+    expect(vm.isNrInvalid(nr)).toBe(true)
 
     nr = {}
-    expect(vm.isNrValid(nr)).toBe(false)
+    expect(vm.isNrInvalid(nr)).toBe(true)
 
     nr.state = 'APPROVED'
-    expect(vm.isNrValid(nr)).toBe(false)
+    expect(vm.isNrInvalid(nr)).toBe(true)
 
     nr.expirationDate = '2021-11-05T07:01:00+00:00'
-    expect(vm.isNrValid(nr)).toBe(false)
+    expect(vm.isNrInvalid(nr)).toBe(true)
 
     nr.names = [{ state: 'APPROVED', name: 'name' }]
-    expect(vm.isNrValid(nr)).toBe(false)
+    expect(vm.isNrInvalid(nr)).toBe(true)
 
     nr.nrNum = 'NR 1234567'
-    expect(vm.isNrValid(nr)).toBe(false)
+    expect(vm.isNrInvalid(nr)).toBe(true)
 
     nr.requestTypeCd = 'CR'
-    expect(vm.isNrValid(nr)).toBe(false)
+    expect(vm.isNrInvalid(nr)).toBe(true)
 
     nr.request_action_cd = 'NEW'
-    expect(vm.isNrValid(nr)).toBe(false)
+    expect(vm.isNrInvalid(nr)).toBe(true)
 
     nr.request_action_cd = 'CHG'
-    expect(vm.isNrValid(nr)).toBe(true)
+    expect(vm.isNrInvalid(nr)).toBe(false) // valid
 
     nr.request_action_cd = 'CNV'
-    expect(vm.isNrValid(nr)).toBe(true)
+    expect(vm.isNrInvalid(nr)).toBe(false) // valid
+
+    nr.request_action_cd = 'REH'
+    expect(vm.isNrInvalid(nr)).toBe(false) // valid
   })
 
-  it('identifies valid and invalid NRs for firms', async () => {
-    store.stateModel.tombstone.entityType = CorpTypeCd.SOLE_PROP
-    store.resourceModel.changeData.nameRequestTypes = [NrRequestActionCodes.CHANGE_NAME]
+  it('identifies valid and invalid NRs - specified type', async () => {
+    store.resourceModel.changeData.nameRequestTypes = [NrRequestActionCodes.RESTORE]
 
     let nr = null
-    expect(vm.isNrValid(nr)).toBe(false)
+    expect(vm.isNrInvalid(nr)).toBe(true)
 
     nr = {}
-    expect(vm.isNrValid(nr)).toBe(false)
+    expect(vm.isNrInvalid(nr)).toBe(true)
 
     nr.state = 'APPROVED'
-    expect(vm.isNrValid(nr)).toBe(false)
+    expect(vm.isNrInvalid(nr)).toBe(true)
 
     nr.expirationDate = '2021-11-05T07:01:00+00:00'
-    expect(vm.isNrValid(nr)).toBe(false)
+    expect(vm.isNrInvalid(nr)).toBe(true)
 
     nr.names = [{ state: 'APPROVED', name: 'name' }]
-    expect(vm.isNrValid(nr)).toBe(false)
+    expect(vm.isNrInvalid(nr)).toBe(true)
 
     nr.nrNum = 'NR 1234567'
-    expect(vm.isNrValid(nr)).toBe(false)
+    expect(vm.isNrInvalid(nr)).toBe(true)
 
     nr.requestTypeCd = 'CR'
-    expect(vm.isNrValid(nr)).toBe(false)
+    expect(vm.isNrInvalid(nr)).toBe(true)
 
     nr.request_action_cd = 'NEW'
-    expect(vm.isNrValid(nr)).toBe(false)
+    expect(vm.isNrInvalid(nr)).toBe(true)
 
     nr.request_action_cd = 'CNV'
-    expect(vm.isNrValid(nr)).toBe(false)
+    expect(vm.isNrInvalid(nr)).toBe(true)
 
     nr.request_action_cd = 'CHG'
-    expect(vm.isNrValid(nr)).toBe(true)
+    expect(vm.isNrInvalid(nr)).toBe(true)
+
+    nr.request_action_cd = 'REH'
+    expect(vm.isNrInvalid(nr)).toBe(false) // valid
   })
 
   it('identifies NRs that consumable and not consumable', () => {

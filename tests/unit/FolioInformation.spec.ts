@@ -8,7 +8,6 @@ import AuthServices from '@/services/auth-services'
 import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
 import { FilingTypes } from '@/enums'
-import { vi } from 'vitest'
 
 const vuetify = new Vuetify({})
 

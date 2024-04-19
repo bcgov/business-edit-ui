@@ -9,8 +9,7 @@ import EffectiveDateTime from '@/components/common/EffectiveDateTime.vue'
 import NameTranslation from '@/components/common/YourCompany/NameTranslations/NameTranslation.vue'
 import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
-import { CorpTypeCd } from '@/enums'
-import { vi } from 'vitest'
+import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 
 const vuetify = new Vuetify({})
 
@@ -45,7 +44,7 @@ describe.skip('Restoration Summary component', () => {
 
   beforeEach(() => {
     // Set Original business Data
-    store.stateModel.nameRequest.legalName = entitySnapshot.businessInfo.legalName
+    store.stateModel.nameRequestLegalName = entitySnapshot.businessInfo.legalName
     store.stateModel.tombstone.entityType = entitySnapshot.businessInfo.legalType as CorpTypeCd
     store.stateModel.summaryMode = true
     store.stateModel.nameTranslations = nameTranslationsListChanged as any
@@ -93,7 +92,7 @@ describe.skip('Restoration Summary component', () => {
   })
 
   it('renders the name summary section when changes have been made', async () => {
-    store.stateModel.nameRequest.legalName = 'Mock New Name'
+    store.stateModel.nameRequestLegalName = 'Mock New Name'
     await Vue.nextTick()
 
     expect(wrapper.find('.business-name-summary').exists()).toBe(true)

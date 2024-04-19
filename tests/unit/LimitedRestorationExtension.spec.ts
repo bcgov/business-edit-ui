@@ -17,7 +17,6 @@ import { useStore } from '@/store/store'
 import { FilingTypes } from '@/enums'
 import { EntityName, FolioInformation, NameTranslation, OfficeAddresses, RecognitionDateTime,
   YourCompanyWrapper } from '@/components/common'
-import { vi } from 'vitest'
 
 const vuetify = new Vuetify({})
 

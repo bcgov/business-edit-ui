@@ -103,6 +103,7 @@ export default class ViewWrapper extends Mixins(CommonMixin, FilingTemplateMixin
   @Getter(useStore) getFilingId!: number
   @Getter(useStore) getFlagsCompanyInfo!: FlagsCompanyInfoIF
   @Getter(useStore) getFlagsReviewCertify!: FlagsReviewCertifyIF
+  // @Getter(useStore) getNameRequestNumber!: string
   @Getter(useStore) haveUnsavedChanges!: boolean
   @Getter(useStore) isAlterationFiling!: boolean
   @Getter(useStore) isBusySaving!: boolean

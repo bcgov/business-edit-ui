@@ -284,7 +284,8 @@ import BcRegEntityDetails from '@/components/Alteration/BcRegEntityDetails.vue'
 import { BcRegContacts } from '@/components/common/'
 import { CommonMixin } from '@/mixins/'
 import { CorpTypeCd, GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module/'
-import { EntitySnapshotIF, EntityTypeOption, NameRequestIF, ResourceIF } from '@/interfaces/'
+import { EntitySnapshotIF, EntityTypeOption, ResourceIF } from '@/interfaces/'
+import { NameRequestIF } from '@bcrs-shared-components/interfaces'
 import { GetFeatureFlag, ResourceUtilities } from '@/utils'
 import { useStore } from '@/store/store'
 
@@ -301,11 +302,11 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
   @Prop({ default: false }) readonly invalidSection!: boolean
 
   // Global getters
-  @Getter(useStore) getNameRequestLegalName!: string
   @Getter(useStore) getEditLabel!: string
   @Getter(useStore) getEditedLabel!: string
   @Getter(useStore) getEntitySnapshot!: EntitySnapshotIF
   @Getter(useStore) getEntityType!: CorpTypeCd
+  @Getter(useStore) getNameRequestLegalName!: string
   @Getter(useStore) getNumberOfDirectors!: number
   @Getter(useStore) getResource!: ResourceIF
   @Getter(useStore) hasBusinessNameChanged!: boolean
@@ -320,6 +321,7 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
 
   @Action(useStore) setEntityType!: (x: CorpTypeCd) => void
   @Action(useStore) setNameRequest!: (x: NameRequestIF) => void
+  @Action(useStore) setNameRequestLegalName!: (x: string) => void
   @Action(useStore) setNameChangedByType!: (x: boolean) => void
 
   selectedEntityType = null as CorpTypeCd
@@ -354,8 +356,10 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
 
   /** Verify New Business name. */
   get isNewName (): boolean {
-    return this.getNameRequestLegalName &&
-      (this.getNameRequestLegalName !== this.getEntitySnapshot?.businessInfo?.legalName)
+    return (
+      this.getNameRequestLegalName &&
+      this.getNameRequestLegalName !== this.getEntitySnapshot?.businessInfo?.legalName
+    )
   }
 
   /** Type change helper information */
@@ -405,9 +409,9 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
     // reset name request
     this.setNameRequest({
       legalType: this.getEntitySnapshot?.businessInfo?.legalType,
-      legalName: this.getEntitySnapshot?.businessInfo?.legalName,
-      nrNumber: this.getEntitySnapshot?.businessInfo?.nrNumber
-    })
+      nrNum: this.getEntitySnapshot?.businessInfo?.nrNumber
+    } as any)
+    this.setNameRequestLegalName(this.getEntitySnapshot?.businessInfo?.legalName)
     this.setNameChangedByType(false)
     this.isEditingType = false
     this.confirmArticles = false
@@ -423,13 +427,11 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
       const updatedName = this.getUpdatedName(originalName)
 
       if (originalName !== updatedName) {
-        const nameRequest = {
+        this.setNameRequest({
           legalType: this.selectedEntityType,
-          legalName: updatedName,
-          nrNumber: this.getEntitySnapshot?.businessInfo?.nrNumber
-        }
-
-        this.setNameRequest(nameRequest)
+          nrNum: this.getEntitySnapshot?.businessInfo?.nrNumber
+        } as any)
+        this.setNameRequestLegalName(updatedName)
         this.setNameChangedByType(true)
       }
     }

@@ -59,7 +59,7 @@ describe('Conversion Summary component', () => {
 
   beforeEach(() => {
     // Set Original business Data
-    store.stateModel.nameRequest.legalName = entitySnapshot.businessInfo.legalName
+    store.stateModel.nameRequestLegalName = entitySnapshot.businessInfo.legalName
     store.stateModel.tombstone.entityType = entitySnapshot.businessInfo.legalType as any
     store.stateModel.officeAddresses = addresses
     store.stateModel.summaryMode = true

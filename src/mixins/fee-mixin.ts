@@ -1,10 +1,10 @@
 import Vue from 'vue'
 import { Component } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
-import { EmptyFees, FeesIF } from '@/interfaces'
+import { EmptyFees, FeesIF, FilingDataIF } from '@/interfaces'
 import { PayServices } from '@/services/'
 import { StaffPaymentOptions } from '@bcrs-shared-components/enums'
-import { FilingDataIF, StaffPaymentIF } from '@bcrs-shared-components/interfaces'
+import { StaffPaymentIF } from '@bcrs-shared-components/interfaces'
 import { cloneDeep } from 'lodash'
 import { useStore } from '@/store/store'
 

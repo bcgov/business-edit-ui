@@ -5,7 +5,6 @@ export * from './correction-filing-interface'
 export * from './filing-data-interface'
 export * from './filing-header-interface'
 export * from './incorporation-interfaces'
-export * from './registration-filing-interface'
 export * from './restoration-filing-interface'
 export * from './special-resolution-filing-interface'
 

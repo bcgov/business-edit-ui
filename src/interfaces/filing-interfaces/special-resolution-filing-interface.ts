@@ -1,9 +1,10 @@
-import { FilingHeaderIF, AlterationIF, BusinessInformationIF, NameRequestIF } from '@/interfaces/'
-import { SpecialResolutionIF } from '@bcrs-shared-components/interfaces'
+import { FilingHeaderIF, AlterationIF, BusinessInformationIF } from '@/interfaces/'
+import { NameRequestIF, SpecialResolutionIF } from '@bcrs-shared-components/interfaces'
 
 /** Override what's in BCRS Shared Components, needs to be refactored in the future. */
 export interface ChangeOfNameIF {
-  nameRequest: NameRequestIF
+  // intersection type so we can save original NR + properties needed by Legal API:
+  nameRequest?: NameRequestIF & { legalName: string, nrNumber?: string }
   legalName: string
 }
 

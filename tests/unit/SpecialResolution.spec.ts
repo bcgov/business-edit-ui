@@ -14,7 +14,6 @@ import { AssociationType, BusinessContactInfo, BusinessType, EntityName, FolioIn
   YourCompanyWrapper } from '@/components/common'
 import { Memorandum, Rules } from '@/components/SpecialResolution'
 import { LegalServices } from '@/services'
-import { vi } from 'vitest'
 
 const vuetify = new Vuetify({})
 

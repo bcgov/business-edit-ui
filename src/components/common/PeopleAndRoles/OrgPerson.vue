@@ -186,7 +186,7 @@
                       :editableBusinessName="wasReplaced(currentOrgPerson)"
                       :searchStatus="searchStatus"
                       @setBusiness="updateBusinessDetails($event)"
-                      @undoBusiness="resetBusinessDetails($event)"
+                      @undoBusiness="resetBusinessDetails()"
                     />
                   </article>
                 </template>
@@ -444,8 +444,9 @@ import { cloneDeep, isEqual } from 'lodash'
 import { mask } from 'vue-the-mask'
 import { v4 as uuidv4 } from 'uuid'
 import { IsSame } from '@/utils/'
-import { OrgPersonIF, FormIF, AddressIF, AddressSchemaIF, RoleIF, ResourceIF, EmptyBusinessLookup,
-  BusinessLookupIF } from '@/interfaces/'
+import { OrgPersonIF, FormIF, AddressIF, AddressSchemaIF, RoleIF, ResourceIF, BusinessLookupIF }
+  from '@/interfaces/'
+import { EmptyBusinessLookup } from '@bcrs-shared-components/interfaces/'
 import { BaseAddress } from '@bcrs-shared-components/base-address'
 import { HelpSection } from '@/components/common/'
 import { BusinessLookup as BusinessLookupShared } from '@bcrs-shared-components/business-lookup'

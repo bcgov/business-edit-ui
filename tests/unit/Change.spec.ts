@@ -14,8 +14,8 @@ import { BusinessContactInfo, BusinessStartDate, BusinessType, CertifySection, C
 import { ChangeSummary } from '@/components/Change'
 import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
-import { ActionTypes, CorpTypeCd, FilingTypes } from '@/enums'
-import { vi } from 'vitest'
+import { ActionTypes, FilingTypes } from '@/enums'
+import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 
 const vuetify = new Vuetify({})
 

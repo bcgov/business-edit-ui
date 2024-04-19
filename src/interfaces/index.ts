@@ -16,5 +16,3 @@ export type {
   BusinessLookupIF,
   BusinessLookupResultIF
 } from '@bcrs-shared-components/interfaces'
-
-export { EmptyBusinessLookup } from '@bcrs-shared-components/interfaces'
