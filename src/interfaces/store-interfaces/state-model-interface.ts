@@ -1,8 +1,8 @@
 import {
   AccountInformationIF, AddressesIF, BusinessInformationIF, CertifyIF, CorrectionInformationIF,
-  DocumentDeliveryIF, EffectiveDateTimeIF, EntitySnapshotIF, FeesIF, FilingDataIF, PeopleAndRolesIF,
-  NameTranslationIF, NewAlterationIF, RestorationStateIF, ShareStructureIF, StateFilingRestorationIF,
-  TombStoneIF, ValidationFlagsIF, RulesMemorandumIF
+  DocumentDeliveryIF, EffectiveDateTimeIF, EntitySnapshotIF, FeesIF, FilingDataIF, NameTranslationIF,
+  NewAlterationIF, PeopleAndRolesIF, RestorationStateIF, RulesMemorandumIF, ShareStructureIF,
+  StateFilingRestorationIF, TombStoneIF, ValidationFlagsIF
 } from '@/interfaces/'
 import {
   CompletingPartyIF, ContactPointIF, NameRequestIF, SpecialResolutionIF, StaffPaymentIF
