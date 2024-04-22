@@ -7,6 +7,7 @@ import { useStore } from '@/store/store'
 import { ActionTypes, CorrectionErrorTypes, FilingTypes } from '@/enums'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 import { ApprovalTypes, RestorationTypes } from '@bcrs-shared-components/enums'
+import * as FeatureFlags from '@/utils/feature-flag-utils'
 
 // Vuetify is needed for Actions component
 const vuetify = new Vuetify({})
@@ -400,7 +401,7 @@ describe('BEN correction getters', () => {
   })
 })
 
-describe('SP/GP correction getters', () => {
+describe('SP/GP correction getters - with easy legal name fix', () => {
   let wrapper: any
   let vm: any
 
@@ -414,16 +415,28 @@ describe('SP/GP correction getters', () => {
   }
 
   beforeAll(async () => {
+    vi.spyOn(FeatureFlags, 'GetFeatureFlag').mockImplementation(flag => {
+      if (flag === 'enable-legal-name-fix') return true
+      return null
+    })
     // initialize store
     store.stateModel.tombstone.entityType = CorpTypeCd.SOLE_PROP
     store.stateModel.tombstone.filingType = FilingTypes.CORRECTION
-    store.stateModel.nameRequestLegalName = 'MyLegalName'
+    store.stateModel.tombstone.businessId = 'FM1234567'
+    store.stateModel.nameRequestLegalName = 'My Alternate Name'
     store.stateModel.entitySnapshot = {
       businessInfo: {
+        identifier: 'FM1234567',
         legalName: 'MyLegalName',
         legalType: CorpTypeCd.SOLE_PROP,
         naicsCode: '100000',
-        naicsDescription: 'NAICS description'
+        naicsDescription: 'NAICS description',
+        alternateNames: [
+          {
+            identifier: 'FM1234567',
+            name: 'My Alternate Name'
+          }
+        ]
       },
       shareStructure: {
         shareClasses: []
@@ -453,7 +466,7 @@ describe('SP/GP correction getters', () => {
     // verify that business name changes are detected
     store.stateModel.nameRequestLegalName = 'MyLegalName2'
     expect(vm.hasBusinessNameChanged).toBe(true)
-    store.stateModel.nameRequestLegalName = 'MyLegalName'
+    store.stateModel.nameRequestLegalName = 'My Alternate Name'
     expect(vm.hasBusinessNameChanged).toBe(false)
 
     // verify that business type changes are detected

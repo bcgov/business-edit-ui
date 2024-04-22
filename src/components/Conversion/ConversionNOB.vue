@@ -176,9 +176,9 @@ export default class ConversionNOB extends Mixins(CommonMixin) {
   @Action(useStore) setValidComponent!: (x: ActionKvIF) => void
 
   // local variables
-  protected dropdown = false // v-model for dropdown menu
-  protected onEditMode = false
-  protected naicsText = ''
+  dropdown = false // v-model for dropdown menu
+  onEditMode = false
+  naicsText = ''
 
   readonly naicsRules = [
     (v: string) => !!v || 'Nature of Business is required',
@@ -207,12 +207,12 @@ export default class ConversionNOB extends Mixins(CommonMixin) {
   }
 
   /** Called when user has clicked the Change button. */
-  protected onChangeClicked (): void {
+  onChangeClicked (): void {
     this.onEditMode = true
   }
 
   /** Called when user has clicked the Done button. */
-  protected onDoneClicked (): void {
+  onDoneClicked (): void {
     // eslint-disable-next-line no-undef
     let validForm = (this.$refs.form as Vue & { validate: () => boolean }).validate()
     if (validForm) {
@@ -227,12 +227,12 @@ export default class ConversionNOB extends Mixins(CommonMixin) {
   }
 
   /** Called when user has clicked the Cancel button. */
-  protected onCancelClicked (): void {
+  onCancelClicked (): void {
     this.onEditMode = false
   }
 
   /** Called when user has clicked the Undo button. */
-  protected onUndoClicked (): void {
+  onUndoClicked (): void {
     const code = this.getSnapshotNaics.naicsCode
     const desc = this.getSnapshotNaics.naicsDescription
     this.naicsText = null
@@ -240,6 +240,8 @@ export default class ConversionNOB extends Mixins(CommonMixin) {
       this.naicsText = this.hasNaicsChanged ? this.naicsText : `${code} - ${desc}`
     } else if (desc) {
       this.naicsText = desc
+    } else {
+      this.naicsText = ''
     }
     this.setNaics(this.getSnapshotNaics)
   }

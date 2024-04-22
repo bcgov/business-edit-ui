@@ -284,7 +284,7 @@ import BcRegEntityDetails from '@/components/Alteration/BcRegEntityDetails.vue'
 import { BcRegContacts } from '@/components/common/'
 import { CommonMixin } from '@/mixins/'
 import { CorpTypeCd, GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module/'
-import { EntitySnapshotIF, EntityTypeOption, ResourceIF } from '@/interfaces/'
+import { EntityTypeOption, ResourceIF } from '@/interfaces/'
 import { NameRequestIF } from '@bcrs-shared-components/interfaces'
 import { GetFeatureFlag, ResourceUtilities } from '@/utils'
 import { useStore } from '@/store/store'
@@ -304,16 +304,18 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
   // Global getters
   @Getter(useStore) getEditLabel!: string
   @Getter(useStore) getEditedLabel!: string
-  @Getter(useStore) getEntitySnapshot!: EntitySnapshotIF
   @Getter(useStore) getEntityType!: CorpTypeCd
   @Getter(useStore) getNameRequestLegalName!: string
   @Getter(useStore) getNumberOfDirectors!: number
+  @Getter(useStore) getOriginalLegalName!: string
+  @Getter(useStore) getOriginalLegalType!: CorpTypeCd
+  @Getter(useStore) getOriginalNrNumber!: string
   @Getter(useStore) getResource!: ResourceIF
   @Getter(useStore) hasBusinessNameChanged!: boolean
   @Getter(useStore) hasBusinessTypeChanged!: boolean
   @Getter(useStore) isBcCompany!: boolean
-  @Getter(useStore) isBenefitCompany!: boolean
   @Getter(useStore) isBcUlcCompany!: boolean
+  @Getter(useStore) isBenefitCompany!: boolean
   @Getter(useStore) isConflictingLegalType!: boolean
   @Getter(useStore) isEntityTypeChangedByName!: boolean
   @Getter(useStore) isNameChangedByType!: boolean
@@ -358,7 +360,7 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
   get isNewName (): boolean {
     return (
       this.getNameRequestLegalName &&
-      this.getNameRequestLegalName !== this.getEntitySnapshot?.businessInfo?.legalName
+      this.getNameRequestLegalName !== this.getOriginalLegalName
     )
   }
 
@@ -377,10 +379,10 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
 
   get enableEditButton (): boolean {
     // Exclude CCC - Originally: isBcCompany || isBcUlcCompany || isBenefitCompany
-    if (this.getEntitySnapshot?.businessInfo?.legalType === CorpTypeCd.BC_CCC) {
+    if (this.getOriginalLegalType === CorpTypeCd.BC_CCC) {
       return false
     }
-    return this.supportedEntityTypes?.includes(this.getEntitySnapshot?.businessInfo?.legalType)
+    return this.supportedEntityTypes?.includes(this.getOriginalLegalType)
   }
 
   get nameRequestRequiredError (): boolean {
@@ -391,9 +393,9 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
     if (this.isCommunityContribution || this.isUnlimitedLiability) {
       return true
     }
-    // Named ULC to BC Limited or BC Benefit require a name request.
-    if (this.getEntitySnapshot?.businessInfo?.legalType === CorpTypeCd.BC_ULC_COMPANY &&
-        (this.isBcLimited || this.isBenefitCompany)) {
+    // Named ULC to BC Limited require a name request.
+    if (this.getOriginalLegalType === CorpTypeCd.BC_ULC_COMPANY &&
+      (this.isBcLimited || this.isBenefitCompany)) {
       return true
     }
     return false
@@ -405,13 +407,13 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
 
   /** Reset company type values to original. */
   resetType () {
-    this.setEntityType(this.getEntitySnapshot?.businessInfo?.legalType)
+    this.setEntityType(this.getOriginalLegalType || null)
     // reset name request
     this.setNameRequest({
-      legalType: this.getEntitySnapshot?.businessInfo?.legalType,
-      nrNum: this.getEntitySnapshot?.businessInfo?.nrNumber
+      legalType: this.getOriginalLegalType,
+      nrNum: this.getOriginalNrNumber
     } as any)
-    this.setNameRequestLegalName(this.getEntitySnapshot?.businessInfo?.legalName)
+    this.setNameRequestLegalName(this.getOriginalLegalName)
     this.setNameChangedByType(false)
     this.isEditingType = false
     this.confirmArticles = false
@@ -423,13 +425,13 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
     this.isEditingType = false
 
     if (this.shouldUpdateName()) {
-      const originalName = this.getEntitySnapshot?.businessInfo.legalName
+      const originalName = this.getOriginalLegalName
       const updatedName = this.getUpdatedName(originalName)
 
       if (originalName !== updatedName) {
         this.setNameRequest({
           legalType: this.selectedEntityType,
-          nrNum: this.getEntitySnapshot?.businessInfo?.nrNumber
+          nrNum: this.getOriginalNrNumber
         } as any)
         this.setNameRequestLegalName(updatedName)
         this.setNameChangedByType(true)

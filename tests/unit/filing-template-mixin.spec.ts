@@ -4,6 +4,7 @@ import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
 import { FilingTypes } from '@/enums'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
+import * as FeatureFlags from '@/utils/feature-flag-utils'
 
 setActivePinia(createPinia())
 const store = useStore()
@@ -137,9 +138,29 @@ describe('Filing Template Mixin', () => {
       })
     )
   })
+})
 
-  it('correctly builds a Change of Registration filing', () => {
-    store.stateModel.tombstone.businessId = 'BC1234567'
+// FUTURE
+describe.skip('Alteration Filing', () => {
+})
+
+describe('Change of Registration Filing', () => {
+  let wrapper: any
+
+  beforeEach(() => {
+    vi.spyOn(FeatureFlags, 'GetFeatureFlag').mockImplementation(flag => {
+      if (flag === 'enable-legal-name-fix') return true
+      return null
+    })
+    wrapper = shallowMount(MixinTester)
+  })
+
+  afterEach(() => {
+    wrapper.destroy()
+  })
+
+  it('correctly builds a change of registration filing', () => {
+    store.stateModel.tombstone.businessId = 'FM1234567'
     store.stateModel.tombstone.filingType = FilingTypes.CHANGE_OF_REGISTRATION
     store.stateModel.tombstone.entityType = CorpTypeCd.SOLE_PROP
     store.stateModel.completingParty = {
@@ -154,15 +175,21 @@ describe('Filing Template Mixin', () => {
         addressCountry: 'CA'
       }
     }
-    store.stateModel.nameRequestLegalName = 'SomeMockBusiness'
+    store.stateModel.nameRequestLegalName = 'My Alternate Name'
     store.stateModel.entitySnapshot = {
       businessInfo: {
         foundingDate: 'Jan 01, 2000',
         legalType: CorpTypeCd.SOLE_PROP,
-        identifier: 'BC1234567',
+        identifier: 'FM1234567',
         legalName: 'SomeMockBusiness',
         naicsCode: '',
-        naicsDescription: ''
+        naicsDescription: '',
+        alternateNames: [
+          {
+            identifier: 'FM1234567',
+            name: 'My Alternate Name'
+          }
+        ]
       },
       addresses: {
         businessOffice: {
@@ -219,13 +246,13 @@ describe('Filing Template Mixin', () => {
       expect.objectContaining({
         business: {
           foundingDate: 'Jan 01, 2000',
-          identifier: 'BC1234567',
+          identifier: 'FM1234567',
           legalName: 'SomeMockBusiness',
           legalType: 'SP'
         },
         changeOfRegistration: {
           business: {
-            identifier: 'BC1234567',
+            identifier: 'FM1234567',
             naics: {
               naicsCode: '123456',
               naicsDescription: 'Mock Description'

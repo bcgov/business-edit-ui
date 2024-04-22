@@ -1,5 +1,6 @@
 import { CoopTypes } from '@/enums'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
+import { AlternateNameIF } from '@bcrs-shared-components/interfaces'
 
 /**
  * Interface for business information object in store
@@ -7,6 +8,7 @@ import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
  * Ref: https://github.com/bcgov/business-schemas/blob/main/src/registry_schemas/schemas/business.json
  */
 export interface BusinessInformationIF {
+  alternateNames?: Array<AlternateNameIF>
   foundingDate: string // actually date-time (API format)
   hasRestrictions?: boolean
   identifier: string
@@ -24,4 +26,12 @@ export interface BusinessInformationIF {
   naicsCode?: string
   naicsDescription?: string
   naicsKey?: string // from API
+}
+
+export const EmptyBusinessInfo: BusinessInformationIF = {
+  associationType: null,
+  foundingDate: null,
+  identifier: '',
+  legalName: null,
+  legalType: null
 }
