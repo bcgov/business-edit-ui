@@ -160,7 +160,7 @@ describe('Change of Registration Filing', () => {
   })
 
   it('correctly builds a change of registration filing', () => {
-    store.stateModel.tombstone.businessId = 'BC1234567'
+    store.stateModel.tombstone.businessId = 'FM1234567'
     store.stateModel.tombstone.filingType = FilingTypes.CHANGE_OF_REGISTRATION
     store.stateModel.tombstone.entityType = CorpTypeCd.SOLE_PROP
     store.stateModel.completingParty = {
@@ -175,7 +175,7 @@ describe('Change of Registration Filing', () => {
         addressCountry: 'CA'
       }
     }
-    store.stateModel.nameRequestLegalName = 'SomeMockBusiness'
+    store.stateModel.nameRequestLegalName = 'My Alternate Name'
     store.stateModel.entitySnapshot = {
       businessInfo: {
         foundingDate: 'Jan 01, 2000',

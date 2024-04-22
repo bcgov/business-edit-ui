@@ -3,9 +3,9 @@ import { Action, Getter } from 'pinia-class'
 import { cloneDeep } from 'lodash'
 import { DateMixin } from '@/mixins/'
 import { AddressesIF, AlterationFilingIF, BusinessInformationIF, CertifyIF, CoopAlterationIF,
-  CorrectionInformationIF, CorrectionFilingIF, CourtOrderIF, EffectiveDateTimeIF, EntitySnapshotIF,
-  ChgRegistrationFilingIF, ConversionFilingIF, NameTranslationIF, OrgPersonIF, RestorationFilingIF,
-  RestorationStateIF, SpecialResolutionFilingIF, StateFilingRestorationIF, RulesMemorandumIF }
+  CorrectionInformationIF, CorrectionFilingIF, CourtOrderIF, EffectiveDateTimeIF, EmptyBusinessInfo,
+  EntitySnapshotIF, ChgRegistrationFilingIF, ConversionFilingIF, NameTranslationIF, OrgPersonIF,
+  RestorationFilingIF, RestorationStateIF, SpecialResolutionFilingIF, StateFilingRestorationIF, RulesMemorandumIF }
   from '@/interfaces/'
 import { CompletingPartyIF, ContactPointIF, NaicsIF, NameRequestIF, ShareClassIF, SpecialResolutionIF,
   StaffPaymentIF } from '@bcrs-shared-components/interfaces/'
@@ -60,6 +60,7 @@ export default class FilingTemplateMixin extends DateMixin {
   @Getter(useStore) getOriginalNrNumber!: string
   @Getter(useStore) getRestoration!: RestorationStateIF
   @Getter(useStore) getShareClasses!: ShareClassIF[]
+  @Getter(useStore) getSnapshotNaics!: NaicsIF
   @Getter(useStore) getSpecialResolution!: SpecialResolutionIF
   @Getter(useStore) getSpecialResolutionMemorandum!: RulesMemorandumIF
   @Getter(useStore) getSpecialResolutionRules!: RulesMemorandumIF
