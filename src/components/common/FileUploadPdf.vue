@@ -251,8 +251,7 @@ export default class FileUploadPdf extends Vue {
       const psu = await this.getPresignedUrl(file.name)
 
       // NB: will throw on API error
-      const res = await this.uploadToUrl(psu.preSignedUrl, file, psu.key,
-        this.userId)
+      const res = await this.uploadToUrl(psu.preSignedUrl, file, psu.key, this.userId)
 
       // check if successful
       if (res?.status === 200) {

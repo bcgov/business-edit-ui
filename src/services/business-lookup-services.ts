@@ -5,14 +5,14 @@ import { AxiosInstance as axios } from '@/utils/'
  * Class that provides integration with the BusinessLookup API.
  */
 export default class BusinessLookupServices {
-  /** The Business API URL, from session storage. */
-  static get businessApiUrl (): string {
+  /** The Registries Search API URL, from session storage. */
+  static get searchApiUrl (): string {
     return sessionStorage.getItem('REGISTRIES_SEARCH_API_URL')
   }
 
-  /** The Business API Key, from session storage. */
-  static get businessApiKey (): string {
-    return sessionStorage.getItem('BUSINESS_API_KEY')
+  /** The Registries Search API Key, from session storage. */
+  static get searchApiKey (): string {
+    return sessionStorage.getItem('REGISTRIES_SEARCH_API_KEY')
   }
 
   /** The Account ID, from session storage. */
@@ -36,13 +36,13 @@ export default class BusinessLookupServices {
   static async search (query: string, status: string): Promise<BusinessLookupResultIF[]> {
     const legalType = 'BC,A,ULC,C,S,XP,GP,LP,CUL,XS,LLC,LL,BEN,CP,CC,XL,FI,XCP,PA'
 
-    let url = this.businessApiUrl + 'businesses/search/facets?start=0&rows=20'
+    let url = this.searchApiUrl + 'businesses/search/facets?start=0&rows=20'
     url += `&categories=legalType:${legalType}${status ? '::status:' + status : ''}`
     url += `&query=value:${encodeURIComponent(query)}`
 
     return axios.get(url, {
       headers: {
-        'x-apikey': this.businessApiKey,
+        'x-apikey': this.searchApiKey,
         'Account-Id': this.accountId
       }
     }).then(response => {

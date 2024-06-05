@@ -1,3 +1,5 @@
+/* eslint-disable max-len */
+
 import { AxiosInstance, FetchConfig } from '@/utils'
 
 // mock the console.info function to hide the output
@@ -47,12 +49,13 @@ describe('Fetch Config', () => {
     // verify data
     expect(sessionStorage.getItem('AUTH_API_URL')).toBe('auth api url/auth api version/')
     expect(sessionStorage.getItem('AUTH_WEB_URL')).toBe('auth web url')
-    expect(sessionStorage.getItem('BUSINESS_API_KEY')).toBe('business api key')
     expect(sessionStorage.getItem('BUSINESSES_URL')).toBe('businesses url')
     expect(sessionStorage.getItem('DASHBOARD_URL')).toBe('dashboard url')
     expect(sessionStorage.getItem('NAICS_URL')).toBe('naics api url/naics api version/')
     expect(sessionStorage.getItem('PAY_API_URL')).toBe('pay api url/pay api version/')
     expect(sessionStorage.getItem('REGISTRY_HOME_URL')).toBe('registry home url')
+    expect(sessionStorage.getItem('REGISTRIES_SEARCH_API_KEY')).toBe('business api key')
+    expect(sessionStorage.getItem('REGISTRIES_SEARCH_API_URL')).toBe('registries search api url/registries search api version/')
     expect(sessionStorage.getItem('SITEMINDER_LOGOUT_URL')).toBe('siteminder logout url')
     expect(sessionStorage.getItem('STATUS_API_URL')).toBe('status api url/status api version')
     expect(AxiosInstance.defaults.baseURL).toBe('legal api url/legal api version 2/')
