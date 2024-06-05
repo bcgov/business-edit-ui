@@ -411,13 +411,13 @@ export default class LegalServices {
   }
 
   /**
- * Uploads the specified file to the specified URL.
- * @param url the URL to upload to
- * @param file the file to upload
- * @param key the file key
- * @param userId the file user id
- * @returns the axios response
- */
+   * Uploads the specified file to the specified URL.
+   * @param url the URL to upload to
+   * @param file the file to upload
+   * @param key the file key
+   * @param userId the file user id
+   * @returns the axios response
+   */
   static async uploadToUrl (url: string, file: File, key: string, userId: string): Promise<AxiosResponse> {
     const headers = {
       'Content-Type': file.type,
