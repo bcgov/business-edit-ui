@@ -20,11 +20,11 @@ describe('Business Lookup Services', () => {
     // mock successsful search
     sinon.stub(axios, 'get')
       .withArgs('https://search.api.url/businesses/search/facets?start=0&rows=20&categories=legalType:' +
-        'BC,A,ULC,C,S,XP,GP,LP,CUL,XS,LLC,LL,BEN,CP,CC,XL,FI,XCP,PA::status:ACTIVE&query=value:FM1000002')
+        'SP::status:ACTIVE&query=value:FM1000002')
       .returns(new Promise(resolve => resolve({ data: { searchResults: { results: [result] } } })))
 
     // search and look at results
-    const results = await BusinessLookupServices.search('FM1000002', 'ACTIVE')
+    const results = await BusinessLookupServices.search('FM1000002', 'ACTIVE', 'SP')
     expect(results.length).toBe(1)
     expect(results[0]).toEqual(result)
 
@@ -35,11 +35,11 @@ describe('Business Lookup Services', () => {
     // mock unsuccesssful search
     sinon.stub(axios, 'get')
       .withArgs('https://search.api.url/businesses/search/facets?start=0&rows=20&categories=legalType' +
-        ':BC,A,ULC,C,S,XP,GP,LP,CUL,XS,LLC,LL,BEN,CP,CC,XL,FI,XCP,PA::status:ACTIVE&query=value:FM1000003')
+        ':SP::status:ACTIVE&query=value:FM1000003')
       .returns(new Promise(resolve => resolve({ data: { searchResults: { results: [] } } })))
 
     // search and look at results
-    const results = await BusinessLookupServices.search('FM1000003', 'ACTIVE')
+    const results = await BusinessLookupServices.search('FM1000003', 'ACTIVE', 'SP')
     expect(results.length).toBe(0)
 
     sinon.restore()
@@ -65,11 +65,11 @@ describe('Business Lookup Services', () => {
     // mock successsful search
     sinon.stub(axios, 'get')
       .withArgs('https://search.api.url/businesses/search/facets?start=0&rows=20&categories=legalType:' +
-        'BC,A,ULC,C,S,XP,GP,LP,CUL,XS,LLC,LL,BEN,CP,CC,XL,FI,XCP,PA&query=value:FM100000')
+        'GP,SP&query=value:FM100000')
       .returns(new Promise(resolve => resolve({ data: { searchResults: { results: [result1, result2] } } })))
 
     // search and look at results
-    const results = await BusinessLookupServices.search('FM100000', '')
+    const results = await BusinessLookupServices.search('FM100000', '', 'GP,SP')
     expect(results.length).toBe(2)
     expect(results[0]).toEqual(result1)
     expect(results[1]).toEqual(result2)
