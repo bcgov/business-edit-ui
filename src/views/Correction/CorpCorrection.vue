@@ -107,10 +107,10 @@ import { useStore } from '@/store/store'
 })
 export default class CorpCorrection extends Mixins(CommonMixin, DateMixin, FeeMixin, FilingTemplateMixin) {
   // Global getters
-  @Getter(useStore) isBcCcc!: boolean
-  @Getter(useStore) isBcCompany!: boolean
-  @Getter(useStore) isBcUlcCompany!: boolean
-  @Getter(useStore) isBenefitCompany!: boolean
+  @Getter(useStore) isEntityBcCcc!: boolean
+  @Getter(useStore) isEntityBcCompany!: boolean
+  @Getter(useStore) isEntityBcUlcCompany!: boolean
+  @Getter(useStore) isEntityBenefitCompany!: boolean
 
   // Global actions
   @Action(useStore) setHaveUnsavedChanges!: (x: boolean) => void
@@ -127,10 +127,11 @@ export default class CorpCorrection extends Mixins(CommonMixin, DateMixin, FeeMi
   /** The resource object for a correction filing. */
   get correctionResource (): ResourceIF {
     switch (true) {
-      case this.isBcCompany: return BcCorrectionResource
-      case this.isBenefitCompany: return BenCorrectionResource
-      case this.isBcCcc: return CccCorrectionResource
-      case this.isBcUlcCompany: return UlcCorrectionResource
+      // *** TODO: add cont in types
+      case this.isEntityBcCompany: return BcCorrectionResource
+      case this.isEntityBenefitCompany: return BenCorrectionResource
+      case this.isEntityBcCcc: return CccCorrectionResource
+      case this.isEntityBcUlcCompany: return UlcCorrectionResource
     }
     return null // should never happen
   }

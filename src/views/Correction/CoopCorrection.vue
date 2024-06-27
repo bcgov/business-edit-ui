@@ -121,8 +121,6 @@ import { CorrectionErrorTypes } from '@/enums'
 })
 export default class CoopCorrection extends Mixins(CommonMixin, DateMixin, FeeMixin, FilingTemplateMixin) {
   // Global getters
-  @Getter(useStore) isPartnership!: boolean
-  @Getter(useStore) isSoleProp!: boolean
   @Getter(useStore) hasResolutionSection!: boolean
 
   // Global actions

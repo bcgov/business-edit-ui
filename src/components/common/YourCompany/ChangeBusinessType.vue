@@ -313,9 +313,9 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
   @Getter(useStore) getResource!: ResourceIF
   @Getter(useStore) hasBusinessNameChanged!: boolean
   @Getter(useStore) hasBusinessTypeChanged!: boolean
-  @Getter(useStore) isBcCompany!: boolean
-  @Getter(useStore) isBcUlcCompany!: boolean
-  @Getter(useStore) isBenefitCompany!: boolean
+  @Getter(useStore) isEntityBcCompany!: boolean
+  @Getter(useStore) isEntityBcUlcCompany!: boolean
+  @Getter(useStore) isEntityBenefitCompany!: boolean
   @Getter(useStore) isConflictingLegalType!: boolean
   @Getter(useStore) isEntityTypeChangedByName!: boolean
   @Getter(useStore) isNameChangedByType!: boolean
@@ -378,7 +378,8 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
   }
 
   get enableEditButton (): boolean {
-    // Exclude CCC - Originally: isBcCompany || isBcUlcCompany || isBenefitCompany
+    // *** TODO: add cont in types
+    // Exclude CCC - Originally: isEntityBcCompany || isEntityBcUlcCompany || isEntityBenefitCompany
     if (this.getOriginalLegalType === CorpTypeCd.BC_CCC) {
       return false
     }
@@ -394,8 +395,9 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
       return true
     }
     // Named ULC to BC Limited require a name request.
+    // *** TODO: add cont in types
     if (this.getOriginalLegalType === CorpTypeCd.BC_ULC_COMPANY &&
-      (this.isBcLimited || this.isBenefitCompany)) {
+      (this.isBcLimited || this.isEntityBenefitCompany)) {
       return true
     }
     return false
@@ -444,7 +446,8 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
   }
 
   getUpdatedName (originalName: string): string {
-    if (this.isBcUlcCompany) {
+    // *** TODO: fix LTD.
+    if (this.isEntityBcUlcCompany) {
       originalName = originalName.replace(' LTD.', '')
       originalName += ' UNLIMITED LIABILITY COMPANY'
       return originalName
@@ -452,7 +455,8 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
       originalName = originalName.replace(' LTD.', '')
       originalName += ' COMMUNITY CONTRIBUTION COMPANY'
       return originalName
-    } else if (this.isBcLimited || this.isBenefitCompany) {
+    } else if (this.isBcLimited || this.isEntityBenefitCompany) {
+      // *** TODO: add cont in types
       originalName = originalName.replace(' UNLIMITED LIABILITY COMPANY', '').replace(' ULC', '')
       originalName = originalName.replace(' COMMUNITY CONTRIBUTION COMPANY', '').replace(' CCC', '')
       originalName = originalName.replace(' LTD.', '')

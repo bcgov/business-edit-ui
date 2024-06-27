@@ -78,7 +78,7 @@ export default class FilingTemplateMixin extends DateMixin {
   @Getter(useStore) hasSpecialResolutionRulesChanged!: boolean
   @Getter(useStore) haveNameTranslationsChanged!: boolean
   @Getter(useStore) haveOfficeAddressesChanged!: boolean
-  @Getter(useStore) isBenBcCccUlcCorrectionFiling!: boolean
+  @Getter(useStore) isBaseCorrectionFiling!: boolean
   @Getter(useStore) isClientErrorCorrection!: boolean
   @Getter(useStore) isCoopCorrectionFiling!: boolean
   @Getter(useStore) isEntityTypeFirm!: boolean
@@ -187,8 +187,8 @@ export default class FilingTemplateMixin extends DateMixin {
       filing.correction.parties = parties
     }
 
-    // add in data specific to BEN/BC/CCC/ULC corrections
-    if (this.isBenBcCccUlcCorrectionFiling) {
+    // add in data specific to base corrections
+    if (this.isBaseCorrectionFiling) {
       filing.correction.nameTranslations = isDraft ? this.getNameTranslations : this.prepareNameTranslations()
       filing.correction.shareStructure = {
         shareClasses: isDraft ? this.getShareClasses : this.prepareShareClasses(),
@@ -774,8 +774,8 @@ export default class FilingTemplateMixin extends DateMixin {
     // store Correction Information
     this.setCorrectionInformation(cloneDeep(filing.correction))
 
-    // store Business Information for BEN/BC/CCC/ULC corrections
-    if (this.isBenBcCccUlcCorrectionFiling) {
+    // store Business Information for base corrections
+    if (this.isBaseCorrectionFiling) {
       this.setBusinessInformation({
         ...entitySnapshot?.businessInfo,
         ...filing.business,
@@ -842,8 +842,8 @@ export default class FilingTemplateMixin extends DateMixin {
       this.setSpecialResolution(cloneDeep(specialResolution))
     }
 
-    // store Name Translations (BEN/BC/CCC?ULC corrections only)
-    if (this.isBenBcCccUlcCorrectionFiling) {
+    // store Name Translations (base corrections only)
+    if (this.isBaseCorrectionFiling) {
       this.setNameTranslations(cloneDeep(
         this.mapNameTranslations(filing.correction.nameTranslations) ||
         this.mapNameTranslations(entitySnapshot?.nameTranslations) ||
@@ -868,8 +868,8 @@ export default class FilingTemplateMixin extends DateMixin {
     orgPersons = orgPersons.filter(op => !(op?.roles.some(role => role.roleType === RoleTypes.COMPLETING_PARTY)))
     this.setPeopleAndRoles(cloneDeep(orgPersons))
 
-    // store Share Classes and Resolution Dates (BEN/BC/CCC/ULC corrections only)
-    if (this.isBenBcCccUlcCorrectionFiling) {
+    // store Share Classes and Resolution Dates (base corrections only)
+    if (this.isBaseCorrectionFiling) {
       this.setShareClasses(cloneDeep(
         filing.correction.shareStructure?.shareClasses ||
         entitySnapshot?.shareStructure?.shareClasses ||

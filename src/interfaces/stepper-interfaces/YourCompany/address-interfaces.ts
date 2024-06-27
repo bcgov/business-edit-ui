@@ -30,10 +30,10 @@ export interface OfficeIF {
 /** Interface to define various office address types. */
 export interface AddressesIF {
   registeredOffice?: OfficeIF
-  // Records Office is required for BCOMPs.
+  // Records Office is required for BC/BEN/CC/ULC and C/CBEN/CCC/CUL.
   // Records Office may be optional for other app types.
   recordsOffice?: OfficeIF
-  // Business Office is required for Firms.
+  // Business Office is required for SP/GP.
   // Business Office may be optional for other app types.
   businessOffice?: OfficeIF
 }

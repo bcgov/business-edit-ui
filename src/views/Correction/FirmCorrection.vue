@@ -80,8 +80,8 @@ import { useStore } from '@/store/store'
 })
 export default class FirmCorrection extends Mixins(CommonMixin, FeeMixin, FilingTemplateMixin) {
   // Global getters
-  @Getter(useStore) isPartnership!: boolean
-  @Getter(useStore) isSoleProp!: boolean
+  @Getter(useStore) isEntityPartnership!: boolean
+  @Getter(useStore) isEntitySoleProp!: boolean
 
   // Global actions
   @Action(useStore) setHaveUnsavedChanges!: (x: boolean) => void
@@ -92,8 +92,8 @@ export default class FirmCorrection extends Mixins(CommonMixin, FeeMixin, Filing
 
   /** The resource object for a firm correction filing. */
   get correctionResource (): ResourceIF {
-    if (this.isPartnership) return GpCorrectionResource
-    if (this.isSoleProp) return SpCorrectionResource
+    if (this.isEntityPartnership) return GpCorrectionResource
+    if (this.isEntitySoleProp) return SpCorrectionResource
     return null // should never happen
   }
 

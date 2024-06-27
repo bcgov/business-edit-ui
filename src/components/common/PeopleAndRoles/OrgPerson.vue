@@ -323,7 +323,7 @@
 
               <!-- Roles (base corrections only) -->
               <article
-                v-if="isBenBcCccUlcCorrectionFiling"
+                v-if="isBaseCorrectionFiling"
                 class="roles mt-6"
               >
                 <label class="sub-header">Roles</label>
@@ -494,10 +494,10 @@ export default class OrgPerson extends Mixins(CommonMixin, OrgPersonMixin) {
   @Getter(useStore) getCurrentDate!: string
   @Getter(useStore) getResource!: ResourceIF
   @Getter(useStore) isAlterationFiling!: boolean
-  @Getter(useStore) isBenBcCccUlcCorrectionFiling!: boolean
+  @Getter(useStore) isBaseCorrectionFiling!: boolean
   @Getter(useStore) isCoopCorrectionFiling!: boolean
+  @Getter(useStore) isEntityFirm!: boolean
   @Getter(useStore) isFirmCorrectionFiling!: boolean
-  @Getter(useStore) isFirm!: boolean
   @Getter(useStore) isFirmChangeFiling!: boolean
   @Getter(useStore) isFirmConversionFiling!: boolean
   @Getter(useStore) isLimitedRestorationExtension!: boolean
@@ -646,7 +646,7 @@ export default class OrgPerson extends Mixins(CommonMixin, OrgPersonMixin) {
     if (this.isFirmConversionFiling) {
       return true
     }
-    if (this.isBenBcCccUlcCorrectionFiling) {
+    if (this.isBaseCorrectionFiling) {
       return true
     }
     if (this.isFirmCorrectionFiling) {
@@ -682,7 +682,7 @@ export default class OrgPerson extends Mixins(CommonMixin, OrgPersonMixin) {
       // can add proprietor or partner
       return (this.isNew && (this.isProprietor || this.isPartner))
     }
-    if (this.isBenBcCccUlcCorrectionFiling) {
+    if (this.isBaseCorrectionFiling) {
       // base corrections don't use this component
       return false
     }
@@ -855,7 +855,7 @@ export default class OrgPerson extends Mixins(CommonMixin, OrgPersonMixin) {
     }
     // Note: For corrections if the appointmentDate isn't included - you may run into some issues where adding a new
     // director as it wont show up in the parties or directors call.
-    if (this.isBenBcCccUlcCorrectionFiling || this.isCoopCorrectionFiling) {
+    if (this.isBaseCorrectionFiling || this.isCoopCorrectionFiling) {
       person.roles = this.setPersonRoles(this.orgPerson)
     } else {
       person.roles = this.orgPerson.roles
@@ -970,7 +970,7 @@ export default class OrgPerson extends Mixins(CommonMixin, OrgPersonMixin) {
       (v: string) => (v?.length <= 30) || 'Cannot exceed 30 characters' // maximum character count
     ]
 
-    if (this.isFirm) {
+    if (this.isEntityFirm) {
       this.orgNameRules = [
         (v: string) => !!v?.trim() || 'Business or corporation name is required',
         (v: string) => (v?.length <= 150) || 'Cannot exceed 150 characters' // maximum character count

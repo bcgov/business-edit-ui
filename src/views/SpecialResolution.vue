@@ -183,7 +183,7 @@ export default class SpecialResolution extends Mixins(CommonMixin, FeeMixin, Fil
   @Getter(useStore) getAppValidate!: boolean
   @Getter(useStore) getUserFirstName!: string
   @Getter(useStore) getUserLastName!: string
-  @Getter(useStore) isCoop!: boolean
+  @Getter(useStore) isEntityCoop!: boolean
   @Getter(useStore) isPremiumAccount!: boolean
   @Getter(useStore) isRoleStaff!: boolean
   @Getter(useStore) isSummaryMode!: boolean
@@ -217,7 +217,7 @@ export default class SpecialResolution extends Mixins(CommonMixin, FeeMixin, Fil
 
   /** The resource object for a special resolution filing. */
   get specialResolutionResource (): ResourceIF {
-    if (this.isCoop) return CpSpecialResolutionResource
+    if (this.isEntityCoop) return CpSpecialResolutionResource
     return null
   }
 

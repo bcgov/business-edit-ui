@@ -102,7 +102,7 @@
 
         <!-- Instructional people and roles text (base corrections only)-->
         <article
-          v-if="isBenBcCccUlcCorrectionFiling || isCoopCorrectionFiling"
+          v-if="isBaseCorrectionFiling || isCoopCorrectionFiling"
           class="section-container"
         >
           This application must include the following:
@@ -123,8 +123,13 @@
                 mdi-close
               </v-icon>
               <span class="ml-2">
-                <template v-if="isBcCompany || isBenefitCompany || isBcUlcCompany">At least one Director</template>
-                <template v-if="isBcCcc || isCoopCorrectionFiling">At least three Directors</template>
+                <!-- *** TODO: add cont in types -->
+                <template v-if="isEntityBcCompany || isEntityBenefitCompany || isEntityBcUlcCompany">
+                  <span>At least one Director</span>
+                </template>
+                <template v-if="isEntityBcCcc || isCoopCorrectionFiling">
+                  <span>At least three Directors</span>
+                </template>
               </span>
             </li>
             <li v-if="isCoopCorrectionFiling">
@@ -166,7 +171,7 @@
 
         <!-- Correction section (base corrections only) -->
         <article
-          v-if="isBenBcCccUlcCorrectionFiling || isCoopCorrectionFiling"
+          v-if="isBaseCorrectionFiling || isCoopCorrectionFiling"
           class="section-container"
         >
           <v-btn
@@ -201,7 +206,7 @@
 
           <!-- SP add buttons (conversion filing only) -->
           <div
-            v-if="isSoleProp && isFirmConversionFiling && !haveRequiredProprietor"
+            v-if="isEntitySoleProp && isFirmConversionFiling && !haveRequiredProprietor"
             class="mt-8"
           >
             <v-btn
@@ -247,7 +252,7 @@
 
           <!-- GP add buttons (change or conversion filings only)-->
           <div
-            v-if="isPartnership && (isFirmChangeFiling || isFirmConversionFiling)"
+            v-if="isEntityPartnership && (isFirmChangeFiling || isFirmConversionFiling)"
             class="mt-8"
           >
             <v-btn
@@ -305,7 +310,7 @@
           :validate="getComponentValidate"
           :validOrgPersons="validOrgPersons"
           :showDeliveryAddressColumn="!(isLimitedRestorationExtension || isLimitedRestorationToFull)"
-          :showRolesColumn="isBenBcCccUlcCorrectionFiling || isCoopCorrectionFiling"
+          :showRolesColumn="isBaseCorrectionFiling || isCoopCorrectionFiling"
           :showEmailColumn="isLimitedRestorationExtension || isLimitedRestorationToFull"
           :showEmailUnderName="showEmailUnderName"
           @initEdit="initEdit($event)"
@@ -351,11 +356,11 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin, OrgPe
   @Getter(useStore) getResource!: ResourceIF
   @Getter(useStore) getComponentValidate!: boolean
   @Getter(useStore) isAlterationFiling!: boolean
-  @Getter(useStore) isBcCcc!: boolean
-  @Getter(useStore) isBcCompany!: boolean
-  @Getter(useStore) isBcUlcCompany!: boolean
-  @Getter(useStore) isBenefitCompany!: boolean
-  @Getter(useStore) isBenBcCccUlcCorrectionFiling!: boolean
+  @Getter(useStore) isEntityBcCcc!: boolean
+  @Getter(useStore) isEntityBcCompany!: boolean
+  @Getter(useStore) isEntityBcUlcCompany!: boolean
+  @Getter(useStore) isEntityBenefitCompany!: boolean
+  @Getter(useStore) isBaseCorrectionFiling!: boolean
   @Getter(useStore) isCoopCorrectionFiling!: boolean
   @Getter(useStore) isCorrectionFiling!: boolean
   @Getter(useStore) isFirmChangeFiling!: boolean
@@ -363,10 +368,10 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin, OrgPe
   @Getter(useStore) isFirmCorrectionFiling!: boolean
   @Getter(useStore) isLimitedRestorationExtension!: boolean
   @Getter(useStore) isLimitedRestorationToFull!: boolean
-  @Getter(useStore) isPartnership!: boolean
+  @Getter(useStore) isEntityPartnership!: boolean
   @Getter(useStore) isRestorationFiling!: boolean
   @Getter(useStore) isRoleStaff!: boolean
-  @Getter(useStore) isSoleProp!: boolean
+  @Getter(useStore) isEntitySoleProp!: boolean
 
   // Global actions
   @Action(useStore) setEditingPeopleAndRoles!: (x: boolean) => void
@@ -398,10 +403,11 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin, OrgPe
   // FUTURE: should move rules and text to resource files
   /** True when the minimum director count is met. */
   get haveMinimumDirectors (): boolean {
-    if (this.isBcCompany || this.isBenefitCompany || this.isBcUlcCompany) {
+    // *** TODO: add cont in types
+    if (this.isEntityBcCompany || this.isEntityBenefitCompany || this.isEntityBcUlcCompany) {
       return this.hasRole(RoleTypes.DIRECTOR, 1, CompareModes.AT_LEAST)
     }
-    if (this.isBcCcc || this.isCoopCorrectionFiling) {
+    if (this.isEntityBcCcc || this.isCoopCorrectionFiling) {
       return this.hasRole(RoleTypes.DIRECTOR, 3, CompareModes.AT_LEAST)
     }
     return false // should never happen
@@ -474,19 +480,20 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin, OrgPe
       return false
     }
     if (this.isFirmChangeFiling) {
-      if (this.isPartnership) return this.haveMinimumPartners
-      if (this.isSoleProp) return this.haveRequiredProprietor
+      if (this.isEntityPartnership) return this.haveMinimumPartners
+      if (this.isEntitySoleProp) return this.haveRequiredProprietor
       return false
     }
     if (this.isFirmConversionFiling) {
-      if (this.isPartnership) return this.haveMinimumPartners
-      if (this.isSoleProp) return this.haveRequiredProprietor
+      if (this.isEntityPartnership) return this.haveMinimumPartners
+      if (this.isEntitySoleProp) return this.haveRequiredProprietor
       return false
     }
     if (this.isCorrectionFiling) {
-      if (this.isPartnership) return this.haveMinimumPartners
-      if (this.isSoleProp) return this.haveRequiredProprietor
-      if (this.isBcCompany || this.isBenefitCompany || this.isBcCcc || this.isBcUlcCompany) {
+      if (this.isEntityPartnership) return this.haveMinimumPartners
+      if (this.isEntitySoleProp) return this.haveRequiredProprietor
+      // *** TODO: add cont in types
+      if (this.isEntityBcCompany || this.isEntityBenefitCompany || this.isEntityBcCcc || this.isEntityBcUlcCompany) {
         return this.haveMinimumDirectors
       }
       if (this.isCoopCorrectionFiling) {
@@ -640,7 +647,7 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin, OrgPe
     this.currentOrgPerson.actions = actions
 
     // for firms and restoration (extension and conversion) applciations, use business lookup initially
-    if (this.isPartnership || this.isSoleProp || this.isLimitedRestorationExtension ||
+    if (this.isEntityPartnership || this.isEntitySoleProp || this.isLimitedRestorationExtension ||
        this.isLimitedRestorationToFull) {
       this.currentOrgPerson.isLookupBusiness = true
     }

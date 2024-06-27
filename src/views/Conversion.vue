@@ -96,9 +96,9 @@ import { useStore } from '@/store/store'
 export default class Conversion extends Mixins(CommonMixin, FeeMixin, FilingTemplateMixin) {
   // Global getters
   @Getter(useStore) getAppValidate!: boolean
-  @Getter(useStore) isPartnership!: boolean
+  @Getter(useStore) isEntityPartnership!: boolean
+  @Getter(useStore) isEntitySoleProp!: boolean
   @Getter(useStore) isRoleStaff!: boolean
-  @Getter(useStore) isSoleProp!: boolean
   @Getter(useStore) isSummaryMode!: boolean
   @Getter(useStore) showFeeSummary!: boolean
 
@@ -123,8 +123,8 @@ export default class Conversion extends Mixins(CommonMixin, FeeMixin, FilingTemp
 
   /** The resource object for a firm conversion filing. */
   get firmConversionResource (): ResourceIF {
-    if (this.isPartnership) return GpConversionResource
-    if (this.isSoleProp) return SpConversionResource
+    if (this.isEntityPartnership) return GpConversionResource
+    if (this.isEntitySoleProp) return SpConversionResource
     return null
   }
 

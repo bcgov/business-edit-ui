@@ -192,9 +192,9 @@
         </template>
       </v-row>
 
-      <!-- Records office (BC/BEN/CCC/ULC only) -->
+      <!-- Records office (BC/BEN/CC/ULC and C/CBEN/CCC/CUL only) -->
       <v-row
-        v-if="isBenBcCccUlc"
+        v-if="isBaseCompany"
         id="summary-records-address"
         class="mt-4 mx-0"
         no-gutters
@@ -469,7 +469,7 @@
 
         <!-- "Same as" checkbox -->
         <div
-          v-if="isBenBcCccUlc"
+          v-if="isBaseCompany"
           id="edit-records-address"
         >
           <div
@@ -619,8 +619,8 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
   @Getter(useStore) hasRecMailingChanged!: boolean
   @Getter(useStore) haveOfficeAddressesChanged!: boolean
   @Getter(useStore) isAlterationFiling!: boolean
-  @Getter(useStore) isBenBcCccUlc!: boolean
-  @Getter(useStore) isBenBcCccUlcCorrectionFiling!: boolean
+  @Getter(useStore) isBaseCompany!: boolean
+  @Getter(useStore) isBaseCorrectionFiling!: boolean
   @Getter(useStore) isCoopCorrectionFiling!: boolean
   @Getter(useStore) isCorrectionFiling!: boolean
   @Getter(useStore) isFirmChangeFiling!: boolean
@@ -652,15 +652,15 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
   }
 
   /** Whether to show the editable forms for the addresses (true) or the static display addresses (false). */
-  protected isEditing = false
+  isEditing = false
 
-  protected dropdown = false // v-model for dropdown menu
+  dropdown = false // v-model for dropdown menu
 
   // The 4 addresses that are the current state of the BaseAddress sub-components:
-  protected mailingAddress = {} as AddressIF
-  protected deliveryAddress = {} as AddressIF
-  protected recMailingAddress = {} as AddressIF
-  protected recDeliveryAddress = {} as AddressIF
+  mailingAddress = {} as AddressIF
+  deliveryAddress = {} as AddressIF
+  recMailingAddress = {} as AddressIF
+  recDeliveryAddress = {} as AddressIF
 
   // The 4 validation events from each BaseAddress sub-component:
   private mailingAddressValid = true
@@ -669,13 +669,13 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
   private recDeliveryAddressValid = true
 
   /** Model value for "same as (registered) mailing address" checkbox. */
-  protected inheritMailingAddress = true
+  inheritMailingAddress = true
 
   /** Model value for "same as registered address" checkbox. */
-  protected inheritRegisteredAddress = true
+  inheritRegisteredAddress = true
 
   /** Model value for "same as (records) mailing address" checkbox. */
-  protected inheritRecMailingAddress = true
+  inheritRecMailingAddress = true
 
   /** The section validity state (when prompted by app). */
   get invalidSection (): boolean {
@@ -712,7 +712,7 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
    * Sets local address data and "inherit" flags from store.
    */
   private setLocalProperties (): void {
-    if (this.isBenBcCccUlcCorrectionFiling || this.isAlterationFiling ||
+    if (this.isBaseCorrectionFiling || this.isAlterationFiling ||
       this.isRestorationFiling) {
       // assign registered office addresses (may be {})
       this.mailingAddress = { ...this.getOfficeAddresses?.registeredOffice?.mailingAddress }
@@ -792,7 +792,7 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
    * sets the Registered Delivery Address to the Registered Mailing Address.
    * NB: retain original address IDs
    */
-  protected setDeliveryAddressToMailingAddress (): void {
+  setDeliveryAddressToMailingAddress (): void {
     if (this.inheritMailingAddress) {
       this.deliveryAddress = { ...this.mailingAddress, addressType: 'delivery', id: this.deliveryAddress.id }
     } else {
@@ -811,7 +811,7 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
    * sets the Records office addresses to the Registered office addresses.
    * NB: retain original address IDs
    */
-  protected setRecordOfficeToRegisteredOffice (): void {
+  setRecordOfficeToRegisteredOffice (): void {
     if (this.inheritRegisteredAddress) {
       this.recMailingAddress = { ...this.mailingAddress, id: this.recMailingAddress.id }
       this.recDeliveryAddress = { ...this.deliveryAddress, id: this.recDeliveryAddress.id }
@@ -828,7 +828,7 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
    * sets the Records Delivery Address to Records Mailing Address.
    * NB: retain original address IDs
    */
-  protected setRecordDeliveryAddressToMailingAddress (): void {
+  setRecordDeliveryAddressToMailingAddress (): void {
     if (this.inheritRecMailingAddress) {
       this.recDeliveryAddress = { ...this.recMailingAddress, addressType: 'delivery', id: this.recDeliveryAddress.id }
     } else {
@@ -842,7 +842,7 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
    * NB: addresses must keep their original IDs
    * NB: retain original address IDs
    */
-  protected updateAddress (addressToUpdate: AddressTypes, newAddress: AddressIF): void {
+  updateAddress (addressToUpdate: AddressTypes, newAddress: AddressIF): void {
     // BaseAddress component returns empty Delivery Instructions as ''
     // but Legal API returns empty Delivery Instructions as null
     // so nullify empty Delivery Instructions for future comparisons.
@@ -903,7 +903,7 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
    * @param addressToValidate the address to set the validity of
    * @param isValid whether the address is valid
    */
-  protected onAddressValid (addressToValidate: AddressTypes, isValid: boolean): void {
+  onAddressValid (addressToValidate: AddressTypes, isValid: boolean): void {
     switch (addressToValidate) {
       case AddressTypes.MAILING_ADDRESS:
         this.mailingAddressValid = isValid
@@ -928,8 +928,8 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
    * Sets updated office addresses in store.
    */
   private storeAddresses (): void {
-    if (this.isBenBcCccUlcCorrectionFiling || this.isRestorationFiling) {
-      // at the moment, only corp corrections and restorations are supported
+    if (this.isBaseCorrectionFiling || this.isRestorationFiling) {
+      // at the moment, only base corrections and restorations are supported
       this.setOfficeAddresses({
         registeredOffice: {
           deliveryAddress: this.deliveryAddress,
@@ -942,8 +942,7 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
       })
     }
 
-    if (this.isFirmChangeFiling || this.isFirmConversionFiling ||
-      this.isFirmCorrectionFiling) {
+    if (this.isFirmChangeFiling || this.isFirmConversionFiling || this.isFirmCorrectionFiling) {
       // at the moment, only firm changes, conversions and corrections are supported
       this.setOfficeAddresses({
         businessOffice: {
@@ -995,7 +994,7 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
   /**
    * When Undo is clicked, resets original addresses from original IA filing.
    */
-  protected resetOfficeAddresses (): void {
+  resetOfficeAddresses (): void {
     // reset store value
     // NB: this will cause setLocalProperties() to be called to reset local properties
     // NB: this will cause updateAddresses() to be called to update state
@@ -1027,7 +1026,7 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
    * Also called when we know what kind of correction this is.
    */
   @Watch('getOfficeAddresses', { deep: true, immediate: true })
-  @Watch('isBenBcCccUlcCorrectionFiling')
+  @Watch('isBaseCorrectionFiling')
   @Watch('isFirmCorrectionFiling')
   @Watch('isRestorationFiling')
   @Watch('isCoopCorrectionFiling')

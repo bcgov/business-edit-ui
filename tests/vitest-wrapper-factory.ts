@@ -66,7 +66,6 @@ const applyStoreValues = (store, stateValues, resource) => {
   // Set individual state properties
   const stateKeys = Object.keys(stateValues)
   stateKeys.forEach((key) => {
-    console.log('*** setting key-val =', key, stateValues[key])
     store.stateModel[key] = stateValues[key]
   })
 }

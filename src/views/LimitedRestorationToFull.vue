@@ -195,10 +195,10 @@ export default class LimitedRestorationToFull extends Mixins(
   @Getter(useStore) getCourtOrderNumberText!: string
   @Getter(useStore) getRelationships!: RelationshipTypes[]
   @Getter(useStore) getResource!: ResourceIF
-  @Getter(useStore) isBcCcc!: boolean
-  @Getter(useStore) isBcCompany!: boolean
-  @Getter(useStore) isBcUlcCompany!: boolean
-  @Getter(useStore) isBenefitCompany!: boolean
+  @Getter(useStore) isEntityBcCcc!: boolean
+  @Getter(useStore) isEntityBcCompany!: boolean
+  @Getter(useStore) isEntityBcUlcCompany!: boolean
+  @Getter(useStore) isEntityBenefitCompany!: boolean
   @Getter(useStore) isRoleStaff!: boolean
   @Getter(useStore) isSummaryMode!: boolean
   @Getter(useStore) showFeeSummary!: boolean
@@ -226,10 +226,11 @@ export default class LimitedRestorationToFull extends Mixins(
   /** The resource object for a restoration filing. */
   get restorationResource (): ResourceIF {
     switch (true) {
-      case this.isBcCompany: return BcRestorationResource
-      case this.isBenefitCompany: return BenRestorationResource
-      case this.isBcCcc: return CccRestorationResource
-      case this.isBcUlcCompany: return UlcRestorationResource
+      // *** TODO: add cont in types
+      case this.isEntityBcCompany: return BcRestorationResource
+      case this.isEntityBenefitCompany: return BenRestorationResource
+      case this.isEntityBcCcc: return CccRestorationResource
+      case this.isEntityBcUlcCompany: return UlcRestorationResource
     }
     return null // should never happen
   }

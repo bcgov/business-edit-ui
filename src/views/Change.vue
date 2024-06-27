@@ -139,11 +139,11 @@ export default class Change extends Mixins(CommonMixin, FeeMixin, FilingTemplate
   @Getter(useStore) getAppValidate!: boolean
   @Getter(useStore) getUserFirstName!: string
   @Getter(useStore) getUserLastName!: string
-  @Getter(useStore) isPartnership!: boolean
+  @Getter(useStore) isEntityPartnership!: boolean
+  @Getter(useStore) isEntitySoleProp!: boolean
   @Getter(useStore) isPremiumAccount!: boolean
   @Getter(useStore) isRoleStaff!: boolean
   @Getter(useStore) isSbcStaff!: boolean
-  @Getter(useStore) isSoleProp!: boolean
   @Getter(useStore) isSummaryMode!: boolean
   @Getter(useStore) showFeeSummary!: boolean
 
@@ -174,9 +174,9 @@ export default class Change extends Mixins(CommonMixin, FeeMixin, FilingTemplate
   /** The resource object for a firm change filing. */
   get firmChangeResource (): ResourceIF {
     const isOfficerOrganization = this.getOrgPeople[0]?.officer?.partyType === PartyTypes.ORGANIZATION
-    if (this.isPartnership) return GpChangeResource
-    if (this.isSoleProp && isOfficerOrganization) return SpOrganizationChangeResource
-    if (this.isSoleProp) return SpChangeResource
+    if (this.isEntityPartnership) return GpChangeResource
+    if (this.isEntitySoleProp && isOfficerOrganization) return SpOrganizationChangeResource
+    if (this.isEntitySoleProp) return SpChangeResource
     return null
   }
 

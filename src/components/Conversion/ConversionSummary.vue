@@ -60,7 +60,7 @@
             cols="12"
             sm="3"
           >
-            <label>{{ isSoleProp ? 'Proprietor' : 'Partner' }} Information</label>
+            <label>{{ isEntitySoleProp ? 'Proprietor' : 'Partner' }} Information</label>
           </v-col>
         </v-row>
         <v-row
@@ -96,11 +96,11 @@ import { useStore } from '@/store/store'
 })
 export default class ConversionSummary extends Vue {
   // Global getters
+  @Getter(useStore) getCurrentNaics!: NaicsIF
   @Getter(useStore) hasNaicsChanged!: boolean
   @Getter(useStore) haveOfficeAddressesChanged!: boolean
   @Getter(useStore) havePeopleAndRolesChanged!: boolean
-  @Getter(useStore) getCurrentNaics!: NaicsIF
-  @Getter(useStore) isSoleProp!: boolean
+  @Getter(useStore) isEntitySoleProp!: boolean
 
   /** Whether to perform validation. */
   @Prop() readonly validate!: boolean
