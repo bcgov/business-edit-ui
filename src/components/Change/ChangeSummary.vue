@@ -125,7 +125,7 @@ import { useStore } from '@/store/store'
   }
 })
 export default class ChangeSummary extends Vue {
-  // Global getters
+  // Store getters
   @Getter(useStore) getBusinessNumber!: string
   @Getter(useStore) getCurrentNaics!: NaicsIF
   @Getter(useStore) getNameRequestLegalName!: string

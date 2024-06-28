@@ -66,12 +66,12 @@ export default class TransactionalFolioNumber extends Mixins(CommonMixin) {
     folioNumberInput: FormFieldType
   }
 
-  // Global getters
+  // Store getters
   @Getter(useStore) getFolioNumber!: string
   @Getter(useStore) getTransactionalFolioNumber!: string
   @Getter(useStore) getFlagsReviewCertify!: FlagsReviewCertifyIF
 
-  // Global actions
+  // Store actions
   @Action(useStore) setTransactionalFolioNumber!: (x: string) => void
   @Action(useStore) setTransactionalFolioNumberValidity!: (x: boolean) => void
 

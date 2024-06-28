@@ -165,7 +165,7 @@
         <BcRegContacts :direction="'col'" />
 
         <BcRegEntityDetails
-          :isBenefit="isBenefit"
+          :isBenefitCompany="isBenefitCompany"
           :isUnlimitedLiability="isUnlimitedLiability"
           :isCommunityContribution="isCommunityContribution"
           :isBcLimited="isBcLimited"
@@ -301,7 +301,7 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
 
   @Prop({ default: false }) readonly invalidSection!: boolean
 
-  // Global getters
+  // Store getters
   @Getter(useStore) getEditLabel!: string
   @Getter(useStore) getEditedLabel!: string
   @Getter(useStore) getEntityType!: CorpTypeCd
@@ -313,8 +313,6 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
   @Getter(useStore) getResource!: ResourceIF
   @Getter(useStore) hasBusinessNameChanged!: boolean
   @Getter(useStore) hasBusinessTypeChanged!: boolean
-  @Getter(useStore) isEntityBcCompany!: boolean
-  @Getter(useStore) isEntityBcUlcCompany!: boolean
   @Getter(useStore) isEntityBenefitCompany!: boolean
   @Getter(useStore) isConflictingLegalType!: boolean
   @Getter(useStore) isEntityTypeChangedByName!: boolean
@@ -329,8 +327,8 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
   selectedEntityType = null as CorpTypeCd
   confirmArticles = false
   isEditingType = false
-  dropdown: boolean = null
-  supportedEntityTypes: Array<string> = []
+  dropdown = null as boolean
+  supportedEntityTypes = [] as Array<string>
 
   /** Called when component is mounted. */
   mounted (): void {
@@ -356,7 +354,7 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
     this.isEditingType = val
   }
 
-  /** Verify New Business name. */
+  /** Whether this is a new business name. */
   get isNewName (): boolean {
     return (
       this.getNameRequestLegalName &&
@@ -364,23 +362,25 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
     )
   }
 
-  /** Type change helper information */
+  /** The type change information. */
   get typeChangeInfo (): string {
     return this.getResource.changeData?.typeChangeInfo
   }
 
-  /** Entity type options based on the company type */
+  /** The entity type options based on the company type. */
   get entityTypeOptions (): EntityTypeOption[] {
     const entityTypeOptions = this.getResource.changeData?.entityTypeOptions || []
-    return entityTypeOptions.filter((option: EntityTypeOption) => {
-      return this.supportedEntityTypes?.includes(option.value)
-    })
+    return entityTypeOptions.filter((option: EntityTypeOption) =>
+      this.supportedEntityTypes?.includes(option.value)
+    )
   }
 
   get enableEditButton (): boolean {
-    // *** TODO: add cont in types
-    // Exclude CCC - Originally: isEntityBcCompany || isEntityBcUlcCompany || isEntityBenefitCompany
-    if (this.getOriginalLegalType === CorpTypeCd.BC_CCC) {
+    // Exclude CC and CCC
+    if (
+      this.getOriginalLegalType === CorpTypeCd.BC_CCC ||
+      this.getOriginalLegalType === CorpTypeCd.CCC_CONTINUE_IN
+    ) {
       return false
     }
     return this.supportedEntityTypes?.includes(this.getOriginalLegalType)
@@ -394,17 +394,23 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
     if (this.isCommunityContribution || this.isUnlimitedLiability) {
       return true
     }
-    // Named ULC to BC Limited require a name request.
-    // *** TODO: add cont in types
+    // Named ULC to BC Limited (or Benefit Company) requires a name request.
     if (this.getOriginalLegalType === CorpTypeCd.BC_ULC_COMPANY &&
-      (this.isBcLimited || this.isEntityBenefitCompany)) {
+      (this.isBcLimited || this.isBenefitCompany)
+    ) {
+      return true
+    }
+    // Named CUL to BC Limited (or Benefit Company) requires a name request.
+    if (this.getOriginalLegalType === CorpTypeCd.ULC_CONTINUE_IN &&
+      (this.isBcLimited || this.isBenefitCompany)
+    ) {
       return true
     }
     return false
   }
 
   get minimumThreeDirectorError (): boolean {
-    return this.isCommunityContribution && this.getNumberOfDirectors < 3
+    return (this.isCommunityContribution && this.getNumberOfDirectors < 3)
   }
 
   /** Reset company type values to original. */
@@ -446,42 +452,42 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
   }
 
   getUpdatedName (originalName: string): string {
-    // *** TODO: fix LTD.
-    if (this.isEntityBcUlcCompany) {
+    if (this.isUnlimitedLiability) {
       originalName = originalName.replace(' LTD.', '')
       originalName += ' UNLIMITED LIABILITY COMPANY'
       return originalName
-    } else if (this.isCommunityContribution) {
+    }
+    if (this.isCommunityContribution) {
       originalName = originalName.replace(' LTD.', '')
       originalName += ' COMMUNITY CONTRIBUTION COMPANY'
       return originalName
-    } else if (this.isBcLimited || this.isEntityBenefitCompany) {
-      // *** TODO: add cont in types
+    }
+    if (this.isBcLimited || this.isBenefitCompany) {
       originalName = originalName.replace(' UNLIMITED LIABILITY COMPANY', '').replace(' ULC', '')
       originalName = originalName.replace(' COMMUNITY CONTRIBUTION COMPANY', '').replace(' CCC', '')
       originalName = originalName.replace(' LTD.', '')
       originalName += ' LTD.'
       return originalName
     }
-    return originalName
+    return originalName // should never happen
   }
 
-  /** Check if current entity selection is a Benefit Company */
-  get isBenefit (): boolean {
+  /** Whether current entity selection is a Benefit Company. */
+  get isBenefitCompany (): boolean {
     return (this.selectedEntityType === CorpTypeCd.BENEFIT_COMPANY)
   }
 
-  /** Check if current entity selection is a Unlimited Liability Company */
+  /** Whether current entity selection is a BC ULC Company. */
   get isUnlimitedLiability (): boolean {
     return (this.selectedEntityType === CorpTypeCd.BC_ULC_COMPANY)
   }
 
-  /** Check if current entity selection is a Community Contribution Company */
+  /** Whether current entity selection is a BC CCC. */
   get isCommunityContribution (): boolean {
     return (this.selectedEntityType === CorpTypeCd.BC_CCC)
   }
 
-  /** Check if current entity selection is a BC Limited Company */
+  /** Whether current entity selection is a BC Company. */
   get isBcLimited (): boolean {
     return (this.selectedEntityType === CorpTypeCd.BC_COMPANY)
   }

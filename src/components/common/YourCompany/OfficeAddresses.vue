@@ -192,7 +192,7 @@
         </template>
       </v-row>
 
-      <!-- Records office (BC/BEN/CC/ULC and C/CBEN/CCC/CUL only) -->
+      <!-- Records office (base companies only) -->
       <v-row
         v-if="isBaseCompany"
         id="summary-records-address"
@@ -467,7 +467,7 @@
           </li>
         </div>
 
-        <!-- "Same as" checkbox -->
+        <!-- "Same as" checkbox (base companies only)-->
         <div
           v-if="isBaseCompany"
           id="edit-records-address"
@@ -605,7 +605,7 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
   /** Prop to set readonly state (ie disable form actions). */
   @Prop({ default: false }) readonly isSummaryView!: boolean
 
-  // Global getters
+  // Store getters
   @Getter(useStore) getComponentValidate!: boolean
   @Getter(useStore) getEditLabel!: string
   @Getter(useStore) getEditedLabel!: string
@@ -629,7 +629,7 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
   @Getter(useStore) isRestorationFiling!: boolean
   @Getter(useStore) isSpecialResolutionFiling!: boolean
 
-  // Global actions
+  // Store actions
   @Action(useStore) setEditingOfficeAddresses!: (x: boolean) => void
   @Action(useStore) setOfficeAddresses!: (x: AddressesIF) => void
   @Action(useStore) setValidComponent!: (x: ActionKvIF) => void

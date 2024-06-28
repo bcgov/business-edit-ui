@@ -88,7 +88,7 @@ import Memorandum from '@/components/SpecialResolution/Memorandum.vue'
 import { Action, Getter } from 'pinia-class'
 import { useStore } from '@/store/store'
 import { CorrectionFilingIF, ResourceIF, EntitySnapshotIF } from '@/interfaces'
-import { CpCorrectionResource } from '@/resources/Correction'
+import { CorrectionResourceCp } from '@/resources/Correction'
 import { LegalServices, AuthServices } from '@/services'
 import { StaffPaymentOptions } from '@bcrs-shared-components/enums'
 import { CorrectionErrorTypes } from '@/enums'
@@ -120,10 +120,10 @@ import { CorrectionErrorTypes } from '@/enums'
   }
 })
 export default class CoopCorrection extends Mixins(CommonMixin, DateMixin, FeeMixin, FilingTemplateMixin) {
-  // Global getters
+  // Store getters
   @Getter(useStore) hasResolutionSection!: boolean
 
-  // Global actions
+  // Store actions
   @Action(useStore) setHaveUnsavedChanges!: (x: boolean) => void
   @Action(useStore) setResource!: (x: ResourceIF) => void
 
@@ -139,7 +139,7 @@ export default class CoopCorrection extends Mixins(CommonMixin, DateMixin, FeeMi
 
   /** The resource object for a firm correction filing. */
   get correctionResource (): ResourceIF {
-    return CpCorrectionResource
+    return CorrectionResourceCp
   }
 
   /**

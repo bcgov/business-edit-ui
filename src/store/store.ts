@@ -166,26 +166,6 @@ export const useStore = defineStore('store', {
       return this.getOriginalBusinessInfo?.nrNumber || ''
     },
 
-    /** Whether the original entity type is BC Company. */
-    isOriginBcCompany (): boolean {
-      return (this.getOriginalLegalType === CorpTypeCd.BC_COMPANY)
-    },
-
-    /** Whether the original entity type is Benefit Company. */
-    isOriginBenefitCompany (): boolean {
-      return (this.getOriginalLegalType === CorpTypeCd.BENEFIT_COMPANY)
-    },
-
-    /** Whether the original entity type is BC ULC Company. */
-    isOriginBcUlcCompany (): boolean {
-      return (this.getOriginalLegalType === CorpTypeCd.BC_ULC_COMPANY)
-    },
-
-    /** Whether the original entity type is Community Contribution Company. */
-    isOriginBcCcc (): boolean {
-      return (this.getOriginalLegalType === CorpTypeCd.BC_CCC)
-    },
-
     /** The entity type. */
     getEntityType (): CorpTypeCd {
       return this.stateModel.tombstone.entityType

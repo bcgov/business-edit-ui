@@ -34,7 +34,7 @@ import { useStore } from '@/store/store'
   }
 })
 export default class FolioInformation extends Mixins(CommonMixin) {
-  // Global getters
+  // Store getters
   @Getter(useStore) getBusinessId!: string
   @Getter(useStore) getComponentValidate!: boolean
   @Getter(useStore) getEditLabel!: string

@@ -3,7 +3,7 @@ import Vuetify from 'vuetify'
 import { mount } from '@vue/test-utils'
 import OfficeAddresses from '@/components/common/YourCompany/OfficeAddresses.vue'
 import { AddressIF, AddressesIF } from '@/interfaces/stepper-interfaces/YourCompany/address-interfaces'
-import { BenAlterationResource } from '@/resources/Alteration/BEN'
+import { AlterationResourceBen } from '@/resources/Alteration/BEN'
 import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
 import { FilingTypes } from '@/enums'
@@ -59,7 +59,7 @@ describe('summary mode', () => {
   beforeAll(() => {
     // init entity type
     store.stateModel.tombstone.entityType = CorpTypeCd.BENEFIT_COMPANY
-    store.resourceModel = BenAlterationResource
+    store.resourceModel = AlterationResourceBen
   })
 
   it('displays the correct sections', () => {

@@ -72,7 +72,7 @@ import { useStore } from '@/store/store'
 /** This component is only implemented for Correction filings atm. */
 @Component({})
 export default class Actions extends Mixins(DateMixin, FilingTemplateMixin, NameRequestMixin) {
-  // Global getters
+  // Store getters
   @Getter(useStore) getFilingId!: number
   // @Getter(useStore) getNameRequestNumber!: string
   @Getter(useStore) hasAlterationDataChanged!: boolean // for testing state-getters
@@ -85,7 +85,7 @@ export default class Actions extends Mixins(DateMixin, FilingTemplateMixin, Name
   @Getter(useStore) isSaving!: boolean
   @Getter(useStore) isSavingResuming!: boolean
 
-  // Global actions
+  // Store actions
   @Action(useStore) setIsSaving!: (x: boolean) => void
   @Action(useStore) setIsSavingResuming!: (x: boolean) => void
   @Action(useStore) setIsFilingPaying!: (x: boolean) => void

@@ -228,7 +228,7 @@ export default class NameTranslation extends Mixins(CommonMixin) {
 
   @Prop({ default: false }) readonly isSummaryMode!: boolean
 
-  // Global getters
+  // Store getters
   @Getter(useStore) getComponentValidate!: boolean
   @Getter(useStore) getEditLabel!: string
   @Getter(useStore) getEditedLabel!: string
@@ -237,7 +237,7 @@ export default class NameTranslation extends Mixins(CommonMixin) {
   @Getter(useStore) isLimitedRestorationExtension!: boolean
   @Getter(useStore) isLimitedRestorationToFull!: boolean
 
-  // Global actions
+  // Store actions
   @Action(useStore) setEditingNameTranslations!: (x: boolean) => void
   @Action(useStore) setNameTranslations!: (x: NameTranslationIF[]) => void
   @Action(useStore) setValidComponent!: (x: ActionKvIF) => void

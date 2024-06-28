@@ -95,7 +95,7 @@ import { useStore } from '@/store/store'
   }
 })
 export default class ConversionSummary extends Vue {
-  // Global getters
+  // Store getters
   @Getter(useStore) getCurrentNaics!: NaicsIF
   @Getter(useStore) hasNaicsChanged!: boolean
   @Getter(useStore) haveOfficeAddressesChanged!: boolean

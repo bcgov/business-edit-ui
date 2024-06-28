@@ -1,8 +1,8 @@
 import Vuetify from 'vuetify'
 import { mount } from '@vue/test-utils'
 import ListPeopleAndRoles from '@/components/common/PeopleAndRoles/ListPeopleAndRoles.vue'
-import { GpChangeResource } from '@/resources/Change/GP'
-import { BenCorrectionResource } from '@/resources/Correction/BEN'
+import { ChangeResourceGp } from '@/resources/Change/GP'
+import { CorrectionResourceBen } from '@/resources/Correction/BEN'
 import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
 import { FilingTypes } from '@/enums'
@@ -340,7 +340,7 @@ describe('List People And Roles component for Corrections', () => {
   const wrapperFactory = (orgPeople, propsData = {}) => {
     store.stateModel.tombstone.filingType = FilingTypes.CORRECTION
     store.stateModel.tombstone.entityType = CorpTypeCd.BENEFIT_COMPANY
-    store.resourceModel = BenCorrectionResource
+    store.resourceModel = CorrectionResourceBen
     store.stateModel.peopleAndRoles.orgPeople = orgPeople
     return mount(ListPeopleAndRoles, { propsData, vuetify })
   }
@@ -490,7 +490,7 @@ describe('List People And Roles component for Change of Registration', () => {
   const wrapperFactory = (orgPeople, propsData = {}) => {
     store.stateModel.tombstone.entityType = CorpTypeCd.PARTNERSHIP
     store.stateModel.tombstone.filingType = FilingTypes.CHANGE_OF_REGISTRATION
-    store.resourceModel = GpChangeResource
+    store.resourceModel = ChangeResourceGp
     store.stateModel.peopleAndRoles.orgPeople = orgPeople
     return mount(ListPeopleAndRoles, { propsData, vuetify })
   }

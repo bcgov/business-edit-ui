@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Vuetify from 'vuetify'
 import { mount } from '@vue/test-utils'
 import Resolution from '@/components/SpecialResolution/Resolution.vue'
-import { CpSpecialResolutionResource } from '@/resources/SpecialResolution/CP'
+import { SpecialResolutionResourceCp } from '@/resources/SpecialResolution/CP'
 import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
 import { FilingTypes } from '@/enums'
@@ -43,7 +43,7 @@ describe('Special Resolution Form component', () => {
         familyName: 't'
       }
     }
-    store.resourceModel = CpSpecialResolutionResource
+    store.resourceModel = SpecialResolutionResourceCp
     store.stateModel.nameRequestLegalName = entitySnapshot.businessInfo.legalName
     store.stateModel.tombstone.entityType = entitySnapshot.businessInfo.legalType as CorpTypeCd
     store.stateModel.summaryMode = false

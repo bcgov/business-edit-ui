@@ -73,7 +73,7 @@
 
 <script lang="ts">
 import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
-import { Action, Getter } from 'pinia-class'
+import { Action } from 'pinia-class'
 import { Articles } from '@/components/Alteration/'
 import { BusinessContactInfo, CertifySection, CompletingParty, Detail, EntityName, FolioInformation,
   NameTranslation, OfficeAddresses, PeopleAndRoles, RecognitionDateTime, ShareStructures, StaffPayment,
@@ -82,9 +82,9 @@ import { CommonMixin, DateMixin, FeeMixin, FilingTemplateMixin } from '@/mixins/
 import { AuthServices, LegalServices } from '@/services/'
 import { StaffPaymentOptions } from '@bcrs-shared-components/enums/'
 import { CorrectionFilingIF, EntitySnapshotIF, ResourceIF } from '@/interfaces/'
-import { BcCorrectionResource, BenCorrectionResource, CccCorrectionResource, UlcCorrectionResource }
-  from '@/resources/Correction/'
+import * as Resources from '@/resources/Correction/'
 import { useStore } from '@/store/store'
+import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 
 /** Correction sub-component for corp class "BC" entities. */
 @Component({
@@ -106,13 +106,10 @@ import { useStore } from '@/store/store'
   }
 })
 export default class CorpCorrection extends Mixins(CommonMixin, DateMixin, FeeMixin, FilingTemplateMixin) {
-  // Global getters
-  @Getter(useStore) isEntityBcCcc!: boolean
-  @Getter(useStore) isEntityBcCompany!: boolean
-  @Getter(useStore) isEntityBcUlcCompany!: boolean
-  @Getter(useStore) isEntityBenefitCompany!: boolean
+  // Store getters
+  // @Getter(useStore) getEntityType!: CorpTypeCd
 
-  // Global actions
+  // Store actions
   @Action(useStore) setHaveUnsavedChanges!: (x: boolean) => void
   @Action(useStore) setResource!: (x: ResourceIF) => void
 
@@ -126,14 +123,17 @@ export default class CorpCorrection extends Mixins(CommonMixin, DateMixin, FeeMi
 
   /** The resource object for a correction filing. */
   get correctionResource (): ResourceIF {
-    switch (true) {
-      // *** TODO: add cont in types
-      case this.isEntityBcCompany: return BcCorrectionResource
-      case this.isEntityBenefitCompany: return BenCorrectionResource
-      case this.isEntityBcCcc: return CccCorrectionResource
-      case this.isEntityBcUlcCompany: return UlcCorrectionResource
+    switch (this.getEntityType) {
+      case CorpTypeCd.BC_CCC: return Resources.CorrectionResourceCc
+      case CorpTypeCd.BC_COMPANY: return Resources.CorrectionResourceBc
+      case CorpTypeCd.BC_ULC_COMPANY: return Resources.CorrectionResourceUlc
+      case CorpTypeCd.BEN_CONTINUE_IN: return Resources.CorrectionResourceCben
+      case CorpTypeCd.BENEFIT_COMPANY: return Resources.CorrectionResourceBen
+      case CorpTypeCd.CCC_CONTINUE_IN: return Resources.CorrectionResourceCcc
+      case CorpTypeCd.CONTINUE_IN: return Resources.CorrectionResourceC
+      case CorpTypeCd.ULC_CONTINUE_IN: return Resources.CorrectionResourceCul
+      default: return null // should never happen
     }
-    return null // should never happen
   }
 
   /**

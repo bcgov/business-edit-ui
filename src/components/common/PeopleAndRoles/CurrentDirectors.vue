@@ -107,7 +107,7 @@ export default class CurrentDirectors extends Mixins(CommonMixin) {
   readonly RoleTypes = RoleTypes
   readonly IsSame = IsSame
 
-  // Global getters
+  // Store getters
   @Getter(useStore) getOrgPeople!: OrgPersonIF[]
 
   /** Headers for the person table. */

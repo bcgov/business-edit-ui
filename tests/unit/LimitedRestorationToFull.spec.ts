@@ -11,7 +11,7 @@ import ListPeopleAndRoles from '@/components/common/PeopleAndRoles/ListPeopleAnd
 import DocumentsDelivery from '@/components/common/DocumentsDelivery.vue'
 import StaffPayment from '@/components/common/StaffPayment.vue'
 import YourCompanySummary from '@/components/Restoration/YourCompanySummary.vue'
-import { BenRestorationResource } from '@/resources/LimitedRestorationToFull/BEN'
+import { RestorationResourceBen } from '@/resources/LimitedRestorationToFull/BEN'
 import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
 import { BusinessContactInfo, EntityName, FolioInformation, NameTranslation, OfficeAddresses, RecognitionDateTime,
@@ -221,7 +221,7 @@ describe('Limited Restoration To Full component - edit page', () => {
     store.stateModel.entitySnapshot.businessInfo.stateFiling = stateFiling as any
     store.stateModel.peopleAndRoles.orgPeople = stateFiling.restoration.parties[0] as any
     store.stateModel.businessInformation = { ...entitySnapshot.businessInfo } as any
-    store.resourceModel = BenRestorationResource
+    store.resourceModel = RestorationResourceBen
 
     // mock services function
     vi.spyOn((LegalServices as any), 'fetchFilingById').mockImplementation(
@@ -326,7 +326,7 @@ describe('Limited Restoration To Full component - summary page (with no filing c
       email: 'currentuser@mail.com',
       contacts: [{ email: 'currentuser@mail.com' }]
     }
-    store.resourceModel = BenRestorationResource
+    store.resourceModel = RestorationResourceBen
 
     // mock the window.location.assign function
     delete window.location
@@ -406,7 +406,7 @@ describe('Limited Restoration To Full component - summary page (with filing chan
     store.stateModel.restoration = filing.restoration as any
     store.stateModel.entitySnapshot = entitySnapshot as any
     store.stateModel.peopleAndRoles.orgPeople = stateFiling.restoration.parties as any
-    store.resourceModel = BenRestorationResource
+    store.resourceModel = RestorationResourceBen
 
     // mock the window.location.assign function
     delete window.location

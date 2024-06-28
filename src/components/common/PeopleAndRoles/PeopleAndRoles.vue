@@ -123,11 +123,13 @@
                 mdi-close
               </v-icon>
               <span class="ml-2">
-                <!-- *** TODO: add cont in types -->
-                <template v-if="isEntityBcCompany || isEntityBenefitCompany || isEntityBcUlcCompany">
+                <template
+                  v-if="isEntityBcCompany || isEntityBenefitCompany || isEntityBcUlcCompany ||
+                    isEntityContinueIn || isEntityBenContinueIn || isEntityUlcContinueIn"
+                >
                   <span>At least one Director</span>
                 </template>
-                <template v-if="isEntityBcCcc || isCoopCorrectionFiling">
+                <template v-if="isEntityBcCcc || isEntityCccContinueIn || isCoopCorrectionFiling">
                   <span>At least three Directors</span>
                 </template>
               </span>
@@ -349,7 +351,7 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin, OrgPe
   readonly RoleTypes = RoleTypes
   readonly PartyTypes = PartyTypes
 
-  // Global getters
+  // Store getters
   @Getter(useStore) getCurrentJsDate!: Date
   @Getter(useStore) getEntitySnapshot!: EntitySnapshotIF
   @Getter(useStore) getOrgPeople!: OrgPersonIF[]
@@ -360,6 +362,10 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin, OrgPe
   @Getter(useStore) isEntityBcCompany!: boolean
   @Getter(useStore) isEntityBcUlcCompany!: boolean
   @Getter(useStore) isEntityBenefitCompany!: boolean
+  @Getter(useStore) isEntityBenContinueIn!: boolean
+  @Getter(useStore) isEntityCccContinueIn!: boolean
+  @Getter(useStore) isEntityContinueIn!: boolean
+  @Getter(useStore) isEntityUlcContinueIn!: boolean
   @Getter(useStore) isBaseCorrectionFiling!: boolean
   @Getter(useStore) isCoopCorrectionFiling!: boolean
   @Getter(useStore) isCorrectionFiling!: boolean
@@ -373,7 +379,7 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin, OrgPe
   @Getter(useStore) isRoleStaff!: boolean
   @Getter(useStore) isEntitySoleProp!: boolean
 
-  // Global actions
+  // Store actions
   @Action(useStore) setEditingPeopleAndRoles!: (x: boolean) => void
   @Action(useStore) setPeopleAndRoles!: (x: OrgPersonIF[]) => void
   @Action(useStore) setPeopleAndRolesChanged!: (x: boolean) => void
@@ -403,11 +409,13 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin, OrgPe
   // FUTURE: should move rules and text to resource files
   /** True when the minimum director count is met. */
   get haveMinimumDirectors (): boolean {
-    // *** TODO: add cont in types
-    if (this.isEntityBcCompany || this.isEntityBenefitCompany || this.isEntityBcUlcCompany) {
+    if (
+      this.isEntityBcCompany || this.isEntityBenefitCompany || this.isEntityBcUlcCompany ||
+      this.isEntityContinueIn || this.isEntityBenContinueIn || this.isEntityUlcContinueIn
+    ) {
       return this.hasRole(RoleTypes.DIRECTOR, 1, CompareModes.AT_LEAST)
     }
-    if (this.isEntityBcCcc || this.isCoopCorrectionFiling) {
+    if (this.isEntityBcCcc || this.isEntityCccContinueIn || this.isCoopCorrectionFiling) {
       return this.hasRole(RoleTypes.DIRECTOR, 3, CompareModes.AT_LEAST)
     }
     return false // should never happen
@@ -492,8 +500,11 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin, OrgPe
     if (this.isCorrectionFiling) {
       if (this.isEntityPartnership) return this.haveMinimumPartners
       if (this.isEntitySoleProp) return this.haveRequiredProprietor
-      // *** TODO: add cont in types
-      if (this.isEntityBcCompany || this.isEntityBenefitCompany || this.isEntityBcCcc || this.isEntityBcUlcCompany) {
+      if (
+        this.isEntityBcCompany || this.isEntityBenefitCompany || this.isEntityBcCcc ||
+        this.isEntityBcUlcCompany || this.isEntityContinueIn || this.isEntityBenContinueIn ||
+        this.isEntityUlcContinueIn || this.isEntityCccContinueIn
+      ) {
         return this.haveMinimumDirectors
       }
       if (this.isCoopCorrectionFiling) {

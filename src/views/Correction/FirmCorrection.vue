@@ -58,7 +58,7 @@ import { CorrectionFilingIF, EntitySnapshotIF, ResourceIF }
   from '@/interfaces/'
 import { AuthServices, LegalServices } from '@/services/'
 import { StaffPaymentOptions } from '@bcrs-shared-components/enums/'
-import { GpCorrectionResource, SpCorrectionResource } from '@/resources/Correction/'
+import { CorrectionResourceGp, CorrectionResourceSp } from '@/resources/Correction/'
 import { useStore } from '@/store/store'
 
 /** Correction sub-component for corp class "Firm" entities. */
@@ -79,11 +79,11 @@ import { useStore } from '@/store/store'
   }
 })
 export default class FirmCorrection extends Mixins(CommonMixin, FeeMixin, FilingTemplateMixin) {
-  // Global getters
+  // Store getters
   @Getter(useStore) isEntityPartnership!: boolean
   @Getter(useStore) isEntitySoleProp!: boolean
 
-  // Global actions
+  // Store actions
   @Action(useStore) setHaveUnsavedChanges!: (x: boolean) => void
   @Action(useStore) setResource!: (x: ResourceIF) => void
 
@@ -92,8 +92,8 @@ export default class FirmCorrection extends Mixins(CommonMixin, FeeMixin, Filing
 
   /** The resource object for a firm correction filing. */
   get correctionResource (): ResourceIF {
-    if (this.isEntityPartnership) return GpCorrectionResource
-    if (this.isEntitySoleProp) return SpCorrectionResource
+    if (this.isEntityPartnership) return CorrectionResourceGp
+    if (this.isEntitySoleProp) return CorrectionResourceSp
     return null // should never happen
   }
 

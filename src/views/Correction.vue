@@ -37,7 +37,7 @@ export default class Correction extends Mixins(CommonMixin) {
   /** Whether App is ready. */
   @Prop({ default: false }) readonly appReady!: boolean
 
-  // Global getters
+  // Store getters
   @Getter(useStore) getBusinessId!: string
   @Getter(useStore) getEntityType!: CorpTypeCd
   @Getter(useStore) isBaseCompany!: boolean
@@ -45,7 +45,7 @@ export default class Correction extends Mixins(CommonMixin) {
   @Getter(useStore) isEntityFirm!: boolean
   @Getter(useStore) isRoleStaff!: boolean
 
-  // Global actions
+  // Store actions
   @Action(useStore) setFilingId!: (x: number) => void
   @Action(useStore) setEntityType!: (x: CorpTypeCd) => void
 

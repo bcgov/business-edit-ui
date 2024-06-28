@@ -75,7 +75,7 @@ export default class ResolutionDateDialog extends Mixins(DateMixin) {
   /** Prop to display the dialog. */
   @Prop() readonly dialog!: boolean
 
-  // Global getters
+  // Store getters
   @Getter(useStore) getBusinessFoundingDateTime!: string
   @Getter(useStore) getCurrentDate!: string
   @Getter(useStore) getNewResolutionDates!: string []

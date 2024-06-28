@@ -72,7 +72,7 @@ import { CommonMixin, FeeMixin, FilingTemplateMixin } from '@/mixins/'
 import { EntitySnapshotIF, ResourceIF } from '@/interfaces/'
 import { FilingStatus } from '@/enums/'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
-import { SpConversionResource, GpConversionResource } from '@/resources/Conversion/'
+import { ConversionResourceSp, ConversionResourceGp } from '@/resources/Conversion/'
 import { StatusCodes } from 'http-status-codes'
 import ViewWrapper from '@/components/ViewWrapper.vue'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
@@ -94,7 +94,7 @@ import { useStore } from '@/store/store'
   }
 })
 export default class Conversion extends Mixins(CommonMixin, FeeMixin, FilingTemplateMixin) {
-  // Global getters
+  // Store getters
   @Getter(useStore) getAppValidate!: boolean
   @Getter(useStore) isEntityPartnership!: boolean
   @Getter(useStore) isEntitySoleProp!: boolean
@@ -102,7 +102,7 @@ export default class Conversion extends Mixins(CommonMixin, FeeMixin, FilingTemp
   @Getter(useStore) isSummaryMode!: boolean
   @Getter(useStore) showFeeSummary!: boolean
 
-  // Global actions
+  // Store actions
   @Action(useStore) setCertifyStateValidity!: (x: boolean) => void
   @Action(useStore) setFilingId!: (x: number) => void
   @Action(useStore) setHaveUnsavedChanges!: (x: boolean) => void
@@ -123,8 +123,8 @@ export default class Conversion extends Mixins(CommonMixin, FeeMixin, FilingTemp
 
   /** The resource object for a firm conversion filing. */
   get firmConversionResource (): ResourceIF {
-    if (this.isEntityPartnership) return GpConversionResource
-    if (this.isEntitySoleProp) return SpConversionResource
+    if (this.isEntityPartnership) return ConversionResourceGp
+    if (this.isEntitySoleProp) return ConversionResourceSp
     return null
   }
 

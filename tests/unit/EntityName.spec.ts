@@ -3,25 +3,25 @@ import Vuetify from 'vuetify'
 import { mount, shallowMount } from '@vue/test-utils'
 import EntityName from '@/components/common/YourCompany/EntityName.vue'
 
-import { BcAlterationResource } from '@/resources/Alteration/BC'
-import { BenAlterationResource } from '@/resources/Alteration/BEN'
-import { CccAlterationResource } from '@/resources/Alteration/CCC'
-import { UlcAlterationResource } from '@/resources/Alteration/ULC'
+import { AlterationResourceBc } from '@/resources/Alteration/BC'
+import { AlterationResourceBen } from '@/resources/Alteration/BEN'
+import { AlterationResourceCc } from '@/resources/Alteration/CC'
+import { AlterationResourceUlc } from '@/resources/Alteration/ULC'
 
-import { GpChangeResource } from '@/resources/Change/GP'
-import { SpChangeResource } from '@/resources/Change/SP'
+import { ChangeResourceGp } from '@/resources/Change/GP'
+import { ChangeResourceSp } from '@/resources/Change/SP'
 
-import { GpConversionResource } from '@/resources/Conversion/GP'
-import { SpConversionResource } from '@/resources/Conversion/SP'
+import { ConversionResourceGp } from '@/resources/Conversion/GP'
+import { ConversionResourceSp } from '@/resources/Conversion/SP'
 
-import { BcCorrectionResource } from '@/resources/Correction/BC'
-import { BenCorrectionResource } from '@/resources/Correction/BEN'
-import { CccCorrectionResource } from '@/resources/Correction/CCC'
-import { GpCorrectionResource } from '@/resources/Correction/GP'
-import { SpCorrectionResource } from '@/resources/Correction/SP'
-import { UlcCorrectionResource } from '@/resources/Correction/ULC'
+import { CorrectionResourceBc } from '@/resources/Correction/BC'
+import { CorrectionResourceBen } from '@/resources/Correction/BEN'
+import { CorrectionResourceCc } from '@/resources/Correction/CC'
+import { CorrectionResourceGp } from '@/resources/Correction/GP'
+import { CorrectionResourceSp } from '@/resources/Correction/SP'
+import { CorrectionResourceUlc } from '@/resources/Correction/ULC'
 
-import { CpSpecialResolutionResource } from '@/resources/SpecialResolution/CP'
+import { SpecialResolutionResourceCp } from '@/resources/SpecialResolution/CP'
 
 import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
@@ -38,14 +38,14 @@ const alterationTests = [
   {
     filingType: FilingTypes.ALTERATION,
     entityType: CorpTypeCd.BC_COMPANY,
-    resourceModel: BcAlterationResource,
+    resourceModel: AlterationResourceBc,
     isNumberedCompany: true,
     expectedOptions: [CorrectNameOptions.CORRECT_NEW_NR]
   },
   {
     filingType: FilingTypes.ALTERATION,
     entityType: CorpTypeCd.BC_COMPANY,
-    resourceModel: BcAlterationResource,
+    resourceModel: AlterationResourceBc,
     isNumberedCompany: false,
     expectedOptions: [
       CorrectNameOptions.CORRECT_NEW_NR,
@@ -55,14 +55,14 @@ const alterationTests = [
   {
     filingType: FilingTypes.ALTERATION,
     entityType: CorpTypeCd.BENEFIT_COMPANY,
-    resourceModel: BenAlterationResource,
+    resourceModel: AlterationResourceBen,
     isNumberedCompany: true,
     expectedOptions: [CorrectNameOptions.CORRECT_NEW_NR]
   },
   {
     filingType: FilingTypes.ALTERATION,
     entityType: CorpTypeCd.BENEFIT_COMPANY,
-    resourceModel: BenAlterationResource,
+    resourceModel: AlterationResourceBen,
     isNumberedCompany: false,
     expectedOptions: [
       CorrectNameOptions.CORRECT_NEW_NR,
@@ -72,14 +72,14 @@ const alterationTests = [
   {
     filingType: FilingTypes.ALTERATION,
     entityType: CorpTypeCd.BC_CCC,
-    resourceModel: CccAlterationResource,
+    resourceModel: AlterationResourceCc,
     isNumberedCompany: true,
     expectedOptions: [CorrectNameOptions.CORRECT_NEW_NR]
   },
   {
     filingType: FilingTypes.ALTERATION,
     entityType: CorpTypeCd.BC_CCC,
-    resourceModel: CccAlterationResource,
+    resourceModel: AlterationResourceCc,
     isNumberedCompany: false,
     expectedOptions: [
       CorrectNameOptions.CORRECT_NEW_NR,
@@ -89,14 +89,14 @@ const alterationTests = [
   {
     filingType: FilingTypes.ALTERATION,
     entityType: CorpTypeCd.BC_ULC_COMPANY,
-    resourceModel: UlcAlterationResource,
+    resourceModel: AlterationResourceUlc,
     isNumberedCompany: true,
     expectedOptions: [CorrectNameOptions.CORRECT_NEW_NR]
   },
   {
     filingType: FilingTypes.ALTERATION,
     entityType: CorpTypeCd.BC_ULC_COMPANY,
-    resourceModel: UlcAlterationResource,
+    resourceModel: AlterationResourceUlc,
     isNumberedCompany: false,
     expectedOptions: [
       CorrectNameOptions.CORRECT_NEW_NR,
@@ -109,14 +109,14 @@ const changeTests = [
   {
     filingType: FilingTypes.CHANGE_OF_REGISTRATION,
     entityType: CorpTypeCd.PARTNERSHIP,
-    resourceModel: GpChangeResource,
+    resourceModel: ChangeResourceGp,
     isNumberedCompany: null,
     expectedOptions: [CorrectNameOptions.CORRECT_NEW_NR]
   },
   {
     filingType: FilingTypes.CHANGE_OF_REGISTRATION,
     entityType: CorpTypeCd.SOLE_PROP,
-    resourceModel: SpChangeResource,
+    resourceModel: ChangeResourceSp,
     isNumberedCompany: null,
     expectedOptions: [CorrectNameOptions.CORRECT_NEW_NR]
   }
@@ -126,14 +126,14 @@ const conversionTests = [
   {
     filingType: FilingTypes.CONVERSION,
     entityType: CorpTypeCd.PARTNERSHIP,
-    resourceModel: GpConversionResource,
+    resourceModel: ConversionResourceGp,
     isNumberedCompany: null,
     expectedOptions: [CorrectNameOptions.CORRECT_NEW_NR]
   },
   {
     filingType: FilingTypes.CONVERSION,
     entityType: CorpTypeCd.SOLE_PROP,
-    resourceModel: SpConversionResource,
+    resourceModel: ConversionResourceSp,
     isNumberedCompany: null,
     expectedOptions: [CorrectNameOptions.CORRECT_NEW_NR]
   }
@@ -143,14 +143,14 @@ const correctionTests = [
   {
     filingType: FilingTypes.CORRECTION,
     entityType: CorpTypeCd.BENEFIT_COMPANY,
-    resourceModel: BenCorrectionResource,
+    resourceModel: CorrectionResourceBen,
     isNumberedCompany: true,
     expectedOptions: [CorrectNameOptions.CORRECT_NEW_NR]
   },
   {
     filingType: FilingTypes.CORRECTION,
     entityType: CorpTypeCd.BENEFIT_COMPANY,
-    resourceModel: BenCorrectionResource,
+    resourceModel: CorrectionResourceBen,
     isNumberedCompany: false,
     expectedOptions: [
       CorrectNameOptions.CORRECT_NEW_NR,
@@ -161,14 +161,14 @@ const correctionTests = [
   {
     filingType: FilingTypes.CORRECTION,
     entityType: CorpTypeCd.BC_CCC,
-    resourceModel: CccCorrectionResource,
+    resourceModel: CorrectionResourceCc,
     isNumberedCompany: true,
     expectedOptions: [CorrectNameOptions.CORRECT_NEW_NR]
   },
   {
     filingType: FilingTypes.CORRECTION,
     entityType: CorpTypeCd.BC_CCC,
-    resourceModel: CccCorrectionResource,
+    resourceModel: CorrectionResourceCc,
     isNumberedCompany: false,
     expectedOptions: [
       CorrectNameOptions.CORRECT_NEW_NR,
@@ -179,21 +179,21 @@ const correctionTests = [
   {
     filingType: FilingTypes.CORRECTION,
     entityType: CorpTypeCd.PARTNERSHIP,
-    resourceModel: GpCorrectionResource,
+    resourceModel: CorrectionResourceGp,
     isNumberedCompany: false,
     expectedOptions: [CorrectNameOptions.CORRECT_NEW_NR]
   },
   {
     filingType: FilingTypes.CORRECTION,
     entityType: CorpTypeCd.BC_COMPANY,
-    resourceModel: BcCorrectionResource,
+    resourceModel: CorrectionResourceBc,
     isNumberedCompany: true,
     expectedOptions: [CorrectNameOptions.CORRECT_NEW_NR]
   },
   {
     filingType: FilingTypes.CORRECTION,
     entityType: CorpTypeCd.BC_COMPANY,
-    resourceModel: BcCorrectionResource,
+    resourceModel: CorrectionResourceBc,
     isNumberedCompany: false,
     expectedOptions: [
       CorrectNameOptions.CORRECT_NEW_NR,
@@ -204,21 +204,21 @@ const correctionTests = [
   {
     filingType: FilingTypes.CORRECTION,
     entityType: CorpTypeCd.SOLE_PROP,
-    resourceModel: SpCorrectionResource,
+    resourceModel: CorrectionResourceSp,
     isNumberedCompany: false,
     expectedOptions: [CorrectNameOptions.CORRECT_NEW_NR]
   },
   {
     filingType: FilingTypes.CORRECTION,
     entityType: CorpTypeCd.BC_ULC_COMPANY,
-    resourceModel: UlcCorrectionResource,
+    resourceModel: CorrectionResourceUlc,
     isNumberedCompany: true,
     expectedOptions: [CorrectNameOptions.CORRECT_NEW_NR]
   },
   {
     filingType: FilingTypes.CORRECTION,
     entityType: CorpTypeCd.BC_ULC_COMPANY,
-    resourceModel: UlcCorrectionResource,
+    resourceModel: CorrectionResourceUlc,
     isNumberedCompany: false,
     expectedOptions: [
       CorrectNameOptions.CORRECT_NEW_NR,
@@ -232,7 +232,7 @@ const specialResolutionTests = [
   {
     filingType: FilingTypes.SPECIAL_RESOLUTION,
     entityType: CorpTypeCd.COOP,
-    resourceModel: CpSpecialResolutionResource,
+    resourceModel: SpecialResolutionResourceCp,
     isNumberedCompany: null,
     expectedOptions: [CorrectNameOptions.CORRECT_NEW_NR]
   }
@@ -313,7 +313,7 @@ describe('Name Changes for a SP alteration', () => {
     store.stateModel.entitySnapshot = entitySnapshot as any
     store.stateModel.tombstone.filingType = FilingTypes.ALTERATION
     store.stateModel.tombstone.entityType = CorpTypeCd.BENEFIT_COMPANY
-    store.resourceModel = BenAlterationResource
+    store.resourceModel = AlterationResourceBen
 
     wrapper = mount(EntityName, { vuetify })
   })

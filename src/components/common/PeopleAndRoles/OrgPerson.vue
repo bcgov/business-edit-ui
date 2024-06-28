@@ -490,7 +490,7 @@ export default class OrgPerson extends Mixins(CommonMixin, OrgPersonMixin) {
   /** The index of the org/person to edit, or NaN to add. */
   @Prop() readonly activeIndex!: number
 
-  // Global getters
+  // Store getters
   @Getter(useStore) getCurrentDate!: string
   @Getter(useStore) getResource!: ResourceIF
   @Getter(useStore) isAlterationFiling!: boolean

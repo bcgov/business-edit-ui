@@ -48,12 +48,12 @@ import { useStore } from '@/store/store'
   }
 })
 export default class StaffPayment extends Vue {
-  // Global getters
+  // Store getters
   @Getter(useStore) getFlagsReviewCertify!: FlagsReviewCertifyIF
   @Getter(useStore) getAppValidate!: boolean
   @Getter(useStore) getStaffPayment!: StaffPaymentIF
 
-  // Global actions
+  // Store actions
   @Action(useStore) setStaffPayment!: (x: StaffPaymentIF) => void
   @Action(useStore) setStaffPaymentValidity!: (x: boolean) => void
 

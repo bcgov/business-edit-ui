@@ -24,7 +24,7 @@ export default class FilingTemplateMixin extends DateMixin {
   // FUTURE: import entire store instead of individual getters, actions and mutations?
   // Ref: https://pinia.vuejs.org/cookbook/options-api.html#giving-access-to-the-whole-store
 
-  // Global getters
+  // Store getters
   @Getter(useStore) areProvisionsRemoved!: boolean
   @Getter(useStore) getAssociationType!: CoopTypes
   @Getter(useStore) getBusinessContact!: ContactPointIF
@@ -85,7 +85,7 @@ export default class FilingTemplateMixin extends DateMixin {
   @Getter(useStore) isFirmCorrectionFiling!: boolean
   @Getter(useStore) isLimitedRestorationToFull!: boolean
 
-  // Global actions
+  // Store actions
   @Action(useStore) setBusinessContact!: (x: ContactPointIF) => void
   @Action(useStore) setBusinessInformation!: (x: BusinessInformationIF) => void
   @Action(useStore) setCertifyState!: (x: CertifyIF) => void
@@ -1379,10 +1379,14 @@ export default class FilingTemplateMixin extends DateMixin {
 
     // handle entity-specific values
     switch (entitySnapshot?.businessInfo?.legalType) {
-      case CorpTypeCd.BENEFIT_COMPANY:
-      case CorpTypeCd.BC_COMPANY:
       case CorpTypeCd.BC_CCC:
-      case CorpTypeCd.BC_ULC_COMPANY: {
+      case CorpTypeCd.BC_COMPANY:
+      case CorpTypeCd.BC_ULC_COMPANY:
+      case CorpTypeCd.BEN_CONTINUE_IN:
+      case CorpTypeCd.BENEFIT_COMPANY:
+      case CorpTypeCd.CCC_CONTINUE_IN:
+      case CorpTypeCd.CONTINUE_IN:
+      case CorpTypeCd.ULC_CONTINUE_IN: {
         // store Name Translations
         // don't need cloneDeep because mapNameTranslations already returns new array
         this.setNameTranslations(this.mapNameTranslations(entitySnapshot?.nameTranslations || []))

@@ -45,6 +45,9 @@ import { ResourceUtilities } from '@/utils/resource-utils'
 export default class BusinessType extends Mixins(FilingTemplateMixin) {
   readonly GetCorpFullDescription = GetCorpFullDescription // for template
 
+  // Store getters
+  // @Getter(useStore) getOriginalLegalType!: CorpTypeCd
+
   get articleInfo (): string {
     return ResourceUtilities.articleInfo(this.getEntityType)
   }
