@@ -188,7 +188,7 @@ import { useStore } from '@/store/store'
   }
 })
 export default class AlterationSummary extends Mixins(DateMixin, FeeMixin, FilingTemplateMixin) {
-  // Global getters
+  // Store getters
   @Getter(useStore) getBusinessNumber!: string
   @Getter(useStore) getCurrentFees!: FeesIF[]
   @Getter(useStore) getFlagsReviewCertify!: FlagsReviewCertifyIF
@@ -198,7 +198,7 @@ export default class AlterationSummary extends Mixins(DateMixin, FeeMixin, Filin
   @Getter(useStore) haveNewResolutionDates!: boolean
   @Getter(useStore) isBusySaving!: boolean
 
-  // Global actions
+  // Store actions
   @Action(useStore) setEffectiveDateValid!: (x: boolean) => void
 
   /** Whether to perform validation. */

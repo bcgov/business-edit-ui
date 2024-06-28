@@ -3,18 +3,18 @@ import { NrRequestActionCodes } from '@bcrs-shared-components/enums'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 import { ResourceIF } from '@/interfaces/'
 
-export const CccCorrectionResource: ResourceIF = {
+export const CorrectionResourceCcc: ResourceIF = {
   entityReference: 'Company',
   contactLabel: 'Registered Office',
   displayName: null, // not used
-  entityType: CorpTypeCd.BC_CCC,
+  entityType: CorpTypeCd.CCC_CONTINUE_IN,
   addressLabel: 'Registered Office',
   title: 'Benefit Company Statement',
   description: 'This company is a benefit company and, as such, has purposes that include conducting its business in' +
                ' a responsible and sustainable manner and promoting one or more public benefits.',
   filingData: {
     filingTypeCode: FilingCodes.CORRECTION,
-    entityType: CorpTypeCd.BC_CCC,
+    entityType: CorpTypeCd.CCC_CONTINUE_IN,
     priority: false
   },
   changeData: {

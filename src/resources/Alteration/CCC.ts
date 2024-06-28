@@ -2,14 +2,14 @@ import { CorrectNameOptions, FilingCodes } from '@/enums/'
 import { CorpTypeCd, GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module/'
 import { ResourceIF } from '@/interfaces/'
 
-export const CccAlterationResource: ResourceIF = {
+export const AlterationResourceCcc: ResourceIF = {
   entityReference: 'Company',
   contactLabel: 'Registered Office',
-  displayName: GetCorpFullDescription(CorpTypeCd.BC_CCC),
+  displayName: GetCorpFullDescription(CorpTypeCd.CCC_CONTINUE_IN),
   addressLabel: 'Registered Office',
   filingData: {
     filingTypeCode: FilingCodes.ALTERATION,
-    entityType: CorpTypeCd.BC_CCC,
+    entityType: CorpTypeCd.CCC_CONTINUE_IN,
     priority: false
   },
   changeData: {

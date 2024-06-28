@@ -3,7 +3,7 @@ import { NrRequestActionCodes } from '@bcrs-shared-components/enums'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 import { ResourceIF } from '@/interfaces/'
 
-export const CpCorrectionResource: ResourceIF = {
+export const CorrectionResourceCp: ResourceIF = {
   entityReference: 'Business',
   contactLabel: 'Registered Office',
   displayName: null, // not used

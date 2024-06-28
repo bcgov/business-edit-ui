@@ -37,7 +37,7 @@ import { useStore } from '@/store/store'
   }
 })
 export default class BusinessContactInfo extends Mixins(CommonMixin) {
-  // Global getters
+  // Store getters
   @Getter(useStore) getBusinessContact!: ContactPointIF
   @Getter(useStore) getBusinessId!: string
   @Getter(useStore) getComponentValidate!: boolean

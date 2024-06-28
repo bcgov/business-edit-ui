@@ -91,7 +91,7 @@
             cols="12"
             sm="3"
           >
-            <label>{{ isSoleProp ? 'Proprietor' : 'Partner' }} Information</label>
+            <label>{{ isEntitySoleProp ? 'Proprietor' : 'Partner' }} Information</label>
           </v-col>
         </v-row>
         <v-row
@@ -125,7 +125,7 @@ import { useStore } from '@/store/store'
   }
 })
 export default class ChangeSummary extends Vue {
-  // Global getters
+  // Store getters
   @Getter(useStore) getBusinessNumber!: string
   @Getter(useStore) getCurrentNaics!: NaicsIF
   @Getter(useStore) getNameRequestLegalName!: string
@@ -134,7 +134,7 @@ export default class ChangeSummary extends Vue {
   @Getter(useStore) hasNaicsChanged!: boolean
   @Getter(useStore) haveOfficeAddressesChanged!: boolean
   @Getter(useStore) havePeopleAndRolesChanged!: boolean
-  @Getter(useStore) isSoleProp!: boolean
+  @Getter(useStore) isEntitySoleProp!: boolean
 
   /** Whether to perform validation. */
   @Prop() readonly validate!: boolean

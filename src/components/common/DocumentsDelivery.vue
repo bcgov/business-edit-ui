@@ -93,7 +93,7 @@ import { useStore } from '@/store/store'
 
 @Component({})
 export default class DocumentsDelivery extends Mixins(CommonMixin) {
-  // Global getters
+  // Store getters
   @Getter(useStore) getUserEmail!: string
   @Getter(useStore) getBusinessContact!: ContactPointIF
   @Getter(useStore) isRoleStaff!: boolean
@@ -102,7 +102,7 @@ export default class DocumentsDelivery extends Mixins(CommonMixin) {
   @Getter(useStore) getFilingName!: FilingNames
   @Getter(useStore) getResource!: ResourceIF
 
-  // Global actions
+  // Store actions
   @Action(useStore) setDocumentOptionalEmail!: (x: string) => void
   @Action(useStore) setDocumentOptionalEmailValidity!: (x: boolean) => void
 

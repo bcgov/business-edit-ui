@@ -143,21 +143,15 @@ import { BusinessContactInfo, CertifySection, CourtOrderPoa, DocumentsDelivery, 
   QuestionWrapper, RecognitionDateTime, StaffPayment, YourCompanyWrapper } from '@/components/common/'
 import { AuthServices, LegalServices } from '@/services/'
 import { CommonMixin, FeeMixin, FilingTemplateMixin, OrgPersonMixin } from '@/mixins/'
-import {
-  ActionKvIF,
-  EntitySnapshotIF,
-  OrgPersonIF,
-  ResourceIF,
-  RestorationFilingIF
-} from '@/interfaces/'
-import { BcRestorationResource, BenRestorationResource, CccRestorationResource, UlcRestorationResource }
-  from '@/resources/LimitedRestorationToFull/'
+import { ActionKvIF, EntitySnapshotIF, OrgPersonIF, ResourceIF, RestorationFilingIF } from '@/interfaces/'
+import * as Resources from '@/resources/LimitedRestorationToFull/'
 import { ApprovalTypes, FilingStatus, RoleTypes } from '@/enums/'
 import { RelationshipTypes } from '@bcrs-shared-components/enums'
 import { RelationshipsPanel } from '@bcrs-shared-components/relationships-panel'
 import { ApprovalType } from '@bcrs-shared-components/approval-type'
 import ViewWrapper from '@/components/ViewWrapper.vue'
 import { useStore } from '@/store/store'
+import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 
 @Component({
   components: {
@@ -188,22 +182,19 @@ export default class LimitedRestorationToFull extends Mixins(
   FilingTemplateMixin,
   OrgPersonMixin
 ) {
-  // Global getters
+  // Store getters
   @Getter(useStore) getAppValidate!: boolean
   @Getter(useStore) getApprovalTypeValid!: boolean
   @Getter(useStore) getComponentValidate!: boolean
   @Getter(useStore) getCourtOrderNumberText!: string
+  // @Getter(useStore) getEntityType!: CorpTypeCd
   @Getter(useStore) getRelationships!: RelationshipTypes[]
   @Getter(useStore) getResource!: ResourceIF
-  @Getter(useStore) isBcCcc!: boolean
-  @Getter(useStore) isBcCompany!: boolean
-  @Getter(useStore) isBcUlcCompany!: boolean
-  @Getter(useStore) isBenefitCompany!: boolean
   @Getter(useStore) isRoleStaff!: boolean
   @Getter(useStore) isSummaryMode!: boolean
   @Getter(useStore) showFeeSummary!: boolean
 
-  // Global actions
+  // Store actions
   @Action(useStore) setDocumentOptionalEmailValidity!: (x: boolean) => void
   @Action(useStore) setFilingId!: (x: number) => void
   @Action(useStore) setHaveUnsavedChanges!: (x: boolean) => void
@@ -225,13 +216,17 @@ export default class LimitedRestorationToFull extends Mixins(
 
   /** The resource object for a restoration filing. */
   get restorationResource (): ResourceIF {
-    switch (true) {
-      case this.isBcCompany: return BcRestorationResource
-      case this.isBenefitCompany: return BenRestorationResource
-      case this.isBcCcc: return CccRestorationResource
-      case this.isBcUlcCompany: return UlcRestorationResource
+    switch (this.getEntityType) {
+      case CorpTypeCd.BC_CCC: return Resources.RestorationResourceCc
+      case CorpTypeCd.BC_COMPANY: return Resources.RestorationResourceBc
+      case CorpTypeCd.BC_ULC_COMPANY: return Resources.RestorationResourceUlc
+      case CorpTypeCd.BEN_CONTINUE_IN: return Resources.RestorationResourceCben
+      case CorpTypeCd.BENEFIT_COMPANY: return Resources.RestorationResourceBen
+      case CorpTypeCd.CCC_CONTINUE_IN: return Resources.RestorationResourceCcc
+      case CorpTypeCd.CONTINUE_IN: return Resources.RestorationResourceC
+      case CorpTypeCd.ULC_CONTINUE_IN: return Resources.RestorationResourceCul
+      default: return null // should never happen
     }
-    return null // should never happen
   }
 
   /** Called when App is ready and this component can load its data. */

@@ -150,7 +150,7 @@ import { CommonMixin, FeeMixin, FilingTemplateMixin } from '@/mixins/'
 import { EntitySnapshotIF, FilingDataIF, ResourceIF } from '@/interfaces/'
 import { FilingStatus } from '@/enums/'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
-import { CpSpecialResolutionResource } from '@/resources/SpecialResolution/'
+import { SpecialResolutionResourceCp } from '@/resources/SpecialResolution/'
 import ViewWrapper from '@/components/ViewWrapper.vue'
 import { useStore } from '@/store/store'
 import Rules from '@/components/SpecialResolution/Rules.vue'
@@ -179,17 +179,17 @@ import Memorandum from '@/components/SpecialResolution/Memorandum.vue'
   }
 })
 export default class SpecialResolution extends Mixins(CommonMixin, FeeMixin, FilingTemplateMixin) {
-  // Global getters
+  // Store getters
   @Getter(useStore) getAppValidate!: boolean
   @Getter(useStore) getUserFirstName!: string
   @Getter(useStore) getUserLastName!: string
-  @Getter(useStore) isCoop!: boolean
+  @Getter(useStore) isEntityCoop!: boolean
   @Getter(useStore) isPremiumAccount!: boolean
   @Getter(useStore) isRoleStaff!: boolean
   @Getter(useStore) isSummaryMode!: boolean
   @Getter(useStore) showFeeSummary!: boolean
 
-  // Global actions
+  // Store actions
   @Action(useStore) setDocumentOptionalEmailValidity!: (x: boolean) => void
   @Action(useStore) setFilingId!: (x: number) => void
   @Action(useStore) setHaveUnsavedChanges!: (x: boolean) => void
@@ -217,7 +217,7 @@ export default class SpecialResolution extends Mixins(CommonMixin, FeeMixin, Fil
 
   /** The resource object for a special resolution filing. */
   get specialResolutionResource (): ResourceIF {
-    if (this.isCoop) return CpSpecialResolutionResource
+    if (this.isEntityCoop) return SpecialResolutionResourceCp
     return null
   }
 

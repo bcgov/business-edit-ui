@@ -19,7 +19,7 @@ describe('BC Reg Comments component', () => {
   const typeCommentTests: [Record<string, unknown>, string][] = [
     [{
       confirmArticles: false,
-      isBenefit: true,
+      isBenefitCompany: true,
       selectedEntityType: 'BEN'
     }, 'Benefit Company Articles'],
     [{

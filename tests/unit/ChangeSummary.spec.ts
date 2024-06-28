@@ -5,7 +5,7 @@ import { mount } from '@vue/test-utils'
 import ChangeSummary from '@/components/Change/ChangeSummary.vue'
 import NatureOfBusiness from '@/components/common/YourCompany/NatureOfBusiness.vue'
 import OfficeAddresses from '@/components/common/YourCompany/OfficeAddresses.vue'
-import { GpChangeResource } from '@/resources/Change/GP'
+import { ChangeResourceGp } from '@/resources/Change/GP'
 import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
 import { FilingTypes } from '@/enums'
@@ -53,7 +53,7 @@ describe('Change Summary component', () => {
     store.stateModel.entitySnapshot = entitySnapshot
     store.stateModel.tombstone.filingType = FilingTypes.CHANGE_OF_REGISTRATION
     store.stateModel.businessInformation = { ...entitySnapshot.businessInfo }
-    store.resourceModel = GpChangeResource
+    store.resourceModel = ChangeResourceGp
   })
 
   beforeEach(() => {

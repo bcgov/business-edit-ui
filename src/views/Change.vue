@@ -109,7 +109,7 @@ import { CommonMixin, FeeMixin, FilingTemplateMixin } from '@/mixins/'
 import { EntitySnapshotIF, ResourceIF } from '@/interfaces/'
 import { FilingStatus, PartyTypes } from '@/enums/'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
-import { SpChangeResource, GpChangeResource, SpOrganizationChangeResource } from '@/resources/Change/'
+import { ChangeResourceSp, ChangeResourceGp, ChangeResourceSpOrganization } from '@/resources/Change/'
 import ViewWrapper from '@/components/ViewWrapper.vue'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 import { useStore } from '@/store/store'
@@ -135,19 +135,19 @@ import { useStore } from '@/store/store'
   }
 })
 export default class Change extends Mixins(CommonMixin, FeeMixin, FilingTemplateMixin) {
-  // Global getters
+  // Store getters
   @Getter(useStore) getAppValidate!: boolean
   @Getter(useStore) getUserFirstName!: string
   @Getter(useStore) getUserLastName!: string
-  @Getter(useStore) isPartnership!: boolean
+  @Getter(useStore) isEntityPartnership!: boolean
+  @Getter(useStore) isEntitySoleProp!: boolean
   @Getter(useStore) isPremiumAccount!: boolean
   @Getter(useStore) isRoleStaff!: boolean
   @Getter(useStore) isSbcStaff!: boolean
-  @Getter(useStore) isSoleProp!: boolean
   @Getter(useStore) isSummaryMode!: boolean
   @Getter(useStore) showFeeSummary!: boolean
 
-  // Global actions
+  // Store actions
   @Action(useStore) setDocumentOptionalEmailValidity!: (x: boolean) => void
   @Action(useStore) setFilingId!: (x: number) => void
   @Action(useStore) setHaveUnsavedChanges!: (x: boolean) => void
@@ -174,9 +174,9 @@ export default class Change extends Mixins(CommonMixin, FeeMixin, FilingTemplate
   /** The resource object for a firm change filing. */
   get firmChangeResource (): ResourceIF {
     const isOfficerOrganization = this.getOrgPeople[0]?.officer?.partyType === PartyTypes.ORGANIZATION
-    if (this.isPartnership) return GpChangeResource
-    if (this.isSoleProp && isOfficerOrganization) return SpOrganizationChangeResource
-    if (this.isSoleProp) return SpChangeResource
+    if (this.isEntityPartnership) return ChangeResourceGp
+    if (this.isEntitySoleProp && isOfficerOrganization) return ChangeResourceSpOrganization
+    if (this.isEntitySoleProp) return ChangeResourceSp
     return null
   }
 

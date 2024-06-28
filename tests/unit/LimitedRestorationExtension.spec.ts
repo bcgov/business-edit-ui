@@ -11,7 +11,7 @@ import DocumentsDelivery from '@/components/common/DocumentsDelivery.vue'
 import YourCompanySummary from '@/components/Restoration/YourCompanySummary.vue'
 import StaffPayment from '@/components/common/StaffPayment.vue'
 import BusinessContactInfo from '@/components/common/YourCompany/BusinessContactInfo.vue'
-import { BenRestorationResource } from '@/resources/LimitedRestorationExtension/BEN'
+import { RestorationResourceBen } from '@/resources/LimitedRestorationExtension/BEN'
 import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
 import { FilingTypes } from '@/enums'
@@ -211,7 +211,7 @@ describe('Limited Restoration Extension component - edit page', () => {
   }
 
   beforeAll(async () => {
-    store.resourceModel = BenRestorationResource
+    store.resourceModel = RestorationResourceBen
 
     // mock the window.location.assign function
     delete window.location
@@ -246,7 +246,7 @@ describe('Limited Restoration Extension component - edit page', () => {
     store.stateModel.entitySnapshot.businessInfo.stateFiling = stateFiling as any
     store.stateModel.peopleAndRoles.orgPeople = stateFiling.restoration.parties[0] as any
     store.stateModel.businessInformation = { ...entitySnapshot.businessInfo } as any
-    store.resourceModel = BenRestorationResource
+    store.resourceModel = RestorationResourceBen
 
     wrapper = shallowMount(LimitedRestorationExtension, {
       vuetify,
@@ -320,7 +320,7 @@ describe('Limited Restoration Extension component - summary page (with no filing
     store.stateModel.entitySnapshot = entitySnapshot as any
     store.stateModel.entitySnapshot.businessInfo.stateFiling = stateFiling as any
     store.stateModel.peopleAndRoles.orgPeople = stateFiling.restoration.parties as any
-    store.resourceModel = BenRestorationResource
+    store.resourceModel = RestorationResourceBen
 
     // mock the window.location.assign function
     delete window.location
@@ -417,7 +417,7 @@ describe('Limited Restoration Extension component - summary page (with filing ch
     store.stateModel.entitySnapshot.businessInfo.stateFiling = stateFiling as any
     store.stateModel.peopleAndRoles.orgPeople = stateFiling.restoration.parties as any
     store.stateModel.businessInformation = { ...entitySnapshot.businessInfo } as any
-    store.resourceModel = BenRestorationResource
+    store.resourceModel = RestorationResourceBen
 
     wrapper = shallowMount(LimitedRestorationExtension, {
       vuetify,

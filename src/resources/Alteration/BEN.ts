@@ -2,7 +2,7 @@ import { CorrectNameOptions, FilingCodes } from '@/enums/'
 import { CorpTypeCd, GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module/'
 import { ResourceIF } from '@/interfaces/'
 
-export const BenAlterationResource: ResourceIF = {
+export const AlterationResourceBen: ResourceIF = {
   entityReference: 'Company',
   contactLabel: 'Registered Office',
   displayName: GetCorpFullDescription(CorpTypeCd.BENEFIT_COMPANY),
@@ -19,17 +19,17 @@ export const BenAlterationResource: ResourceIF = {
     ],
     entityTypeOptions: [
       {
-        value: 'BEN',
+        value: CorpTypeCd.BENEFIT_COMPANY,
         shortDesc: 'BC Benefit Company',
         text: 'BC Benefit Company'
       },
       {
-        value: 'BC',
+        value: CorpTypeCd.BC_COMPANY,
         shortDesc: 'BC Limited Company',
         text: 'BC Limited Company'
       },
       {
-        value: 'CC',
+        value: CorpTypeCd.BC_CCC,
         shortDesc: 'BC Community Contribution Company',
         text: 'BC Community Contribution Company'
       }

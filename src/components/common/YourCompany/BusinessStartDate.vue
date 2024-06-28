@@ -182,7 +182,7 @@ import { useStore } from '@/store/store'
   }
 })
 export default class BusinessStartDate extends Mixins(CommonMixin, DateMixin) {
-  // Global getters
+  // Store getters
   @Getter(useStore) getBusinessFoundingDateTime!: string
   @Getter(useStore) getBusinessStartDate!: string
   @Getter(useStore) getComponentValidate!: boolean

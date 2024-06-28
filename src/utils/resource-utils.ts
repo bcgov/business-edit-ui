@@ -1,17 +1,17 @@
 import {
-  BcAlterationResource,
-  BenAlterationResource,
-  CccAlterationResource,
-  UlcAlterationResource
+  AlterationResourceBc,
+  AlterationResourceBen,
+  AlterationResourceCc,
+  AlterationResourceUlc
 } from '@/resources/Alteration'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 
 export class ResourceUtilities {
     private static entityTypeToResourceMap = {
-      [CorpTypeCd.BC_COMPANY]: BcAlterationResource,
-      [CorpTypeCd.BENEFIT_COMPANY]: BenAlterationResource,
-      [CorpTypeCd.BC_CCC]: CccAlterationResource,
-      [CorpTypeCd.BC_ULC_COMPANY]: UlcAlterationResource
+      [CorpTypeCd.BC_COMPANY]: AlterationResourceBc,
+      [CorpTypeCd.BENEFIT_COMPANY]: AlterationResourceBen,
+      [CorpTypeCd.BC_CCC]: AlterationResourceCc,
+      [CorpTypeCd.BC_ULC_COMPANY]: AlterationResourceUlc
     }
 
     /**

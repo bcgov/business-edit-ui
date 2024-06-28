@@ -121,15 +121,14 @@ import { BusinessContactInfo, CertifySection, DocumentsDelivery, EntityName, Fol
   ListPeopleAndRoles, NameTranslation, OfficeAddresses, PeopleAndRoles, QuestionWrapper,
   RecognitionDateTime, StaffPayment, YourCompanyWrapper } from '@/components/common/'
 import { CommonMixin, FeeMixin, FilingTemplateMixin, OrgPersonMixin } from '@/mixins/'
-import { EntitySnapshotIF, OrgPersonIF, ResourceIF, RestorationFilingIF }
-  from '@/interfaces/'
+import { EntitySnapshotIF, OrgPersonIF, ResourceIF, RestorationFilingIF } from '@/interfaces/'
 import { FilingStatus, RoleTypes } from '@/enums/'
-import { BcRestorationResource, BenRestorationResource, CccRestorationResource, UlcRestorationResource }
-  from '@/resources/LimitedRestorationExtension/'
+import * as Resources from '@/resources/LimitedRestorationExtension/'
 import ExtendTimeLimit from '@/components/Restoration/ExtendTimeLimit.vue'
 import ViewWrapper from '@/components/ViewWrapper.vue'
 import { AuthServices, LegalServices } from '@/services'
 import { useStore } from '@/store/store'
+import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 
 @Component({
   components: {
@@ -158,18 +157,15 @@ export default class LimitedRestorationExtension extends Mixins(
   FilingTemplateMixin,
   OrgPersonMixin
 ) {
-  // Global getters
+  // Store getters
   @Getter(useStore) getAppValidate!: boolean
+  // @Getter(useStore) getEntityType!: CorpTypeCd
   @Getter(useStore) getResource!: ResourceIF
-  @Getter(useStore) isBcCcc!: boolean
-  @Getter(useStore) isBcCompany!: boolean
-  @Getter(useStore) isBcUlcCompany!: boolean
-  @Getter(useStore) isBenefitCompany!: boolean
   @Getter(useStore) isRoleStaff!: boolean
   @Getter(useStore) isSummaryMode!: boolean
   @Getter(useStore) showFeeSummary!: boolean
 
-  // Global actions
+  // Store actions
   @Action(useStore) setDocumentOptionalEmailValidity!: (x: boolean) => void
   @Action(useStore) setFilingId!: (x: number) => void
   @Action(useStore) setHaveUnsavedChanges!: (x: boolean) => void
@@ -190,13 +186,17 @@ export default class LimitedRestorationExtension extends Mixins(
 
   /** The resource object for a restoration filing. */
   get restorationResource (): ResourceIF {
-    switch (true) {
-      case this.isBcCompany: return BcRestorationResource
-      case this.isBenefitCompany: return BenRestorationResource
-      case this.isBcCcc: return CccRestorationResource
-      case this.isBcUlcCompany: return UlcRestorationResource
+    switch (this.getEntityType) {
+      case CorpTypeCd.BC_CCC: return Resources.RestorationResourceCc
+      case CorpTypeCd.BC_COMPANY: return Resources.RestorationResourceBc
+      case CorpTypeCd.BC_ULC_COMPANY: return Resources.RestorationResourceUlc
+      case CorpTypeCd.BEN_CONTINUE_IN: return Resources.RestorationResourceCben
+      case CorpTypeCd.BENEFIT_COMPANY: return Resources.RestorationResourceBen
+      case CorpTypeCd.CCC_CONTINUE_IN: return Resources.RestorationResourceCcc
+      case CorpTypeCd.CONTINUE_IN: return Resources.RestorationResourceC
+      case CorpTypeCd.ULC_CONTINUE_IN: return Resources.RestorationResourceCul
+      default: return null // should never happen
     }
-    return null // should never happen
   }
 
   /** Called when App is ready and this component can load its data. */

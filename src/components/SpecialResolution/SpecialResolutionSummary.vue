@@ -138,7 +138,7 @@ import { useStore } from '@/store/store'
   }
 })
 export default class SpecialResolutionSummary extends Mixins(DateMixin, FeeMixin, FilingTemplateMixin) {
-  // Global getters
+  // Store getters
   @Getter(useStore) getBusinessNumber!: string
   @Getter(useStore) getCurrentFees!: FeesIF[]
   // @Getter(useStore) getNameRequestLegalName!: string

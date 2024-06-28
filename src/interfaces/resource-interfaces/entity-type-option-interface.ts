@@ -1,5 +1,7 @@
+import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
+
 export interface EntityTypeOption {
-    value: string;
-    shortDesc: string;
-    text: string;
+    value: CorpTypeCd
+    shortDesc: string
+    text: string
 }

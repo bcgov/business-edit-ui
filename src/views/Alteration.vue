@@ -135,11 +135,9 @@ import { NameTranslation } from '@/components/common/YourCompany/NameTranslation
 import { AuthServices, LegalServices } from '@/services/'
 import { CommonMixin, FeeMixin, FilingTemplateMixin } from '@/mixins/'
 import { EntitySnapshotIF, ResourceIF } from '@/interfaces/'
-import { FilingDataIF } from '@bcrs-shared-components/interfaces/'
 import { FilingStatus } from '@/enums/'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
-import { BcAlterationResource, BenAlterationResource, CccAlterationResource, UlcAlterationResource }
-  from '@/resources/Alteration/'
+import * as Resources from '@/resources/Alteration/'
 import ViewWrapper from '@/components/ViewWrapper.vue'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 import { useStore } from '@/store/store'
@@ -167,20 +165,18 @@ import { useStore } from '@/store/store'
   }
 })
 export default class Alteration extends Mixins(CommonMixin, FeeMixin, FilingTemplateMixin) {
-  // Global getters
+  // Store getters
   @Getter(useStore) getAppValidate!: boolean
+  // @Getter(useStore) getEntityType!: CorpTypeCd
   @Getter(useStore) getUserFirstName!: string
   @Getter(useStore) getUserLastName!: string
-  @Getter(useStore) isOriginBcCompany!: boolean
-  @Getter(useStore) isOriginBenefitCompany!: boolean
-  @Getter(useStore) isOriginBcCcc!: boolean
-  @Getter(useStore) isOriginBcUlcCompany!: boolean
+  // @Getter(useStore) getOriginalLegalType!: CorpTypeCd
   @Getter(useStore) isPremiumAccount!: boolean
   @Getter(useStore) isRoleStaff!: boolean
   @Getter(useStore) isSummaryMode!: boolean
   @Getter(useStore) showFeeSummary!: boolean
 
-  // Global actions
+  // Store actions
   @Action(useStore) setDocumentOptionalEmailValidity!: (x: boolean) => void
   @Action(useStore) setFilingId!: (x: number) => void
   @Action(useStore) setHaveUnsavedChanges!: (x: boolean) => void
@@ -206,34 +202,40 @@ export default class Alteration extends Mixins(CommonMixin, FeeMixin, FilingTemp
 
   /** The resource object for an alteration filing. */
   get alterationResource (): ResourceIF {
-    switch (true) {
-      case this.isOriginBcCompany: return BcAlterationResource
-      case this.isOriginBenefitCompany: return BenAlterationResource
-      case this.isOriginBcCcc: return CccAlterationResource
-      case this.isOriginBcUlcCompany: return UlcAlterationResource
+    switch (this.getOriginalLegalType) {
+      case CorpTypeCd.BC_CCC: return Resources.AlterationResourceCc
+      case CorpTypeCd.BC_COMPANY: return Resources.AlterationResourceBc
+      case CorpTypeCd.BC_ULC_COMPANY: return Resources.AlterationResourceUlc
+      case CorpTypeCd.BEN_CONTINUE_IN: return Resources.AlterationResourceCben
+      case CorpTypeCd.BENEFIT_COMPANY: return Resources.AlterationResourceBen
+      case CorpTypeCd.CCC_CONTINUE_IN: return Resources.AlterationResourceCcc
+      case CorpTypeCd.CONTINUE_IN: return Resources.AlterationResourceC
+      case CorpTypeCd.ULC_CONTINUE_IN: return Resources.AlterationResourceCul
+      default: return null // should never happen
     }
-    return null
   }
 
   @Watch('hasBusinessTypeChanged')
   onBusinessTypeChanged () {
     const filingData = this.getFilingData
-    // When we are converting from BC to ULC, it's $1000 not $100.
+    // when altering from BC (or C) to ULC, use specific filing data
     if (
-      this.getOriginalLegalType === CorpTypeCd.BC_COMPANY &&
+      (
+        this.getOriginalLegalType === CorpTypeCd.BC_COMPANY ||
+        this.getOriginalLegalType === CorpTypeCd.CONTINUE_IN
+      ) &&
       this.getEntityType === CorpTypeCd.BC_ULC_COMPANY
     ) {
       this.setFilingData([{
-        filingTypeCode: BcAlterationResource.additionalFilingData.filingTypeCode,
-        entityType: BcAlterationResource.additionalFilingData.entityType as any,
+        filingTypeCode: Resources.AlterationResourceBc.additionalFilingData.filingTypeCode,
+        entityType: Resources.AlterationResourceBc.additionalFilingData.entityType as any,
         priority: filingData[0].priority,
         futureEffective: filingData[0].futureEffective
       }])
     } else {
-      const resourceFilingData = this.alterationResource.filingData as unknown as FilingDataIF
       this.setFilingData([{
-        filingTypeCode: resourceFilingData.filingTypeCode,
-        entityType: resourceFilingData.entityType as any,
+        filingTypeCode: this.alterationResource.filingData.filingTypeCode,
+        entityType: this.alterationResource.filingData.entityType as any,
         priority: filingData[0].priority,
         futureEffective: filingData[0].futureEffective
       }])
@@ -255,13 +257,17 @@ export default class Alteration extends Mixins(CommonMixin, FeeMixin, FilingTemp
       const entitySnapshot = await this.fetchEntitySnapshot()
 
       switch (entitySnapshot?.businessInfo?.legalType) {
-        case CorpTypeCd.BC_COMPANY:
-        case CorpTypeCd.BENEFIT_COMPANY:
         case CorpTypeCd.BC_CCC:
+        case CorpTypeCd.BC_COMPANY:
         case CorpTypeCd.BC_ULC_COMPANY:
+        case CorpTypeCd.BEN_CONTINUE_IN:
+        case CorpTypeCd.BENEFIT_COMPANY:
+        case CorpTypeCd.CCC_CONTINUE_IN:
+        case CorpTypeCd.CONTINUE_IN:
+        case CorpTypeCd.ULC_CONTINUE_IN:
           break // acceptable types
         default:
-          throw new Error(`Invalid entity type, alterations are for corporations (BC/BEN/CCC/ULC) only`)
+          throw new Error('Invalid entity type, alterations are for corporations (BC/BEN/CCC/ULC) only')
       }
 
       if (this.alterationId) {
@@ -296,9 +302,9 @@ export default class Alteration extends Mixins(CommonMixin, FeeMixin, FilingTemp
       this.setResource(this.alterationResource)
 
       // initialize Fee Summary data
-      const filingData = [this.alterationResource.filingData as unknown as FilingDataIF]
+      const filingData = [this.alterationResource.filingData]
       filingData.forEach(fd => {
-        (fd as FilingDataIF).futureEffective = this.getEffectiveDateTime.isFutureEffective
+        fd.futureEffective = this.getEffectiveDateTime.isFutureEffective
       })
       this.setFilingData(filingData)
 

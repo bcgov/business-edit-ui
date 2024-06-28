@@ -1,6 +1,6 @@
 <template>
   <div>
-    <template v-if="isBenefit">
+    <template v-if="isBenefitCompany">
       <div class="my-6">
         <p class="subtitle">
           {{ updatedArticleTitle }}
@@ -240,7 +240,7 @@ import { ResourceUtilities } from '@/utils'
 })
 export default class BcRegEntityDetails extends Vue {
   @Prop({ default: false }) readonly confirmArticles!: boolean
-  @Prop({ default: false }) readonly isBenefit!: boolean
+  @Prop({ default: false }) readonly isBenefitCompany!: boolean
   @Prop({ default: false }) readonly isUnlimitedLiability!: boolean
   @Prop({ default: false }) readonly isCommunityContribution!: boolean
   @Prop({ default: false }) readonly isBcLimited!: boolean

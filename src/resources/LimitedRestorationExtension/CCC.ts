@@ -2,16 +2,16 @@ import { FilingCodes } from '@/enums/'
 import { CorpTypeCd, GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module/'
 import { ResourceIF } from '@/interfaces/'
 
-export const CccRestorationResource: ResourceIF = {
+export const RestorationResourceCcc: ResourceIF = {
   entityReference: 'Company',
   contactLabel: 'Registered Office',
-  displayName: GetCorpFullDescription(CorpTypeCd.BC_CCC),
+  displayName: GetCorpFullDescription(CorpTypeCd.CCC_CONTINUE_IN),
   addressLabel: 'Registered Office',
   showEmailUnderName: false,
   userEmailOptional: false,
   userEmailLabel: 'Applicant',
   filingData: {
-    entityType: CorpTypeCd.BC_CCC,
+    entityType: CorpTypeCd.CCC_CONTINUE_IN,
     filingTypeCode: FilingCodes.RESTORATION_LTD_EXTEND,
     priority: false
   },

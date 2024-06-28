@@ -5,7 +5,7 @@ import { mount } from '@vue/test-utils'
 import ConversionSummary from '@/components/Conversion/ConversionSummary.vue'
 import NatureOfBusiness from '@/components/common/YourCompany/NatureOfBusiness.vue'
 import OfficeAddresses from '@/components/common/YourCompany/OfficeAddresses.vue'
-import { GpChangeResource } from '@/resources/Change/GP'
+import { ConversionResourceGp } from '@/resources/Conversion/GP'
 import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
 import { FilingTypes } from '@/enums'
@@ -54,7 +54,7 @@ describe('Conversion Summary component', () => {
     store.stateModel.entitySnapshot = entitySnapshot as any
     store.stateModel.tombstone.filingType = FilingTypes.CHANGE_OF_REGISTRATION
     store.stateModel.businessInformation = { ...entitySnapshot.businessInfo } as any
-    store.resourceModel = GpChangeResource
+    store.resourceModel = ConversionResourceGp
   })
 
   beforeEach(() => {

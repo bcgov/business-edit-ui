@@ -568,7 +568,7 @@ export default class ListPeopleAndRoles extends Mixins(CommonMixin, OrgPersonMix
   @Getter(useStore) getOrgPeople!: OrgPersonIF[]
   @Getter(useStore) hideChangeButtonForSoleProps!: boolean
   @Getter(useStore) isAlterationFiling!: boolean
-  @Getter(useStore) isBenBcCccUlcCorrectionFiling!: boolean
+  @Getter(useStore) isBaseCorrectionFiling!: boolean
   @Getter(useStore) isCoopCorrectionFiling!: boolean
   @Getter(useStore) isCorrectionFiling!: boolean
   @Getter(useStore) isFirmChangeFiling!: boolean
@@ -628,7 +628,7 @@ export default class ListPeopleAndRoles extends Mixins(CommonMixin, OrgPersonMix
     if (this.isFirmConversionFiling) {
       return true
     }
-    if (this.isBenBcCccUlcCorrectionFiling) {
+    if (this.isBaseCorrectionFiling) {
       return true
     }
     if (this.isCoopCorrectionFiling) {
