@@ -3,7 +3,7 @@ import { NrRequestActionCodes } from '@bcrs-shared-components/enums'
 import { CorpTypeCd, GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module/'
 import { ResourceIF } from '@/interfaces/'
 
-export const BenRestorationResource: ResourceIF = {
+export const RestorationResourceBen: ResourceIF = {
   entityReference: 'Company',
   contactLabel: 'Registered Office',
   displayName: GetCorpFullDescription(CorpTypeCd.BENEFIT_COMPANY),

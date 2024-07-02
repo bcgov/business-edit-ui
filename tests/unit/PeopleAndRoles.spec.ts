@@ -1,6 +1,6 @@
 import Vuetify from 'vuetify'
-import { GpChangeResource } from '@/resources/Change/GP'
-import { BenCorrectionResource } from '@/resources/Correction/BEN'
+import { ChangeResourceGp } from '@/resources/Change/GP'
+import { CorrectionResourceBen } from '@/resources/Correction/BEN'
 import { mount, shallowMount } from '@vue/test-utils'
 import PeopleAndRoles from '@/components/common/PeopleAndRoles/PeopleAndRoles.vue'
 import { createPinia, setActivePinia } from 'pinia'
@@ -99,7 +99,7 @@ describe('People And Roles component for Correction', () => {
     store.stateModel.tombstone.entityType = CorpTypeCd.BENEFIT_COMPANY
     store.stateModel.tombstone.filingType = FilingTypes.CORRECTION
     store.stateModel.entitySnapshot = {} as any
-    store.resourceModel = BenCorrectionResource
+    store.resourceModel = CorrectionResourceBen
 
     wrapperFactory = () => {
       return mount(PeopleAndRoles, { vuetify })
@@ -215,7 +215,7 @@ describe('People And Roles component for Change of Registration', () => {
   beforeAll(() => {
     store.stateModel.tombstone.entityType = CorpTypeCd.PARTNERSHIP
     store.stateModel.tombstone.filingType = FilingTypes.CHANGE_OF_REGISTRATION
-    store.resourceModel = GpChangeResource
+    store.resourceModel = ChangeResourceGp
 
     wrapperFactory = () => {
       return mount(PeopleAndRoles, {

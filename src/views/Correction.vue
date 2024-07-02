@@ -37,15 +37,15 @@ export default class Correction extends Mixins(CommonMixin) {
   /** Whether App is ready. */
   @Prop({ default: false }) readonly appReady!: boolean
 
-  // Global getters
+  // Store getters
   @Getter(useStore) getBusinessId!: string
   @Getter(useStore) getEntityType!: CorpTypeCd
+  @Getter(useStore) isBaseCompany!: boolean
+  @Getter(useStore) isEntityCoop!: boolean
+  @Getter(useStore) isEntityFirm!: boolean
   @Getter(useStore) isRoleStaff!: boolean
-  @Getter(useStore) isBenBcCccUlc!: boolean
-  @Getter(useStore) isCoop!: boolean
-  @Getter(useStore) isFirm!: boolean
 
-  // Global actions
+  // Store actions
   @Action(useStore) setFilingId!: (x: number) => void
   @Action(useStore) setEntityType!: (x: CorpTypeCd) => void
 
@@ -53,9 +53,9 @@ export default class Correction extends Mixins(CommonMixin) {
 
   /** The dynamic component to render. */
   get component (): string {
-    if (this.isCoop) return 'CoopCorrection'
-    if (this.isBenBcCccUlc) return 'CorpCorrection'
-    if (this.isFirm) return 'FirmCorrection'
+    if (this.isEntityCoop) return 'CoopCorrection'
+    if (this.isBaseCompany) return 'CorpCorrection'
+    if (this.isEntityFirm) return 'FirmCorrection'
     return null // should never happen
   }
 
@@ -116,9 +116,9 @@ export default class Correction extends Mixins(CommonMixin) {
       }
 
       // set entity type for misc functionality to work
-      // do not proceed if this isn't a BC/Firm/Coop correction
+      // do not proceed if this isn't a base company / firm / coop correction
       this.setEntityType(filing.business?.legalType || null)
-      if (!this.isBenBcCccUlc && !this.isFirm && !this.isCoop) {
+      if (!this.isBaseCompany && !this.isEntityFirm && !this.isEntityCoop) {
         throw new Error('Invalid correction type')
       }
 

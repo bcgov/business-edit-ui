@@ -49,7 +49,7 @@ export default class ShareStructures extends Mixins(CommonMixin) {
   /** Whether this component should be in edit mode or review mode. */
   @Prop({ default: true }) readonly isEditMode!: boolean
 
-  // Global getters
+  // Store getters
   @Getter(useStore) getComponentValidate!: boolean
   @Getter(useStore) getEditLabel!: string
   @Getter(useStore) getEditedLabel!: string
@@ -61,7 +61,7 @@ export default class ShareStructures extends Mixins(CommonMixin) {
   @Getter(useStore) hasMinimumShareClass!: boolean
   @Getter(useStore) isAlterationFiling!: boolean
 
-  // Global actions
+  // Store actions
   @Action(useStore) setCreateShareStructureStepValidity!: (x: boolean) => void
   @Action(useStore) setEditingShareStructure!: (x: boolean) => void
   @Action(useStore) setShareClasses!: (x: ShareClassIF[]) => void

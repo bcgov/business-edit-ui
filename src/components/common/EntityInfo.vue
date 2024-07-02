@@ -56,7 +56,7 @@ import { useStore } from '@/store/store'
 
 @Component({})
 export default class EntityInfo extends Mixins(CommonMixin) {
-  // Global getters
+  // Store getters
   @Getter(useStore) getBusinessId!: string
   @Getter(useStore) getBusinessInformation!: BusinessInformationIF
   @Getter(useStore) getOriginalLegalType!: CorpTypeCd

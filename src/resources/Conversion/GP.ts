@@ -2,7 +2,7 @@ import { CorrectNameOptions, FilingCodes } from '@/enums/'
 import { CorpTypeCd, GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module/'
 import { ResourceIF } from '@/interfaces/'
 
-export const GpConversionResource: ResourceIF = {
+export const ConversionResourceGp: ResourceIF = {
   entityReference: 'Business',
   contactLabel: 'Business',
   displayName: GetCorpFullDescription(CorpTypeCd.PARTNERSHIP),

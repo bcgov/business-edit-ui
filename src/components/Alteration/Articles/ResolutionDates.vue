@@ -197,7 +197,7 @@ export default class ResolutionDates extends Mixins(CommonMixin, DateMixin) {
   /** Boolean indicating rights or restrictions in ShareStructure. */
   @Prop({ default: false }) readonly hasRightsOrRestrictions!: boolean
 
-  // Global getters
+  // Store getters
   @Getter(useStore) getBusinessFoundingDateTime!: string
   @Getter(useStore) getCurrentDate!: string
   @Getter(useStore) haveNewResolutionDates!: boolean

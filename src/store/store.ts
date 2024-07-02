@@ -113,27 +113,27 @@ export const useStore = defineStore('store', {
 
     /** Whether the current filing is a Change of Registration for a firm corp class. */
     isFirmChangeFiling (): boolean {
-      return (this.isFirm && this.isChangeRegFiling)
+      return (this.isEntityFirm && this.isChangeRegFiling)
     },
 
-    /** Whether the current filing is a Correction for a BEN/BC/CCC/ULC. */
-    isBenBcCccUlcCorrectionFiling (): boolean {
-      return (this.isBenBcCccUlc && this.isCorrectionFiling)
+    /** Whether the current filing is a Correction for a base company. */
+    isBaseCorrectionFiling (): boolean {
+      return (this.isBaseCompany && this.isCorrectionFiling)
     },
 
     /* Whether the current filing is a Correction for a cooperative. */
     isCoopCorrectionFiling (): boolean {
-      return (this.isCoop && this.isCorrectionFiling)
+      return (this.isEntityCoop && this.isCorrectionFiling)
     },
 
-    /** Whether the current filing is a Correction for a firm corp class. */
+    /** Whether the current filing is a Correction for a firm. */
     isFirmCorrectionFiling (): boolean {
-      return (this.isFirm && this.isCorrectionFiling)
+      return (this.isEntityFirm && this.isCorrectionFiling)
     },
 
-    /** Whether the current filing is a Conversion for a firm corp class. */
+    /** Whether the current filing is a Conversion for a firm. */
     isFirmConversionFiling (): boolean {
-      return (this.isFirm && this.isConversionFiling)
+      return (this.isEntityFirm && this.isConversionFiling)
     },
 
     /** Whether the corrected filing is an Incorporation Application. */
@@ -166,81 +166,83 @@ export const useStore = defineStore('store', {
       return this.getOriginalBusinessInfo?.nrNumber || ''
     },
 
-    // Original entity type getters
-    isOriginBcCompany (): boolean {
-      return (this.getOriginalLegalType === CorpTypeCd.BC_COMPANY)
-    },
-
-    isOriginBenefitCompany (): boolean {
-      return (this.getOriginalLegalType === CorpTypeCd.BENEFIT_COMPANY)
-    },
-
-    isOriginBcUlcCompany (): boolean {
-      return (this.getOriginalLegalType === CorpTypeCd.BC_ULC_COMPANY)
-    },
-
-    isOriginBcCcc (): boolean {
-      return (this.getOriginalLegalType === CorpTypeCd.BC_CCC)
-    },
-
     /** The entity type. */
     getEntityType (): CorpTypeCd {
       return this.stateModel.tombstone.entityType
     },
 
     /** Whether the entity is a Benefit Company. */
-    isBenefitCompany (): boolean {
+    isEntityBenefitCompany (): boolean {
       return (this.getEntityType === CorpTypeCd.BENEFIT_COMPANY)
     },
 
-    /** Whether the entity is a BC Corporation. */
-    isBcCorporation (): boolean {
-      return (this.getEntityType === CorpTypeCd.BC_CORPORATION)
-    },
-
-    /** Whether the entity is a Cooperative. */
-    isCoop (): boolean {
+    /** Whether the entity is a Cooperative Assocation. */
+    isEntityCoop (): boolean {
       return (this.getEntityType === CorpTypeCd.COOP)
     },
 
-    /** Whether the entity is a BC Company. */
-    isBcCompany (): boolean {
+    /** Whether the entity is a BC (Limited) Company. */
+    isEntityBcCompany (): boolean {
       return (this.getEntityType === CorpTypeCd.BC_COMPANY)
     },
 
-    /** Whether the entity is a Community Contribution Company. */
-    isBcCcc (): boolean {
+    /** Whether the entity is a BC Community Contribution Company. */
+    isEntityBcCcc (): boolean {
       return (this.getEntityType === CorpTypeCd.BC_CCC)
     },
 
-    /** Whether the entity is an Unlimited Liability Company. */
-    isBcUlcCompany (): boolean {
+    /** Whether the entity is a BC Unlimited Liability Company. */
+    isEntityBcUlcCompany (): boolean {
       return (this.getEntityType === CorpTypeCd.BC_ULC_COMPANY)
     },
 
     /** Whether the entity is a Sole Proprietorship. */
-    isSoleProp (): boolean {
+    isEntitySoleProp (): boolean {
       return (this.getEntityType === CorpTypeCd.SOLE_PROP)
     },
 
     /** Whether the entity is a General Partnership. */
-    isPartnership (): boolean {
+    isEntityPartnership (): boolean {
       return (this.getEntityType === CorpTypeCd.PARTNERSHIP)
     },
 
-    /** Whether the entity is a BEN/BC/CCC/ULC. */
-    isBenBcCccUlc (): boolean {
+    /** Whether the entity is a Continued In BC Limited Company. */
+    isEntityContinueIn (): boolean {
+      return (this.getEntityType === CorpTypeCd.CONTINUE_IN)
+    },
+
+    /** Whether the entity is a Continued In Benefit Company. */
+    isEntityBenContinueIn (): boolean {
+      return (this.getEntityType === CorpTypeCd.BEN_CONTINUE_IN)
+    },
+
+    /** Whether the entity is a Continued In Community Contribution Company. */
+    isEntityCccContinueIn (): boolean {
+      return (this.getEntityType === CorpTypeCd.CCC_CONTINUE_IN)
+    },
+
+    /** Whether the entity is a Continued In Unlimited Liability Company. */
+    isEntityUlcContinueIn (): boolean {
+      return (this.getEntityType === CorpTypeCd.ULC_CONTINUE_IN)
+    },
+
+    /** Whether the entity is a base company (BC/BEN/CC/ULC or C/CBEN/CCC/CUL). */
+    isBaseCompany (): boolean {
       return (
-        this.isBcCompany ||
-        this.isBenefitCompany ||
-        this.isBcCcc ||
-        this.isBcUlcCompany
+        this.isEntityBcCompany ||
+        this.isEntityBenefitCompany ||
+        this.isEntityBcCcc ||
+        this.isEntityBcUlcCompany ||
+        this.isEntityContinueIn ||
+        this.isEntityBenContinueIn ||
+        this.isEntityCccContinueIn ||
+        this.isEntityUlcContinueIn
       )
     },
 
-    /** Whether the entity is a GP/SP. */
-    isFirm (): boolean {
-      return (this.isPartnership || this.isSoleProp)
+    /** Whether the entity is a Sole Proprietorship or General Partnership. */
+    isEntityFirm (): boolean {
+      return (this.isEntityPartnership || this.isEntitySoleProp)
     },
 
     /** Whether the current account is a premium account. */
@@ -321,7 +323,7 @@ export const useStore = defineStore('store', {
     /** The original legal name (or alternate name if this is a firm). */
     getOriginalLegalName (): string {
       if (!GetFeatureFlag('enable-legal-name-fix')) return this.getOriginalBusinessInfo?.legalName
-      if (this.isFirm) {
+      if (this.isEntityFirm) {
         // return the alternate name, if it exists
         const alternateNames = this.getOriginalBusinessInfo?.alternateNames || []
         const alternateName = alternateNames.find(x => x.identifier === this.getBusinessId)
@@ -565,7 +567,7 @@ export const useStore = defineStore('store', {
      * - staff payment
      */
     hasCorrectionDataChanged (): boolean {
-      if (this.isBenBcCccUlcCorrectionFiling) {
+      if (this.isBaseCorrectionFiling) {
         return (
           this.hasBusinessNameChanged ||
           this.hasBusinessTypeChanged ||
@@ -701,7 +703,7 @@ export const useStore = defineStore('store', {
 
     /** Whether the subject correction filing is valid. */
     isCorrectionValid (): boolean {
-      if (this.isBenBcCccUlcCorrectionFiling) {
+      if (this.isBaseCorrectionFiling) {
         if (this.isClientErrorCorrection) {
           return (
             this.getFlagsCompanyInfo.isValidCompanyName &&
@@ -950,7 +952,7 @@ export const useStore = defineStore('store', {
     hasMailingChanged (): boolean {
       if (
         this.isAlterationFiling ||
-        this.isBenBcCccUlcCorrectionFiling ||
+        this.isBaseCorrectionFiling ||
         this.isRestorationFiling
       ) {
         return !IsSame(
@@ -986,7 +988,7 @@ export const useStore = defineStore('store', {
     hasDeliveryChanged (): boolean {
       if (
         this.isAlterationFiling ||
-        this.isBenBcCccUlcCorrectionFiling ||
+        this.isBaseCorrectionFiling ||
         this.isRestorationFiling
       ) {
         return !IsSame(

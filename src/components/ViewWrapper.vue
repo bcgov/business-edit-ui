@@ -95,7 +95,7 @@ export default class ViewWrapper extends Mixins(CommonMixin, FilingTemplateMixin
     confirm: ConfirmDialogType
   }
 
-  // Global getters
+  // Store getters
   // @Getter(useStore) getCurrentJsDate!: Date
   @Getter(useStore) getAppValidate!: boolean
   @Getter(useStore) getComponentValidate!: boolean
@@ -117,7 +117,7 @@ export default class ViewWrapper extends Mixins(CommonMixin, FilingTemplateMixin
   @Getter(useStore) isSpecialResolutionFiling!: boolean
   @Getter(useStore) showFeeSummary!: boolean
 
-  // Global actions
+  // Store actions
   @Action(useStore) setAppValidate!: (x: boolean) => void
   @Action(useStore) setComponentValidate!: (x: boolean) => void
   @Action(useStore) setHaveUnsavedChanges!: (x: boolean) => void

@@ -166,7 +166,7 @@ export default class App extends Mixins(CommonMixin, FilingTemplateMixin) {
     confirm: ConfirmDialogType
   }
 
-  // Global getters
+  // Store getters
   @Getter(useStore) getAppValidate!: boolean
   @Getter(useStore) getComponentValidate!: boolean
   @Getter(useStore) getCurrentJsDate!: Date
@@ -187,7 +187,7 @@ export default class App extends Mixins(CommonMixin, FilingTemplateMixin) {
   @Getter(useStore) isSummaryMode!: boolean
   @Getter(useStore) showFeeSummary!: boolean
 
-  // Global actions
+  // Store actions
   @Action(useStore) setAccountInformation!: (x: AccountInformationIF) => void
   @Action(useStore) setAppValidate!: (x: boolean) => void
   @Action(useStore) setBusinessId!: (x: string) => void

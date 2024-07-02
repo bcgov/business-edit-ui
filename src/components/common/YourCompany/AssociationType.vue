@@ -174,7 +174,7 @@ import { useStore } from '@/store/store'
 
 @Component({})
 export default class AssociationType extends Mixins(CommonMixin) {
-  /** Global getters */
+  /** Store getters */
   @Getter(useStore) getAssociationType!: CoopTypes
   @Getter(useStore) getBusinessInformation!: BusinessInformationIF
   @Getter(useStore) getComponentValidate!: boolean
@@ -183,7 +183,7 @@ export default class AssociationType extends Mixins(CommonMixin) {
   @Getter(useStore) getOriginalBusinessInfo!: BusinessInformationIF
   @Getter(useStore) hasAssociationTypeChanged!: boolean
 
-  /** Global actions */
+  /** Store actions */
   @Action(useStore) setBusinessInformation!: (x: BusinessInformationIF) => void
   @Action(useStore) setEditingAssociationType!: (x: boolean) => void
   @Action(useStore) setValidComponent!: (x: ActionKvIF) => void

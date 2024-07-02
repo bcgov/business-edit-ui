@@ -13,12 +13,12 @@ import { useStore } from '@/store/store'
  */
 @Component({})
 export default class FeeMixin extends Vue {
-  // Global getters
+  // Store getters
   @Getter(useStore) getFeePrices!: FeesIF[]
   @Getter(useStore) getFilingData!: FilingDataIF[]
   @Getter(useStore) getStaffPayment!: StaffPaymentIF
 
-  // Global actions
+  // Store actions
   @Action(useStore) setCurrentFees!: (x: FeesIF[]) => void
   @Action(useStore) setFeePrices!: (x: FeesIF[]) => void
   @Action(useStore) setFilingData!: (x: FilingDataIF[]) => void

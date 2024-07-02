@@ -32,7 +32,7 @@ export default class BusinessType extends Vue {
   @Action(useStore) setValidComponent!: (x: ActionKvIF) => void
 
   // local variable
-  protected isEditingType = false
+  isEditingType = false
 
   /** The section validity state (when prompted by app). */
   get invalidSection (): boolean {

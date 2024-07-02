@@ -58,7 +58,7 @@ export default class Articles extends Mixins(CommonMixin) {
   private isEditingCompanyProvisions = false
   private isAddingResolutionDate = false
 
-  // Global getters
+  // Store getters
   @Getter(useStore) getBusinessInformation!: BusinessInformationIF
   @Getter(useStore) getNewResolutionDates!: string[]
   @Getter(useStore) areProvisionsRemoved!: boolean
@@ -68,7 +68,7 @@ export default class Articles extends Mixins(CommonMixin) {
   @Getter(useStore) getComponentValidate!: boolean
   @Getter(useStore) isAlterationFiling!: boolean
 
-  // Global actions
+  // Store actions
   @Action(useStore) setProvisionsRemoved!: (x: boolean) => void
   @Action(useStore) setNewResolutionDates!: (x: string[]) => void
   @Action(useStore) setValidComponent!: (x: ActionKvIF) => void
