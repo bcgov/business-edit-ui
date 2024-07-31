@@ -818,10 +818,14 @@ export default class OrgPerson extends Mixins(CommonMixin, OrgPersonMixin) {
 
   /** Returns True if person name or org name has changed from its original properties. */
   hasNameChanged (orgPerson: OrgPersonIF): boolean {
-    /** This check is only for firm corrections, change, conversion, Corp extension and Corp conversion filings.
-    Does not apply to corps corrections */
-    const showConfirmNameChange = this.isFirmCorrectionFiling || this.isFirmChangeFiling ||
-      this.isFirmConversionFiling || this.isLimitedRestorationExtension || this.isLimitedRestorationToFull
+    // This check is only for firm change, firm conversion, corp extension and corp conversion filings.
+    // This does not apply to firm, coop or corp corrections.
+    const showConfirmNameChange = (
+      this.isFirmChangeFiling ||
+      this.isFirmConversionFiling ||
+      this.isLimitedRestorationExtension ||
+      this.isLimitedRestorationToFull
+    )
 
     // check showConfirmNameChange and is this a pre-existing person?
     if (showConfirmNameChange && this.isPreExisting && this.isPerson) {
