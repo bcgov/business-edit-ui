@@ -837,7 +837,8 @@ export default class OrgPerson extends Mixins(CommonMixin, OrgPersonMixin) {
       return (firstName || lastName || middleName)
     }
     // is this a pre-existing org?
-    if (this.isPreExisting && this.isOrg) {
+    // does not appy to firm corrections
+    if (this.isPreExisting && this.isOrg && !this.isFirmCorrectionFiling) {
       return !isEqual(orgPerson.officer.organizationName, this.currentOrgPerson?.officer.organizationName)
     }
     return false // should never happen
