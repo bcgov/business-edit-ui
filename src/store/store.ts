@@ -156,7 +156,7 @@ export const useStore = defineStore('store', {
       return this.getEntitySnapshot?.businessInfo || null
     },
 
-    /** The original legal type. */
+    /** The original legal type (aka entity type). */
     getOriginalLegalType (): CorpTypeCd {
       return this.getOriginalBusinessInfo?.legalType || null
     },
@@ -166,7 +166,7 @@ export const useStore = defineStore('store', {
       return this.getOriginalBusinessInfo?.nrNumber || ''
     },
 
-    /** The entity type. */
+    /** The entity type (aka legal type). */
     getEntityType (): CorpTypeCd {
       return this.stateModel.tombstone.entityType
     },
@@ -846,7 +846,7 @@ export const useStore = defineStore('store', {
       return this.stateModel.documentDelivery.documentOptionalEmail
     },
 
-    /** Checks for a 7 digit pattern to identify a numbered company from the Legal Name. */
+    /** Checks the Legal Name for a 7 digit pattern to identify a numbered company. */
     isNumberedCompany (): boolean {
       return RegExp('^\\d{7}$').test(this.getOriginalLegalName?.split(' ')[0])
     },

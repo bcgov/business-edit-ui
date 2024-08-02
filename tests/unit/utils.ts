@@ -5,7 +5,7 @@ export function mockFeatureFlagsForAlterationChangeBusinessTypes () {
   vi.spyOn(util, 'GetFeatureFlag').mockImplementation(
     (name) => {
       if (name === 'supported-alteration-change-business-types') {
-        return ['BEN', 'BC', 'CC', 'ULC']
+        return ['BEN', 'BC', 'CC', 'ULC', 'CBEN', 'C', 'CCC', 'CUL']
       } else {
         return util.defaultFlagSet[name]
       }
