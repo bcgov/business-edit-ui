@@ -339,7 +339,19 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
   /** Define the entity type locally once the value has been populated in the store. */
   @Watch('getEntityType')
   private initializeEntityType (): void {
-    this.selectedEntityType = this.getEntityType
+    /** Converts type to regular entity type. */
+    function convertToRegularEntityType (type: CorpTypeCd): CorpTypeCd {
+      switch (type) {
+        case CorpTypeCd.BEN_CONTINUE_IN: return CorpTypeCd.BENEFIT_COMPANY
+        case CorpTypeCd.CCC_CONTINUE_IN: return CorpTypeCd.BC_CCC
+        case CorpTypeCd.CONTINUE_IN: return CorpTypeCd.BC_COMPANY
+        case CorpTypeCd.ULC_CONTINUE_IN: return CorpTypeCd.BC_ULC_COMPANY
+        default: return type
+      }
+    }
+
+    // convert types for the v-select, etc
+    this.selectedEntityType = convertToRegularEntityType(this.getEntityType)
   }
 
   /** Clear the articles confirm checkbox whenever the selected entity type changes. */
@@ -429,6 +441,23 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
 
   /** Submit new company type. */
   submitTypeChange () {
+    /** Converts type to continuation in entity type. */
+    function convertToContinuedInEntityType (type: CorpTypeCd): CorpTypeCd {
+      switch (type) {
+        case CorpTypeCd.BENEFIT_COMPANY: return CorpTypeCd.BEN_CONTINUE_IN
+        case CorpTypeCd.BC_CCC: return CorpTypeCd.CCC_CONTINUE_IN
+        case CorpTypeCd.BC_COMPANY: return CorpTypeCd.CONTINUE_IN
+        case CorpTypeCd.BC_ULC_COMPANY: return CorpTypeCd.ULC_CONTINUE_IN
+        default: return type
+      }
+    }
+
+    // prevent continuation in entity types from changing to equivalent regular entity types
+    if (this.getOriginalLegalType === convertToContinuedInEntityType(this.selectedEntityType)) {
+      this.isEditingType = false
+      return
+    }
+
     this.setEntityType(this.selectedEntityType)
     this.isEditingType = false
 
