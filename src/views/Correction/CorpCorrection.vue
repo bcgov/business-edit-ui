@@ -14,16 +14,6 @@
       </p>
     </section>
 
-    <section
-      id="benefit-company-statement"
-      class="mt-6"
-    >
-      <p>
-        <span id="benefit-company-statement-label">{{ correctionResource.title }}:</span>
-        {{ correctionResource.description }}
-      </p>
-    </section>
-
     <YourCompanyWrapper class="mt-10">
       <div>
         <EntityName />
@@ -215,8 +205,7 @@ export default class CorpCorrection extends Mixins(CommonMixin, DateMixin, FeeMi
 </script>
 
 <style lang="scss" scoped>
-#original-filing-date-label,
-#benefit-company-statement-label {
+#original-filing-date-label {
   letter-spacing: -0.04rem;
   font-weight: bold;
 }
