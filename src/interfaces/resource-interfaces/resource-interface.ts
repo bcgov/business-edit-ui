@@ -10,8 +10,6 @@ export interface ResourceIF {
   displayName: string
   entityType?: CorpTypeCd // corrections only
   addressLabel: string
-  title?: string // BEN corrections only
-  description?: string // BEN corrections only
   filingData: FilingDataIF
   additionalFilingData?: FilingDataIF,
   changeData?: {
