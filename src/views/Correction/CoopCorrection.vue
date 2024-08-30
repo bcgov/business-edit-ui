@@ -81,7 +81,7 @@ import { SpecialResolutionSummary, Resolution } from '@/components/SpecialResolu
 import { AssociationType, BusinessContactInfo, BusinessType, CertifySection, CompletingParty, CourtOrderPoa,
   CurrentDirectors, Detail, DocumentsDelivery, EntityName, FolioInformation, OfficeAddresses, PeopleAndRoles,
   RecognitionDateTime, StaffPayment, TransactionalFolioNumber, YourCompanyWrapper } from '@/components/common/'
-import { CommonMixin, DateMixin, FeeMixin, FilingTemplateMixin } from '@/mixins/'
+import { CommonMixin, FeeMixin, FilingTemplateMixin } from '@/mixins/'
 import ViewWrapper from '@/components/ViewWrapper.vue'
 import Rules from '@/components/SpecialResolution/Rules.vue'
 import Memorandum from '@/components/SpecialResolution/Memorandum.vue'
@@ -89,7 +89,7 @@ import { Action, Getter } from 'pinia-class'
 import { useStore } from '@/store/store'
 import { CorrectionFilingIF, ResourceIF, EntitySnapshotIF } from '@/interfaces'
 import { CorrectionResourceCp } from '@/resources/Correction'
-import { LegalServices, AuthServices } from '@/services'
+import { DateUtilities, LegalServices, AuthServices } from '@/services'
 import { StaffPaymentOptions } from '@bcrs-shared-components/enums'
 import { CorrectionErrorTypes } from '@/enums'
 
@@ -119,7 +119,7 @@ import { CorrectionErrorTypes } from '@/enums'
     YourCompanyWrapper
   }
 })
-export default class CoopCorrection extends Mixins(CommonMixin, DateMixin, FeeMixin, FilingTemplateMixin) {
+export default class CoopCorrection extends Mixins(CommonMixin, FeeMixin, FilingTemplateMixin) {
   // Store getters
   @Getter(useStore) hasResolutionSection!: boolean
 
@@ -134,7 +134,7 @@ export default class CoopCorrection extends Mixins(CommonMixin, DateMixin, FeeMi
 
   /** The original filing date, in Pacific time. */
   get originalFilingDate (): string {
-    return this.apiToPacificDateLong(this.getCorrectedFilingDate)
+    return DateUtilities.yyyyMmDdToPacificDate(this.getCorrectedFilingDate, true)
   }
 
   /** The resource object for a firm correction filing. */
