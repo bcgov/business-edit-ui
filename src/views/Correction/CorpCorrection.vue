@@ -68,8 +68,8 @@ import { Articles } from '@/components/Alteration/'
 import { BusinessContactInfo, CertifySection, CompletingParty, Detail, EntityName, FolioInformation,
   NameTranslation, OfficeAddresses, PeopleAndRoles, RecognitionDateTime, ShareStructures, StaffPayment,
   YourCompanyWrapper } from '@/components/common/'
-import { CommonMixin, DateMixin, FeeMixin, FilingTemplateMixin } from '@/mixins/'
-import { AuthServices, LegalServices } from '@/services/'
+import { CommonMixin, FeeMixin, FilingTemplateMixin } from '@/mixins/'
+import { AuthServices, DateUtilities, LegalServices } from '@/services/'
 import { StaffPaymentOptions } from '@bcrs-shared-components/enums/'
 import { CorrectionFilingIF, EntitySnapshotIF, ResourceIF } from '@/interfaces/'
 import * as Resources from '@/resources/Correction/'
@@ -95,7 +95,7 @@ import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
     YourCompanyWrapper
   }
 })
-export default class CorpCorrection extends Mixins(CommonMixin, DateMixin, FeeMixin, FilingTemplateMixin) {
+export default class CorpCorrection extends Mixins(CommonMixin, FeeMixin, FilingTemplateMixin) {
   // Store getters
   // @Getter(useStore) getEntityType!: CorpTypeCd
 
@@ -108,7 +108,7 @@ export default class CorpCorrection extends Mixins(CommonMixin, DateMixin, FeeMi
 
   /** The original filing date, in Pacific time. */
   get originalFilingDate (): string {
-    return this.apiToPacificDateLong(this.getCorrectedFilingDate)
+    return DateUtilities.yyyyMmDdToPacificDate(this.getCorrectedFilingDate, true)
   }
 
   /** The resource object for a correction filing. */
