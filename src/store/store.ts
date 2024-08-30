@@ -781,6 +781,8 @@ export const useStore = defineStore('store', {
 
     /** Whether the subject correction filing has any sections in editing mode. */
     isCorrectionEditing (): boolean {
+      if (!this.isCorrectionFiling) return false
+
       // NB: Folio Number, Detail, Certify and Staff Payment don't have an "editing" mode.
       return (
         this.stateModel.editingFlags.companyName ||
