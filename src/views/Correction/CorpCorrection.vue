@@ -188,7 +188,7 @@ export default class CorpCorrection extends Mixins(CommonMixin, FeeMixin, Filing
       orgPersons: items[3],
       shareStructure: items[4],
       nameTranslations: items[5],
-      nameResolutions: items[6]
+      resolutions: items[6]
     } as EntitySnapshotIF
   }
 
