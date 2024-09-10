@@ -342,7 +342,7 @@ describe('BEN correction getters', () => {
     expect(vm.hasBusinessNameChanged).toBe(false)
 
     // verify that business type changes are detected
-    store.stateModel.tombstone.entityType = CorpTypeCd.BC_UNLIMITED
+    store.stateModel.tombstone.entityType = CorpTypeCd.UNLIMITED_LIABILITY_COMPANY
     expect(vm.hasBusinessTypeChanged).toBe(true)
     store.stateModel.tombstone.entityType = CorpTypeCd.BENEFIT_COMPANY
     expect(vm.hasBusinessTypeChanged).toBe(false)
@@ -558,34 +558,5 @@ describe('test restoration expiry date', () => {
   it('getRestorationExpiryDate() works correctly', () => {
     store.setRestorationExpiryDate('2023-12-31')
     expect(store.getRestorationExpiryDate).toEqual('2023-12-31')
-  })
-})
-
-describe('test getIsRestorationTypeCourtOrder', () => {
-  it('getIsRestorationTypeCourtOrder returns true when file number is set', () => {
-    store.stateModel.restoration.courtOrder.fileNumber = '1234'
-    expect(store.getIsRestorationTypeCourtOrder).toBe(true)
-  })
-
-  it('getIsRestorationTypeCourtOrder returns false when file number is empty', () => {
-    store.stateModel.restoration.courtOrder.fileNumber = ''
-    expect(store.getIsRestorationTypeCourtOrder).toBe(false)
-  })
-
-  it('getIsRestorationTypeCourtOrder returns false when file number is null', () => {
-    store.stateModel.restoration.courtOrder.fileNumber = null
-    expect(store.getIsRestorationTypeCourtOrder).toBe(false)
-  })
-
-  it('getIsRestorationTypeCourtOrder returns false when courtOrder property is absent', () => {
-    store.stateModel.restoration = {
-      approvalType: ApprovalTypes.VIA_REGISTRAR,
-      approvalTypeValid: true,
-      businessNameValid: true,
-      type: RestorationTypes.LTD_TO_FULL,
-      expiryValid: true,
-      relationships: []
-    }
-    expect(store.getIsRestorationTypeCourtOrder).toBe(false)
   })
 })

@@ -22,7 +22,7 @@ export interface FlagsCompanyInfoIF {
   isValidMemorandum: boolean
   isValidSpecialResolution: boolean
   isValidSpecialResolutionSignature: boolean
-  isValidApprovalType: boolean
   isValidRelationship: boolean
+  isValidApprovalType: boolean
   isValidExtensionTime: boolean
 }

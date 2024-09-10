@@ -9,8 +9,8 @@ import { AddressesIF, AlterationFilingIF, BusinessInformationIF, CertifyIF, Coop
   from '@/interfaces/'
 import { CompletingPartyIF, ContactPointIF, NaicsIF, NameRequestIF, ShareClassIF, SpecialResolutionIF,
   StaffPaymentIF } from '@bcrs-shared-components/interfaces/'
-import { ActionTypes, ApprovalTypes, CoopTypes, CorrectionErrorTypes, EffectOfOrders, FilingTypes,
-  PartyTypes, RelationshipTypes, RestorationTypes, RoleTypes } from '@/enums/'
+import { ActionTypes, CoopTypes, CorrectionErrorTypes, EffectOfOrders, FilingTypes, PartyTypes, RelationshipTypes,
+  RoleTypes } from '@/enums/'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 import { StaffPaymentOptions } from '@bcrs-shared-components/enums/'
 import { FilingTypeToName } from '@/utils'
@@ -108,11 +108,9 @@ export default class FilingTemplateMixin extends DateMixin {
   @Action(useStore) setNewResolutionDates!: (x: string[]) => void
   @Action(useStore) setPeopleAndRoles!: (x: OrgPersonIF[]) => void
   @Action(useStore) setProvisionsRemoved!: (x: boolean) => void
-  @Action(useStore) setRestorationApprovalType!: (x: ApprovalTypes) => void
   @Action(useStore) setRestorationCourtOrder!: (x: CourtOrderIF) => void
   @Action(useStore) setRestorationExpiryDate!: (x: string) => void
   @Action(useStore) setRestorationRelationships!: (x: RelationshipTypes[]) => void
-  @Action(useStore) setRestorationType!: (x: RestorationTypes) => void
   @Action(useStore) setShareClasses!: (x: ShareClassIF[]) => void
   @Action(useStore) setSpecialResolution!: (x: SpecialResolutionIF) => void
   @Action(useStore) setSpecialResolutionMemorandum!: (x: RulesMemorandumIF) => void
@@ -157,9 +155,8 @@ export default class FilingTemplateMixin extends DateMixin {
         contactPoint: this.getContactPoint,
         nameRequest: {
           // add in the fields needed by Legal API
-          // don't save legal name if it's empty
           ...this.getNameRequest,
-          legalName: this.getNameRequestLegalName || undefined,
+          legalName: this.getNameRequestLegalName || undefined, // don't include if empty
           nrNumber: this.getNameRequestNumber
         },
         offices: this.getOfficeAddresses,
@@ -305,9 +302,8 @@ export default class FilingTemplateMixin extends DateMixin {
     if (this.getNameRequestNumber || this.hasBusinessNameChanged || this.hasBusinessTypeChanged) {
       filing.alteration.nameRequest = {
         // add in the fields needed by Legal API
-        // don't save legal name if it's empty
         ...this.getNameRequest,
-        legalName: this.getNameRequestLegalName || undefined,
+        legalName: this.getNameRequestLegalName || undefined, // don't include if empty
         nrNumber: this.getNameRequestNumber
       }
     }
@@ -386,6 +382,8 @@ export default class FilingTemplateMixin extends DateMixin {
       },
       restoration: {
         approvalType: this.getRestoration.approvalType,
+        noticeDate: this.getRestoration.noticeDate || undefined, // don't include if empty
+        applicationDate: this.getRestoration.applicationDate || undefined, // don't include if empty
         type: this.getRestoration.type,
         business: {
           identifier: this.getBusinessId,
@@ -415,7 +413,7 @@ export default class FilingTemplateMixin extends DateMixin {
           // add in the fields needed by Legal API
           // don't save legal name if it's empty
           ...this.getNameRequest,
-          legalName: this.getNameRequestLegalName || undefined,
+          legalName: this.getNameRequestLegalName || undefined, // don't include if empty
           nrNumber: this.getNameRequestNumber
         }
       } else {
@@ -433,7 +431,7 @@ export default class FilingTemplateMixin extends DateMixin {
       filing.restoration.nameTranslations = nameTranslations
     }
 
-    // Apply Court Order ONLY when it is required and applied
+    // Apply Court Order if it exists
     if (this.getRestoration.courtOrder?.fileNumber) {
       filing.restoration.courtOrder = this.getRestoration.courtOrder
     }
@@ -535,9 +533,8 @@ export default class FilingTemplateMixin extends DateMixin {
       filing.changeOfName = {
         nameRequest: {
           // add in the fields needed by Legal API
-          // don't save legal name if it's empty
           ...this.getNameRequest,
-          legalName: this.getNameRequestLegalName || undefined,
+          legalName: this.getNameRequestLegalName || undefined, // don't include if empty
           nrNumber: this.getNameRequestNumber
         },
         legalName: this.getNameRequestLegalName
@@ -601,9 +598,8 @@ export default class FilingTemplateMixin extends DateMixin {
     if (this.hasBusinessNameChanged) {
       filing.changeOfRegistration.nameRequest = {
         // add in the fields needed by Legal API
-        // don't save legal name if it's empty
         ...this.getNameRequest,
-        legalName: this.getNameRequestLegalName || undefined,
+        legalName: this.getNameRequestLegalName || undefined, // don't include if empty
         nrNumber: this.getNameRequestNumber
       }
     }
@@ -713,9 +709,8 @@ export default class FilingTemplateMixin extends DateMixin {
     if (this.hasBusinessNameChanged) {
       filing.conversion.nameRequest = {
         // add in the fields needed by Legal API
-        // don't save legal name if it's empty
         ...this.getNameRequest,
-        legalName: this.getNameRequestLegalName || undefined,
+        legalName: this.getNameRequestLegalName || undefined, // don't include if empty
         nrNumber: this.getNameRequestNumber
       }
     }
@@ -1028,19 +1023,29 @@ export default class FilingTemplateMixin extends DateMixin {
     // store Approval Type
     if (filing.restoration.approvalType) {
       // get approval type from draft
-      this.setRestorationApprovalType(filing.restoration.approvalType)
+      this.getRestoration.approvalType = filing.restoration.approvalType
     } else if (this.getStateFilingRestoration?.approvalType) {
       // get approval type from state filing
-      this.setRestorationApprovalType(this.getStateFilingRestoration.approvalType)
+      this.getRestoration.approvalType = this.getStateFilingRestoration.approvalType
     }
 
-    // store Court Order data
+    // store notice and application dates
+    if (filing.restoration.noticeDate) {
+      this.getRestoration.noticeDate = filing.restoration.noticeDate
+    }
+    if (filing.restoration.applicationDate) {
+      this.getRestoration.applicationDate = filing.restoration.applicationDate
+    }
+
+    // store Court Order object
     if (filing.restoration.courtOrder) {
       this.setRestorationCourtOrder(filing.restoration.courtOrder)
     }
 
-    this.setRestorationType(filing.restoration.type)
+    // store Restoration Type
+    this.getRestoration.type = filing.restoration.type
 
+    // store Expiry Date
     if (filing.restoration.expiry) {
       this.setRestorationExpiryDate(filing.restoration.expiry)
     }
@@ -1058,7 +1063,7 @@ export default class FilingTemplateMixin extends DateMixin {
       this.setNameRequestLegalName(this.getOriginalLegalName)
     }
 
-    // store relationships
+    // store Relationships
     if (filing.restoration.relationships?.length > 0) {
       this.setRestorationRelationships(filing.restoration.relationships)
     }
@@ -1094,20 +1099,20 @@ export default class FilingTemplateMixin extends DateMixin {
     })
 
     // store Folio Number
-    // FUTURE: should we store correction.folioNumber instead?
-    this.setFolioNumber(entitySnapshot?.authInfo?.folioNumber || '')
+    // FUTURE: should we store restoration.folioNumber instead?
+    if (entitySnapshot?.authInfo?.folioNumber) {
+      this.setFolioNumber(entitySnapshot?.authInfo?.folioNumber)
+    }
 
-    // if Transactional Folio Number was saved then store it
+    // store Transactional Folio Number
     if (filing.header.isTransactionalFolioNumber) {
       this.setTransactionalFolioNumber(filing.header.folioNumber)
     }
 
     // store Document Optional Email
-    this.setDocumentOptionalEmail(filing.header.documentOptionalEmail || '')
-
-    // store File Number and POA
-    this.setFileNumber(filing.restoration.courtOrder?.fileNumber)
-    this.setHasPlanOfArrangement(filing.restoration.courtOrder?.hasPlanOfArrangement)
+    if (filing.header.documentOptionalEmail) {
+      this.setDocumentOptionalEmail(filing.header.documentOptionalEmail)
+    }
 
     // store Staff Payment
     this.storeStaffPayment(filing)

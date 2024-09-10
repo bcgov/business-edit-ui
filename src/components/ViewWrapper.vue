@@ -77,6 +77,7 @@ import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 import { ComponentsCompanyInfo, ComponentsReviewCertify } from '@/enums/'
 import { FeeSummaryActions } from '@bcrs-shared-components/enums/'
 import { useStore } from '@/store/store'
+import flushPromises from 'flush-promises'
 
 @Component({
   components: {
@@ -288,7 +289,7 @@ export default class ViewWrapper extends Mixins(CommonMixin, FilingTemplateMixin
     this.setComponentValidate(true)
 
     // Wait to allow component validation to complete.
-    await this.$nextTick()
+    await flushPromises()
 
     // Evaluate valid flags. Scroll to invalid components or continue to review.
     if (this.validateAndScroll(this.getFlagsCompanyInfo, ComponentsCompanyInfo)) {

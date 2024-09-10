@@ -32,22 +32,21 @@
       </v-row>
     </section>
 
-    <!-- Vuetify Divider Line to separate approval type -->
     <v-divider />
 
     <!-- Approval Type -->
     <section
       v-if="showApprovalType"
       id="approval-type-section"
-      class="section-container"
-      :class="{ 'invalid-section': !getApprovalTypeValid }"
     >
       <ApprovalType
-        :courtOrderNumber="getCourtOrderNumberText"
-        :isCourtOrderOnly="true"
+        class="pa-8"
+        :courtOrderNumber="getRestorationCourtOrderNumber"
+        :approvedByCourtOrder="true"
         :isCourtOrderRadio="false"
         :invalidSection="!getApprovalTypeValid"
-        @courtNumberChange="setRestorationCourtOrder({ fileNumber: $event })"
+        :validate="getComponentValidate"
+        @courtNumberChange="onCourtNumberChange($event)"
         @valid="setApprovalTypeValid($event)"
       />
     </section>
@@ -75,9 +74,10 @@ import { useStore } from '@/store/store'
 })
 export default class ExtendTimeLimit extends Mixins(DateMixin) {
   @Getter(useStore) getApprovalTypeValid!: boolean
-  @Getter(useStore) getCourtOrderNumberText!: string
+  @Getter(useStore) getComponentValidate!: boolean
   @Getter(useStore) getCurrentDate!: string
   @Getter(useStore) getExpiryValid!: boolean
+  @Getter(useStore) getRestorationCourtOrderNumber!: string
   @Getter(useStore) getRestorationExpiryDate!: string
   @Getter(useStore) getStateFilingRestoration!: StateFilingRestorationIF
 
@@ -88,7 +88,7 @@ export default class ExtendTimeLimit extends Mixins(DateMixin) {
 
   /** Whether to show the Approval Type component. */
   get showApprovalType (): boolean {
-    // was previously filed limited restoration approved via court order?
+    // was original limited restoration approved via court order?
     return (this.getStateFilingRestoration?.approvalType === ApprovalTypes.VIA_COURT_ORDER)
   }
 
@@ -119,6 +119,10 @@ export default class ExtendTimeLimit extends Mixins(DateMixin) {
   onMonthsChanged (months: number): void {
     // add the new expiry months to the original expiry date
     this.setRestorationExpiryDate(DateUtilities.addMonthsToDate(months, this.stateFilingExpiry))
+  }
+
+  onCourtNumberChange (fileNumber: string): void {
+    this.setRestorationCourtOrder({ fileNumber })
   }
 }
 </script>

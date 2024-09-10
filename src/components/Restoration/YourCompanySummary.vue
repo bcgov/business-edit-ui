@@ -73,8 +73,9 @@
             <div>Applicant's relationship: {{ relationshipString }}</div>
           </v-col>
         </v-row>
+
         <v-row
-          v-if="getIsRestorationTypeCourtOrder"
+          v-if="isApprovalTypeCourtOrder"
           no-gutters
           class="mt-3"
         >
@@ -86,11 +87,12 @@
               Approved by Court Order
             </div>
             <div v-if="courtOrder">
-              Court Order Number: {{ getCourtOrderNumberText }}
+              Court Order Number: {{ getRestorationCourtOrderNumber }}
             </div>
           </v-col>
         </v-row>
       </div>
+
       <v-divider class="mx-4 my-1" />
 
       <!-- Office Addresses -->
@@ -119,17 +121,20 @@ export default class YourCompanySummary extends Vue {
   readonly ApprovalTypes = ApprovalTypes
 
   @Getter(useStore) getBusinessNumber!: string
-  @Getter(useStore) getCourtOrderNumberText!: string
-  @Getter(useStore) getIsRestorationTypeCourtOrder!: boolean
   @Getter(useStore) getNameRequestLegalName!: string
   @Getter(useStore) getNameRequestNumber!: string
-  @Getter(useStore) getRelationships!: RelationshipTypes[]
   @Getter(useStore) getRestoration!: RestorationStateIF
+  @Getter(useStore) getRestorationCourtOrderNumber!: string
   @Getter(useStore) getRestorationExpiryText!: string
+  @Getter(useStore) getRestorationRelationships!: RelationshipTypes[]
   @Getter(useStore) hasBusinessNameChanged!: boolean
   @Getter(useStore) haveNameTranslationsChanged!: boolean
   @Getter(useStore) isLimitedRestorationExtension!: boolean
   @Getter(useStore) isLimitedRestorationToFull!: boolean
+
+  get isApprovalTypeCourtOrder (): boolean {
+    return !!this.getRestorationCourtOrderNumber
+  }
 
   get courtOrder (): CourtOrderIF {
     return this.getRestoration.courtOrder
@@ -141,7 +146,7 @@ export default class YourCompanySummary extends Vue {
   }
 
   get relationshipString (): string {
-    return this.getRelationships.join(', ') || '[Unknown]'
+    return this.getRestorationRelationships.join(', ') || '[Unknown]'
   }
 }
 </script>

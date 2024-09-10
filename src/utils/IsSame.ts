@@ -1,5 +1,4 @@
-import { isEqual } from 'lodash'
-import omit from 'lodash.omit'
+import { isEqual, omit } from 'lodash'
 
 /**
  * Compares two objects while omitting specified properties from the comparison.
