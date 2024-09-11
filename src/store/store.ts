@@ -1280,23 +1280,20 @@ export const useStore = defineStore('store', {
           this.getRestorationExpiryDate
         )
         const expiryDatePacific = DateUtilities.yyyyMmDdToPacificDate(this.getRestorationExpiryDate)
-        return (numberOfExtensionMonths + ' months, expires on ' + expiryDatePacific)
+        return (numberOfExtensionMonths + ' months - expires on ' + expiryDatePacific)
       }
       return '[no expiry date]'
     },
 
-    /** The court order draft file number. */
-    getCourtOrderNumberText (): string {
+    /** The restoration court order number. */
+    getRestorationCourtOrderNumber (): string {
       // NB: although initialized in the state, courtOrder may be absent in a draft restoration filing
       return this.getRestoration.courtOrder?.fileNumber || ''
     },
 
-    getRelationships (): RelationshipTypes[] {
+    /** The restoration applicant relationships. */
+    getRestorationRelationships (): RelationshipTypes[] {
       return this.getRestoration.relationships
-    },
-
-    getIsRestorationTypeCourtOrder (): boolean {
-      return !!this.getCourtOrderNumberText
     },
 
     /** The special resolution object. */
@@ -1612,14 +1609,8 @@ export const useStore = defineStore('store', {
     setSpecialResolutionConfirmStateValidity (validity: boolean) {
       this.getValidationFlags.flagsReviewCertify.isValidSpecialResolutionConfirm = validity
     },
-    setRestorationType (type: RestorationTypes) {
-      this.getRestoration.type = type
-    },
     setRestorationExpiryDate (expiry: string) {
       this.getRestoration.expiry = expiry
-    },
-    setRestorationApprovalType (approvalType: ApprovalTypes) {
-      this.getRestoration.approvalType = approvalType
     },
     setStateFilingRestoration (): Promise<any> {
       // need to return a promise because action is called via dispatch

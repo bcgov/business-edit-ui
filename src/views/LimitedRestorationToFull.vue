@@ -15,14 +15,14 @@
           </header>
 
           <QuestionWrapper
-            id="applicant-relationship"
+            id="applicant-relationship-section"
             title="Applicant Relationship"
             subtitle="Please select applicant's relationship to the company at the time the company was dissolved:"
           >
             <RelationshipsPanel
               class="pl-5 pt-1"
-              :draft-relationships="getRelationships"
-              :show-validation-errors="getComponentValidate"
+              :draftRelationships="getRestorationRelationships"
+              :showValidationErrors="getComponentValidate"
               @changed="setRestorationRelationships($event)"
               @valid="setValidComponent({ key: 'isValidRelationship', value: $event })"
             />
@@ -32,22 +32,28 @@
             id="applicant-information"
             title="Applicant Information"
           >
-            <PeopleAndRoles />
+            <PeopleAndRoles class="pt-2" />
           </QuestionWrapper>
 
           <QuestionWrapper
-            id="approval-type"
+            id="approval-type-section"
             title="Approval Type"
           >
             <ApprovalType
-              class="white-background px-9 py-4 mt-4"
-              :courtOrderNumber="getCourtOrderNumberText"
-              :approvedByRegistrar="isApprovedByRegistrar"
-              :isCourtOrderOnly="isCourtOrderOnly"
-              :isCourtOrderRadio="showCourtOrderRadio"
+              class="white-background mt-4 pa-8"
+              :courtOrderNumber="getRestorationCourtOrderNumber"
+              :noticeDate="getRestoration.noticeDate"
+              :applicationDate="getRestoration.applicationDate"
+              :approvedByRegistrar="approvedByRegistrar"
+              :approvedByCourtOrder="approvedByCourtOrder"
+              :isCourtOrderRadio="isCourtOrderRadio"
               :invalidSection="!getApprovalTypeValid"
-              @courtNumberChange="setRestorationCourtOrder({ fileNumber: $event })"
-              @valid="setValidComponent({ key: 'isValidApprovalType', value: $event })"
+              :validate="getComponentValidate"
+              @courtNumberChange="onCourtNumberChange($event)"
+              @update:noticeDate="onUpdateNoticeDate($event)"
+              @update:applicationDate="onUpdateApplicationDate($event)"
+              @approvalTypeChange="onApprovalTypeChange($event)"
+              @valid="setApprovalTypeValid($event)"
             />
           </QuestionWrapper>
 
@@ -143,7 +149,8 @@ import { BusinessContactInfo, CertifySection, CourtOrderPoa, DocumentsDelivery, 
   QuestionWrapper, RecognitionDateTime, StaffPayment, YourCompanyWrapper } from '@/components/common/'
 import { AuthServices, LegalServices } from '@/services/'
 import { CommonMixin, FeeMixin, FilingTemplateMixin, OrgPersonMixin } from '@/mixins/'
-import { ActionKvIF, EntitySnapshotIF, OrgPersonIF, ResourceIF, RestorationFilingIF } from '@/interfaces/'
+import { ActionKvIF, EntitySnapshotIF, FlagsCompanyInfoIF, OrgPersonIF, ResourceIF, RestorationFilingIF }
+  from '@/interfaces/'
 import * as Resources from '@/resources/LimitedRestorationToFull/'
 import { ApprovalTypes, FilingStatus, RoleTypes } from '@/enums/'
 import { RelationshipTypes } from '@bcrs-shared-components/enums'
@@ -186,19 +193,25 @@ export default class LimitedRestorationToFull extends Mixins(
   @Getter(useStore) getAppValidate!: boolean
   @Getter(useStore) getApprovalTypeValid!: boolean
   @Getter(useStore) getComponentValidate!: boolean
-  @Getter(useStore) getCourtOrderNumberText!: string
   // @Getter(useStore) getEntityType!: CorpTypeCd
-  @Getter(useStore) getRelationships!: RelationshipTypes[]
+  @Getter(useStore) getFlagsCompanyInfo!: FlagsCompanyInfoIF
   @Getter(useStore) getResource!: ResourceIF
+  // @Getter(useStore) getRestoration!: RestorationStateIF
+  @Getter(useStore) getRestorationCourtOrderNumber!: string
+  @Getter(useStore) getRestorationRelationships!: RelationshipTypes[]
+  // @Getter(useStore) getStateFilingRestoration!: StateFilingRestorationIF
   @Getter(useStore) isRoleStaff!: boolean
   @Getter(useStore) isSummaryMode!: boolean
   @Getter(useStore) showFeeSummary!: boolean
 
   // Store actions
+  @Action(useStore) setApprovalTypeValid!: (x: boolean) => void
   @Action(useStore) setDocumentOptionalEmailValidity!: (x: boolean) => void
   @Action(useStore) setFilingId!: (x: number) => void
   @Action(useStore) setHaveUnsavedChanges!: (x: boolean) => void
   @Action(useStore) setResource!: (x: ResourceIF) => void
+  // @Action(useStore) setRestorationCourtOrder!: (courtOrder: CourtOrderIF) => void
+  // @Action(useStore) setRestorationRelationships!: (x: RelationshipTypes[]) => void
   @Action(useStore) setStateFilingRestoration!: () => Promise<void>
   @Action(useStore) setValidComponent!: (x: ActionKvIF) => void
 
@@ -210,9 +223,15 @@ export default class LimitedRestorationToFull extends Mixins(
 
   /**
    * "isDataLoaded" is a flag that is to "true" after all data is loaded.
-   * This is to prevent using the state filing restoration before it's fetched.
+   * This is to prevent using the state filing data before it's fetched.
    */
   isDataLoaded = false
+
+  /**
+   * Whether to show the court order radio button.
+   * Gets set once after data is loaded.
+   */
+  isCourtOrderRadio = null as Boolean
 
   /** The resource object for a restoration filing. */
   get restorationResource (): ResourceIF {
@@ -313,6 +332,9 @@ export default class LimitedRestorationToFull extends Mixins(
       // update the fee prices for the notice changes
       await this.setFeePricesFromFilingData(true)
 
+      // show the court order radio button only if the original limited restoration was NOT approved by court order
+      this.isCourtOrderRadio = (this.getStateFilingRestoration.approvalType !== ApprovalTypes.VIA_COURT_ORDER)
+
       // tell App that we're finished loading
       this.emitHaveData()
       this.isDataLoaded = true
@@ -388,32 +410,38 @@ export default class LimitedRestorationToFull extends Mixins(
     return currentApplicant[0].officer.email
   }
 
-  /** The limited restoration state filing's approval type. */
   get approvalType (): ApprovalTypes {
-    return this.getStateFilingRestoration?.approvalType
+    return this.getRestoration.approvalType
   }
 
-  /** The court order draft file number. */
   get courtOrderNumberText (): string {
     return this.getRestoration.courtOrder?.fileNumber || ''
   }
 
-  get isApprovedByRegistrar (): boolean {
-    return this.getStateFilingRestoration?.approvalType === ApprovalTypes.VIA_REGISTRAR
+  get approvedByRegistrar (): boolean {
+    return (this.approvalType === ApprovalTypes.VIA_REGISTRAR)
   }
 
-  get isCourtOrderOnly (): boolean {
-    return this.getStateFilingRestoration?.approvalType === ApprovalTypes.VIA_COURT_ORDER
+  get approvedByCourtOrder (): boolean {
+    return (this.approvalType === ApprovalTypes.VIA_COURT_ORDER)
   }
 
-  get showCourtOrderRadio (): boolean {
-    let courtOrderRadio
-    if (this.getStateFilingRestoration?.approvalType === ApprovalTypes.VIA_COURT_ORDER) {
-      courtOrderRadio = false
-    } else {
-      courtOrderRadio = true
-    }
-    return courtOrderRadio
+  onCourtNumberChange (fileNumber: string): void {
+    this.setRestorationCourtOrder({ fileNumber })
+  }
+
+  onUpdateNoticeDate (noticeDate: string): void {
+    // use $set as we're adding an optional properly that we want reactive
+    this.$set(this.getRestoration, 'noticeDate', noticeDate)
+  }
+
+  onUpdateApplicationDate (applicationDate: string): void {
+    // use $set as we're adding an optional properly that we want reactive
+    this.$set(this.getRestoration, 'applicationDate', applicationDate)
+  }
+
+  onApprovalTypeChange (approvalType: ApprovalTypes): void {
+    this.getRestoration.approvalType = approvalType
   }
 
   /** Emits Fetch Error event. */

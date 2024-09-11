@@ -55,8 +55,8 @@ export const stateModel: StateModelIF = {
       isValidMemorandum: true,
       isValidSpecialResolution: true,
       isValidSpecialResolutionSignature: true,
-      isValidApprovalType: true,
       isValidRelationship: true,
+      isValidApprovalType: true,
       isValidExtensionTime: true
     },
     flagsReviewCertify: {
@@ -154,13 +154,10 @@ export const stateModel: StateModelIF = {
   },
   restoration: {
     approvalType: null,
-    approvalTypeValid: true,
-    businessNameValid: false,
     courtOrder: {
       fileNumber: null
     },
     expiry: null,
-    expiryValid: true,
     relationships: [],
     type: null
   },

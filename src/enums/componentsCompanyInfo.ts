@@ -23,7 +23,7 @@ export enum ComponentsCompanyInfo {
   'memorandum',
   'special-resolution-editor',
   'special-resolution-signing-party',
+  'applicant-relationship-section',
   'approval-type-section',
-  'relationships-panel',
   'extension-time-section'
 }

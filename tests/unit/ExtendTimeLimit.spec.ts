@@ -18,7 +18,7 @@ describe('Time Limit Extension component', () => {
 
     store.stateModel.stateFilingRestoration = {
       approvalType: 'courtOrder',
-      courtOrder: { fileNumber: 'testtest' },
+      courtOrder: { fileNumber: '123-456' },
       expiry: '2024-01-01', // 12 months remaining from current date above
       type: 'limitedRestoration'
     } as any
@@ -91,12 +91,12 @@ describe('Time Limit Extension component', () => {
     const wrapper = wrapperFactory()
     const vm = wrapper.vm as any
 
-    expect(vm.getApprovalTypeValid).toBe(false)
+    expect(vm.getApprovalTypeValid).toBe(true)
 
     wrapper.destroy()
   })
 
   it('get correct court order file number.', () => {
-    expect(store.getCourtOrderNumberText).toEqual('')
+    expect(store.getRestorationCourtOrderNumber).toEqual('')
   })
 })

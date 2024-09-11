@@ -22,7 +22,7 @@ export default class CommonMixin extends Vue {
   }
 
   /**
-   * Identifies the first invalid flag and scrolls to the component.
+   * Identifies the first invalid flag and scrolls to the respective component.
    * @param flags list of current component validity flags
    * @param components list of current component IDs
    * @return whether all components are valid

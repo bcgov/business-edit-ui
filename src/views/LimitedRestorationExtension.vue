@@ -180,7 +180,7 @@ export default class LimitedRestorationExtension extends Mixins(
 
   /**
    * "isDataLoaded" is a flag that is to "true" after all data is loaded.
-   * This is to prevent using the state filing restoration before it's fetched.
+   * This is to prevent using the state filing data before it's fetched.
    */
   isDataLoaded = false
 
