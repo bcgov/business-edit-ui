@@ -730,8 +730,8 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin, OrgPe
         if (deleted) delete deleted.actions
       }
     } else {
-      // get ID of edited person to undo
-      const id = person?.officer?.id
+      // get ID of original officer to undo
+      const id = this.originalParties[0]?.officer?.id
 
       let thisPerson
       if (isNaN(+id)) {
@@ -747,6 +747,7 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin, OrgPe
 
       // splice in the original person
       tempList.splice(index, 1, thisPerson)
+      console.log(tempList)
     }
 
     // set updated list
