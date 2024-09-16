@@ -364,9 +364,8 @@ export default class LimitedRestorationToFull extends Mixins(
       throw new Error(`Applicant not found for ${this.getBusinessId}`)
     }
 
-    // make a copy of the original object and assign a new id (for UI use only)
+    // make a copy of the original object
     const copy = cloneDeep(applicant)
-    copy.officer.id = uuidv4()
 
     return copy
   }
