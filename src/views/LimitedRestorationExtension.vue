@@ -112,7 +112,6 @@
 <script lang="ts">
 import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
-import { v4 as uuidv4 } from 'uuid'
 import { cloneDeep } from 'lodash'
 import { GetFeatureFlag } from '@/utils/'
 import RestorationSummary from '@/components/Restoration/RestorationSummary.vue'
@@ -337,7 +336,6 @@ export default class LimitedRestorationExtension extends Mixins(
 
     // make a copy of the original object
     const copy = cloneDeep(applicant)
-
     return copy
   }
 
