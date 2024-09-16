@@ -730,11 +730,20 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin, OrgPe
         if (deleted) delete deleted.actions
       }
     } else {
-      // copy the original person
-      let thisPerson = cloneDeep(this.originalParties[0])
+      // get ID of edited person to undo
+      const id = person?.officer?.id
+
+      let thisPerson
+      if (isNaN(+id)) {
+        // to check assigned UUID
+        thisPerson = cloneDeep(this.originalParties.find(x => x.officer.id === id))
+      } else {
+        // get a copy of original person from original IA
+        thisPerson = cloneDeep(this.originalParties.find(x => +x.officer.id === +id))
+      }
 
       // safety check
-      if (!thisPerson) throw new Error(`Failed to find original person`)
+      if (!thisPerson) throw new Error(`Failed to find original person with id = ${id}`)
 
       // splice in the original person
       tempList.splice(index, 1, thisPerson)
