@@ -389,12 +389,24 @@ export default class FilingTemplateMixin extends DateMixin {
           identifier: this.getBusinessId,
           legalType: this.getEntityType
         },
-        parties: this.getOrgPeople,
+        parties: null, // applied below
         offices: this.getOfficeAddresses,
         contactPoint: this.getContactPoint
       }
     }
+    // Apply parties to filing
+    {
+      // make a copy so we don't change original array
+      let parties = cloneDeep(this.getOrgPeople)
 
+      // prepare parties
+      parties = isDraft ? parties : this.prepareParties(parties)
+
+      // fix schema issues
+      parties = this.fixPartySchemaIssues(parties)
+
+      filing.restoration.parties = parties
+    }
     // Set relationships object for a full restoration only
     if (this.isLimitedRestorationToFull) {
       filing.restoration.relationships = this.getRestoration.relationships
@@ -1506,7 +1518,12 @@ export default class FilingTemplateMixin extends DateMixin {
         if (!party.mailingAddress.streetAddressAdditional) delete party.mailingAddress.streetAddressAdditional
         if (!party.mailingAddress.deliveryInstructions) delete party.mailingAddress.deliveryInstructions
       }
-
+      // If the partyType is organization, remove firstName, middleName and lastName
+      if (party.officer.partyType === PartyTypes.ORGANIZATION) {
+        delete party.officer.firstName
+        delete party.officer.lastName
+        delete party.officer.middleName
+      }
       // NB: at this time, do not convert party from "middleName" to "middleInitial"
 
       return party
