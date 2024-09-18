@@ -1518,12 +1518,7 @@ export default class FilingTemplateMixin extends DateMixin {
         if (!party.mailingAddress.streetAddressAdditional) delete party.mailingAddress.streetAddressAdditional
         if (!party.mailingAddress.deliveryInstructions) delete party.mailingAddress.deliveryInstructions
       }
-      // If the partyType is organization, remove firstName, middleName and lastName
-      if (party.officer.partyType === PartyTypes.ORGANIZATION) {
-        delete party.officer.firstName
-        delete party.officer.lastName
-        delete party.officer.middleName
-      }
+
       // NB: at this time, do not convert party from "middleName" to "middleInitial"
 
       return party
