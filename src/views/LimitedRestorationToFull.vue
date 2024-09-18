@@ -139,7 +139,6 @@
 <script lang="ts">
 import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
-import { v4 as uuidv4 } from 'uuid'
 import { cloneDeep } from 'lodash'
 import { GetFeatureFlag } from '@/utils/'
 import RestorationSummary from '@/components/Restoration/RestorationSummary.vue'
@@ -364,10 +363,8 @@ export default class LimitedRestorationToFull extends Mixins(
       throw new Error(`Applicant not found for ${this.getBusinessId}`)
     }
 
-    // make a copy of the original object and assign a new id (for UI use only)
+    // make a copy of the original object
     const copy = cloneDeep(applicant)
-    copy.officer.id = uuidv4()
-
     return copy
   }
 

@@ -389,12 +389,24 @@ export default class FilingTemplateMixin extends DateMixin {
           identifier: this.getBusinessId,
           legalType: this.getEntityType
         },
-        parties: this.getOrgPeople,
+        parties: null, // applied below
         offices: this.getOfficeAddresses,
         contactPoint: this.getContactPoint
       }
     }
+    // Apply parties to filing
+    {
+      // make a copy so we don't change original array
+      let parties = cloneDeep(this.getOrgPeople)
 
+      // prepare parties
+      parties = isDraft ? parties : this.prepareParties(parties)
+
+      // fix schema issues
+      parties = this.fixPartySchemaIssues(parties)
+
+      filing.restoration.parties = parties
+    }
     // Set relationships object for a full restoration only
     if (this.isLimitedRestorationToFull) {
       filing.restoration.relationships = this.getRestoration.relationships
