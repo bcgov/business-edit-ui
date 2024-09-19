@@ -458,6 +458,16 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
       return
     }
 
+    // if the original legal type is one of the continued-in types, alter to another Cont. In type
+    if (
+      this.getOriginalLegalType === CorpTypeCd.BEN_CONTINUE_IN ||
+      this.getOriginalLegalType === CorpTypeCd.CCC_CONTINUE_IN ||
+      this.getOriginalLegalType === CorpTypeCd.CONTINUE_IN ||
+      this.getOriginalLegalType === CorpTypeCd.ULC_CONTINUE_IN
+    ) {
+      this.selectedEntityType = convertToContinuedInEntityType(this.selectedEntityType)
+    }
+
     this.setEntityType(this.selectedEntityType)
     this.isEditingType = false
 
