@@ -209,7 +209,7 @@ export default class FilingTemplateMixin extends DateMixin {
       if (this.getHasPlanOfArrangement || this.getFileNumber) {
         filing.correction.courtOrder = {
           fileNumber: this.getFileNumber,
-          effectOfOrder: this.getHasPlanOfArrangement ? EffectOfOrders.PLAN_OF_ARRANGEMENT : null,
+          effectOfOrder: this.getHasPlanOfArrangement ? EffectOfOrders.PLAN_OF_ARRANGEMENT : undefined,
           hasPlanOfArrangement: this.getHasPlanOfArrangement
         }
       }
@@ -331,7 +331,7 @@ export default class FilingTemplateMixin extends DateMixin {
     if (this.getHasPlanOfArrangement || this.getFileNumber) {
       filing.alteration.courtOrder = {
         fileNumber: this.getFileNumber,
-        effectOfOrder: this.getHasPlanOfArrangement ? EffectOfOrders.PLAN_OF_ARRANGEMENT : null,
+        effectOfOrder: this.getHasPlanOfArrangement ? EffectOfOrders.PLAN_OF_ARRANGEMENT : undefined,
         hasPlanOfArrangement: this.getHasPlanOfArrangement
       }
     }
@@ -647,7 +647,7 @@ export default class FilingTemplateMixin extends DateMixin {
     if (this.getHasPlanOfArrangement || this.getFileNumber) {
       filing.changeOfRegistration.courtOrder = {
         fileNumber: this.getFileNumber,
-        effectOfOrder: this.getHasPlanOfArrangement ? EffectOfOrders.PLAN_OF_ARRANGEMENT : null,
+        effectOfOrder: this.getHasPlanOfArrangement ? EffectOfOrders.PLAN_OF_ARRANGEMENT : undefined,
         hasPlanOfArrangement: this.getHasPlanOfArrangement
       }
     }
