@@ -304,6 +304,7 @@ export default class FilingTemplateMixin extends DateMixin {
         // add in the fields needed by Legal API
         ...this.getNameRequest,
         legalName: this.getNameRequestLegalName || undefined, // don't include if empty
+        legalType: this.getEntityType,
         nrNumber: this.getNameRequestNumber
       }
     }
