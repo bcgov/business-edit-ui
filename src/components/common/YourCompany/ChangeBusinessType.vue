@@ -391,7 +391,7 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
     if (this.isNumberedCompany) {
       return false
     }
-    // Named companies to CC/CCC or ULC require a name request.
+    // Named companies to CC/CCC or ULC/CUL require a name request.
     if (this.isCommunityContribution || this.isUnlimitedLiability) {
       return true
     }
@@ -477,13 +477,13 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
     this.selectedEntityType === CorpTypeCd.BEN_CONTINUE_IN)
   }
 
-  /** Whether current entity selection is a ULC/CUL Company. */
+  /** Whether current entity selection is a Unlimited (ULC/CUL) Company. */
   get isUnlimitedLiability (): boolean {
     return (this.selectedEntityType === CorpTypeCd.BC_ULC_COMPANY ||
     this.selectedEntityType === CorpTypeCd.ULC_CONTINUE_IN)
   }
 
-  /** Whether current entity selection is a CCC. */
+  /** Whether current entity selection is a Community Contribution Company (CC/CCC). */
   get isCommunityContribution (): boolean {
     return (this.selectedEntityType === CorpTypeCd.BC_CCC ||
     this.selectedEntityType === CorpTypeCd.CCC_CONTINUE_IN)
