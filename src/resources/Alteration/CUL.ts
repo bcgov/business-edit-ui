@@ -19,17 +19,17 @@ export const AlterationResourceCul: ResourceIF = {
     ],
     entityTypeOptions: [
       {
-        value: CorpTypeCd.BC_ULC_COMPANY,
+        value: CorpTypeCd.ULC_CONTINUE_IN,
         shortDesc: 'BC Unlimited Liability Company',
         text: 'BC Unlimited Liability Company'
       },
       {
-        value: CorpTypeCd.BENEFIT_COMPANY,
+        value: CorpTypeCd.BEN_CONTINUE_IN,
         shortDesc: 'BC Benefit Company',
         text: 'BC Benefit Company'
       },
       {
-        value: CorpTypeCd.BC_COMPANY,
+        value: CorpTypeCd.CONTINUE_IN,
         shortDesc: 'BC Limited Company',
         text: 'BC Limited Company'
       }

@@ -339,19 +339,8 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
   /** Define the entity type locally once the value has been populated in the store. */
   @Watch('getEntityType')
   private initializeEntityType (): void {
-    /** Converts type to regular entity type. */
-    function convertToRegularEntityType (type: CorpTypeCd): CorpTypeCd {
-      switch (type) {
-        case CorpTypeCd.BEN_CONTINUE_IN: return CorpTypeCd.BENEFIT_COMPANY
-        case CorpTypeCd.CCC_CONTINUE_IN: return CorpTypeCd.BC_CCC
-        case CorpTypeCd.CONTINUE_IN: return CorpTypeCd.BC_COMPANY
-        case CorpTypeCd.ULC_CONTINUE_IN: return CorpTypeCd.BC_ULC_COMPANY
-        default: return type
-      }
-    }
-
     // convert types for the v-select, etc
-    this.selectedEntityType = convertToRegularEntityType(this.getEntityType)
+    this.selectedEntityType = this.getEntityType
   }
 
   /** Clear the articles confirm checkbox whenever the selected entity type changes. */
@@ -402,7 +391,7 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
     if (this.isNumberedCompany) {
       return false
     }
-    // Named companies to CC or ULC require a name request.
+    // Named companies to CC/CCC or ULC require a name request.
     if (this.isCommunityContribution || this.isUnlimitedLiability) {
       return true
     }
@@ -412,7 +401,7 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
     ) {
       return true
     }
-    // Named CUL to BC Limited (or Benefit Company) requires a name request.
+    // Named CUL to C Limited (or C Benefit Company) requires a name request.
     if (this.getOriginalLegalType === CorpTypeCd.ULC_CONTINUE_IN &&
       (this.isBcLimited || this.isBenefitCompany)
     ) {
@@ -441,40 +430,11 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
 
   /** Submit new company type. */
   submitTypeChange () {
-    /** Converts type to continuation in entity type. */
-    function convertToContinuedInEntityType (type: CorpTypeCd): CorpTypeCd {
-      switch (type) {
-        case CorpTypeCd.BENEFIT_COMPANY: return CorpTypeCd.BEN_CONTINUE_IN
-        case CorpTypeCd.BC_CCC: return CorpTypeCd.CCC_CONTINUE_IN
-        case CorpTypeCd.BC_COMPANY: return CorpTypeCd.CONTINUE_IN
-        case CorpTypeCd.BC_ULC_COMPANY: return CorpTypeCd.ULC_CONTINUE_IN
-        default: return type
-      }
-    }
-
-    // prevent continuation in entity types from changing to equivalent regular entity types
-    if (this.getOriginalLegalType === convertToContinuedInEntityType(this.selectedEntityType)) {
-      this.isEditingType = false
-      return
-    }
-
-    // if the original legal type is one of the continued-in types, alter to another Cont. In type
-    if (
-      this.getOriginalLegalType === CorpTypeCd.BEN_CONTINUE_IN ||
-      this.getOriginalLegalType === CorpTypeCd.CCC_CONTINUE_IN ||
-      this.getOriginalLegalType === CorpTypeCd.CONTINUE_IN ||
-      this.getOriginalLegalType === CorpTypeCd.ULC_CONTINUE_IN
-    ) {
-      this.selectedEntityType = convertToContinuedInEntityType(this.selectedEntityType)
-    }
-
     this.setEntityType(this.selectedEntityType)
     this.isEditingType = false
-
     if (this.shouldUpdateName()) {
       const originalName = this.getOriginalLegalName
       const updatedName = this.getUpdatedName(originalName)
-
       if (originalName !== updatedName) {
         this.setNameRequest({
           legalType: this.selectedEntityType,
@@ -513,22 +473,26 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
 
   /** Whether current entity selection is a Benefit Company. */
   get isBenefitCompany (): boolean {
-    return (this.selectedEntityType === CorpTypeCd.BENEFIT_COMPANY)
+    return (this.selectedEntityType === CorpTypeCd.BENEFIT_COMPANY ||
+    this.selectedEntityType === CorpTypeCd.BEN_CONTINUE_IN)
   }
 
-  /** Whether current entity selection is a BC ULC Company. */
+  /** Whether current entity selection is a ULC/CUL Company. */
   get isUnlimitedLiability (): boolean {
-    return (this.selectedEntityType === CorpTypeCd.BC_ULC_COMPANY)
+    return (this.selectedEntityType === CorpTypeCd.BC_ULC_COMPANY ||
+    this.selectedEntityType === CorpTypeCd.ULC_CONTINUE_IN)
   }
 
-  /** Whether current entity selection is a BC CCC. */
+  /** Whether current entity selection is a CCC. */
   get isCommunityContribution (): boolean {
-    return (this.selectedEntityType === CorpTypeCd.BC_CCC)
+    return (this.selectedEntityType === CorpTypeCd.BC_CCC ||
+    this.selectedEntityType === CorpTypeCd.CCC_CONTINUE_IN)
   }
 
-  /** Whether current entity selection is a BC Company. */
+  /** Whether current entity selection is a BC Company / Contin Limited. */
   get isBcLimited (): boolean {
-    return (this.selectedEntityType === CorpTypeCd.BC_COMPANY)
+    return (this.selectedEntityType === CorpTypeCd.BC_COMPANY ||
+    this.selectedEntityType === CorpTypeCd.CONTINUE_IN)
   }
 
   get updatedArticleInfo (): string {

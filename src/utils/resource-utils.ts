@@ -2,7 +2,11 @@ import {
   AlterationResourceBc,
   AlterationResourceBen,
   AlterationResourceCc,
-  AlterationResourceUlc
+  AlterationResourceUlc,
+  AlterationResourceCul,
+  AlterationResourceC,
+  AlterationResourceCben,
+  AlterationResourceCcc
 } from '@/resources/Alteration'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 
@@ -11,7 +15,11 @@ export class ResourceUtilities {
       [CorpTypeCd.BC_COMPANY]: AlterationResourceBc,
       [CorpTypeCd.BENEFIT_COMPANY]: AlterationResourceBen,
       [CorpTypeCd.BC_CCC]: AlterationResourceCc,
-      [CorpTypeCd.BC_ULC_COMPANY]: AlterationResourceUlc
+      [CorpTypeCd.BC_ULC_COMPANY]: AlterationResourceUlc,
+      [CorpTypeCd.CONTINUE_IN]: AlterationResourceC,
+      [CorpTypeCd.BEN_CONTINUE_IN]: AlterationResourceCben,
+      [CorpTypeCd.CCC_CONTINUE_IN]: AlterationResourceCcc,
+      [CorpTypeCd.ULC_CONTINUE_IN]: AlterationResourceCul
     }
 
     /**
