@@ -8,7 +8,7 @@
   >
     <v-card>
       <v-card-title id="dialog-title">
-        Account Authorization
+        TESTING TESTING TESTING
       </v-card-title>
 
       <v-card-text>
