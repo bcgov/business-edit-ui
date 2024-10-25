@@ -1,15 +1,19 @@
 {
   "name": "business-edit-ui",
-  "version": "4.10.12",
+  "version": "4.11.0",
   "private": true,
   "appName": "Edit UI",
   "sbcName": "SBC Common Components",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview",
-    "lint": "eslint . --ext .js,.ts,.vue",
+    "build-check": "vite build",
+    "preview": "vite preview --port 8080",
+    "lint": "eslint . --ext js,ts,vue --no-fix",
+    "lint:fix": "eslint . --ext js,ts,vue --fix src",
+    "test": "vitest run",
     "test:unit": "vitest run",
+    "test:watch": "vitest watch",
     "test:coverage": "vitest run --coverage"
   },
   "dependencies": {

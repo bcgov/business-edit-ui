@@ -6,7 +6,6 @@ import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
 import { ActionTypes, CorrectionErrorTypes, FilingTypes } from '@/enums'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
-import { ApprovalTypes, RestorationTypes } from '@bcrs-shared-components/enums'
 import * as FeatureFlags from '@/utils/feature-flag-utils'
 
 // Vuetify is needed for Actions component

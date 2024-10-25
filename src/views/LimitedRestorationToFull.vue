@@ -230,7 +230,7 @@ export default class LimitedRestorationToFull extends Mixins(
    * Whether to show the court order radio button.
    * Gets set once after data is loaded.
    */
-  isCourtOrderRadio = null as Boolean
+  isCourtOrderRadio = null as boolean
 
   /** The resource object for a restoration filing. */
   get restorationResource (): ResourceIF {

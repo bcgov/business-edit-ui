@@ -2,7 +2,6 @@
 import {
   AccountTypes,
   ActionTypes,
-  ApprovalTypes,
   CoopTypes,
   CorrectionErrorTypes,
   FilingNames,
