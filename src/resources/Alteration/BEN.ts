@@ -28,11 +28,6 @@ export const AlterationResourceBen: ResourceIF = {
         shortDesc: 'BC Limited Company',
         text: 'BC Limited Company'
       },
-      {
-        value: CorpTypeCd.BC_CCC,
-        shortDesc: 'BC Community Contribution Company',
-        text: 'BC Community Contribution Company'
-      }
     ],
     articleTitle: 'Benefit Company Articles',
     articleInfo: `The company has completed a set Benefit Company Articles containing a benefit provision, 
