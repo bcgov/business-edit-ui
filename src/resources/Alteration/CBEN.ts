@@ -27,7 +27,7 @@ export const AlterationResourceCben: ResourceIF = {
         value: CorpTypeCd.CONTINUE_IN,
         shortDesc: 'BC Limited Company',
         text: 'BC Limited Company'
-      },
+      }
     ],
     articleTitle: 'Benefit Company Articles',
     articleInfo: `The company has completed a set Benefit Company Articles containing a benefit provision, 
