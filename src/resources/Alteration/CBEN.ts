@@ -27,11 +27,6 @@ export const AlterationResourceCben: ResourceIF = {
         value: CorpTypeCd.CONTINUE_IN,
         shortDesc: 'BC Limited Company',
         text: 'BC Limited Company'
-      },
-      {
-        value: CorpTypeCd.CCC_CONTINUE_IN,
-        shortDesc: 'BC Community Contribution Company',
-        text: 'BC Community Contribution Company'
       }
     ],
     articleTitle: 'Benefit Company Articles',
