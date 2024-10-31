@@ -75,7 +75,6 @@
             class="mt-10"
             :sectionNumber="showTransactionalFolioNumber ? '3.' : '2.'"
             :validate="getAppValidate"
-            :disableEdit="!isRoleStaff"
           />
 
           <!-- STAFF ONLY: Court Order/Plan of Arrangement and Staff Payment -->
