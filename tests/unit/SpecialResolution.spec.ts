@@ -278,7 +278,7 @@ describe('Special Resolution component', () => {
     expect(store.stateModel.currentFees[0].filingFees).toBe(70)
   })
 
-  it('certify text is not prefilled/editable for staff user', async () => {
+  it('certify text is not prefilled for staff user', async () => {
     store.stateModel.tombstone.keycloakRoles = ['staff']
     store.stateModel.tombstone.userInfo = {
       firstname: 'Jon',
@@ -290,7 +290,7 @@ describe('Special Resolution component', () => {
     expect(store.stateModel.certifyState.certifiedBy).toBe('undefined undefined')
   })
 
-  it('certify text is prefilled/uneditable for non-staff user', async () => {
+  it('certify text is prefilled for non-staff user', async () => {
     store.stateModel.tombstone.keycloakRoles = []
     store.stateModel.tombstone.userInfo = {
       firstname: 'Jon',

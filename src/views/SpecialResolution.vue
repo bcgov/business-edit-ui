@@ -97,7 +97,6 @@
             class="mt-10"
             :sectionNumber="showTransactionalFolioNumber ? '4.' : '3.'"
             :validate="getAppValidate"
-            :disableEdit="!isRoleStaff"
           />
 
           <template v-if="isRoleStaff">
