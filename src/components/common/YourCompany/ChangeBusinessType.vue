@@ -388,22 +388,23 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
   }
 
   get nameRequestRequiredError (): boolean {
-    if (this.isNumberedCompany) {
+    // Don't show the Error when the type is changed by name
+    if (this.isNumberedCompany || this.isEntityTypeChangedByName) {
       return false
     }
     // Named companies to CC/CCC or ULC/CUL require a name request.
-    if (!this.isEntityTypeChangedByName && (this.isCommunityContribution || this.isUnlimitedLiability)) {
+    if (this.isCommunityContribution || this.isUnlimitedLiability) {
       return true
     }
     // Named ULC to BC Limited (or Benefit Company) requires a name request.
-    if (!this.isEntityTypeChangedByName && ((this.getOriginalLegalType === CorpTypeCd.BC_ULC_COMPANY &&
-      (this.isBcLimited || this.isBenefitCompany)))
+    if (this.getOriginalLegalType === CorpTypeCd.BC_ULC_COMPANY &&
+      (this.isBcLimited || this.isBenefitCompany)
     ) {
       return true
     }
     // Named CUL to C Limited (or C Benefit Company) requires a name request.
-    if (!this.isEntityTypeChangedByName && (this.getOriginalLegalType === CorpTypeCd.ULC_CONTINUE_IN &&
-      (this.isBcLimited || this.isBenefitCompany))
+    if (this.getOriginalLegalType === CorpTypeCd.ULC_CONTINUE_IN &&
+      (this.isBcLimited || this.isBenefitCompany)
     ) {
       return true
     }
