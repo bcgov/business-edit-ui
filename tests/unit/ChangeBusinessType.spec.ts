@@ -179,6 +179,7 @@ describe('Change Business Type component', () => {
       }
     } as EntitySnapshotIF
     store.stateModel.tombstone.entityType = CorpTypeCd.BC_CCC
+    store.stateModel.tombstone.entityTypeChangedByName = false
 
     const wrapper: any = mount(ChangeBusinessType, { vuetify })
     wrapper.vm.isEditingType = true
