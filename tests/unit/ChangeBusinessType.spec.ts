@@ -152,7 +152,7 @@ describe('Change Business Type component', () => {
     wrapper.vm.selectedEntityType = CorpTypeCd.BC_CCC
     wrapper.vm.submitTypeChange()
 
-    expect(wrapper.vm.getNameRequestLegalName).toBe('1234567 COMMUNITY CONTRIBUTION COMPANY')
+    expect(wrapper.vm.getNameRequestLegalName).toBe('1234567 COMMUNITY CONTRIBUTION COMPANY LTD.')
 
     store.stateModel.entitySnapshot.businessInfo.legalType = CorpTypeCd.BC_ULC_COMPANY
     store.stateModel.entitySnapshot.businessInfo.legalName = '1234567 COMMUNITY CONTRIBUTION COMPANY'
