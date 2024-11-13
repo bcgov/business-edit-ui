@@ -26,5 +26,5 @@ export const RestorationResourceCc: ResourceIF = {
   certifyClause: 'Note: It is an offence to make or assist in making a false or misleading statement in a record ' +
     'filed under the BC Corporations Act. ' +
     'A person who commits this offence is subject to a maximum fine of $5000.',
-  certifyText: 'BC Corporations Act'
+  certifyText: 'business'
 }
