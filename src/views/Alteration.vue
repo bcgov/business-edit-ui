@@ -214,7 +214,7 @@ export default class Alteration extends Mixins(CommonMixin, FeeMixin, FilingTemp
     }
   }
 
-  @Watch('hasBusinessTypeChanged')
+  @Watch('hasBusinessNameChanged')
   onBusinessTypeChanged () {
     const filingData = this.getFilingData
     // when altering from BC (or C) to ULC, use specific filing data
