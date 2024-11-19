@@ -214,6 +214,7 @@ export default class Alteration extends Mixins(CommonMixin, FeeMixin, FilingTemp
     }
   }
 
+  @Watch('hasBusinessNameChanged')
   @Watch('hasBusinessTypeChanged')
   onBusinessTypeChanged () {
     const filingData = this.getFilingData

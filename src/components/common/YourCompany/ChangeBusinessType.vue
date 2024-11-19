@@ -306,6 +306,7 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
   @Getter(useStore) getEditedLabel!: string
   @Getter(useStore) getEntityType!: CorpTypeCd
   @Getter(useStore) getNameRequestLegalName!: string
+  @Getter(useStore) getNameRequestNumber!: string
   @Getter(useStore) getNumberOfDirectors!: number
   @Getter(useStore) getOriginalLegalName!: string
   @Getter(useStore) getOriginalLegalType!: CorpTypeCd
@@ -415,6 +416,11 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
     return (this.isCommunityContribution && this.getNumberOfDirectors < 3)
   }
 
+  /** True if a new NR number has been entered. */
+  get hasNewNr (): boolean {
+    return !!this.getNameRequestNumber
+  }
+
   /** Reset company type values to original. */
   resetType () {
     this.setEntityType(this.getOriginalLegalType || null)
@@ -433,22 +439,18 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
   submitTypeChange () {
     this.setEntityType(this.selectedEntityType)
     this.isEditingType = false
-    if (this.shouldUpdateName()) {
+    if (this.isNumberedCompany && !this.hasNewNr) {
       const originalName = this.getOriginalLegalName
       const updatedName = this.getUpdatedName(originalName)
+      this.setNameRequest({
+        legalType: this.selectedEntityType,
+        nrNum: this.getOriginalNrNumber
+      } as any)
+      this.setNameRequestLegalName(updatedName)
       if (originalName !== updatedName) {
-        this.setNameRequest({
-          legalType: this.selectedEntityType,
-          nrNum: this.getOriginalNrNumber
-        } as any)
-        this.setNameRequestLegalName(updatedName)
         this.setNameChangedByType(true)
       }
     }
-  }
-
-  shouldUpdateName (): boolean {
-    return this.isNumberedCompany && !this.hasBusinessNameChanged
   }
 
   getUpdatedName (originalName: string): string {
