@@ -450,8 +450,9 @@ export default class EntityName extends Mixins(CommonMixin, NameRequestMixin) {
     } as any)
     this.setNameRequestLegalName(this.getOriginalLegalName)
 
+    this.setEntityType(this.getOriginalLegalType || null)
+
     if (this.isEntityTypeChangedByName) {
-      this.setEntityType(this.getOriginalLegalType || null)
       this.setEntityTypeChangedByName(false)
     }
 
