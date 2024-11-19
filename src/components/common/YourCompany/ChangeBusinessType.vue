@@ -433,7 +433,7 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
   submitTypeChange () {
     this.setEntityType(this.selectedEntityType)
     this.isEditingType = false
-    if (this.shouldUpdateName()) {
+    if (this.isNumberedCompany) {
       const originalName = this.getOriginalLegalName
       const updatedName = this.getUpdatedName(originalName)
       this.setNameRequest({
@@ -445,10 +445,6 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
         this.setNameChangedByType(true)
       }
     }
-  }
-
-  shouldUpdateName (): boolean {
-    return this.isNumberedCompany
   }
 
   getUpdatedName (originalName: string): string {
