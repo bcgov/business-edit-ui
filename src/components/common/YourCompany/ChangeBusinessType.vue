@@ -133,26 +133,47 @@
           </v-row>
         </template>
 
-        <div
+        <MessageBox
           v-if="hasAttemptedSubmission && minimumThreeDirectorError"
           id="minimum-three-director-error"
-          class="my-6"
+          class="mt-6"
+          color="red"
         >
-          <p class="error-text">
-            The business type cannot be changed. A Community Contribution Company requires a minimum of three directors.
+          <p>
+            <v-icon
+              color="red"
+              class="error-icon"
+            >
+              mdi-alert
+            </v-icon>
+            <strong class="pl-2 pt-6">Update directors</strong>
           </p>
-        </div>
+          <p class="pl-8">
+            A BC Community Contribution Company requires at least three directors.
+            File a director change and then come back and update the business type.
+          </p>
+        </MessageBox>
 
-        <div
+        <MessageBox
           v-if="hasAttemptedSubmission && nameRequestRequiredError"
           id="name-request-required-error"
-          class="my-6"
+          class="mt-6"
+          color="red"
         >
-          <p class="error-text">
-            An alteration of business type Name Request is required to make this change. After the name is approved,
-            you can then select 'change' beside the company name to update it.
+          <p>
+            <v-icon
+              color="red"
+              class="error-icon"
+            >
+              mdi-alert
+            </v-icon>
+            <strong class="pl-2 pt-6">Change company name</strong>
           </p>
-        </div>
+          <p class="pl-8">
+            To change to a BC Community Contribution Company, you must change the company
+            name using an approved name request or change it to a numbered company.
+          </p>
+        </MessageBox>
 
         <div class="my-6">
           <p class="info-text">
@@ -287,11 +308,13 @@ import { EntityTypeOption, ResourceIF } from '@/interfaces/'
 import { NameRequestIF } from '@bcrs-shared-components/interfaces'
 import { GetFeatureFlag, ResourceUtilities } from '@/utils'
 import { useStore } from '@/store/store'
+import MessageBox from '@/components/common/MessageBox.vue'
 
 @Component({
   components: {
     BcRegContacts,
-    BcRegEntityDetails
+    BcRegEntityDetails,
+    MessageBox
   }
 })
 export default class ChangeBusinessType extends Mixins(CommonMixin) {
