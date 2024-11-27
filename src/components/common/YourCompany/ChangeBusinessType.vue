@@ -211,7 +211,7 @@
             large
             outlined
             color="primary"
-            @click="isEditingType = false, hasAttemptedSubmission = false"
+            @click="resetType()"
           >
             <span>Cancel</span>
           </v-btn>
@@ -346,6 +346,7 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
   @Action(useStore) setNameRequest!: (x: NameRequestIF) => void
   @Action(useStore) setNameRequestLegalName!: (x: string) => void
   @Action(useStore) setNameChangedByType!: (x: boolean) => void
+  @Action(useStore) setEntityTypeChangedByName!: (x: boolean) => void
 
   selectedEntityType = null as CorpTypeCd
   confirmArticles = false
@@ -455,6 +456,7 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
     } as any)
     this.setNameRequestLegalName(this.getOriginalLegalName)
     this.setNameChangedByType(false)
+    this.setEntityTypeChangedByName(false)
     this.isEditingType = false
     this.confirmArticles = false
   }
