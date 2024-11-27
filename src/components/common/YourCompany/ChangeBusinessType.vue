@@ -134,7 +134,7 @@
         </template>
 
         <div
-          v-if="minimumThreeDirectorError"
+          v-if="hasAttemptedSubmission && minimumThreeDirectorError"
           id="minimum-three-director-error"
           class="my-6"
         >
@@ -144,7 +144,7 @@
         </div>
 
         <div
-          v-if="nameRequestRequiredError"
+          v-if="hasAttemptedSubmission && nameRequestRequiredError"
           id="name-request-required-error"
           class="my-6"
         >
@@ -180,7 +180,6 @@
             id="done-btn"
             large
             color="primary"
-            :disabled="disableDoneButton"
             @click="submitTypeChange()"
           >
             <span>Done</span>
@@ -191,7 +190,7 @@
             large
             outlined
             color="primary"
-            @click="isEditingType = false"
+            @click="isEditingType = false, hasAttemptedSubmission = false"
           >
             <span>Cancel</span>
           </v-btn>
@@ -330,6 +329,7 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
   isEditingType = false
   dropdown = null as boolean
   supportedEntityTypes = [] as Array<string>
+  hasAttemptedSubmission = false
 
   /** Called when component is mounted. */
   mounted (): void {
@@ -423,6 +423,7 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
 
   /** Reset company type values to original. */
   resetType () {
+    this.hasAttemptedSubmission = false
     this.setEntityType(this.getOriginalLegalType || null)
     // reset name request
     this.setNameRequest({
@@ -437,6 +438,8 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
 
   /** Submit new company type. */
   submitTypeChange () {
+    this.hasAttemptedSubmission = true // Mark that submission was attempted
+    if (this.minimumThreeDirectorError || this.nameRequestRequiredError) { return }
     this.setEntityType(this.selectedEntityType)
     this.isEditingType = false
     if (this.isNumberedCompany && !this.hasNewNr) {
