@@ -327,18 +327,18 @@ export default class EntityName extends Mixins(CommonMixin, NameRequestMixin) {
 
   /** Get the numbered name, after changing from named company */
   getUpdatedName (): string {
-    if (this.getOriginalLegalType === CorpTypeCd.BC_ULC_COMPANY ||
-    this.getOriginalLegalType === CorpTypeCd.ULC_CONTINUE_IN) {
+    if (this.getEntityType === CorpTypeCd.BC_ULC_COMPANY ||
+    this.getEntityType === CorpTypeCd.ULC_CONTINUE_IN) {
       return 'UNLIMITED LIABILITY COMPANY'
     }
-    if (this.getOriginalLegalType === CorpTypeCd.BC_CCC ||
-    this.getOriginalLegalType === CorpTypeCd.CCC_CONTINUE_IN) {
+    if (this.getEntityType === CorpTypeCd.BC_CCC ||
+    this.getEntityType === CorpTypeCd.CCC_CONTINUE_IN) {
       return 'COMMUNITY CONTRIBUTION COMPANY LTD.'
     }
-    if (this.getOriginalLegalType === CorpTypeCd.BC_COMPANY ||
-    this.getOriginalLegalType === CorpTypeCd.CONTINUE_IN ||
-    this.getOriginalLegalType === CorpTypeCd.BENEFIT_COMPANY ||
-    this.getOriginalLegalType === CorpTypeCd.BEN_CONTINUE_IN) {
+    if (this.getEntityType === CorpTypeCd.BC_COMPANY ||
+    this.getEntityType === CorpTypeCd.CONTINUE_IN ||
+    this.getEntityType === CorpTypeCd.BENEFIT_COMPANY ||
+    this.getEntityType === CorpTypeCd.BEN_CONTINUE_IN) {
       return 'LTD.'
     }
     return 'LTD.' // should never happen
