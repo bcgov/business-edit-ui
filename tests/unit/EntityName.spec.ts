@@ -334,7 +334,7 @@ describe('Name Changes for a SP alteration', () => {
     expect(wrapper.find('.company-name').text()).toBe('My Benefit Company')
     expect(companyInfo.at(0).text()).toBe('BC Benefit Company')
     expect(companyInfo.at(1).text()).toBe('The name of this business will be the current Incorporation ' +
-      'Number followed by "B.C. Ltd."')
+      'Number followed by "B.C. LTD."')
   })
 
   it('displays the Name Request information when NR data changes', async () => {
