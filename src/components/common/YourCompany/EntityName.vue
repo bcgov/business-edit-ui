@@ -53,7 +53,7 @@
             </div>
             <div class="info-text pt-3">
               <span>The name of this business will be the current Incorporation Number followed
-                by "B.C. {{ getUpdatedName() }}"</span>
+                by "B.C. {{ getUpdatedName }}"</span>
             </div>
           </template>
           <template v-if="isNameChangedByType && hasCompanyNameChanged">
@@ -283,6 +283,7 @@ export default class EntityName extends Mixins(CommonMixin, NameRequestMixin) {
   @Getter(useStore) getOriginalLegalName!: string
   @Getter(useStore) getOriginalLegalType!: CorpTypeCd
   @Getter(useStore) getOriginalNrNumber!: string
+  @Getter(useStore) getUpdatedName!: string
   @Getter(useStore) hasBusinessNameChanged!: boolean
   @Getter(useStore) isAlterationFiling!: boolean
   @Getter(useStore) isConflictingLegalType!: boolean
@@ -325,25 +326,6 @@ export default class EntityName extends Mixins(CommonMixin, NameRequestMixin) {
     )
   }
 
-  /** Get the numbered name, after changing from named company */
-  getUpdatedName (): string {
-    if (this.getEntityType === CorpTypeCd.BC_ULC_COMPANY ||
-    this.getEntityType === CorpTypeCd.ULC_CONTINUE_IN) {
-      return 'UNLIMITED LIABILITY COMPANY'
-    }
-    if (this.getEntityType === CorpTypeCd.BC_CCC ||
-    this.getEntityType === CorpTypeCd.CCC_CONTINUE_IN) {
-      return 'COMMUNITY CONTRIBUTION COMPANY LTD.'
-    }
-    if (this.getEntityType === CorpTypeCd.BC_COMPANY ||
-    this.getEntityType === CorpTypeCd.CONTINUE_IN ||
-    this.getEntityType === CorpTypeCd.BENEFIT_COMPANY ||
-    this.getEntityType === CorpTypeCd.BEN_CONTINUE_IN) {
-      return 'LTD.'
-    }
-    return 'LTD.' // should never happen
-  }
-
   /**
    * Whether the undo button should be displayed. This is the case when the company name has changed,
    * or the business name has changed during an alteration, firm change, or special resolution filing,
@@ -384,7 +366,7 @@ export default class EntityName extends Mixins(CommonMixin, NameRequestMixin) {
   /** The company name (from NR, or incorporation number). */
   get companyName (): string {
     if (this.getNameRequestLegalName) return this.getNameRequestLegalName
-    return `${this.getBusinessNumber || '[Incorporation Number]'} B.C. ${this.getUpdatedName()}`
+    return `${this.getBusinessNumber || '[Incorporation Number]'} B.C. ${this.getUpdatedName}`
   }
 
   /** True if a new NR number has been entered. */

@@ -78,14 +78,12 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Component, Emit, Prop } from 'vue-property-decorator'
-import { Action } from 'pinia-class'
 import { CorrectNameOptionIF } from '@/interfaces/'
 import { CorrectNameOptions } from '@/enums/'
 // These imports below are touchy, please don't change them - they can possibly break tests.
 import CorrectCompanyName from './CorrectCompanyName.vue'
 import CorrectNameRequest from './CorrectNameRequest.vue'
 import CorrectNameToNumber from './CorrectNameToNumber.vue'
-import { useStore } from '@/store/store'
 
 /**
  * Operation:

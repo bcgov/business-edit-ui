@@ -875,6 +875,25 @@ export const useStore = defineStore('store', {
       return this.stateModel.tombstone.nameChangedToNumber
     },
 
+    /** Get the numbered name, after changing from named company */
+    getUpdatedName (): string {
+      if (this.getEntityType === CorpTypeCd.BC_ULC_COMPANY ||
+          this.getEntityType === CorpTypeCd.ULC_CONTINUE_IN) {
+        return 'UNLIMITED LIABILITY COMPANY'
+      }
+      if (this.getEntityType === CorpTypeCd.BC_CCC ||
+          this.getEntityType === CorpTypeCd.CCC_CONTINUE_IN) {
+        return 'COMMUNITY CONTRIBUTION COMPANY LTD.'
+      }
+      if (this.getEntityType === CorpTypeCd.BC_COMPANY ||
+          this.getEntityType === CorpTypeCd.CONTINUE_IN ||
+          this.getEntityType === CorpTypeCd.BENEFIT_COMPANY ||
+          this.getEntityType === CorpTypeCd.BEN_CONTINUE_IN) {
+        return 'LTD.'
+      }
+      return 'LTD.' // should never happen
+    },
+
     /** Whether business name has changed by type change. */
     isNameChangedByType (): boolean {
       return this.stateModel.tombstone.nameChangedByType
