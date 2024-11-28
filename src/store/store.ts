@@ -870,6 +870,11 @@ export const useStore = defineStore('store', {
       return (currentLegalName !== originalLegalName)
     },
 
+    /** Whether named business has changed to numbered. */
+    isNameChangedToNumber (): boolean {
+      return this.stateModel.tombstone.nameChangedToNumber
+    },
+
     /** Whether business name has changed by type change. */
     isNameChangedByType (): boolean {
       return this.stateModel.tombstone.nameChangedByType
@@ -1477,6 +1482,9 @@ export const useStore = defineStore('store', {
     },
     setNameRequestLegalName (legalName: string) {
       this.stateModel.nameRequestLegalName = legalName
+    },
+    setNameChangedToNumber (changedToNumber: boolean) {
+      this.stateModel.tombstone.nameChangedToNumber = changedToNumber
     },
     setNameChangedByType (changedByType: boolean) {
       this.stateModel.tombstone.nameChangedByType = changedByType

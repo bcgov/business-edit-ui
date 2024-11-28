@@ -341,6 +341,7 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
   @Getter(useStore) isEntityTypeChangedByName!: boolean
   @Getter(useStore) isNameChangedByType!: boolean
   @Getter(useStore) isNumberedCompany!: boolean
+  @Getter(useStore) isNameChangedToNumber!: boolean
 
   @Action(useStore) setEntityType!: (x: CorpTypeCd) => void
   @Action(useStore) setNameRequest!: (x: NameRequestIF) => void
@@ -413,8 +414,8 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
   }
 
   get nameRequestRequiredError (): boolean {
-    // Don't show the Error when the type is changed by name
-    if (this.isNumberedCompany || this.isEntityTypeChangedByName) {
+    // Don't show the Error when the type is changed by name, or changed to a numbered company
+    if (this.isNumberedCompany || this.isEntityTypeChangedByName || this.isNameChangedToNumber) {
       return false
     }
     // Named companies to CC/CCC or ULC/CUL require a name request.

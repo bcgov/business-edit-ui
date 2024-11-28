@@ -78,12 +78,14 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Component, Emit, Prop } from 'vue-property-decorator'
+import { Action } from 'pinia-class'
 import { CorrectNameOptionIF } from '@/interfaces/'
 import { CorrectNameOptions } from '@/enums/'
 // These imports below are touchy, please don't change them - they can possibly break tests.
 import CorrectCompanyName from './CorrectCompanyName.vue'
 import CorrectNameRequest from './CorrectNameRequest.vue'
 import CorrectNameToNumber from './CorrectNameToNumber.vue'
+import { useStore } from '@/store/store'
 
 /**
  * Operation:
@@ -102,6 +104,8 @@ import CorrectNameToNumber from './CorrectNameToNumber.vue'
 export default class CorrectName extends Vue {
   /** The options to display */
   @Prop() readonly correctNameChoices!: Array<string>
+
+  @Action(useStore) setNameChangedToNumber!: (x: boolean) => void
 
   // local properties
   displayedOptions: Array<CorrectNameOptionIF> = []
@@ -157,6 +161,9 @@ export default class CorrectName extends Vue {
     if (this.isFormValid) {
       this.isLoading = true
       this.formType = this.currentFormType
+      if (this.currentFormType === 'correct-name-to-number') {
+        this.setNameChangedToNumber(true)
+      }
     } else this.validateNameChange = true
   }
 

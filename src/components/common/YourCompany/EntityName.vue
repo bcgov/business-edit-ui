@@ -52,7 +52,8 @@
               <span class="info-text">{{ GetCorpFullDescription(getEntityType) }}</span>
             </div>
             <div class="info-text pt-3">
-              <span>The name of this business will be the current Incorporation Number followed by "B.C. Ltd."</span>
+              <span>The name of this business will be the current Incorporation Number followed
+                by "B.C. {{ getUpdatedName() }}"</span>
             </div>
           </template>
           <template v-if="isNameChangedByType && hasCompanyNameChanged">
@@ -301,6 +302,7 @@ export default class EntityName extends Mixins(CommonMixin, NameRequestMixin) {
   @Action(useStore) setValidComponent!: (x: ActionKvIF) => void
   @Action(useStore) setEntityType!: (x: CorpTypeCd) => void
   @Action(useStore) setEntityTypeChangedByName!: (x: boolean) => void
+  @Action(useStore) setNameChangedToNumber!: (x: boolean) => void
 
   // local properties
   dropdown = false // v-model for dropdown menu
@@ -321,6 +323,25 @@ export default class EntityName extends Mixins(CommonMixin, NameRequestMixin) {
         (this.isAlterationFiling || this.isFirmChangeFiling || this.isSpecialResolutionFiling)
       )
     )
+  }
+
+  /** Get the numbered name, after changing from named company */
+  getUpdatedName (): string {
+    if (this.getOriginalLegalType === CorpTypeCd.BC_ULC_COMPANY ||
+    this.getOriginalLegalType === CorpTypeCd.ULC_CONTINUE_IN) {
+      return 'UNLIMITED LIABILITY COMPANY'
+    }
+    if (this.getOriginalLegalType === CorpTypeCd.BC_CCC ||
+    this.getOriginalLegalType === CorpTypeCd.CCC_CONTINUE_IN) {
+      return 'COMMUNITY CONTRIBUTION COMPANY LTD.'
+    }
+    if (this.getOriginalLegalType === CorpTypeCd.BC_COMPANY ||
+    this.getOriginalLegalType === CorpTypeCd.CONTINUE_IN ||
+    this.getOriginalLegalType === CorpTypeCd.BENEFIT_COMPANY ||
+    this.getOriginalLegalType === CorpTypeCd.BEN_CONTINUE_IN) {
+      return 'LTD.'
+    }
+    return 'LTD.' // should never happen
   }
 
   /**
@@ -360,7 +381,7 @@ export default class EntityName extends Mixins(CommonMixin, NameRequestMixin) {
   /** The company name (from NR, or incorporation number). */
   get companyName (): string {
     if (this.getNameRequestLegalName) return this.getNameRequestLegalName
-    return `${this.getBusinessNumber || '[Incorporation Number]'} B.C. Ltd.`
+    return `${this.getBusinessNumber || '[Incorporation Number]'} B.C. ${this.getUpdatedName()}`
   }
 
   /** True if a new NR number has been entered. */
@@ -455,6 +476,8 @@ export default class EntityName extends Mixins(CommonMixin, NameRequestMixin) {
     if (this.isEntityTypeChangedByName) {
       this.setEntityTypeChangedByName(false)
     }
+
+    this.setNameChangedToNumber(false)
 
     // reset flag
     this.hasCompanyNameChanged = false
