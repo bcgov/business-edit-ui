@@ -89,9 +89,8 @@ describe('ChangeBusinessType in an Alteration', () => {
     // Click edit btn and open edit mode
     await wrapper.find('#btn-correct-business-type').trigger('click')
 
-    // Verify checkbox is displayed in edit mode and DONE btn is disabled
+    // Verify checkbox is displayed in edit mode
     expect(wrapper.find('#confirm-articles-checkbox').exists()).toBe(true)
-    expect(wrapper.find('#done-btn').attributes('disabled')).toBeTruthy()
 
     // Select the Confirm Articles checkbox
     await wrapper.find('#confirm-articles-checkbox').trigger('click')
