@@ -170,7 +170,7 @@
             <strong class="pl-2 pt-6">Change company name</strong>
           </p>
           <p class="pl-8">
-            To change to a BC Community Contribution Company, you must change the company
+            To change to a {{ GetCorpFullDescription(selectedEntityType) }}, you must change the company
             name using an approved name request or change it to a numbered company.
           </p>
         </MessageBox>
