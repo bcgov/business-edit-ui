@@ -423,8 +423,9 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
   }
 
   get nameRequestRequiredError (): boolean {
-    // Don't show the Error when the type is changed by name, or changed to a numbered company
-    if (this.isNumberedCompany || this.isEntityTypeChangedByName || this.isNameChangedToNumber) {
+    // Don't show the Error when the type is changed by name, or changed to a numbered company, or no change
+    if (this.isNumberedCompany || this.isEntityTypeChangedByName || this.isNameChangedToNumber ||
+       this.selectedEntityType === this.getOriginalLegalType) {
       return false
     }
     // Named companies to CC/CCC or ULC/CUL require a name request.
