@@ -201,6 +201,7 @@
             id="done-btn"
             large
             color="primary"
+            :disabled="disableDoneButton"
             @click="submitTypeChange()"
           >
             <span>Done</span>
@@ -536,7 +537,7 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
   }
 
   get disableDoneButton (): boolean {
-    return !this.confirmArticles || this.minimumThreeDirectorError || this.nameRequestRequiredError
+    return !this.confirmArticles
   }
 
   @Watch('isEditingType')
