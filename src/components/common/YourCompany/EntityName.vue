@@ -368,14 +368,17 @@ export default class EntityName extends Mixins(CommonMixin, NameRequestMixin) {
    * - the business name has changed, and
    * - the filing is an alteration or firm change filing, and
    * - the name has not been changed by type
+   * - this is when a named business is changed to a numbered business
    */
   get shouldShowTypeDetail (): boolean {
-    return (
+    const result = (
       !this.hasNewNr &&
       this.hasBusinessNameChanged &&
       (this.isAlterationFiling || this.isFirmChangeFiling) &&
       !this.isNameChangedByType
     )
+    this.setNameChangedToNumber(result)
+    return result
   }
 
   /** The company name (from NR, or incorporation number). */

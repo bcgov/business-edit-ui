@@ -105,8 +105,6 @@ export default class CorrectName extends Vue {
   /** The options to display */
   @Prop() readonly correctNameChoices!: Array<string>
 
-  @Action(useStore) setNameChangedToNumber!: (x: boolean) => void
-
   // local properties
   displayedOptions: Array<CorrectNameOptionIF> = []
   panel: number = null
@@ -161,9 +159,6 @@ export default class CorrectName extends Vue {
     if (this.isFormValid) {
       this.isLoading = true
       this.formType = this.currentFormType
-      if (this.currentFormType === 'correct-name-to-number') {
-        this.setNameChangedToNumber(true)
-      }
     } else this.validateNameChange = true
   }
 
