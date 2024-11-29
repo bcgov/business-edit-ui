@@ -484,6 +484,8 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
       this.setNameRequestLegalName(updatedName)
       if (originalName !== updatedName) {
         this.setNameChangedByType(true)
+      } else {
+        this.setNameChangedByType(false)
       }
     }
   }
