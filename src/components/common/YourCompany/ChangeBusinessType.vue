@@ -374,6 +374,10 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
   @Watch('selectedEntityType')
   private clearConfirmArticles (): void {
     this.confirmArticles = false
+    // Ensure when selected type changes by NR, show the error message and Articles
+    if (this.selectedEntityType !== this.getOriginalLegalType) {
+      this.isEditingType = true
+    }
   }
 
   /** Display the edit, so the user has to reconfirm articles. */
