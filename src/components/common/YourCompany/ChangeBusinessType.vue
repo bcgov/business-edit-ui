@@ -140,21 +140,17 @@
           color="red"
         >
           <header>
-            <p>
-              <v-icon
-                color="red"
-                class="error-icon"
-              >
-                mdi-alert
-              </v-icon>
-              <strong class="pl-2 pt-6">Update directors</strong>
-            </p>
+            <v-icon
+              color="red"
+              class="error-icon"
+            >
+              mdi-alert
+            </v-icon>
+            <strong class="pl-2 gray9--text text-small-text">Update directors</strong>
           </header>
-          <article>
-            <p class="pl-8">
-              A BC Community Contribution Company requires at least three directors.
-              File a director change and then come back and update the business type.
-            </p>
+          <article class="pl-8 pt-1 small-text">
+            A BC Community Contribution Company requires at least three directors.
+            File a director change and then come back and update the business type.
           </article>
         </MessageBox>
 
@@ -165,21 +161,17 @@
           color="red"
         >
           <header>
-            <p>
-              <v-icon
-                color="red"
-                class="error-icon"
-              >
-                mdi-alert
-              </v-icon>
-              <strong class="pl-2 pt-6">Change company name</strong>
-            </p>
+            <v-icon
+              color="red"
+              class="error-icon"
+            >
+              mdi-alert
+            </v-icon>
+            <strong class="pl-2 gray9--text text-small-text">Change company name</strong>
           </header>
-          <article>
-            <p class="pl-8">
-              To change to a {{ GetCorpFullDescription(selectedEntityType) }}, you must change the company
-              name using an approved name request or change it to a numbered company.
-            </p>
+          <article class="pl-8 pt-1 small-text">
+            To change to a {{ GetCorpFullDescription(selectedEntityType) }}, you must change the company
+            name using an approved name request or change it to a numbered company.
           </article>
         </MessageBox>
 
