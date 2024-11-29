@@ -23,6 +23,7 @@ export const stateModel: StateModelIF = {
     folioNumber: '',
     transactionalFolioNumber: '',
     nameChangedByType: false,
+    nameChangedToNumber: false,
     entityTypeChangedByName: false
   },
   completingParty: null,

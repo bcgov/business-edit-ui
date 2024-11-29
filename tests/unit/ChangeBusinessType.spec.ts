@@ -152,7 +152,8 @@ describe('Change Business Type component', () => {
     wrapper.vm.selectedEntityType = CorpTypeCd.BC_CCC
     wrapper.vm.submitTypeChange()
 
-    expect(wrapper.vm.getNameRequestLegalName).toBe('1234567 COMMUNITY CONTRIBUTION COMPANY LTD.')
+    // Less than 3 directors, fail to change legal type
+    expect(wrapper.vm.getNameRequestLegalName).toBe('1234567 LTD.')
 
     store.stateModel.entitySnapshot.businessInfo.legalType = CorpTypeCd.BC_ULC_COMPANY
     store.stateModel.entitySnapshot.businessInfo.legalName = '1234567 COMMUNITY CONTRIBUTION COMPANY'
@@ -183,6 +184,7 @@ describe('Change Business Type component', () => {
 
     const wrapper: any = mount(ChangeBusinessType, { vuetify })
     wrapper.vm.isEditingType = true
+    wrapper.vm.hasAttemptedSubmission = true
     await Vue.nextTick()
 
     expect(wrapper.find('#name-request-required-error').exists()).toBe(true)
@@ -216,6 +218,7 @@ describe('Change Business Type component', () => {
 
     const wrapper = mount(ChangeBusinessType, { vuetify })
     wrapper.setData({ isEditingType: true })
+    wrapper.setData({ hasAttemptedSubmission: true })
 
     await Vue.nextTick()
 

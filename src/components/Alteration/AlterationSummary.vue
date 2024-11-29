@@ -197,6 +197,7 @@ export default class AlterationSummary extends Mixins(DateMixin, FeeMixin, Filin
   @Getter(useStore) getOriginalResolutions!: ResolutionsIF[]
   @Getter(useStore) haveNewResolutionDates!: boolean
   @Getter(useStore) isBusySaving!: boolean
+  @Getter(useStore) getUpdatedName!: string
 
   // Store actions
   @Action(useStore) setEffectiveDateValid!: (x: boolean) => void
@@ -220,7 +221,7 @@ export default class AlterationSummary extends Mixins(DateMixin, FeeMixin, Filin
   /** The company name (from NR, or incorporation number). */
   get companyName (): string {
     if (this.getNameRequestLegalName) return this.getNameRequestLegalName
-    return `${this.getBusinessNumber || '[Incorporation Number]'} B.C. Ltd.`
+    return `${this.getBusinessNumber || '[Incorporation Number]'} B.C. ${this.getUpdatedName}`
   }
 
   /** True if invalid class should be set for Alteration Date-Time container. */

@@ -133,26 +133,47 @@
           </v-row>
         </template>
 
-        <div
-          v-if="minimumThreeDirectorError"
+        <MessageBox
+          v-if="hasAttemptedSubmission && minimumThreeDirectorError"
           id="minimum-three-director-error"
-          class="my-6"
+          class="mt-6"
+          color="red"
         >
-          <p class="error-text">
-            The business type cannot be changed. A Community Contribution Company requires a minimum of three directors.
-          </p>
-        </div>
+          <header>
+            <v-icon
+              color="red"
+              class="error-icon"
+            >
+              mdi-alert
+            </v-icon>
+            <strong class="pl-2 gray9--text text-small-text">Update directors</strong>
+          </header>
+          <article class="pl-8 pt-1 small-text">
+            A BC Community Contribution Company requires at least three directors.
+            File a director change and then come back and update the business type.
+          </article>
+        </MessageBox>
 
-        <div
-          v-if="nameRequestRequiredError"
+        <MessageBox
+          v-if="hasAttemptedSubmission && nameRequestRequiredError"
           id="name-request-required-error"
-          class="my-6"
+          class="mt-6"
+          color="red"
         >
-          <p class="error-text">
-            An alteration of business type Name Request is required to make this change. After the name is approved,
-            you can then select 'change' beside the company name to update it.
-          </p>
-        </div>
+          <header>
+            <v-icon
+              color="red"
+              class="error-icon"
+            >
+              mdi-alert
+            </v-icon>
+            <strong class="pl-2 gray9--text text-small-text">Change company name</strong>
+          </header>
+          <article class="pl-8 pt-1 small-text">
+            To change to a {{ GetCorpFullDescription(selectedEntityType) }}, you must change the company
+            name using an approved name request or change it to a numbered company.
+          </article>
+        </MessageBox>
 
         <div class="my-6">
           <p class="info-text">
@@ -191,7 +212,7 @@
             large
             outlined
             color="primary"
-            @click="isEditingType = false"
+            @click="resetType()"
           >
             <span>Cancel</span>
           </v-btn>
@@ -258,7 +279,7 @@
                 <v-list-item
                   id="btn-more-actions-edit"
                   class="v-list-item"
-                  @click="isEditingType = true; dropdown = false"
+                  @click="isEditingType = true; dropdown = false; hasAttemptedSubmission = false"
                 >
                   <v-list-item-subtitle>
                     <v-icon
@@ -288,11 +309,13 @@ import { EntityTypeOption, ResourceIF } from '@/interfaces/'
 import { NameRequestIF } from '@bcrs-shared-components/interfaces'
 import { GetFeatureFlag, ResourceUtilities } from '@/utils'
 import { useStore } from '@/store/store'
+import MessageBox from '@/components/common/MessageBox.vue'
 
 @Component({
   components: {
     BcRegContacts,
-    BcRegEntityDetails
+    BcRegEntityDetails,
+    MessageBox
   }
 })
 export default class ChangeBusinessType extends Mixins(CommonMixin) {
@@ -319,17 +342,20 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
   @Getter(useStore) isEntityTypeChangedByName!: boolean
   @Getter(useStore) isNameChangedByType!: boolean
   @Getter(useStore) isNumberedCompany!: boolean
+  @Getter(useStore) isNameChangedToNumber!: boolean
 
   @Action(useStore) setEntityType!: (x: CorpTypeCd) => void
   @Action(useStore) setNameRequest!: (x: NameRequestIF) => void
   @Action(useStore) setNameRequestLegalName!: (x: string) => void
   @Action(useStore) setNameChangedByType!: (x: boolean) => void
+  @Action(useStore) setEntityTypeChangedByName!: (x: boolean) => void
 
   selectedEntityType = null as CorpTypeCd
   confirmArticles = false
   isEditingType = false
   dropdown = null as boolean
   supportedEntityTypes = [] as Array<string>
+  hasAttemptedSubmission = false
 
   /** Called when component is mounted. */
   mounted (): void {
@@ -348,6 +374,10 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
   @Watch('selectedEntityType')
   private clearConfirmArticles (): void {
     this.confirmArticles = false
+    // Ensure when selected type changes by NR, show the error message and Articles
+    if (this.selectedEntityType !== this.getOriginalLegalType) {
+      this.isEditingType = true
+    }
   }
 
   /** Display the edit, so the user has to reconfirm articles. */
@@ -389,8 +419,9 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
   }
 
   get nameRequestRequiredError (): boolean {
-    // Don't show the Error when the type is changed by name
-    if (this.isNumberedCompany || this.isEntityTypeChangedByName) {
+    // Don't show the Error when the type is changed by name, or changed to a numbered company, or no change
+    if (this.isNumberedCompany || this.isEntityTypeChangedByName || this.isNameChangedToNumber ||
+       this.selectedEntityType === this.getOriginalLegalType) {
       return false
     }
     // Named companies to CC/CCC or ULC/CUL require a name request.
@@ -423,6 +454,7 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
 
   /** Reset company type values to original. */
   resetType () {
+    this.hasAttemptedSubmission = false
     this.setEntityType(this.getOriginalLegalType || null)
     // reset name request
     this.setNameRequest({
@@ -431,12 +463,15 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
     } as any)
     this.setNameRequestLegalName(this.getOriginalLegalName)
     this.setNameChangedByType(false)
+    this.setEntityTypeChangedByName(false)
     this.isEditingType = false
     this.confirmArticles = false
   }
 
   /** Submit new company type. */
   submitTypeChange () {
+    this.hasAttemptedSubmission = true // Mark that submission was attempted
+    if (this.minimumThreeDirectorError || this.nameRequestRequiredError) { return }
     this.setEntityType(this.selectedEntityType)
     this.isEditingType = false
     if (this.isNumberedCompany && !this.hasNewNr) {
@@ -449,6 +484,8 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
       this.setNameRequestLegalName(updatedName)
       if (originalName !== updatedName) {
         this.setNameChangedByType(true)
+      } else {
+        this.setNameChangedByType(false)
       }
     }
   }
@@ -456,6 +493,7 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
   getUpdatedName (originalName: string): string {
     if (this.isUnlimitedLiability) {
       originalName = originalName.replace(' LTD.', '')
+      originalName = originalName.replace(' UNLIMITED LIABILITY COMPANY', '').replace(' ULC', '')
       originalName += ' UNLIMITED LIABILITY COMPANY'
       return originalName
     }
@@ -507,7 +545,7 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
   }
 
   get disableDoneButton (): boolean {
-    return !this.confirmArticles || this.minimumThreeDirectorError || this.nameRequestRequiredError
+    return !this.confirmArticles
   }
 
   @Watch('isEditingType')

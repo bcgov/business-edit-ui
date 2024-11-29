@@ -21,5 +21,6 @@ export interface TombStoneIF {
   transactionalFolioNumber: string
   userEmail?: string
   nameChangedByType: boolean
+  nameChangedToNumber: boolean
   entityTypeChangedByName: boolean
 }

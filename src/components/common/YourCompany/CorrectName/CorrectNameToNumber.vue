@@ -9,7 +9,7 @@
           id="correct-name-to-number-checkbox"
           v-model="correctToNumbered"
           class="mb-n5"
-          :label="`Change the company name to ${businessId} B.C. Ltd.`"
+          :label="`Change the company name to ${businessId} B.C. ${getUpdatedName}`"
         />
       </v-col>
     </v-row>
@@ -20,6 +20,7 @@
 // Libraries
 import Vue from 'vue'
 import { Component, Prop, Watch, Emit } from 'vue-property-decorator'
+import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 import { Action, Getter } from 'pinia-class'
 import { NameRequestIF } from '@bcrs-shared-components/interfaces'
 import { CorrectNameOptions } from '@/enums/'
@@ -35,6 +36,8 @@ export default class CorrectNameToNumber extends Vue {
 
   @Getter(useStore) getNameRequest!: NameRequestIF
   @Getter(useStore) getBusinessId!: string
+  @Getter(useStore) getOriginalLegalType!: CorpTypeCd
+  @Getter(useStore) getUpdatedName!: string
 
   // Local properties
   correctToNumbered = false
