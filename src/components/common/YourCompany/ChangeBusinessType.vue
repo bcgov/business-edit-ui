@@ -487,6 +487,7 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
   getUpdatedName (originalName: string): string {
     if (this.isUnlimitedLiability) {
       originalName = originalName.replace(' LTD.', '')
+      originalName = originalName.replace(' UNLIMITED LIABILITY COMPANY', '').replace(' ULC', '')
       originalName += ' UNLIMITED LIABILITY COMPANY'
       return originalName
     }
