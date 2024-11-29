@@ -279,7 +279,7 @@
                 <v-list-item
                   id="btn-more-actions-edit"
                   class="v-list-item"
-                  @click="isEditingType = true; dropdown = false"
+                  @click="isEditingType = true; dropdown = false; hasAttemptedSubmission = false"
                 >
                   <v-list-item-subtitle>
                     <v-icon
