@@ -12,7 +12,7 @@ export const AlterationResourceC: ResourceIF = {
     entityType: CorpTypeCd.CONTINUE_IN,
     priority: false
   },
-  // Conditionally used in place of filingData when switching from or C to CUL:
+  // Conditionally used in place of filingData when switching from C to CUL:
   additionalFilingData: {
     filingTypeCode: FilingCodes.ALTERATION_BC_TO_ULC,
     entityType: CorpTypeCd.CONTINUE_IN,
