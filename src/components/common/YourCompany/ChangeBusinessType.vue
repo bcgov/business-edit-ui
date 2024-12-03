@@ -103,7 +103,7 @@
           :class="{ 'disabled-select': isEntityTypeChangedByName }"
           :disabled="isEntityTypeChangedByName"
           :items="entityTypeOptions"
-          :hint="isEntityTypeChangedByName ? '' : 'Select a New Business Type'"
+          :hint="inputHint"
           persistent-hint
           filled
         >
@@ -450,6 +450,20 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
   /** True if a new NR number has been entered. */
   get hasNewNr (): boolean {
     return !!this.getNameRequestNumber
+  }
+
+  /** Get the input field hint. */
+  get inputHint (): string {
+    if (this.hasAttemptedSubmission) {
+      if (this.nameRequestRequiredError && this.minimumThreeDirectorError) {
+        return 'Change company name and update directors'
+      } else if (this.nameRequestRequiredError) {
+        return 'Change company name'
+      } else if (this.minimumThreeDirectorError) {
+        return 'Update directots'
+      }
+    }
+    return this.isEntityTypeChangedByName ? '' : 'Select a New Business Type'
   }
 
   /** Reset company type values to original. */
