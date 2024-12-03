@@ -2,11 +2,12 @@
   <div
     id="business-type"
     class="section-container"
-    :class="{'invalid-section': invalidSection}"
+    :class="{'invalid-section': invalidSection || isShowingError}"
   >
     <ChangeBusinessType
       :invalidSection="invalidSection"
       @isEditingBusinessType="isEditingType = $event"
+      @isShowingError="isShowingError = $event"
     />
   </div>
 </template>
@@ -33,6 +34,7 @@ export default class BusinessType extends Vue {
 
   // local variable
   isEditingType = false
+  isShowingError = false
 
   /** The section validity state (when prompted by app). */
   get invalidSection (): boolean {

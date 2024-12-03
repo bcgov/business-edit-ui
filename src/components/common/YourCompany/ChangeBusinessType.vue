@@ -3,7 +3,7 @@
     <v-row no-gutters>
       <!-- Row Title -->
       <v-col cols="3">
-        <label :class="{'error-text': invalidSection}"><strong>Business Type</strong></label>
+        <label :class="{'error-text': invalidSection || isShowingError}"><strong>Business Type</strong></label>
         <v-col
           md="1"
           class="pa-0"
@@ -100,7 +100,10 @@
         <v-select
           id="business-type-selector"
           v-model="selectedEntityType"
-          :class="{ 'disabled-select': isEntityTypeChangedByName }"
+          :class="[
+            { 'error-field': isShowingError },
+            { 'disabled-select': isEntityTypeChangedByName }
+          ]"
           :disabled="isEntityTypeChangedByName"
           :items="entityTypeOptions"
           :hint="inputHint"
@@ -562,10 +565,19 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
     return !this.confirmArticles
   }
 
+  get isShowingError () {
+    return this.hasAttemptedSubmission && (this.nameRequestRequiredError || this.minimumThreeDirectorError)
+  }
+
   @Watch('isEditingType')
   @Emit('isEditingBusinessType')
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   private emitIsEditingType (isEditing: boolean): void {}
+
+  @Watch('isShowingError', { immediate: false })
+  private onIsShowingErrorChanged (newVal: boolean): void {
+    this.$emit('isShowingError', newVal)
+  }
 }
 </script>
 
@@ -626,5 +638,19 @@ The :deep pseudo-element and !important flag are used to override Vuetify's defa
 
 :deep(.v-input__slot) {
   align-items: flex-start;
+}
+
+/* Change the v-selection elements color */
+:deep(.error-field) {
+  &.theme--light.v-select {
+    color: $app-red !important;
+    opacity: 1 !important;
+  }
+
+  .v-select__selection,
+  .v-input__control .v-icon,
+  .v-messages__message {
+    color: $app-red !important;
+  }
 }
 </style>
