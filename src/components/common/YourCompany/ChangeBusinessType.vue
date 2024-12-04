@@ -463,7 +463,7 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
       } else if (this.nameRequestRequiredError) {
         return 'Change company name'
       } else if (this.minimumThreeDirectorError) {
-        return 'Update directots'
+        return 'Update directors'
       }
     }
     return this.isEntityTypeChangedByName ? '' : 'Select a New Business Type'
