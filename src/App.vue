@@ -101,7 +101,7 @@
       tile
       dense
       class="mb-0"
-      color="#fb8c00"
+      color="warning"
     >
       <div
         class="mb-0 text-center colour-dk-text"

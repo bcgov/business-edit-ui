@@ -55,7 +55,8 @@ const vuetify = new Vuetify({
         error: '#d3272c', // same as $app-red
         success: '#1a9031', // same as $app-green
         gray7: '#495057', // same as $gray7
-        gray9: '#212529' // Same as $gray9
+        gray9: '#212529', // Same as $gray9
+        warning: '#fb8c00'
       }
     }
   }
