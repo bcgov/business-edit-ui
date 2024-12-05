@@ -100,7 +100,8 @@
       v-if="bannerText"
       tile
       dense
-      type="warning"
+      class="mb-0"
+      color="#fb8c00"
     >
       <div
         class="mb-0 text-center colour-dk-text"

@@ -6,7 +6,6 @@ import MixinTester from '@/mixin-tester.vue'
 import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
-import { NrRequestActionCodes } from '@bcrs-shared-components/enums'
 
 setActivePinia(createPinia())
 const store = useStore()
@@ -24,7 +23,7 @@ describe('Name Request Mixin', () => {
       addressLabel: '',
       filingData: null,
       changeData: {
-        nameRequestTypes: [NrRequestActionCodes.CHANGE_NAME, NrRequestActionCodes.CONVERSION],
+        nameRequestTypes: [],
         correctNameOptions: []
       },
       certifyClause: ''
@@ -184,8 +183,6 @@ describe('Name Request Mixin', () => {
   })
 
   it('identifies valid and invalid NRs - specified type', async () => {
-    store.resourceModel.changeData.nameRequestTypes = [NrRequestActionCodes.RESTORE]
-
     let nr = null
     expect(vm.isNrInvalid(nr)).toBe(true)
 
@@ -211,10 +208,10 @@ describe('Name Request Mixin', () => {
     expect(vm.isNrInvalid(nr)).toBe(true)
 
     nr.request_action_cd = 'CNV'
-    expect(vm.isNrInvalid(nr)).toBe(true)
+    expect(vm.isNrInvalid(nr)).toBe(false) // valid
 
     nr.request_action_cd = 'CHG'
-    expect(vm.isNrInvalid(nr)).toBe(true)
+    expect(vm.isNrInvalid(nr)).toBe(false) // valid
 
     nr.request_action_cd = 'REH'
     expect(vm.isNrInvalid(nr)).toBe(false) // valid

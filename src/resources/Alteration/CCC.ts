@@ -1,4 +1,5 @@
 import { CorrectNameOptions, FilingCodes } from '@/enums/'
+import { NrRequestActionCodes } from '@bcrs-shared-components/enums'
 import { CorpTypeCd, GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module/'
 import { ResourceIF } from '@/interfaces/'
 
@@ -16,6 +17,10 @@ export const AlterationResourceCcc: ResourceIF = {
     correctNameOptions: [
       CorrectNameOptions.CORRECT_NEW_NR,
       CorrectNameOptions.CORRECT_NAME_TO_NUMBER
+    ],
+    nameRequestTypes: [
+      NrRequestActionCodes.CHANGE_NAME,
+      NrRequestActionCodes.CONVERSION
     ],
     articleTitle: 'Community Contribution Company Articles',
     articleInfo: `The company has completed a set of Community Contribution Company Articles

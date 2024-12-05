@@ -27,6 +27,7 @@ export const RestorationResourceCul: ResourceIF = {
       subtitle: null // not used
     },
     nameRequestTypes: [
+      NrRequestActionCodes.CHANGE_NAME,
       NrRequestActionCodes.RESTORE
     ]
   },

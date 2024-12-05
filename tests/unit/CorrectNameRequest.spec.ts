@@ -7,6 +7,7 @@ import CorrectNameRequest from '@/components/common/YourCompany/CorrectName/Corr
 import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
+import { FilingTypes, NrRequestActionCodes } from '@bcrs-shared-components/enums'
 
 // mock the console.warn function to hide "[Vuetify] Unable to locate target XXX"
 console.warn = vi.fn()
@@ -283,11 +284,18 @@ describe('CorrectNameRequest', () => {
     wrapper.destroy()
   })
 
-  it('emits done and true when the process is done and the Name Request accepted', async () => {
+  it('emits done and true when the process is done and the Name Request is accepted', async () => {
     const wrapper = wrapperFactory()
     const vm = wrapper.vm as any
 
     store.stateModel.tombstone.currentDate = '2021-01-20'
+    store.stateModel.tombstone.filingType = FilingTypes.ALTERATION
+    store.resourceModel = {
+      changeData: {
+        entityTypeOptions: [{ value: CorpTypeCd.BC_COMPANY }],
+        nameRequestTypes: [NrRequestActionCodes.CONVERSION]
+      }
+    } as any
 
     // GET NR Data
     get.withArgs('nameRequests/NR 1234567/validate?phone=250 516 8257&email=')
@@ -465,7 +473,7 @@ describe('CorrectNameRequest', () => {
 
     // verify Confirm Dialog
     expect(wrapper.findComponent(CorrectNameRequest).exists()).toBe(true)
-    expect(wrapper.findComponent(CorrectNameRequest).text()).toContain('Name Request Type Does Not Match')
+    expect(wrapper.findComponent(CorrectNameRequest).text()).toContain('Name Request Type Must Match')
 
     wrapper.destroy()
   })
@@ -476,6 +484,11 @@ describe('CorrectNameRequest', () => {
 
     store.stateModel.tombstone.currentDate = '2021-01-20'
     store.stateModel.tombstone.entityType = CorpTypeCd.PARTNERSHIP
+    store.resourceModel = {
+      changeData: {
+        nameRequestTypes: [NrRequestActionCodes.CHANGE_NAME]
+      }
+    } as any
 
     // GET NR Data
     get.withArgs('nameRequests/NR 1234567/validate?phone=250 516 8257&email=')
@@ -523,6 +536,11 @@ describe('CorrectNameRequest', () => {
 
     store.stateModel.tombstone.currentDate = '2021-01-20'
     store.stateModel.tombstone.entityType = CorpTypeCd.SOLE_PROP
+    store.resourceModel = {
+      changeData: {
+        nameRequestTypes: [NrRequestActionCodes.CHANGE_NAME]
+      }
+    } as any
 
     // GET NR Data
     get.withArgs('nameRequests/NR 1234567/validate?phone=250 516 8258&email=')
@@ -564,7 +582,7 @@ describe('CorrectNameRequest', () => {
 
     // verify Confirm Dialog
     expect(wrapper.findComponent(CorrectNameRequest).exists()).toBe(true)
-    expect(wrapper.findComponent(CorrectNameRequest).text()).toContain('Name Request Type Does Not Match')
+    expect(wrapper.findComponent(CorrectNameRequest).text()).toContain('Name Request Type Must Match')
 
     wrapper.destroy()
   })

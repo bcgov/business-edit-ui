@@ -25,8 +25,7 @@ export const CorrectionResourceBen: ResourceIF = {
       subtitle: null // not used
     },
     nameRequestTypes: [
-      NrRequestActionCodes.CHANGE_NAME,
-      NrRequestActionCodes.CONVERSION
+      NrRequestActionCodes.CHANGE_NAME
     ]
   },
   certifyClause: 'Note: It is an offence to make a false or misleading statement in respect ' +

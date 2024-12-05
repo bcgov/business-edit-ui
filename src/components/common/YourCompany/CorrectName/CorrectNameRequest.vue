@@ -128,6 +128,7 @@ export default class CorrectNameRequest extends Mixins(CommonMixin, NameRequestM
 
   @Getter(useStore) getNameRequest!: NameRequestIF
   @Getter(useStore) getEntityType!: CorpTypeCd
+  @Getter(useStore) getFilingName!: string
 
   @Action(useStore) setEntityType!: (x: CorpTypeCd) => void
   @Action(useStore) setEntityTypeChangedByName!: (x: boolean) => void
@@ -190,7 +191,7 @@ export default class CorrectNameRequest extends Mixins(CommonMixin, NameRequestM
     this.$refs.correctNrForm.validate()
   }
 
-  /** Watch for form submission and emit results. */
+  /** Watches for form submission and emits results. */
   @Watch('formType')
   async onSubmit (): Promise<any> {
     // this component should only see correct-new-nr form type
@@ -203,15 +204,15 @@ export default class CorrectNameRequest extends Mixins(CommonMixin, NameRequestM
           this.applicantEmail
         )
 
-        if (this.isNameRequestInvalid(nr)) {
-          // Invalid NR type, inform parent the process is done and prompt confirm dialog
+        const nameRequestErrorText = this.nameRequestErrorText(nr)
+        if (nameRequestErrorText) {
+          // Invalid NR type - inform parent the process is done and prompt confirm dialog
           this.emitSaved()
 
-          const dialogContent = this.nameRequestErrorText(nr)
           await this.showConfirmDialog(
             this.$refs.confirm,
-            'Name Request Type Does Not Match Business Type',
-            dialogContent,
+            'Name Request Type Must Match',
+            nameRequestErrorText,
             'OK'
           )
         } else {
@@ -231,35 +232,72 @@ export default class CorrectNameRequest extends Mixins(CommonMixin, NameRequestM
     }
   }
 
-  /* Checks name request type or if it's an invalid conversion name request. */
-  isNameRequestInvalid (nr: NameRequestIF): boolean {
-    const isNameEntityTypeDifferent = (this.getEntityType !== nr.legalType as any)
-    const entityTypeOptions = this.getResource?.changeData?.entityTypeOptions
-    const isValidConversionNameRequest = (
-      (nr.request_action_cd === NrRequestActionCodes.CONVERSION) &&
-      entityTypeOptions?.some(options => options.value === nr.legalType)
-    )
-    return (isNameEntityTypeDifferent && !isValidConversionNameRequest)
-  }
-
-  /* Generate content of error depending on name request type. */
+  /**
+   * Returns error text depending on what is invalid, or null if there is no error.
+   * @param nr the name request object
+   */
   nameRequestErrorText (nr: NameRequestIF): string {
-    const isConversionOrAlterationNameRequest = (nr.request_action_cd === NrRequestActionCodes.CONVERSION)
-    let dialogContent = ''
-    if (isConversionOrAlterationNameRequest) {
-      dialogContent = `<p class="info-text">
-        This alteration name request does not match the current business type
-        <b>${GetCorpFullDescription(this.getEntityType)}</b>.\n\n
-        The Name Request type must match the business type before you can continue.</p>`
-    } else {
-      const corpFullDescription = GetCorpFullDescription(nr.legalType as any)
-      dialogContent = `<p class="info-text">
-        This ${corpFullDescription}
-        Name Request does not match the current business type
-        <b>${GetCorpFullDescription(this.getEntityType)}</b>.\n\n
-        The Name Request type must match the business type before you can continue.</p>`
+    const nameRequestTypes = this.getResource?.changeData?.nameRequestTypes
+    // See also name-request-mixin.ts::isNrInvalid()
+    const nameRequestTypeStrings = {
+      [NrRequestActionCodes.CHANGE_NAME]: 'Change of Name',
+      [NrRequestActionCodes.CONVERSION]: 'Alteration',
+      [NrRequestActionCodes.RESTORE]: 'Restoration'
     }
-    return dialogContent
+
+    let validTypesString = ''
+    for (const type of nameRequestTypes) {
+      validTypesString += `<br>&bull; ${nameRequestTypeStrings[type]}`
+    }
+
+    // check for invalid name change NR
+    if (nr.request_action_cd === NrRequestActionCodes.CHANGE_NAME) {
+      if (!nameRequestTypes?.includes(NrRequestActionCodes.CHANGE_NAME)) {
+        return `<p class="info-text whitespace-normal mb-0">
+          This Name Request is for a Change of Name.<br><br>
+          For this ${this.getFilingName}, you can only use the following Name Request types:
+          ${validTypesString}</p>`
+      }
+      if (this.getEntityType !== nr.legalType) {
+        return `<p class="info-text whitespace-normal mb-0">
+          This Name Request is for a ${GetCorpFullDescription(nr.legalType as any)}.<br><br>
+          You need to use a name request for a <b>${GetCorpFullDescription(this.getEntityType)}</b>.</p>`
+      }
+    }
+
+    // check for invalid alteration NR
+    if (nr.request_action_cd === NrRequestActionCodes.CONVERSION) {
+      if (!nameRequestTypes?.includes(NrRequestActionCodes.CONVERSION)) {
+        return `<p class="info-text whitespace-normal mb-0">
+          This Name Request is for an Alteration.<br><br>
+          For this ${this.getFilingName}, you can only use the following Name Request types:
+          ${validTypesString}</p>`
+      }
+      const entityTypeOptions = this.getResource?.changeData?.entityTypeOptions
+      if (!entityTypeOptions?.some(options => options.value === nr.legalType)) {
+        return `<p class="info-text whitespace-normal mb-0">
+          You cannot change a ${GetCorpFullDescription(this.getEntityType)} to a
+          ${GetCorpFullDescription(nr.legalType as any)}</b>.<br><br>
+          If you need assistance, contact BC Registry staff.</p>`
+      }
+    }
+
+    // check for invalid restoration NR
+    if (nr.request_action_cd === NrRequestActionCodes.RESTORE) {
+      if (!nameRequestTypes?.includes(NrRequestActionCodes.RESTORE)) {
+        return `<p class="info-text whitespace-normal mb-0">
+          This Name Request is for a Restoration.<br><br>
+          For this ${this.getFilingName}, you can only use the following Name Request types:
+          ${validTypesString}</p>`
+      }
+      if (this.getEntityType !== nr.legalType) {
+        return `<p class="info-text whitespace-normal mb-0">
+          This Name Request is for a ${GetCorpFullDescription(nr.legalType as any)}.<br><br>
+          You need to use a name request for a <b>${GetCorpFullDescription(this.getEntityType)}</b>.</p>`
+      }
+    }
+
+    return null // no error
   }
 
   /**
