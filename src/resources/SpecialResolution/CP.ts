@@ -23,10 +23,10 @@ export const SpecialResolutionResourceCp: ResourceIF = {
     correctNameOptions: [
       CorrectNameOptions.CORRECT_NEW_NR
     ],
-    typeChangeInfo: 'You cannot change the business type of a Cooperative Association. You must form a new' +
-    'business and dissolve this business once the new business is registered.',
-    addressChangeInfo: 'To change addresses, please use the Change feature in the' +
-    ' Office Addresses list on your business dashboard.',
+    typeChangeInfo: `You cannot change the business type of a Cooperative Association. You must form a new
+      business and dissolve this business once the new business is registered.`,
+    addressChangeInfo: `To change addresses, please use the Change feature in the
+      Office Addresses list on your business dashboard.`,
     nameRequestTypes: [
       NrRequestActionCodes.CHANGE_NAME
     ],
@@ -39,8 +39,8 @@ export const SpecialResolutionResourceCp: ResourceIF = {
       },
       sampleFormSection: {
         header: 'Special Resolution (Form 06 COO)',
-        text: `For your convenience, we have provided the special resolution form (Form 06 COO).  This form should be
-          completed, signed and a printed copy retained with your other Cooperative Association records.
+        text: `For your convenience, we have provided the special resolution form (Form 06 COO). This form should
+          be completed, signed and a printed copy retained with your other Cooperative Association records.
           Do not mail the paper form to BC Registries.  Once you have completed this form, enter the details
           from the paper form into this filing.`,
         label: 'Download the Special Resolution Form 06 COO',
