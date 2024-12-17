@@ -331,7 +331,7 @@ import MessageBox from '@/components/common/MessageBox.vue'
 export default class ChangeBusinessType extends Mixins(CommonMixin) {
   // for template
   readonly GetCorpFullDescription = GetCorpFullDescription
-  readonly nameRequestUrl: string = sessionStorage.getItem('REGISTRY_NAME_REQUEST_URL') || ''
+  readonly nameRequestUrl: string = sessionStorage.getItem('NAME_REQUEST_URL') || ''
   @Prop({ default: false }) readonly invalidSection!: boolean
 
   // Store getters
