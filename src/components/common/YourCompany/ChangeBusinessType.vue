@@ -176,7 +176,7 @@
             To change to a {{ GetCorpFullDescription(selectedEntityType) }}, you must change your company name.
             You can use your incorporation number as the company name or go to
             <a
-              href="https://dev.names.bcregistry.gov.bc.ca/"
+              :href="nameRequestUrl"
               class="underline-blue-text"
             >
               Name Request
@@ -331,7 +331,7 @@ import MessageBox from '@/components/common/MessageBox.vue'
 export default class ChangeBusinessType extends Mixins(CommonMixin) {
   // for template
   readonly GetCorpFullDescription = GetCorpFullDescription
-
+  readonly nameRequestUrl: string = sessionStorage.getItem('REGISTRY_NAME_REQUEST_URL') || ''
   @Prop({ default: false }) readonly invalidSection!: boolean
 
   // Store getters

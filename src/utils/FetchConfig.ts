@@ -23,6 +23,9 @@ export async function FetchConfig (): Promise<any> {
   const registryHomeUrl: string = import.meta.env.VUE_APP_REGISTRY_HOME_URL
   sessionStorage.setItem('REGISTRY_HOME_URL', registryHomeUrl)
 
+  const registryNameRequestUrl: string = import.meta.env.VUE_APP_REGISTRY_NAME_REQUEST_URL
+  sessionStorage.setItem('REGISTRY_NAME_REQUEST_URL', registryNameRequestUrl)
+
   const businessesUrl: string = import.meta.env.VUE_APP_BUSINESSES_URL
   sessionStorage.setItem('BUSINESSES_URL', businessesUrl)
 

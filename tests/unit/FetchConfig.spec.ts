@@ -23,6 +23,7 @@ describe('Fetch Config', () => {
   import.meta.env.VUE_APP_PAY_API_URL = 'pay api url'
   import.meta.env.VUE_APP_PAY_API_VERSION = '/pay api version'
   import.meta.env.VUE_APP_REGISTRY_HOME_URL = 'registry home url'
+  import.meta.env.VUE_APP_REGISTRY_NAME_REQUEST_URL = 'registry name request url'
   import.meta.env.VUE_APP_REGISTRIES_SEARCH_API_URL = 'registries search api url'
   import.meta.env.VUE_APP_REGISTRIES_SEARCH_API_VERSION = '/registries search api version'
   import.meta.env.VUE_APP_REGISTRIES_SEARCH_API_KEY = 'business api key'
@@ -54,6 +55,7 @@ describe('Fetch Config', () => {
     expect(sessionStorage.getItem('NAICS_URL')).toBe('naics api url/naics api version/')
     expect(sessionStorage.getItem('PAY_API_URL')).toBe('pay api url/pay api version/')
     expect(sessionStorage.getItem('REGISTRY_HOME_URL')).toBe('registry home url')
+    expect(sessionStorage.getItem('REGISTRY_NAME_REQUEST_URL')).toBe('registry name request url')
     expect(sessionStorage.getItem('REGISTRIES_SEARCH_API_KEY')).toBe('business api key')
     expect(sessionStorage.getItem('REGISTRIES_SEARCH_API_URL')).toBe('registries search api url/registries search api version/')
     expect(sessionStorage.getItem('SITEMINDER_LOGOUT_URL')).toBe('siteminder logout url')
