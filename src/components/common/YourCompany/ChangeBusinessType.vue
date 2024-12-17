@@ -178,8 +178,14 @@
             <a
               :href="nameRequestUrl"
               class="underline-blue-text"
+              target="_blank"
+              rel="noopener"
             >
               Name Request
+              <v-icon
+                small
+                color="primary"
+              >mdi-open-in-new</v-icon>
             </a>
             and choose “alter from one business type to another.”
           </article>
