@@ -173,8 +173,21 @@
             <strong class="pl-2 gray9--text text-small-text">Change company name</strong>
           </header>
           <article class="pl-8 pt-1 small-text">
-            To change to a {{ GetCorpFullDescription(selectedEntityType) }}, you must change the company
-            name using an approved name request or change it to a numbered company.
+            To change to a {{ GetCorpFullDescription(selectedEntityType) }}, you must change your company name.
+            You can use your incorporation number as the company name or go to
+            <a
+              :href="nameRequestUrl"
+              class="underline-blue-text"
+              target="_blank"
+              rel="noopener"
+            >
+              Name Request
+              <v-icon
+                small
+                color="primary"
+              >mdi-open-in-new</v-icon>
+            </a>
+            and choose “alter from one business type to another.”
           </article>
         </MessageBox>
 
@@ -324,7 +337,7 @@ import MessageBox from '@/components/common/MessageBox.vue'
 export default class ChangeBusinessType extends Mixins(CommonMixin) {
   // for template
   readonly GetCorpFullDescription = GetCorpFullDescription
-
+  readonly nameRequestUrl: string = sessionStorage.getItem('NAME_REQUEST_URL') || ''
   @Prop({ default: false }) readonly invalidSection!: boolean
 
   // Store getters
