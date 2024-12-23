@@ -103,7 +103,7 @@ export default class Actions extends Mixins(DateMixin, FilingTemplateMixin, Name
 
   /** True if the File and Pay button should be disabled. */
   get isFilePayButtonDisabled (): boolean {
-    return ( this.isBusySaving || !this.isCorrectionValid || this.isCorrectionEditing)
+    return (this.isBusySaving || !this.isCorrectionValid || this.isCorrectionEditing)
   }
 
   /**

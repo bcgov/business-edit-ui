@@ -1205,7 +1205,7 @@ export const useStore = defineStore('store', {
         waiveFees: false
       }]
       const haveFilingChange = (
-        (this.isCorrectionFiling ) ||
+        (this.isCorrectionFiling) ||
         (this.isAlterationFiling && this.hasAlterationDataChanged) ||
         (this.isFirmChangeFiling && this.hasChangeDataChanged) ||
         (this.isFirmConversionFiling && this.hasConversionDataChanged) ||
