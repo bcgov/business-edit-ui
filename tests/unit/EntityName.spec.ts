@@ -21,6 +21,8 @@ import { CorrectionResourceGp } from '@/resources/Correction/GP'
 import { CorrectionResourceSp } from '@/resources/Correction/SP'
 import { CorrectionResourceUlc } from '@/resources/Correction/ULC'
 
+import { RestorationResourceBc } from '@/resources/LimitedRestorationToFull/BC'
+
 import { SpecialResolutionResourceCp } from '@/resources/SpecialResolution/CP'
 
 import { createPinia, setActivePinia } from 'pinia'
@@ -396,5 +398,59 @@ describe('Name Changes by Type change', () => {
     expect(wrapper.text()).toMatch(
       /We have changed your numbered company\s+name based on the business type you selected\./
     )
+  })
+})
+
+describe('Name Changes for Limited Restoration to Full', () => {
+  let wrapper: any
+
+  const entitySnapshot = {
+    businessInfo: {
+      legalName: 'Mock Original Name',
+      legalType: CorpTypeCd.BC_COMPANY,
+      identifier: 'BC0884805'
+    }
+  }
+
+  beforeEach(() => {
+    // Set original business Data
+    store.stateModel.summaryMode = false
+    store.stateModel.nameRequestLegalName = entitySnapshot.businessInfo.legalName
+    store.stateModel.entitySnapshot = entitySnapshot as any
+    store.stateModel.tombstone.filingType = FilingTypes.RESTORATION
+    store.stateModel.tombstone.entityType = entitySnapshot.businessInfo.legalType
+    store.stateModel.tombstone.businessId = entitySnapshot.businessInfo.identifier
+    store.resourceModel = RestorationResourceBc
+
+    wrapper = mount(EntityName, {
+      vuetify,
+      computed: {
+        isLimitedRestorationToFull: () => true,
+        isNameChangedByType: () => false
+      }
+    })
+  })
+
+  afterEach(() => {
+    wrapper.destroy()
+  })
+
+  it('displays Undo button after changing to a numbered company and resuming draft', async () => {
+    // Initial state
+    const companyName = wrapper.find('.company-name')
+    expect(companyName.exists()).toBe(true)
+    expect(companyName.text()).toBe('Mock Original Name')
+
+    // Simulate changing to numbered company
+    store.stateModel.nameRequestLegalName = null
+
+    await wrapper.vm.nameChangeHandler(true)
+    await Vue.nextTick()
+
+    // Verify show the Undo button
+    const button = wrapper.find('#btn-undo-company-name')
+    expect(button.exists()).toBe(true)
+    expect(button.text()).toBe('Undo')
+    expect(wrapper.vm.shouldShowUndoButton).toBe(true)
   })
 })
