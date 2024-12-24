@@ -441,12 +441,6 @@ describe('Name Changes for Limited Restoration to Full', () => {
     expect(companyName.exists()).toBe(true)
     expect(companyName.text()).toBe('Mock Original Name')
 
-    console.log('Initial state:', {
-      shouldShowUndoButton: wrapper.vm.shouldShowUndoButton,
-      hasBusinessNameChanged: wrapper.vm.hasBusinessNameChanged,
-      isLimitedRestorationToFull: wrapper.vm.isLimitedRestorationToFull
-    })
-
     // Simulate changing to numbered company
     store.stateModel.nameRequestLegalName = null
 
