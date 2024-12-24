@@ -76,7 +76,6 @@ export default class Actions extends Mixins(DateMixin, FilingTemplateMixin, Name
   @Getter(useStore) getFilingId!: number
   // @Getter(useStore) getNameRequestNumber!: string
   @Getter(useStore) hasAlterationDataChanged!: boolean // for testing state-getters
-  @Getter(useStore) hasCorrectionDataChanged!: boolean
   @Getter(useStore) havePeopleAndRolesChanged!: boolean // for testing state-getters
   @Getter(useStore) isBusySaving!: boolean
   @Getter(useStore) isCorrectionEditing!: boolean
@@ -103,7 +102,7 @@ export default class Actions extends Mixins(DateMixin, FilingTemplateMixin, Name
 
   /** True if the File and Pay button should be disabled. */
   get isFilePayButtonDisabled (): boolean {
-    return (!this.hasCorrectionDataChanged || this.isBusySaving || !this.isCorrectionValid || this.isCorrectionEditing)
+    return (this.isBusySaving || !this.isCorrectionValid || this.isCorrectionEditing)
   }
 
   /**
