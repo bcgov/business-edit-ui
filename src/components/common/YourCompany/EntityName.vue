@@ -290,6 +290,7 @@ export default class EntityName extends Mixins(CommonMixin, NameRequestMixin) {
   @Getter(useStore) isFirmChangeFiling!: boolean
   @Getter(useStore) isFirmConversionFiling!: boolean
   @Getter(useStore) isLimitedRestorationExtension!: boolean
+  @Getter(useStore) isLimitedRestorationToFull!: boolean
   @Getter(useStore) isNumberedCompany!: boolean
   @Getter(useStore) isSpecialResolutionFiling!: boolean
   @Getter(useStore) isNameChangedByType!: boolean
@@ -321,7 +322,9 @@ export default class EntityName extends Mixins(CommonMixin, NameRequestMixin) {
       this.hasCompanyNameChanged ||
       (
         this.hasBusinessNameChanged &&
-        (this.isAlterationFiling || this.isFirmChangeFiling || this.isSpecialResolutionFiling)
+        (this.isAlterationFiling || this.isFirmChangeFiling || this.isSpecialResolutionFiling ||
+          this.isLimitedRestorationToFull
+        )
       )
     )
   }
@@ -337,7 +340,9 @@ export default class EntityName extends Mixins(CommonMixin, NameRequestMixin) {
         this.hasCompanyNameChanged ||
         (
           this.hasBusinessNameChanged &&
-          (this.isAlterationFiling || this.isFirmChangeFiling || this.isSpecialResolutionFiling)
+          (this.isAlterationFiling || this.isFirmChangeFiling || this.isSpecialResolutionFiling ||
+            this.isLimitedRestorationToFull
+          )
         )
       ) &&
       !this.isNameChangedByType
@@ -439,8 +444,19 @@ export default class EntityName extends Mixins(CommonMixin, NameRequestMixin) {
 
   /** Updates UI when correct name options are done.  */
   nameChangeHandler (isSaved = false): void {
-    this.hasCompanyNameChanged = this.isNewName
-    if (isSaved) this.isEditingNames = false
+    const isNumberedName = !this.getNameRequestLegalName && !!this.getBusinessNumber
+    this.hasCompanyNameChanged = this.isNewName || isNumberedName
+
+    if (isSaved) {
+      this.isEditingNames = false
+
+      // set legal name for numbered company to satisfy Legal API requirement
+      // without this, Legal API will return error when filing restoration with numbered option
+      if (isNumberedName) {
+        const numberedName = `${this.getBusinessNumber} B.C. ${this.getUpdatedName}`
+        this.setNameRequestLegalName(numberedName)
+      }
+    }
   }
 
   /** Reset company name values to original. */
