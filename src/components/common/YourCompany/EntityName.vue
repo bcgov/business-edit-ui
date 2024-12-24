@@ -444,6 +444,9 @@ export default class EntityName extends Mixins(CommonMixin, NameRequestMixin) {
 
   /** Updates UI when correct name options are done.  */
   nameChangeHandler (isSaved = false): void {
+    // check if this is a numbered company case:
+    // 1. no Name Request legal name exists (indicating not using NR)
+    // 2. business number exists (needed for numbered company name)
     const isNumberedName = !this.getNameRequestLegalName && !!this.getBusinessNumber
     this.hasCompanyNameChanged = this.isNewName || isNumberedName
 
