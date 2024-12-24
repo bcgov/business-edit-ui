@@ -455,7 +455,7 @@ describe('Coop Correction component', () => {
     expect(store.isCorrectionEditing).toBe(true)
   })
 
-  it('isCorrectionValid and hasCorrectionDataChanged', async () => {
+  it('isCorrectionValid', async () => {
     store.stateModel.correctionInformation.type = CorrectionErrorTypes.CLIENT
     await Vue.nextTick()
 
@@ -473,7 +473,6 @@ describe('Coop Correction component', () => {
     // These validation flags plus more make up isCorrectionValid
     // This property is used enable/disable the file and pay button.
     expect(store.isCorrectionValid).toBe(false)
-    // expect(store.hasCorrectionDataChanged).toBe(false)
 
     store.stateModel.nameRequestLegalName = 'SUPER SUPER COOP 2'
     expect(store.hasBusinessNameChanged).toBe(true)
@@ -485,8 +484,5 @@ describe('Coop Correction component', () => {
     expect(store.hasSpecialResolutionRulesChanged).toBe(true)
     store.stateModel.specialResolution.resolution = 'NEW RESOLUTION'
     expect(store.hasSpecialResolutionResolutionChanged).toBe(true)
-    // These change flags make up hasCorrectionDataChanged
-    // This property is used to enable/disable the file and pay button.
-    // expect(store.hasCorrectionDataChanged).toBe(true)
   })
 })

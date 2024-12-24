@@ -558,6 +558,7 @@ export const useStore = defineStore('store', {
     },
 
     /**
+     * Commenting out for now, might be used in future.
      * Whether any correction data has changed (for the purpose of showing the
      * fee summary), ie, does not include:
      * - completing party
@@ -1193,7 +1194,7 @@ export const useStore = defineStore('store', {
     },
 
     /**
-     * Whether to show the fee summary.
+     * Whether to show the fee summary [show fee summary in all cases].
      * This is a safety check to ensure that fee summary component is not loaded
      * until there is a valid filing type and entity code.
      */
