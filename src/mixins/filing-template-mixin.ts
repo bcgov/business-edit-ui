@@ -150,7 +150,7 @@ export default class FilingTemplateMixin extends DateMixin {
         },
         correctedFilingId: this.getCorrectedFilingId,
         correctedFilingType: this.getCorrectedFilingType,
-        correctedFilingDate: this.correctedFilingDate,
+        correctedFilingDate: this.getCorrectedFilingDate,
         comment: `${this.defaultCorrectionDetailComment}\n${this.getDetailComment}`,
         contactPoint: this.getContactPoint,
         nameRequest: {
@@ -1455,14 +1455,14 @@ export default class FilingTemplateMixin extends DateMixin {
   /** The default (hard-coded first line) correction detail comment. */
   public get defaultCorrectionDetailComment (): string {
     const correctedFilingName = FilingTypeToName(this.getCorrectedFilingType)
-    return `Correction for ${correctedFilingName} filed on ${this.correctedFilingDate}`
+    return `Correction for ${correctedFilingName} filed on ${this.getCorrectedFilingDate}`
   }
 
   // FUTURE: probably don't need this becayse Corrected Filing Date is already YYYY-MM-DD
   /** The corrected filing date as YYYY-MM-DD. */
-  private get correctedFilingDate (): string {
-    return this.getCorrectedFilingDate
-  }
+  // private get correctedFilingDate (): string {
+  //   return this.getCorrectedFilingDate
+  // }
 
   /** The Contact Point object. */
   private get getContactPoint (): ContactPointIF {
