@@ -558,7 +558,6 @@ export const useStore = defineStore('store', {
     },
 
     /**
-     * Commenting out for now, might be used in future.
      * Whether any correction data has changed (for the purpose of showing the
      * fee summary), ie, does not include:
      * - completing party
