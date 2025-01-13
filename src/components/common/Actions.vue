@@ -66,7 +66,7 @@ import { Component, Mixins } from 'vue-property-decorator'
 import { Getter, Action } from 'pinia-class'
 import { DateMixin, FilingTemplateMixin, NameRequestMixin } from '@/mixins/'
 import { LegalServices } from '@/services/'
-import { Navigate } from '@/utils/'
+import { Navigate, GetFeatureFlag } from '@/utils/'
 import { useStore } from '@/store/store'
 
 /** This component is only implemented for Correction filings atm. */
@@ -83,6 +83,7 @@ export default class Actions extends Mixins(DateMixin, FilingTemplateMixin, Name
   @Getter(useStore) isFilingPaying!: boolean
   @Getter(useStore) isSaving!: boolean
   @Getter(useStore) isSavingResuming!: boolean
+  @Getter(useStore) hasCorrectionDataChanged!: boolean
 
   // Store actions
   @Action(useStore) setIsSaving!: (x: boolean) => void
@@ -100,9 +101,18 @@ export default class Actions extends Mixins(DateMixin, FilingTemplateMixin, Name
     return (this.isBusySaving || this.isCorrectionEditing)
   }
 
+  /** True if the Empty Corrections filed and LD flag is True */
+  get isAllowEmptyCorrections (): boolean {
+    const isAllowEmptyCorrectionsLd = GetFeatureFlag('allow-empty-corrections')
+    if (!this.hasCorrectionDataChanged && !isAllowEmptyCorrectionsLd) {
+      return false
+    }
+    return true
+  }
+
   /** True if the File and Pay button should be disabled. */
   get isFilePayButtonDisabled (): boolean {
-    return (this.isBusySaving || !this.isCorrectionValid || this.isCorrectionEditing)
+    return (this.isBusySaving || !this.isCorrectionValid || this.isCorrectionEditing || !this.isAllowEmptyCorrections)
   }
 
   /**

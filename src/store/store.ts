@@ -558,7 +558,6 @@ export const useStore = defineStore('store', {
     },
 
     /**
-     * Commenting out for now, might be used in future.
      * Whether any correction data has changed (for the purpose of showing the
      * fee summary), ie, does not include:
      * - completing party
@@ -566,44 +565,44 @@ export const useStore = defineStore('store', {
      * - certify
      * - staff payment
      */
-    // hasCorrectionDataChanged (): boolean {
-    //   if (this.isBaseCorrectionFiling) {
-    //     return (
-    //       this.hasBusinessNameChanged ||
-    //       this.hasBusinessTypeChanged ||
-    //       this.haveNameTranslationsChanged ||
-    //       this.haveOfficeAddressesChanged ||
-    //       this.havePeopleAndRolesChanged ||
-    //       this.hasShareStructureChanged ||
-    //       this.areProvisionsRemoved ||
-    //       this.haveNewResolutionDates
-    //     )
-    //   }
+    hasCorrectionDataChanged (): boolean {
+      if (this.isBaseCorrectionFiling) {
+        return (
+          this.hasBusinessNameChanged ||
+          this.hasBusinessTypeChanged ||
+          this.haveNameTranslationsChanged ||
+          this.haveOfficeAddressesChanged ||
+          this.havePeopleAndRolesChanged ||
+          this.hasShareStructureChanged ||
+          this.areProvisionsRemoved ||
+          this.haveNewResolutionDates
+        )
+      }
 
-    //   if (this.isFirmCorrectionFiling) {
-    //     return (
-    //       this.hasBusinessNameChanged ||
-    //       this.hasBusinessStartDateChanged ||
-    //       this.hasNaicsChanged ||
-    //       this.haveOfficeAddressesChanged ||
-    //       this.havePeopleAndRolesChanged
-    //     )
-    //   }
+      if (this.isFirmCorrectionFiling) {
+        return (
+          this.hasBusinessNameChanged ||
+          this.hasBusinessStartDateChanged ||
+          this.hasNaicsChanged ||
+          this.haveOfficeAddressesChanged ||
+          this.havePeopleAndRolesChanged
+        )
+      }
 
-    //   if (this.isCoopCorrectionFiling) {
-    //     return (
-    //       this.hasBusinessNameChanged ||
-    //       this.hasAssociationTypeChanged ||
-    //       this.hasSpecialResolutionMemorandumChanged ||
-    //       this.haveOfficeAddressesChanged ||
-    //       this.havePeopleAndRolesChanged ||
-    //       this.hasSpecialResolutionRulesChanged ||
-    //       this.hasSpecialResolutionResolutionChanged
-    //     )
-    //   }
+      if (this.isCoopCorrectionFiling) {
+        return (
+          this.hasBusinessNameChanged ||
+          this.hasAssociationTypeChanged ||
+          this.hasSpecialResolutionMemorandumChanged ||
+          this.haveOfficeAddressesChanged ||
+          this.havePeopleAndRolesChanged ||
+          this.hasSpecialResolutionRulesChanged ||
+          this.hasSpecialResolutionResolutionChanged
+        )
+      }
 
-    //   return false // should never happen
-    // },
+      return false // should never happen
+    },
 
     /**
      * Whether any alteration data has changed (for the purpose of showing the
