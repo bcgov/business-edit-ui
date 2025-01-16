@@ -28,10 +28,10 @@ describe('Special Resolution component', () => {
   const { assign } = window.location
 
   // Define Session
-  sessionStorage.setItem('PAY_API_URL', 'https://pay.api.url/')
-  sessionStorage.setItem('AUTH_API_URL', 'https://auth.api.url/')
-  sessionStorage.setItem('AUTH_WEB_URL', 'https://auth.web.url/')
-  sessionStorage.setItem('DASHBOARD_URL', 'https://dashboard.url/')
+  sessionStorage.setItem('PAY_API_URL', 'https://pay-api.url/')
+  sessionStorage.setItem('AUTH_API_URL', 'https://auth-api.url/')
+  sessionStorage.setItem('AUTH_WEB_URL', 'https://auth-web.url/')
+  sessionStorage.setItem('BUSINESS_DASH_URL', 'https://business-dash.url/')
   sessionStorage.setItem('KEYCLOAK_TOKEN', 'sampletoken')
 
   store.stateModel.tombstone.businessId = 'CP1234567'
@@ -44,7 +44,7 @@ describe('Special Resolution component', () => {
     const get = sinon.stub(axios, 'get')
 
     // GET payment fees for immediate alteration
-    get.withArgs('https://pay.api.url/fees/CP/SPRLN')
+    get.withArgs('https://pay-api.url/fees/CP/SPRLN')
       .returns(Promise.resolve({
         data: { 'filingFees': 70.0,
           'filingType': 'Special resolution',
@@ -62,7 +62,7 @@ describe('Special Resolution component', () => {
       }))
 
     // GET payment fees for future effective alteration
-    get.withArgs('https://pay.api.url/fees/CP/SPRLN?futureEffective=true')
+    get.withArgs('https://pay-api.url/fees/CP/SPRLN?futureEffective=true')
       .returns(Promise.resolve({
         data: { 'filingFees': 70.0,
           'filingType': 'Special resolution',
@@ -167,7 +167,7 @@ describe('Special Resolution component', () => {
       }))
 
     // GET auth info
-    get.withArgs('https://auth.api.url/entities/CP1234567')
+    get.withArgs('https://auth-api.url/entities/CP1234567')
       .returns(Promise.resolve({
         data: {
           contacts: [

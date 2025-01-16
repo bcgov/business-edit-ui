@@ -288,9 +288,9 @@ const KEYCLOAK_TOKEN_USER = 'eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJ
 describe.skip('Numbered company setup', () => {
   let wrapper: any
   const { assign } = window.location
-  sessionStorage.setItem('AUTH_WEB_URL', 'https://auth.web.url/')
-  sessionStorage.setItem('AUTH_API_URL', 'https://auth.api.url/')
-  sessionStorage.setItem('DASHBOARD_URL', 'https://dashboard.url/')
+  sessionStorage.setItem('AUTH_WEB_URL', 'https://auth-web.url/')
+  sessionStorage.setItem('AUTH_API_URL', 'https://auth-api.url/')
+  sessionStorage.setItem('BUSINESS_DASH_URL', 'https://business-dash.url/')
 
   beforeEach(async () => {
     // mock the window.location.assign function
@@ -407,9 +407,9 @@ describe.skip('Numbered company setup', () => {
 describe.skip('App component', () => {
   let wrapper: any
   const { assign } = window.location
-  sessionStorage.setItem('AUTH_WEB_URL', 'https://auth.web.url/')
-  sessionStorage.setItem('AUTH_API_URL', 'https://auth.api.url/')
-  sessionStorage.setItem('DASHBOARD_URL', 'https://dashboard.url/')
+  sessionStorage.setItem('AUTH_WEB_URL', 'https://auth-web.url/')
+  sessionStorage.setItem('AUTH_API_URL', 'https://auth-api.url/')
+  sessionStorage.setItem('BUSINESS_DASH_URL', 'https://business-dash.url/')
 
   beforeEach(async () => {
     // mock the window.location.assign function

@@ -29,10 +29,10 @@ describe('Conversion component', () => {
   const { assign } = window.location
 
   // Define Session
-  sessionStorage.setItem('PAY_API_URL', 'https://pay.api.url/')
-  sessionStorage.setItem('AUTH_API_URL', 'https://auth.api.url/')
-  sessionStorage.setItem('AUTH_WEB_URL', 'https://auth.web.url/')
-  sessionStorage.setItem('DASHBOARD_URL', 'https://dashboard.url/')
+  sessionStorage.setItem('PAY_API_URL', 'https://pay-api.url/')
+  sessionStorage.setItem('AUTH_API_URL', 'https://auth-api.url/')
+  sessionStorage.setItem('AUTH_WEB_URL', 'https://auth-web.url/')
+  sessionStorage.setItem('BUSINESS_DASH_URL', 'https://business-dash.url/')
   sessionStorage.setItem('KEYCLOAK_TOKEN', 'eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJUbWdtZUk0MnVsdUZ0N3' +
     'FQbmUtcTEzdDUwa0JDbjF3bHF6dHN0UGdUM1dFIn0.eyJqdGkiOiIzZDQ3YjgwYy01MTAzLTRjMTYtOGNhZC0yMjU4NDMwZGYwZTciLCJle' +
     'HAiOjE1Njg0ODk1NTksIm5iZiI6MCwiaWF0IjoxNTY4NDAzMTYwLCJpc3MiOiJodHRwczovL3Nzby1kZXYucGF0aGZpbmRlci5nb3YuYmMuY2' +
@@ -67,7 +67,7 @@ describe('Conversion component', () => {
     const get = sinon.stub(axios, 'get')
 
     // GET payment fee for immediate alteration
-    get.withArgs('https://pay.api.url/fees/FM/CONVERSION')
+    get.withArgs('https://pay-api.url/fees/FM/CONVERSION')
       .returns(Promise.resolve({
         data: {
           'filingFees': 100.0,
@@ -86,7 +86,7 @@ describe('Conversion component', () => {
       }))
 
     // GET payment fee for future conversion
-    get.withArgs('https://pay.api.url/fees/FM/CONVERSION?futureEffective=true')
+    get.withArgs('https://pay-api.url/fees/FM/CONVERSION?futureEffective=true')
       .returns(Promise.resolve({
         data: {
           'filingFees': 100.0,
@@ -205,7 +205,7 @@ describe('Conversion component', () => {
       }))
 
     // GET auth info
-    get.withArgs('https://auth.api.url/entities/BC1234567')
+    get.withArgs('https://auth-api.url/entities/BC1234567')
       .returns(Promise.resolve({
         data: {
           contacts: [

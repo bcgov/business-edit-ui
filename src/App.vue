@@ -144,7 +144,7 @@ import { AccountInformationIF, ConfirmDialogType } from '@/interfaces/'
 import { BreadcrumbIF, CompletingPartyIF } from '@bcrs-shared-components/interfaces/'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 import { FilingTypes, RouteNames } from '@/enums/'
-import { getEntityDashboardBreadcrumb, getMyBusinessRegistryBreadcrumb, getRegistryDashboardBreadcrumb,
+import { getBusinessDashboardBreadcrumb, getMyBusinessRegistryBreadcrumb, getRegistryDashboardBreadcrumb,
   getStaffDashboardBreadcrumb } from '@/resources/BreadCrumbResources'
 import DateUtilities from '@/services/date-utilities'
 import { useStore } from '@/store/store'
@@ -232,7 +232,7 @@ export default class App extends Mixins(CommonMixin, FilingTemplateMixin) {
   /** The route breadcrumbs list. */
   get breadcrumbs (): Array<BreadcrumbIF> {
     const crumbs: Array<BreadcrumbIF> = [
-      getEntityDashboardBreadcrumb(),
+      getBusinessDashboardBreadcrumb(),
       {
         text: this.$route.meta?.title || 'Unknown Filing',
         to: { name: this.$route.name }
@@ -495,9 +495,9 @@ export default class App extends Mixins(CommonMixin, FilingTemplateMixin) {
     Navigate(manageBusinessUrl)
   }
 
-  /** Called to navigate to dashboard. */
+  /** Called to navigate to Business Dashboard. */
   async goToDashboard (force = false): Promise<void> {
-    const dashboardUrl = sessionStorage.getItem('DASHBOARD_URL') + this.getBusinessId
+    const dashboardUrl = sessionStorage.getItem('BUSINESS_DASH_URL') + this.getBusinessId
 
     // check if there are no data changes
     if (!this.haveUnsavedChanges || force) {

@@ -222,8 +222,8 @@ describe.skip('Emits error event if NR validation fails in file and pay', () => 
   let wrapper: any
   const { assign } = window.location
 
-  sessionStorage.setItem('AUTH_WEB_URL', 'https://auth.web.url/')
-  sessionStorage.setItem('DASHBOARD_URL', 'https://dashboard.url/')
+  sessionStorage.setItem('AUTH_WEB_URL', 'https://auth-web.url/')
+  sessionStorage.setItem('BUSINESS_DASH_URL', 'https://business-dash.url/')
 
   beforeEach(async () => {
     // mock the window.location.assign function
@@ -302,8 +302,8 @@ describe.skip('Actions component - Filing Functionality', () => {
   const effectiveDate = new Date(new Date().setDate(new Date().getDate() + 5))
   const formattedEffectiveDate = effectiveDate.toISOString().replace('Z', '+00:00')
 
-  sessionStorage.setItem('AUTH_WEB_URL', 'https://auth.web.url/')
-  sessionStorage.setItem('DASHBOARD_URL', 'https://dashboard.url/')
+  sessionStorage.setItem('AUTH_WEB_URL', 'https://auth-web.url/')
+  sessionStorage.setItem('BUSINESS_DASH_URL', 'https://business-dash.url/')
 
   // the filing body that would get sent to the API
   const filing = {

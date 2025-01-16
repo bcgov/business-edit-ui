@@ -253,9 +253,9 @@ export default class ViewWrapper extends Mixins(CommonMixin, FilingTemplateMixin
     Navigate(manageBusinessUrl)
   }
 
-  /** Called to navigate to dashboard. */
+  /** Called to navigate to Business Dashboard. */
   private async goToDashboard (force = false): Promise<void> {
-    const dashboardUrl = sessionStorage.getItem('DASHBOARD_URL') + this.getBusinessId
+    const dashboardUrl = sessionStorage.getItem('BUSINESS_DASH_URL') + this.getBusinessId
 
     // check if there are no data changes
     if (!this.haveUnsavedChanges || force) {
@@ -366,7 +366,7 @@ export default class ViewWrapper extends Mixins(CommonMixin, FilingTemplateMixin
 
       if (paymentToken && filingId) {
         const isPaymentActionRequired: boolean = filingComplete.header?.isPaymentActionRequired
-        const returnUrl = sessionStorage.getItem('DASHBOARD_URL') + this.getBusinessId +
+        const returnUrl = sessionStorage.getItem('BUSINESS_DASH_URL') + this.getBusinessId +
           `?filing_id=${filingId}`
 
         // if payment action is required, navigate to Pay URL
