@@ -721,6 +721,7 @@ export const useStore = defineStore('store', {
             this.getFlagsCompanyInfo.isValidOrgPersons &&
             this.getFlagsCompanyInfo.isValidAddress &&
             this.getFlagsCompanyInfo.isValidShareStructure &&
+            this.getFlagsCompanyInfo.isValidResolutionDate &&
             this.getFlagsReviewCertify.isValidDetailComment &&
             // don't check certify for staff correction
             this.getFlagsReviewCertify.isValidStaffPayment
