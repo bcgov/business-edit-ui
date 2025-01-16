@@ -207,7 +207,7 @@ export default class Actions extends Mixins(DateMixin, FilingTemplateMixin, Name
     const paymentToken = filingComplete?.header?.paymentToken
     if (paymentToken) {
       const isPaymentActionRequired: boolean = filingComplete.header?.isPaymentActionRequired
-      const returnUrl = sessionStorage.getItem('DASHBOARD_URL') + this.getBusinessId +
+      const returnUrl = sessionStorage.getItem('BUSINESS_DASH_URL') + this.getBusinessId +
         `?filing_id=${this.getFilingId}`
 
       // if payment action is required, navigate to Pay URL

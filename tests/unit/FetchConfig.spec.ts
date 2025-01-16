@@ -15,7 +15,7 @@ describe('Fetch Config', () => {
   import.meta.env.VUE_APP_AUTH_WEB_URL = 'auth web url'
   import.meta.env.VUE_APP_BUSINESSES_URL = 'businesses url'
   import.meta.env.VUE_APP_BUSINESS_EDIT_LD_CLIENT_ID = 'business edit ld client id'
-  import.meta.env.VUE_APP_DASHBOARD_URL = 'dashboard url'
+  import.meta.env.VUE_APP_BUSINESS_DASH_URL = 'business dash url'
   import.meta.env.VUE_APP_LEGAL_API_URL = 'legal api url'
   import.meta.env.VUE_APP_LEGAL_API_VERSION_2 = '/legal api version 2'
   import.meta.env.VUE_APP_NAICS_API_URL = 'naics api url'
@@ -51,7 +51,7 @@ describe('Fetch Config', () => {
     expect(sessionStorage.getItem('AUTH_API_URL')).toBe('auth api url/auth api version/')
     expect(sessionStorage.getItem('AUTH_WEB_URL')).toBe('auth web url')
     expect(sessionStorage.getItem('BUSINESSES_URL')).toBe('businesses url')
-    expect(sessionStorage.getItem('DASHBOARD_URL')).toBe('dashboard url')
+    expect(sessionStorage.getItem('BUSINESS_DASH_URL')).toBe('business dash url')
     expect(sessionStorage.getItem('NAICS_URL')).toBe('naics api url/naics api version/')
     expect(sessionStorage.getItem('PAY_API_URL')).toBe('pay api url/pay api version/')
     expect(sessionStorage.getItem('REGISTRY_HOME_URL')).toBe('registry home url')

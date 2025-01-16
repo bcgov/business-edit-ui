@@ -11,17 +11,17 @@ function getParams (): string {
   return accountId ? `?accountid=${accountId}` : ''
 }
 
-/** Returns the breadcrumb to the entity (business) dashboard. */
-export function getEntityDashboardBreadcrumb (): BreadcrumbIF {
+/** Returns the breadcrumb to the Business Dashboard. */
+export function getBusinessDashboardBreadcrumb (): BreadcrumbIF {
   const getOriginalLegalName = store.getOriginalLegalName
   const getBusinessId = store.getBusinessId
   return {
     text: getOriginalLegalName || 'Numbered Benefit Company',
-    href: `${sessionStorage.getItem('DASHBOARD_URL')}${getBusinessId}/${getParams()}`
+    href: `${sessionStorage.getItem('BUSINESS_DASH_URL')}${getBusinessId}/${getParams()}`
   }
 }
 
-/** Returns the breadcrumb to the BC Registries dashboard. */
+/** Returns the breadcrumb to the BC Registries Dashboard. */
 export function getRegistryDashboardBreadcrumb (): BreadcrumbIF {
   return {
     text: 'BC Registries Dashboard',

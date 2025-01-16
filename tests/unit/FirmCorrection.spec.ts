@@ -28,10 +28,10 @@ describe('Firm Correction component', () => {
   const { assign } = window.location
 
   // Define Session
-  sessionStorage.setItem('PAY_API_URL', 'https://pay.api.url/')
-  sessionStorage.setItem('AUTH_API_URL', 'https://auth.api.url/')
-  sessionStorage.setItem('AUTH_WEB_URL', 'https://auth.web.url/')
-  sessionStorage.setItem('DASHBOARD_URL', 'https://dashboard.url/')
+  sessionStorage.setItem('PAY_API_URL', 'https://pay-api.url/')
+  sessionStorage.setItem('AUTH_API_URL', 'https://auth-api.url/')
+  sessionStorage.setItem('AUTH_WEB_URL', 'https://auth-web.url/')
+  sessionStorage.setItem('BUSINESS_DASH_URL', 'https://business-dash.url/')
 
   store.stateModel.tombstone.entityType = CorpTypeCd.SOLE_PROP
   store.stateModel.tombstone.businessId = 'FM1234567'
@@ -45,7 +45,7 @@ describe('Firm Correction component', () => {
 
     // FUTURE
     // GET payment fee for immediate correction
-    // get.withArgs('https://pay.api.url/fees/SP/CORRECTION')
+    // get.withArgs('https://pay-api.url/fees/SP/CORRECTION')
     //   .returns(Promise.resolve({
     //     data: {
     //       filingFees: 100.0,
@@ -65,7 +65,7 @@ describe('Firm Correction component', () => {
 
     // FUTURE
     // GET payment fee for future correction
-    // get.withArgs('https://pay.api.url/fees/SP/CORRECTION?futureEffective=true')
+    // get.withArgs('https://pay-api.url/fees/SP/CORRECTION?futureEffective=true')
     //   .returns(Promise.resolve({
     //     data: {
     //       filingFees: 100.0,
@@ -90,7 +90,7 @@ describe('Firm Correction component', () => {
       }))
 
     // GET auth info
-    get.withArgs('https://auth.api.url/entities/FM1234567')
+    get.withArgs('https://auth-api.url/entities/FM1234567')
       .returns(Promise.resolve({
         data: {
           contacts: [
