@@ -465,6 +465,7 @@ describe('Coop Correction component', () => {
     expect(store.getFlagsCompanyInfo.isValidMemorandum).toBe(true)
     expect(store.getFlagsCompanyInfo.isValidSpecialResolution).toBe(true)
     expect(store.getFlagsCompanyInfo.isValidSpecialResolutionSignature).toBe(true)
+    expect(store.getFlagsCompanyInfo.isValidResolutionDate).toBe(true)
 
     // Non edit fields.
     expect(store.getFlagsReviewCertify.isValidDetailComment).toBe(false)
