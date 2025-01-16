@@ -710,6 +710,7 @@ export const useStore = defineStore('store', {
             this.getFlagsCompanyInfo.isValidAddress &&
             this.getFlagsCompanyInfo.isValidOrgPersons &&
             this.getFlagsCompanyInfo.isValidShareStructure &&
+            this.getFlagsCompanyInfo.isValidResolutionDate &&
             this.getFlagsReviewCertify.isValidDetailComment &&
             this.getFlagsReviewCertify.isValidCertify &&
             this.getFlagsReviewCertify.isValidStaffPayment

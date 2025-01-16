@@ -125,6 +125,7 @@ describe('State Getters', () => {
     store.setValidComponent({ key: 'isValidAddress', value: true })
     store.setValidComponent({ key: 'isValidOrgPersons', value: true })
     store.setValidComponent({ key: 'isValidShareStructure', value: true })
+    store.setValidComponent({ key: 'isValidResolutionDate', value: true })
     store.setDetailValidity(true)
     store.setCertifyStateValidity(true)
     store.setStaffPaymentValidity(true)
@@ -171,6 +172,11 @@ describe('State Getters', () => {
     store.setStaffPaymentValidity(false)
     expect(vm.isCorrectionValid).toBe(false)
     store.setStaffPaymentValidity(true)
+
+    //check for resolution date flag alone affects validity
+    store.setValidComponent({ key: 'isValidResolutionDate', value: false })
+    expect(vm.isCorrectionValid).toBe(false)
+    store.setValidComponent({ key: 'isValidResolutionDate', value: true })
 
     // this getter should be true again
     expect(vm.isCorrectionValid).toBe(true)
