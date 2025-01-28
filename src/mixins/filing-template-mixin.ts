@@ -15,6 +15,7 @@ import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 import { StaffPaymentOptions } from '@bcrs-shared-components/enums/'
 import { FilingTypeToName } from '@/utils'
 import { useStore } from '@/store/store'
+import DateUtilities from '@/services/date-utilities'
 
 /**
  * Mixin that provides the integration with the Legal API.
@@ -1455,14 +1456,13 @@ export default class FilingTemplateMixin extends DateMixin {
   /** The default (hard-coded first line) correction detail comment. */
   public get defaultCorrectionDetailComment (): string {
     const correctedFilingName = FilingTypeToName(this.getCorrectedFilingType)
-    return `Correction for ${correctedFilingName} filed on ${this.getCorrectedFilingDate}`
+    return `Correction for ${correctedFilingName} filed on ${this.correctedFilingDate}`
   }
 
-  // FUTURE: probably don't need this becayse Corrected Filing Date is already YYYY-MM-DD
-  /** The corrected filing date as YYYY-MM-DD. */
-  // private get correctedFilingDate (): string {
-  //   return this.getCorrectedFilingDate
-  // }
+  /** The corrected filing date as (Month Day, Year). */
+  private get correctedFilingDate (): string {
+    return DateUtilities.yyyyMmDdToPacificDate(this.getCorrectedFilingDate, true)
+  }
 
   /** The Contact Point object. */
   private get getContactPoint (): ContactPointIF {
