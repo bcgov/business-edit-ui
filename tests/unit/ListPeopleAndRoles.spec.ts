@@ -583,7 +583,7 @@ describe('List People And Roles component for Change of Registration', () => {
 
     const rows = wrapper.findAll('.people-roles-content')
     expect(rows.at(0).find('.peoples-roles-delivery-address').text()).toBe('Same as Mailing Address')
-    expect(rows.at(1).find('.peoples-roles-delivery-address').text()).toBe('')
+    expect(rows.at(1).find('.peoples-roles-delivery-address').text()).toBe('Canada')
     expect(rows.at(2).find('.peoples-roles-delivery-address').exists()).toBe(false)
     expect(rows.at(3).find('.peoples-roles-delivery-address').text()).toContain('433 Ferry Road')
     expect(rows.at(4).find('.peoples-roles-delivery-address').text()).toBe('Same as Mailing Address')
