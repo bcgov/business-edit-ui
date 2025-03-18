@@ -1,8 +1,8 @@
 {
   "name": "business-edit-ui",
-  "version": "4.11.23",
+  "version": "4.11.24",
   "private": true,
-  "appName": "Edit UI",
+  "appName": "Business Edit UI",
   "sbcName": "SBC Common Components",
   "scripts": {
     "dev": "vite",
