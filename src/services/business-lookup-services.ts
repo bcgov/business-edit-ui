@@ -1,5 +1,6 @@
+import axios from 'axios'
 import { BusinessLookupResultIF } from '@/interfaces'
-import { AxiosInstance as axios } from '@/utils/'
+import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 
 /**
  * Class that provides integration with the BusinessLookup API.
@@ -38,14 +39,17 @@ export default class BusinessLookupServices {
     let url = this.searchApiUrl + 'businesses/search/facets?start=0&rows=20'
     url += `&categories=legalType:${legalTypes}${status ? '::status:' + status : ''}`
     url += `&query=value:${encodeURIComponent(query)}`
+    const kcToken = sessionStorage.getItem(SessionStorageKeys.KeyCloakToken)
 
     const config = {
       headers: {
+        Authorization: `Bearer ${kcToken}`,
         'x-apikey': this.searchApiKey,
         'Account-Id': this.accountId
       }
     }
 
+    // NOTE: this service uses a separate Axios instance from the rest of the app
     return axios.get(url, config).then(response => {
       const results: Array<BusinessLookupResultIF> = response?.data?.searchResults?.results
       if (!results) {
