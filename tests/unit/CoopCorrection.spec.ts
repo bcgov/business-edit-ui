@@ -234,39 +234,6 @@ describe('Coop Correction component', () => {
           'streetAddress': '34-70 Alford Cres',
           'streetAddressAdditional': ''
         },
-        roles: [{ appointmentDate: '2022-04-01', roleType: 'Incorporator' }] },
-      {
-        officer: {
-          id: 1,
-          firstName: 'Joe',
-          lastName: 'Swanson',
-          middleName: 'P',
-          organizationName: '',
-          partyType: 'person',
-          email: 'completing-party@example.com'
-        },
-        deliveryAddress: {
-          'addressCity': 'Scarborough',
-          'addressCountry': 'CA',
-          'addressRegion': 'BC',
-          'addressType': 'mailing',
-          'deliveryInstructions': null,
-          'id': 2660328,
-          'postalCode': 'M1B 4B9',
-          'streetAddress': '34-70 Alford Cres',
-          'streetAddressAdditional': ''
-        },
-        mailingAddress: {
-          'addressCity': 'Scarborough',
-          'addressCountry': 'CA',
-          'addressRegion': 'BC',
-          'addressType': 'mailing',
-          'deliveryInstructions': null,
-          'id': 2660328,
-          'postalCode': 'M1B 4B9',
-          'streetAddress': '34-70 Alford Cres',
-          'streetAddressAdditional': ''
-        },
         roles: [{ appointmentDate: '2022-05-01', roleType: 'Director' }]
       },
       {

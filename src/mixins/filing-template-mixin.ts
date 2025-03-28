@@ -872,9 +872,22 @@ export default class FilingTemplateMixin extends DateMixin {
 
     // store People And Roles
     let orgPersons = filing.correction.parties || entitySnapshot?.orgPersons || []
-    // exclude Completing Party
-    // (it is managed separately and added to the filing in buildCorrectionFiling())
-    orgPersons = orgPersons.filter(op => !(op?.roles.some(role => role.roleType === RoleTypes.COMPLETING_PARTY)))
+
+    // filter in only the roles we currently support
+    orgPersons.forEach(op => {
+      op.roles = op.roles.filter(role => {
+        if (this.isBaseCorrectionFiling) return (role.roleType === RoleTypes.DIRECTOR)
+        if (this.isCoopCorrectionFiling) return (role.roleType === RoleTypes.DIRECTOR)
+        if (this.isFirmCorrectionFiling) {
+          return ([RoleTypes.PARTNER, RoleTypes.PROPRIETOR].includes(role.roleType))
+        }
+        return false // should never get here
+      })
+    })
+
+    // filter out persons with no roles
+    orgPersons = orgPersons.filter(op => (op.roles.length > 0))
+
     this.setPeopleAndRoles(cloneDeep(orgPersons))
 
     // store Share Classes and Resolution Dates (base corrections only)
@@ -1378,6 +1391,7 @@ export default class FilingTemplateMixin extends DateMixin {
     this.setEntityType(entitySnapshot?.businessInfo?.legalType || null)
 
     // store Business Information
+    // *** FUTURE: fix this
     this.setBusinessInformation({ ...entitySnapshot?.businessInfo } || { ...EmptyBusinessInfo })
 
     // store default Name Request data
