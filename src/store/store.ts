@@ -700,7 +700,7 @@ export const useStore = defineStore('store', {
       )
     },
 
-    hasDetailDataChanged (): boolean {
+    hasOnlyDetailDataChanged (): boolean {
       return (
         this.getFlagsReviewCertify.isValidDetailComment &&
         !this.hasCorrectionDataChanged
