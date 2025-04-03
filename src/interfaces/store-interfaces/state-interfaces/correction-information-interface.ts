@@ -14,6 +14,7 @@ import { ContactPointIF, NaicsIF, NameRequestIF, SpecialResolutionIF } from '@bc
  */
 export interface CorrectionInformationIF extends CoopAlterationIF, SpecialResolutionIF {
   comment: string // max 4096 characters
+  commentOnly?: boolean
   correctedFilingId: number
   correctedFilingDate?: string // filing date is in YYYY-MM-DD format
   correctedFilingType: FilingTypes
