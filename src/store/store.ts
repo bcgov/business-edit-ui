@@ -700,6 +700,13 @@ export const useStore = defineStore('store', {
       )
     },
 
+    hasOnlyDetailDataChanged (): boolean {
+      return (
+        this.getFlagsReviewCertify.isValidDetailComment &&
+        !this.hasCorrectionDataChanged
+      )
+    },
+
     /** Whether the subject correction filing is valid. */
     isCorrectionValid (): boolean {
       if (this.isBaseCorrectionFiling) {

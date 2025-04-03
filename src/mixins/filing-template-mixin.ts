@@ -72,6 +72,7 @@ export default class FilingTemplateMixin extends DateMixin {
   @Getter(useStore) hasBusinessNameChanged!: boolean
   @Getter(useStore) hasBusinessStartDateChanged!: boolean
   @Getter(useStore) hasBusinessTypeChanged!: boolean
+  @Getter(useStore) hasOnlyDetailDataChanged!: boolean
   @Getter(useStore) hasNaicsChanged!: boolean
   @Getter(useStore) hasShareStructureChanged!: boolean
   @Getter(useStore) hasSpecialResolutionMemorandumChanged!: boolean
@@ -153,6 +154,7 @@ export default class FilingTemplateMixin extends DateMixin {
         correctedFilingType: this.getCorrectedFilingType,
         correctedFilingDate: this.getCorrectedFilingDate,
         comment: `${this.defaultCorrectionDetailComment}\n${this.getDetailComment}`,
+        ...(this.hasOnlyDetailDataChanged ? { commentOnly: true } : {}),
         contactPoint: this.getContactPoint,
         nameRequest: {
           // add in the fields needed by Legal API
