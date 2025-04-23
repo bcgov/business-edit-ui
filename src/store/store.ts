@@ -51,7 +51,7 @@ import { defineStore } from 'pinia'
 import { resourceModel, stateModel } from './state'
 import { LegalServices } from '@/services'
 import { RulesMemorandumIF } from '@/interfaces/rules-memorandum-interfaces'
-import { isEqual } from 'lodash'
+import { isEmpty, isEqual } from 'lodash'
 
 // Possible to move getters / actions into seperate files:
 // https://github.com/vuejs/pinia/issues/802#issuecomment-1018780409
@@ -1109,11 +1109,30 @@ export const useStore = defineStore('store', {
             .map(([k, v]) => [k, v === Object(v) ? removeNullProps(v) : v])
         )
       }
-
       currentShareClasses = currentShareClasses && removeNullProps(currentShareClasses)
       originalShareClasses = originalShareClasses && removeNullProps(originalShareClasses)
 
-      return !IsSame(originalShareClasses, currentShareClasses)
+      // If share structures exist, check for changes.
+      // We only want to know if share structure has changed - this does not include name changes.
+      // Name changes also adds a record for an Edit action, which causes a mismatch
+      const omittedValues = ['name', 'action']
+      let change = false
+      for (const [k] of Object.entries(currentShareClasses)) {
+        // If we have currentShareClasses but no OriginalShareClasses, this is net-new.
+        if ((originalShareClasses === undefined || isEmpty(originalShareClasses))) {
+          return true
+        }
+        change = !IsSame(
+          currentShareClasses[k as keyof ShareClassIF],
+          originalShareClasses[k as keyof ShareClassIF],
+          omittedValues
+        )
+        // As soon as we find a change, stop looking.
+        if (change) {
+          return change
+        }
+      }
+      return change
     },
 
     /** Whether NAICS data has changed. */
