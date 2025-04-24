@@ -1112,15 +1112,50 @@ export const useStore = defineStore('store', {
       currentShareClasses = currentShareClasses && removeNullProps(currentShareClasses)
       originalShareClasses = originalShareClasses && removeNullProps(originalShareClasses)
 
+      const orderShares = (shareClasses: any): ShareClassIF[] => {
+        // Convert "array-like" object to array so we can sort
+        if (!Array.isArray(shareClasses)) {
+          // If it looks like an object with numeric keys, treat it like array-like
+          const keys = Object.keys(shareClasses)
+          const isArrayLike = keys.length > 0 && keys.every(k => !isNaN(Number(k)))
+
+          if (isArrayLike) {
+            shareClasses = keys.map(k => shareClasses[k])
+          } else {
+            console.warn('Expected array in orderShares, got:', shareClasses)
+            return []
+          }
+        }
+
+        // Sort the top-level shareClasses by ID
+        const sorted = [...shareClasses].sort((a, b) => Number(a.id) - Number(b.id))
+
+        // Sort each share's series (if any)
+        sorted.forEach(share => {
+          if (share.series) {
+            share.series = orderShares(share.series)
+          }
+        })
+
+        return sorted
+      }
+      // Need to make sure currentShareClasses and originalShareClasses are ordered in the same way.
+      currentShareClasses = currentShareClasses && orderShares(currentShareClasses)
+
       return Object.entries(currentShareClasses).some(([k]) => {
         // If we have currentShareClasses but no OriginalShareClasses, this is net-new.
         if (!originalShareClasses || isEmpty(originalShareClasses)) {
           return true
         }
 
+        originalShareClasses = originalShareClasses && orderShares(originalShareClasses)
+
+        console.log(currentShareClasses)
+        console.log(originalShareClasses)
+
         // We only want to know if share structure has changed - this does not include name changes.
         // Name changes also adds a record for an Edit action, which causes a mismatch
-        const omittedValues = ['name', 'action']
+        const omittedValues = ['name', 'action', 'priority']
         // As soon as we find a change, stop looking.
         return !IsSame(
           currentShareClasses[k as keyof ShareClassIF],
