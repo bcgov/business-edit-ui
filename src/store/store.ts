@@ -1112,27 +1112,22 @@ export const useStore = defineStore('store', {
       currentShareClasses = currentShareClasses && removeNullProps(currentShareClasses)
       originalShareClasses = originalShareClasses && removeNullProps(originalShareClasses)
 
-      // If share structures exist, check for changes.
-      // We only want to know if share structure has changed - this does not include name changes.
-      // Name changes also adds a record for an Edit action, which causes a mismatch
-      const omittedValues = ['name', 'action']
-      let change = false
-      for (const [k] of Object.entries(currentShareClasses)) {
+      return Object.entries(currentShareClasses).some(([k]) => {
         // If we have currentShareClasses but no OriginalShareClasses, this is net-new.
-        if ((originalShareClasses === undefined || isEmpty(originalShareClasses))) {
+        if (!originalShareClasses || isEmpty(originalShareClasses)) {
           return true
         }
-        change = !IsSame(
+
+        // We only want to know if share structure has changed - this does not include name changes.
+        // Name changes also adds a record for an Edit action, which causes a mismatch
+        const omittedValues = ['name', 'action']
+        // As soon as we find a change, stop looking.
+        return !IsSame(
           currentShareClasses[k as keyof ShareClassIF],
           originalShareClasses[k as keyof ShareClassIF],
           omittedValues
         )
-        // As soon as we find a change, stop looking.
-        if (change) {
-          return change
-        }
-      }
-      return change
+      })
     },
 
     /** Whether NAICS data has changed. */
