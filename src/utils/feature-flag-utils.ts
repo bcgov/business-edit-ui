@@ -13,7 +13,8 @@ export const defaultFlagSet: LDFlagSet = {
   'restoration-ui-enabled': false,
   'sentry-enable': false, // by default, no sentry logs
   'supported-correction-entities': [],
-  'supported-alteration-change-business-types': []
+  'supported-alteration-change-business-types': [],
+  'enable-document-records': false
 }
 
 /**
