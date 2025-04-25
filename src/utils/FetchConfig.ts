@@ -63,7 +63,9 @@ export async function FetchConfig (): Promise<any> {
   }
 
   sessionStorage.setItem('DOC_API_KEY', import.meta.env.VUE_APP_DOC_API_KEY)
-  sessionStorage.setItem('DOC_API_URL', import.meta.env.VUE_APP_DOC_API_URL + import.meta.env.VUE_APP_DOC_API_VERSION + '/')
+  sessionStorage.setItem(
+    'DOC_API_URL', import.meta.env.VUE_APP_DOC_API_URL + import.meta.env.VUE_APP_DOC_API_VERSION + '/'
+  )
 
   const keycloakAuthUrl: string = import.meta.env.VUE_APP_KEYCLOAK_AUTH_URL;
   (<any>window).keycloakAuthUrl = keycloakAuthUrl

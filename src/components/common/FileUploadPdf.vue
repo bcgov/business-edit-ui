@@ -67,7 +67,6 @@ export default class FileUploadPdf extends Vue {
 
   /** Clears data and local state. */
   reset (): void {
-    
     // update parent
     this.updateFile(null)
     this.updateFileKey(null)

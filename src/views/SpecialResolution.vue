@@ -100,9 +100,14 @@
           />
 
           <template v-if="isRoleStaff">
-            <StaffPayment
+            <DocumentId
               class="mt-10"
               sectionNumber="4."
+            />
+
+            <StaffPayment
+              class="mt-10"
+              sectionNumber="5."
               @haveChanges="onStaffPaymentChanges()"
             />
           </template>
@@ -142,7 +147,7 @@ import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
 import { SpecialResolutionSummary, Resolution } from '@/components/SpecialResolution'
 import { AssociationType, BusinessContactInfo, BusinessType, CertifySection, CompletingParty, CurrentDirectors,
-  DocumentsDelivery, EntityName, FolioInformation, OfficeAddresses, StaffPayment, TransactionalFolioNumber,
+  DocumentsDelivery, DocumentId, EntityName, FolioInformation, OfficeAddresses, StaffPayment, TransactionalFolioNumber,
   YourCompanyWrapper } from '@/components/common/'
 import { AuthServices, LegalServices } from '@/services/'
 import { CommonMixin, FeeMixin, FilingTemplateMixin } from '@/mixins/'
@@ -165,6 +170,7 @@ import Memorandum from '@/components/SpecialResolution/Memorandum.vue'
     Resolution,
     CurrentDirectors,
     DocumentsDelivery,
+    DocumentId,
     EntityName,
     FolioInformation,
     OfficeAddresses,

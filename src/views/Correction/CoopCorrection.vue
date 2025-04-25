@@ -67,9 +67,14 @@
       autoValidation="true"
     />
 
-    <StaffPayment
+    <DocumentId
       class="mt-10"
       :sectionNumber="isClientErrorCorrection ? '5.' : '3.'"
+    />
+
+    <StaffPayment
+      class="mt-10"
+      :sectionNumber="isClientErrorCorrection ? '6.' : '4.'"
       @haveChanges="onStaffPaymentChanges()"
     />
   </section>
@@ -78,9 +83,10 @@
 <script lang="ts">
 import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
 import { SpecialResolutionSummary, Resolution } from '@/components/SpecialResolution'
-import { AssociationType, BusinessContactInfo, BusinessType, CertifySection, CompletingParty, CourtOrderPoa,
-  CurrentDirectors, Detail, DocumentsDelivery, EntityName, FolioInformation, OfficeAddresses, PeopleAndRoles,
-  RecognitionDateTime, StaffPayment, TransactionalFolioNumber, YourCompanyWrapper } from '@/components/common/'
+import { AssociationType, BusinessContactInfo, BusinessType, CertifySection, CompletingParty,
+  CourtOrderPoa, CurrentDirectors, Detail, DocumentsDelivery, DocumentId, EntityName,
+  FolioInformation, OfficeAddresses, PeopleAndRoles, RecognitionDateTime, StaffPayment,
+  TransactionalFolioNumber, YourCompanyWrapper } from '@/components/common/'
 import { CommonMixin, FeeMixin, FilingTemplateMixin } from '@/mixins/'
 import ViewWrapper from '@/components/ViewWrapper.vue'
 import Rules from '@/components/SpecialResolution/Rules.vue'
@@ -102,6 +108,7 @@ import { CorrectionErrorTypes } from '@/enums'
     CompletingParty,
     CourtOrderPoa,
     Detail,
+    DocumentId,
     Resolution,
     CurrentDirectors,
     DocumentsDelivery,

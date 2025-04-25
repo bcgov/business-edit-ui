@@ -53,9 +53,14 @@
       />
     </template>
 
-    <StaffPayment
+    <DocumentId
       class="mt-10"
       :sectionNumber="isClientErrorCorrection ? '4.' : '2.'"
+    />
+
+    <StaffPayment
+      class="mt-10"
+      :sectionNumber="isClientErrorCorrection ? '5.' : '3.'"
       @haveChanges="onStaffPaymentChanges()"
     />
   </section>
@@ -65,7 +70,7 @@
 import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
 import { Action } from 'pinia-class'
 import { Articles } from '@/components/Alteration/'
-import { BusinessContactInfo, CertifySection, CompletingParty, Detail, EntityName, FolioInformation,
+import { BusinessContactInfo, CertifySection, CompletingParty, Detail, DocumentId, EntityName, FolioInformation,
   NameTranslation, OfficeAddresses, PeopleAndRoles, RecognitionDateTime, ShareStructures, StaffPayment,
   YourCompanyWrapper } from '@/components/common/'
 import { CommonMixin, FeeMixin, FilingTemplateMixin } from '@/mixins/'
@@ -84,6 +89,7 @@ import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
     CertifySection,
     CompletingParty,
     Detail,
+    DocumentId,
     EntityName,
     FolioInformation,
     NameTranslation,

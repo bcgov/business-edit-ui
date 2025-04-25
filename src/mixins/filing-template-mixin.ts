@@ -3,7 +3,7 @@ import { Action, Getter } from 'pinia-class'
 import { cloneDeep } from 'lodash'
 import { DateMixin } from '@/mixins/'
 import { AddressesIF, AlterationFilingIF, BusinessInformationIF, CertifyIF, CoopAlterationIF,
-  CorrectionInformationIF, CorrectionFilingIF, CourtOrderIF, EffectiveDateTimeIF, EmptyBusinessInfo,
+  CorrectionInformationIF, CorrectionFilingIF, CourtOrderIF, DocumentIdIF, EffectiveDateTimeIF, EmptyBusinessInfo,
   EntitySnapshotIF, ChgRegistrationFilingIF, ConversionFilingIF, NameTranslationIF, OrgPersonIF,
   RestorationFilingIF, RestorationStateIF, SpecialResolutionFilingIF, StateFilingRestorationIF, RulesMemorandumIF }
   from '@/interfaces/'
@@ -41,6 +41,7 @@ export default class FilingTemplateMixin extends DateMixin {
   @Getter(useStore) getCurrentNaics!: NaicsIF
   @Getter(useStore) getDetailComment!: string
   @Getter(useStore) getDocumentOptionalEmail: string
+  @Getter(useStore) getDocumentIdState!: DocumentIdIF
   @Getter(useStore) getEffectiveDateTime!: EffectiveDateTimeIF
   @Getter(useStore) getEntitySnapshot!: EntitySnapshotIF
   @Getter(useStore) getEntityType!: CorpTypeCd
@@ -136,7 +137,8 @@ export default class FilingTemplateMixin extends DateMixin {
         name: FilingTypes.CORRECTION,
         certifiedBy: this.getCertifyState.certifiedBy || '',
         date: this.getCurrentDate, // "absolute day" (YYYY-MM-DD in Pacific time)
-        folioNumber: this.getFolioNumber // folio number, unless overridden below
+        folioNumber: this.getFolioNumber, // folio number, unless overridden below
+        documentIdState: this.getDocumentIdState // document id will serve as a barcode number
       },
       business: {
         // use original properties (not specific getters)
@@ -282,7 +284,8 @@ export default class FilingTemplateMixin extends DateMixin {
         name: FilingTypes.ALTERATION,
         certifiedBy: this.getCertifyState.certifiedBy,
         date: this.getCurrentDate, // "absolute day" (YYYY-MM-DD in Pacific time)
-        folioNumber: this.getFolioNumber // business folio number, unless overridden below
+        folioNumber: this.getFolioNumber, // business folio number, unless overridden below
+        documentIdState: this.getDocumentIdState // document id will serve as a barcode number
       },
       business: {
         // use original properties (not specific getters)
@@ -375,7 +378,8 @@ export default class FilingTemplateMixin extends DateMixin {
         name: FilingTypes.RESTORATION,
         certifiedBy: this.getCertifyState.certifiedBy,
         date: this.getCurrentDate, // "absolute day" (YYYY-MM-DD in Pacific time)
-        folioNumber: this.getFolioNumber // business folio number, unless overridden below
+        folioNumber: this.getFolioNumber, // business folio number, unless overridden below
+        documentIdState: this.getDocumentIdState // document id will serve as a barcode number
       },
       business: {
         // use original properties (not specific getters)
@@ -486,7 +490,8 @@ export default class FilingTemplateMixin extends DateMixin {
         name: FilingTypes.SPECIAL_RESOLUTION,
         certifiedBy: this.getCertifyState.certifiedBy,
         date: this.getCurrentDate, // "absolute day" (YYYY-MM-DD in Pacific time)
-        folioNumber: this.getFolioNumber // business folio number, unless overridden below
+        folioNumber: this.getFolioNumber, // business folio number, unless overridden below
+        documentIdState: this.getDocumentIdState // document id will serve as a barcode number
       },
       business: {
         // use original properties (not specific getters)
@@ -584,7 +589,8 @@ export default class FilingTemplateMixin extends DateMixin {
         name: FilingTypes.CHANGE_OF_REGISTRATION,
         certifiedBy: this.getCertifyState.certifiedBy,
         date: this.getCurrentDate, // "absolute day" (YYYY-MM-DD in Pacific time)
-        folioNumber: this.getFolioNumber // business folio number, unless overridden below
+        folioNumber: this.getFolioNumber, // business folio number, unless overridden below
+        documentIdState: this.getDocumentIdState // document id will serve as a barcode number
       },
       business: {
         // use original properties (not specific getters)
@@ -689,7 +695,8 @@ export default class FilingTemplateMixin extends DateMixin {
         name: FilingTypes.CONVERSION,
         certifiedBy: this.getCertifyState.certifiedBy,
         date: this.getCurrentDate, // "absolute day" (YYYY-MM-DD in Pacific time)
-        folioNumber: '' // not applicable to SP/GP
+        folioNumber: '', // not applicable to SP/GP
+        documentIdState: this.getDocumentIdState // document id will serve as a barcode number
       },
       business: {
         // use original properties (not specific getters)

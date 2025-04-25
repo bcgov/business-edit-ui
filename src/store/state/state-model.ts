@@ -70,6 +70,7 @@ export const stateModel: StateModelIF = {
       isValidDetailComment: true,
       isValidCertify: false, // initially un-certified
       isValidCourtOrder: true,
+      isValidDocumentId: true,
       isValidStaffPayment: true
     }
   },
@@ -164,5 +165,9 @@ export const stateModel: StateModelIF = {
   },
   stateFilingRestoration: null,
   rules: null,
-  memorandum: null
+  memorandum: null,
+  documentIdState: {
+    valid: false,
+    consumerDocumentId: ''
+  }
 }

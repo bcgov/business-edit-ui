@@ -14,5 +14,6 @@ export enum ComponentsReviewCertify {
   'detail-section',
   'certify-section',
   'court-order',
+  'document-id',
   'staff-payment'
 }

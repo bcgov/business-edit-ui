@@ -85,9 +85,14 @@
               :autoValidation="getAppValidate"
             />
 
-            <StaffPayment
+            <DocumentId
               class="mt-10"
               :sectionNumber="showTransactionalFolioNumber ? '5.' : '4.'"
+            />
+
+            <StaffPayment
+              class="mt-10"
+              :sectionNumber="showTransactionalFolioNumber ? '6.' : '5.'"
               @haveChanges="onStaffPaymentChanges()"
             />
           </template>
@@ -127,7 +132,7 @@ import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
 import { AlterationSummary, Articles } from '@/components/Alteration/'
 import { BusinessContactInfo, BusinessType, CertifySection, CourtOrderPoa, CurrentDirectors,
-  DocumentsDelivery, EntityName, FolioInformation, OfficeAddresses, RecognitionDateTime,
+  DocumentsDelivery, DocumentId, EntityName, FolioInformation, OfficeAddresses, RecognitionDateTime,
   ShareStructures, StaffPayment, TransactionalFolioNumber, YourCompanyWrapper }
   from '@/components/common/'
 import { NameTranslation } from '@/components/common/YourCompany/NameTranslations/'
@@ -151,6 +156,7 @@ import { useStore } from '@/store/store'
     CourtOrderPoa,
     CurrentDirectors,
     DocumentsDelivery,
+    DocumentId,
     EntityName,
     FolioInformation,
     NameTranslation,

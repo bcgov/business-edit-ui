@@ -35,11 +35,11 @@
         :getPresignedUrl="LegalServices.getPresignedUrl"
         :uploadToUrl="LegalServices.uploadToUrl"
         :userId="userKeycloakGuid"
-        @update:file="updateFile"
-        @update:fileKey="updateDocumentKey"
         :businessIdentifier="getBusinessId"
         :documentClass="DocumentType.class"
         :documentType="DocumentType.type"
+        @update:file="updateFile"
+        @update:fileKey="updateDocumentKey"
       />
     </div>
   </div>

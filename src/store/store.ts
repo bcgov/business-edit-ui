@@ -20,6 +20,7 @@ import {
   CertifyIF,
   CorrectionInformationIF,
   CourtOrderIF,
+  DocumentIdIF,
   EffectiveDateTimeIF,
   EntitySnapshotIF,
   FeesIF,
@@ -441,6 +442,11 @@ export const useStore = defineStore('store', {
       return this.getUserInfo?.username
     },
 
+    /** The document ID used for Document Record Service. */
+    getDocumentIdState (): DocumentIdIF {
+      return this.stateModel.documentIdState
+    },
+
     /** The business folio number. */
     getFolioNumber (): string {
       return this.stateModel.tombstone.folioNumber
@@ -720,6 +726,7 @@ export const useStore = defineStore('store', {
             this.getFlagsCompanyInfo.isValidResolutionDate &&
             this.getFlagsReviewCertify.isValidDetailComment &&
             this.getFlagsReviewCertify.isValidCertify &&
+            this.getFlagsReviewCertify.isValidDocumentId &&
             this.getFlagsReviewCertify.isValidStaffPayment
           )
         } else {
@@ -732,6 +739,7 @@ export const useStore = defineStore('store', {
             this.getFlagsCompanyInfo.isValidResolutionDate &&
             this.getFlagsReviewCertify.isValidDetailComment &&
             // don't check certify for staff correction
+            this.getFlagsReviewCertify.isValidDocumentId &&
             this.getFlagsReviewCertify.isValidStaffPayment
           )
         }
@@ -748,6 +756,7 @@ export const useStore = defineStore('store', {
             this.getFlagsReviewCertify.isValidCompletingParty &&
             this.getFlagsReviewCertify.isValidDetailComment &&
             this.getFlagsReviewCertify.isValidCertify &&
+            this.getFlagsReviewCertify.isValidDocumentId &&
             this.getFlagsReviewCertify.isValidStaffPayment
           )
         } else {
@@ -760,6 +769,7 @@ export const useStore = defineStore('store', {
             // don't check completing party for staff correction
             this.getFlagsReviewCertify.isValidDetailComment &&
             // don't check certify for staff correction
+            this.getFlagsReviewCertify.isValidDocumentId &&
             this.getFlagsReviewCertify.isValidStaffPayment
           )
         }
@@ -781,6 +791,7 @@ export const useStore = defineStore('store', {
           this.getFlagsReviewCertify.isValidCourtOrder &&
           // Check certify for client correction only.
           (!this.isClientErrorCorrection || this.getFlagsReviewCertify.isValidCertify) &&
+          this.getFlagsReviewCertify.isValidDocumentId &&
           this.getFlagsReviewCertify.isValidStaffPayment
         )
       }
@@ -1694,6 +1705,13 @@ export const useStore = defineStore('store', {
     },
     setSpecialResolutionMemorandum (memorandum: RulesMemorandumIF) {
       this.stateModel.memorandum = memorandum
+    },
+    setDocumentIdState (documentIdState: DocumentIdIF) {
+      this.stateModel.documentIdState = documentIdState
+      if (!this.stateModel.tombstone.ignoreChanges) this.stateModel.tombstone.haveUnsavedChanges = true
+    },
+    setDocumentIdStateValidity (validity: boolean) {
+      this.getValidationFlags.flagsReviewCertify.isValidDocumentId = validity
     }
   }
 })

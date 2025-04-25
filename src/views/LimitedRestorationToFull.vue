@@ -125,9 +125,14 @@
             :validate="getAppValidate"
           />
 
-          <StaffPayment
+          <DocumentId
             class="mt-10"
             sectionNumber="3."
+          />
+
+          <StaffPayment
+            class="mt-10"
+            sectionNumber="4."
             @haveChanges="onStaffPaymentChanges()"
           />
         </div>
@@ -143,7 +148,7 @@ import { cloneDeep } from 'lodash'
 import { GetFeatureFlag } from '@/utils/'
 import RestorationSummary from '@/components/Restoration/RestorationSummary.vue'
 import YourCompanySummary from '@/components/Restoration/YourCompanySummary.vue'
-import { BusinessContactInfo, CertifySection, CourtOrderPoa, DocumentsDelivery, EntityName,
+import { BusinessContactInfo, CertifySection, CourtOrderPoa, DocumentsDelivery, DocumentId, EntityName,
   FolioInformation, ListPeopleAndRoles, NameTranslation, OfficeAddresses, PeopleAndRoles,
   QuestionWrapper, RecognitionDateTime, StaffPayment, YourCompanyWrapper } from '@/components/common/'
 import { AuthServices, LegalServices } from '@/services/'
@@ -166,6 +171,7 @@ import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
     CertifySection,
     CourtOrderPoa,
     DocumentsDelivery,
+    DocumentId,
     EntityName,
     FolioInformation,
     ListPeopleAndRoles,
