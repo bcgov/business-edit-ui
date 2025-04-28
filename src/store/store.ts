@@ -45,7 +45,7 @@ import {
   SpecialResolutionIF,
   StaffPaymentIF
 } from '@bcrs-shared-components/interfaces/'
-import { GetFeatureFlag, IsSame } from '@/utils/'
+import { GetFeatureFlag, IsSame, OrderShares, RemoveNullProps } from '@/utils/'
 import DateUtilities from '@/services/date-utilities'
 
 import { defineStore } from 'pinia'
@@ -575,6 +575,7 @@ export const useStore = defineStore('store', {
           this.haveOfficeAddressesChanged ||
           this.havePeopleAndRolesChanged ||
           this.hasShareStructureChanged ||
+          this.hasShareNameChanged ||
           this.areProvisionsRemoved ||
           this.haveNewResolutionDates
         )
@@ -1095,99 +1096,92 @@ export const useStore = defineStore('store', {
 
       return !IsSame(currentOrgPersons, originalOrgPersons, ['actions', 'confirmNameChange'])
     },
-
     /** Whether share structure data has changed. */
     hasShareStructureChanged (): boolean {
       let currentShareClasses = this.getShareClasses
       let originalShareClasses = this.getEntitySnapshot?.shareStructure?.shareClasses
 
-      // Null action properties can be assigned to the ShareClasses when cancelling edits
-      // This is fail safe to ensure null actions are not included in the comparison
-      const removeNullProps = (obj) => {
-        return Object.fromEntries(
-          Object.entries(obj)
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            .filter(([_, v]) => v != null)
-            .map(([k, v]) => [k, v === Object(v) ? removeNullProps(v) : v])
-        )
+      currentShareClasses = currentShareClasses && RemoveNullProps(currentShareClasses)
+      originalShareClasses = originalShareClasses && RemoveNullProps(originalShareClasses)
+
+      if (currentShareClasses) {
+        currentShareClasses = OrderShares(currentShareClasses)
       }
-      currentShareClasses = currentShareClasses && removeNullProps(currentShareClasses)
-      originalShareClasses = originalShareClasses && removeNullProps(originalShareClasses)
-
-      const orderShares = (shareClasses: any): ShareClassIF[] => {
-        // Convert "array-like" object to array so we can sort
-        if (!Array.isArray(shareClasses)) {
-          const keys = Object.keys(shareClasses)
-          const isArrayLike = keys.length > 0 && keys.every(k => !isNaN(Number(k)))
-
-          if (isArrayLike) {
-            shareClasses = keys.map(k => shareClasses[k])
-          } else {
-            // No array or array-like object found. Nothing to sort.
-            return []
-          }
-        }
-
-        // Sort the top-level shareClasses by ID
-        const sorted = [...shareClasses].sort((a, b) => Number(a.id) - Number(b.id))
-
-        // Recursive call if we have series shares
-        sorted.forEach(share => {
-          if (share.series) {
-            share.series = orderShares(share.series)
-          }
-        })
-
-        return sorted
+      if (originalShareClasses) {
+        originalShareClasses = OrderShares(originalShareClasses)
       }
-      // Need to make sure currentShareClasses and originalShareClasses are ordered in the same way.
-      currentShareClasses = currentShareClasses && orderShares(currentShareClasses)
 
-      const findDifference = (currentShareClasses: any, originalShareClasses: any): boolean => {
-        // We only want to know if share structure has changed - ignore the following:
-        // 'name' - Name changes are not share structure changes
-        // 'action' - Name changes also adds a record for an Edit action, which causes a mismatch
-        // 'priority' - Moving an item changes the priority value, which causes mismatch
-        // 'series' - Check this separately through recursion. Otherwise omitted Values are not included in the match.
-        // 'hasParValue' - Added as false for series even if not changed, but not saved if the parent share sets
-        //                'hasParValue' set to false. This causes a false share series mismatch.
-        //                 Related values like "currency" and "parValue" can be used to find any changes more reliably.
+      const findDifference = (current: any, original: any): boolean => {
         const omittedValues = ['name', 'action', 'priority', 'series', 'hasParValue']
-        // If there is no original share class, then we likely have a change. Confirm that here.
-        if (!originalShareClasses || isEmpty(originalShareClasses)) {
-          return !IsSame(
-            currentShareClasses,
-            originalShareClasses,
-            omittedValues
-          )
+
+        if (!original || isEmpty(original)) {
+          return !IsSame(current, original, omittedValues)
         }
-        // Sort originalShareClasses so they match sort order of currentShareClasses.
-        originalShareClasses = originalShareClasses && orderShares(originalShareClasses)
-        // First check if we have any series sub shares.
-        let seriesDiff = false
-        currentShareClasses.forEach((currentShare: any) => {
-          // If this is a Class and we have any series, recusively check them as well.
-          if (currentShare.type === 'Class' && currentShare.series.length > 0) {
-            const originalShare = originalShareClasses.find(i => i.id === currentShare.id)
-            seriesDiff = findDifference(currentShare.series, originalShare.series)
+
+        // Check for differences in nested series
+        const seriesChanged = current.some((currentShare: any) => {
+          if (currentShare.type === 'Class' && currentShare.series?.length > 0) {
+            const originalShare = original.find((i: any) => i.id === currentShare.id)
+            return findDifference(currentShare.series, originalShare?.series || [])
           }
+          return false
         })
-        // If there is a change here, no need to keep looking.
-        if (seriesDiff) {
-          return seriesDiff
-        }
-        // As soon as we find a change, stop looking.
-        return Object.entries(currentShareClasses).some(([k]) => {
+
+        if (seriesChanged) return true
+
+        // Check differences at current level
+        return Object.entries(current).some(([k]) => {
           return !IsSame(
-            currentShareClasses[k as keyof ShareClassIF],
-            originalShareClasses[k as keyof ShareClassIF],
+            current[k as keyof ShareClassIF],
+            original[k as keyof ShareClassIF],
             omittedValues
           )
         })
       }
+
       return findDifference(currentShareClasses, originalShareClasses)
     },
+    /** Whether any share class or series name has changed. */
+    hasShareNameChanged (): boolean {
+      let currentShareClasses = this.getShareClasses
+      let originalShareClasses = this.getEntitySnapshot?.shareStructure?.shareClasses
 
+      currentShareClasses = currentShareClasses && RemoveNullProps(currentShareClasses)
+      originalShareClasses = originalShareClasses && RemoveNullProps(originalShareClasses)
+
+      if (currentShareClasses) {
+        currentShareClasses = OrderShares(currentShareClasses)
+      }
+      if (originalShareClasses) {
+        originalShareClasses = OrderShares(originalShareClasses)
+      }
+
+      const omittedValues = ['action', 'priority', 'series', 'hasParValue']
+
+      const findNameDifference = (current: any, original: any): boolean => {
+        return Object.entries(current).some(([k]) => {
+          return !IsSame(
+            current[k as keyof ShareClassIF],
+            original[k as keyof ShareClassIF],
+            omittedValues
+          )
+        })
+      }
+
+      // Check for differences in nested series names
+      const seriesNameChanged = currentShareClasses.some((currentShare: any) => {
+        if (currentShare.type === 'Class' && currentShare.series?.length > 0) {
+          const originalShare = originalShareClasses.find(i => i.id === currentShare.id)
+          return findNameDifference(currentShare.series, originalShare?.series || [])
+        }
+        return false
+      })
+
+      if (seriesNameChanged) return true
+
+      // Check top-level class name changes
+      return findNameDifference(currentShareClasses, originalShareClasses)
+    },
     /** Whether NAICS data has changed. */
     hasNaicsChanged (): boolean {
       const currentNaicsCode = this.getBusinessInformation.naicsCode
