@@ -22,9 +22,8 @@ export const ChangeResourceSp: ResourceIF = {
     orgPersonInfo: {
       orgPersonLabel: 'Proprietor',
       orgTypesLabel: 'Business or Corporation',
-      subtitle: 'You can change the legal name, mailing and delivery addresses and the email address of the ' +
-        'individual proprietor. To change to a different proprietor, you must form a new business with that ' +
-        'proprietor and dissolve this registration.',
+      subtitle: 'You can update the proprietor\'s information below. If ownership of the business has changed, ' +
+      'a new registration is required.',
       helpSection: {
         header: 'Need Help? Contact Us',
         helpText: [
