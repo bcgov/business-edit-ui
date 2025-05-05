@@ -575,7 +575,6 @@ export const useStore = defineStore('store', {
           this.haveOfficeAddressesChanged ||
           this.havePeopleAndRolesChanged ||
           this.hasShareStructureChanged ||
-          this.hasShareNameChanged ||
           this.areProvisionsRemoved ||
           this.haveNewResolutionDates
         )
@@ -622,7 +621,6 @@ export const useStore = defineStore('store', {
         this.hasBusinessTypeChanged ||
         this.haveNameTranslationsChanged ||
         this.hasShareStructureChanged ||
-        this.hasShareNameChanged ||
         this.areProvisionsRemoved ||
         this.haveNewResolutionDates
       )
@@ -1112,7 +1110,7 @@ export const useStore = defineStore('store', {
       }
 
       const findDifference = (current: any, original: any): boolean => {
-        const omittedValues = ['name', 'action', 'priority', 'series', 'hasParValue']
+        const omittedValues = ['action', 'priority', 'series', 'hasParValue']
 
         if (!original || isEmpty(original)) {
           return !IsSame(current, original, omittedValues)
@@ -1141,47 +1139,7 @@ export const useStore = defineStore('store', {
 
       return findDifference(currentShareClasses, originalShareClasses)
     },
-    /** Whether any share class or series name has changed. */
-    hasShareNameChanged (): boolean {
-      let currentShareClasses = this.getShareClasses
-      let originalShareClasses = this.getEntitySnapshot?.shareStructure?.shareClasses
 
-      currentShareClasses = currentShareClasses && RemoveNullProps(currentShareClasses)
-      originalShareClasses = originalShareClasses && RemoveNullProps(originalShareClasses)
-
-      if (currentShareClasses) {
-        currentShareClasses = OrderShares(currentShareClasses)
-      }
-      if (originalShareClasses) {
-        originalShareClasses = OrderShares(originalShareClasses)
-      }
-
-      const omittedValues = ['action', 'priority', 'series', 'hasParValue']
-
-      const findNameDifference = (current: any, original: any): boolean => {
-        return Object.entries(current).some(([k]) => {
-          return !IsSame(
-            current[k as keyof ShareClassIF],
-            original[k as keyof ShareClassIF],
-            omittedValues
-          )
-        })
-      }
-
-      // Check for differences in nested series names
-      const seriesNameChanged = currentShareClasses.some((currentShare: any) => {
-        if (currentShare.type === 'Class' && currentShare.series?.length > 0) {
-          const originalShare = originalShareClasses.find(i => i.id === currentShare.id)
-          return findNameDifference(currentShare.series, originalShare?.series || [])
-        }
-        return false
-      })
-
-      if (seriesNameChanged) return true
-
-      // Check top-level class name changes
-      return findNameDifference(currentShareClasses, originalShareClasses)
-    },
     /** Whether NAICS data has changed. */
     hasNaicsChanged (): boolean {
       const currentNaicsCode = this.getBusinessInformation.naicsCode
