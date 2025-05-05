@@ -275,8 +275,8 @@ describe('Change component', () => {
     const wrapper = shallowMount(Change, { vuetify })
 
     expect((wrapper.vm as any).firmChangeResource.changeData.orgPersonInfo.subtitle)
-      .toContain('You can update the proprietor\'s information below. ' +
-        'If ownership of the business has changed, a new registration is required.')
+      .toContain('You can update the proprietor\'s information below. If ownership of the business has changed, ' +
+        'a new registration is required.')
 
     wrapper.destroy()
   })
