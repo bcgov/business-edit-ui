@@ -1,4 +1,3 @@
-/* eslint-disable padded-blocks */
 // Pinia Store
 import {
   AccountTypes,
@@ -1099,9 +1098,13 @@ export const useStore = defineStore('store', {
       let currentShareClasses = this.getShareClasses
       let originalShareClasses = this.getEntitySnapshot?.shareStructure?.shareClasses
 
+      // Null action properties can be assigned to the ShareClasses when cancelling edits
+      // This is fail safe to ensure null actions are not included in the comparison
       currentShareClasses = currentShareClasses && RemoveNullProps(currentShareClasses)
       originalShareClasses = originalShareClasses && RemoveNullProps(originalShareClasses)
 
+      // Need to make sure our two classes are ordered similarly
+      // Moving a share or series in the list can cause IsSame to return false.
       if (currentShareClasses) {
         currentShareClasses = OrderShares(currentShareClasses)
       }

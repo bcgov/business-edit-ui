@@ -1,6 +1,4 @@
 /******************
- * Null action properties can be assigned to the ShareClasses when cancelling edits
- * This is fail safe to ensure null actions are not included in the comparison
  * @param obj an Array or Array-Like Object
  * @Return a object with no null action properties
  */
