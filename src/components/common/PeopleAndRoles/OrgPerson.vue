@@ -36,13 +36,13 @@
                   <label class="sub-header">Person's Name</label>
 
                   <p
-                    v-if="(isExisting && isProprietor)"
+                    v-if="(isExisting && isProprietor && !isRoleStaff)"
                     class="info-text mb-0"
                   >
                     If the proprietor has changed their legal name, enter their new legal name.
                   </p>
                   <p
-                    v-if="(isExisting && isPartner)"
+                    v-if="(isExisting && isPartner && !isRoleStaff)"
                     class="info-text mb-0"
                   >
                     If the partner has changed their legal name, enter their new legal name.
@@ -80,7 +80,7 @@
                 <!-- Confirm name change -->
                 <v-expand-transition>
                   <article
-                    v-if="hasNameChanged(orgPerson)"
+                    v-if="hasNameChanged(orgPerson) && !isRoleStaff"
                     class="confirm-name-change mt-6"
                   >
                     <v-checkbox
@@ -273,7 +273,7 @@
                     <!-- Confirm name change -->
                     <v-expand-transition>
                       <v-checkbox
-                        v-if="hasNameChanged(orgPerson)"
+                        v-if="hasNameChanged(orgPerson) && !isRoleStaff"
                         id="confirm-name-change-checkbox"
                         v-model="orgPerson.confirmNameChange"
                         class="mt-6 pt-0"
