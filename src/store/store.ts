@@ -44,14 +44,14 @@ import {
   SpecialResolutionIF,
   StaffPaymentIF
 } from '@bcrs-shared-components/interfaces/'
-import { GetFeatureFlag, IsSame } from '@/utils/'
+import { GetFeatureFlag, IsSame, OrderShares, RemoveNullProps } from '@/utils/'
 import DateUtilities from '@/services/date-utilities'
 
 import { defineStore } from 'pinia'
 import { resourceModel, stateModel } from './state'
 import { LegalServices } from '@/services'
 import { RulesMemorandumIF } from '@/interfaces/rules-memorandum-interfaces'
-import { isEqual } from 'lodash'
+import { isEmpty, isEqual } from 'lodash'
 
 // Possible to move getters / actions into seperate files:
 // https://github.com/vuejs/pinia/issues/802#issuecomment-1018780409
@@ -1093,7 +1093,6 @@ export const useStore = defineStore('store', {
 
       return !IsSame(currentOrgPersons, originalOrgPersons, ['actions', 'confirmNameChange'])
     },
-
     /** Whether share structure data has changed. */
     hasShareStructureChanged (): boolean {
       let currentShareClasses = this.getShareClasses
@@ -1101,19 +1100,47 @@ export const useStore = defineStore('store', {
 
       // Null action properties can be assigned to the ShareClasses when cancelling edits
       // This is fail safe to ensure null actions are not included in the comparison
-      const removeNullProps = (obj) => {
-        return Object.fromEntries(
-          Object.entries(obj)
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            .filter(([_, v]) => v != null)
-            .map(([k, v]) => [k, v === Object(v) ? removeNullProps(v) : v])
-        )
+      currentShareClasses = currentShareClasses && RemoveNullProps(currentShareClasses)
+      originalShareClasses = originalShareClasses && RemoveNullProps(originalShareClasses)
+
+      // Need to make sure our two classes are ordered similarly
+      // Moving a share or series in the list can cause IsSame to return false.
+      if (currentShareClasses) {
+        currentShareClasses = OrderShares(currentShareClasses)
+      }
+      if (originalShareClasses) {
+        originalShareClasses = OrderShares(originalShareClasses)
       }
 
-      currentShareClasses = currentShareClasses && removeNullProps(currentShareClasses)
-      originalShareClasses = originalShareClasses && removeNullProps(originalShareClasses)
+      const findDifference = (current: any, original: any): boolean => {
+        const omittedValues = ['action', 'priority', 'series', 'hasParValue']
 
-      return !IsSame(originalShareClasses, currentShareClasses)
+        if (!original || isEmpty(original)) {
+          return !IsSame(current, original, omittedValues)
+        }
+
+        // Check for differences in nested series
+        const seriesChanged = current.some((currentShare: any) => {
+          if (currentShare.type === 'Class' && currentShare.series?.length > 0) {
+            const originalShare = original.find((i: any) => i.id === currentShare.id)
+            return findDifference(currentShare.series, originalShare?.series || [])
+          }
+          return false
+        })
+
+        if (seriesChanged) return true
+
+        // Check differences at current level
+        return Object.entries(current).some(([k]) => {
+          return !IsSame(
+            current[k as keyof ShareClassIF],
+            original[k as keyof ShareClassIF],
+            omittedValues
+          )
+        })
+      }
+
+      return findDifference(currentShareClasses, originalShareClasses)
     },
 
     /** Whether NAICS data has changed. */
