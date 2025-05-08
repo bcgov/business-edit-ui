@@ -118,9 +118,8 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Component, Prop, Emit } from 'vue-property-decorator'
-import { Getter } from 'pinia-class'
 import { ErrorContact } from '@/components/common/'
-import { useStore } from '@/store/store'
+import { AuthorizedActions } from '@/enums'
 
 @Component({
   components: {
@@ -128,8 +127,6 @@ import { useStore } from '@/store/store'
   }
 })
 export default class SaveErrorDialog extends Vue {
-  @Getter(useStore) isRoleStaff!: boolean
-
   /** Prop containing filing name. */
   @Prop({ default: 'Filing' }) readonly filingName!: string
 

@@ -2,6 +2,8 @@
 import {
   AccountTypes,
   ActionTypes,
+  AuthorizationRoles,
+  AuthorizedActions,
   CoopTypes,
   CorrectionErrorTypes,
   FilingNames,
@@ -60,14 +62,14 @@ export const useStore = defineStore('store', {
   // convert to a function
   state: (): StateIF => ({ resourceModel, stateModel }),
   getters: {
-    /** Whether the user has "staff" Keycloak role. */
-    isRoleStaff (): boolean {
-      return this.stateModel.tombstone.keycloakRoles.includes('staff')
-    },
-
     /** Whether the current account is SBC Staff. */
     isSbcStaff (): boolean {
-      return this.stateModel.accountInformation?.accountType === AccountTypes.SBC_STAFF
+      return this.getAccountInformation?.accountType === AccountTypes.SBC_STAFF // *** TODO: delete this
+    },
+
+    /** Whether the current account is a premium account. */
+    isPremiumAccount (): boolean {
+      return (this.getAccountInformation?.accountType === AccountTypes.PREMIUM) // *** TODO: delete this
     },
 
     /** Whether the current filing is a Correction. */
@@ -244,11 +246,6 @@ export const useStore = defineStore('store', {
       return (this.isEntityPartnership || this.isEntitySoleProp)
     },
 
-    /** Whether the current account is a premium account. */
-    isPremiumAccount (): boolean {
-      return (this.stateModel.accountInformation?.accountType === AccountTypes.PREMIUM)
-    },
-
     /** The effective date-time object. */
     getEffectiveDateTime (): EffectiveDateTimeIF {
       return this.stateModel.effectiveDateTime
@@ -264,9 +261,14 @@ export const useStore = defineStore('store', {
       return this.getBusinessInformation.startDate
     },
 
+    /** The Account Information object. */
+    getAccountInformation (): AccountInformationIF {
+      return this.stateModel.accountInformation
+    },
+
     /** The current account id. */
     getAccountId (): number {
-      return this.stateModel.accountInformation?.id || null
+      return this.getAccountInformation?.id || null
     },
 
     /** The current date in format (YYYY-MM-DD), which is refreshed every time the app inits. */
@@ -402,9 +404,9 @@ export const useStore = defineStore('store', {
       return this.stateModel.tombstone.userInfo
     },
 
-    /** The current user's keycloak roles. */
-    getKeycloakRoles (): Array<string> {
-      return this.stateModel.tombstone.keycloakRoles
+    /** The user's roles from the Auth API "authorizations" endpoint. */
+    getAuthRoles (): Array<AuthorizationRoles> {
+      return this.stateModel.tombstone.authRoles
     },
 
     /** The org info. (May be null.) */
@@ -1423,8 +1425,8 @@ export const useStore = defineStore('store', {
     setIsFilingPaying (isFilingPaying: boolean) {
       this.stateModel.tombstone.isFilingPaying = isFilingPaying
     },
-    setKeycloakRoles (keycloakRoles: string[]) {
-      this.stateModel.tombstone.keycloakRoles = keycloakRoles
+    setAuthRoles (roles: Array<AuthorizationRoles>) {
+      this.stateModel.tombstone.authRoles = roles
     },
     setUserInfo (userInfo: any) {
       this.stateModel.tombstone.userInfo = userInfo

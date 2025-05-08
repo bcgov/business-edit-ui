@@ -249,7 +249,6 @@ describe.skip('Emits error event if NR validation fails in file and pay', () => 
     } as any
     store.stateModel.nameRequestLegalName = 'My Name Request Inc.'
     store.stateModel.tombstone = {
-      keycloakRoles: [],
       authRoles: [],
       userEmail: 'completing-party@example.com'
     } as any
@@ -504,7 +503,6 @@ describe.skip('Actions component - Filing Functionality', () => {
     store.stateModel.nameRequestLegalName = 'My Name Request Inc.'
     store.stateModel.nameTranslations = []
     store.stateModel.tombstone = {
-      keycloakRoles: [],
       authRoles: [],
       userEmail: 'completing-party@example.com'
     } as any

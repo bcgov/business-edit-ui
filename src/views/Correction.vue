@@ -16,7 +16,7 @@ import { GetFeatureFlag } from '@/utils/'
 import { CommonMixin } from '@/mixins/'
 import { LegalServices } from '@/services/'
 import { CorrectionFilingIF } from '@/interfaces/'
-import { FilingStatus, FilingTypes } from '@/enums/'
+import { AuthorizedActions, FilingStatus, FilingTypes } from '@/enums/'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 import CoopCorrection from '@/views/Correction/CoopCorrection.vue'
@@ -43,7 +43,6 @@ export default class Correction extends Mixins(CommonMixin) {
   @Getter(useStore) isBaseCompany!: boolean
   @Getter(useStore) isEntityCoop!: boolean
   @Getter(useStore) isEntityFirm!: boolean
-  @Getter(useStore) isRoleStaff!: boolean
 
   // Store actions
   @Action(useStore) setFilingId!: (x: number) => void

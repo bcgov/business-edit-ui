@@ -171,7 +171,7 @@
                         </p>
                       </div>
                       <HelpSection
-                        v-if="!isRoleStaff"
+                        v-if="!IsAuthorized(AuthorizedActions.FIRM_NO_HELP_SECTION)"
                         class="mt-6"
                         :helpSection="getResource.changeData.orgPersonInfo.helpSection"
                       />
@@ -211,7 +211,7 @@
                     </p>
 
                     <HelpSection
-                      v-if="!isRoleStaff"
+                      v-if="!IsAuthorized(AuthorizedActions.FIRM_NO_HELP_SECTION)"
                       class="mt-6"
                       :helpSection="getResource.changeData.orgPersonInfo.helpSection"
                     />
@@ -503,7 +503,6 @@ export default class OrgPerson extends Mixins(CommonMixin, OrgPersonMixin) {
   @Getter(useStore) isLimitedRestorationExtension!: boolean
   @Getter(useStore) isLimitedRestorationToFull!: boolean
   @Getter(useStore) isRestorationFiling!: boolean
-  @Getter(useStore) isRoleStaff!: boolean
 
   // Local variables
   orgPerson: OrgPersonIF = null // current org/person being added/edited

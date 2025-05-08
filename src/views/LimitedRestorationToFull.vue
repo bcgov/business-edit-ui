@@ -199,7 +199,6 @@ export default class LimitedRestorationToFull extends Mixins(
   @Getter(useStore) getRestorationCourtOrderNumber!: string
   @Getter(useStore) getRestorationRelationships!: RelationshipTypes[]
   // @Getter(useStore) getStateFilingRestoration!: StateFilingRestorationIF
-  @Getter(useStore) isRoleStaff!: boolean
   @Getter(useStore) isSummaryMode!: boolean
   @Getter(useStore) showFeeSummary!: boolean
 

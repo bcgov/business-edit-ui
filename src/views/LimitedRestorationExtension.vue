@@ -160,7 +160,6 @@ export default class LimitedRestorationExtension extends Mixins(
   @Getter(useStore) getAppValidate!: boolean
   // @Getter(useStore) getEntityType!: CorpTypeCd
   @Getter(useStore) getResource!: ResourceIF
-  @Getter(useStore) isRoleStaff!: boolean
   @Getter(useStore) isSummaryMode!: boolean
   @Getter(useStore) showFeeSummary!: boolean
 

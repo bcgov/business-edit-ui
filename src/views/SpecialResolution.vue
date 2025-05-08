@@ -147,7 +147,7 @@ import { AssociationType, BusinessContactInfo, BusinessType, CertifySection, Com
 import { AuthServices, LegalServices } from '@/services/'
 import { CommonMixin, FeeMixin, FilingTemplateMixin } from '@/mixins/'
 import { EntitySnapshotIF, FilingDataIF, ResourceIF } from '@/interfaces/'
-import { FilingStatus } from '@/enums/'
+import { AuthorizedActions, FilingStatus } from '@/enums/'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 import { SpecialResolutionResourceCp } from '@/resources/SpecialResolution/'
 import ViewWrapper from '@/components/ViewWrapper.vue'
@@ -184,7 +184,6 @@ export default class SpecialResolution extends Mixins(CommonMixin, FeeMixin, Fil
   @Getter(useStore) getUserLastName!: string
   @Getter(useStore) isEntityCoop!: boolean
   @Getter(useStore) isPremiumAccount!: boolean
-  @Getter(useStore) isRoleStaff!: boolean
   @Getter(useStore) isSummaryMode!: boolean
   @Getter(useStore) showFeeSummary!: boolean
 

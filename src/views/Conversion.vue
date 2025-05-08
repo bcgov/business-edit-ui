@@ -70,7 +70,7 @@ import { CompletingParty, BusinessStartDate, BusinessType, EntityName, FolioInfo
 import { AuthServices, LegalServices } from '@/services/'
 import { CommonMixin, FeeMixin, FilingTemplateMixin } from '@/mixins/'
 import { EntitySnapshotIF, ResourceIF } from '@/interfaces/'
-import { FilingStatus } from '@/enums/'
+import { AuthorizedActions, FilingStatus } from '@/enums/'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 import { ConversionResourceSp, ConversionResourceGp } from '@/resources/Conversion/'
 import { StatusCodes } from 'http-status-codes'
@@ -98,7 +98,6 @@ export default class Conversion extends Mixins(CommonMixin, FeeMixin, FilingTemp
   @Getter(useStore) getAppValidate!: boolean
   @Getter(useStore) isEntityPartnership!: boolean
   @Getter(useStore) isEntitySoleProp!: boolean
-  @Getter(useStore) isRoleStaff!: boolean
   @Getter(useStore) isSummaryMode!: boolean
   @Getter(useStore) showFeeSummary!: boolean
 

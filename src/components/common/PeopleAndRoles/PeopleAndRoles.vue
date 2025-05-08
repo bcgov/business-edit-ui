@@ -201,7 +201,7 @@
           </p>
 
           <HelpSection
-            v-if="!isRoleStaff && helpSection"
+            v-if="!IsAuthorized(AuthorizedActions.FIRM_NO_HELP_SECTION) && helpSection"
             class="my-5"
             :helpSection="helpSection"
           />
@@ -376,7 +376,6 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin, OrgPe
   @Getter(useStore) isLimitedRestorationToFull!: boolean
   @Getter(useStore) isEntityPartnership!: boolean
   @Getter(useStore) isRestorationFiling!: boolean
-  @Getter(useStore) isRoleStaff!: boolean
   @Getter(useStore) isEntitySoleProp!: boolean
 
   // Store actions

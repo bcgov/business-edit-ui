@@ -134,7 +134,7 @@ import { NameTranslation } from '@/components/common/YourCompany/NameTranslation
 import { AuthServices, LegalServices } from '@/services/'
 import { CommonMixin, FeeMixin, FilingTemplateMixin } from '@/mixins/'
 import { EntitySnapshotIF, ResourceIF } from '@/interfaces/'
-import { FilingStatus } from '@/enums/'
+import { AuthorizedActions, FilingStatus } from '@/enums/'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 import * as Resources from '@/resources/Alteration/'
 import ViewWrapper from '@/components/ViewWrapper.vue'
@@ -171,7 +171,6 @@ export default class Alteration extends Mixins(CommonMixin, FeeMixin, FilingTemp
   @Getter(useStore) getUserLastName!: string
   // @Getter(useStore) getOriginalLegalType!: CorpTypeCd
   @Getter(useStore) isPremiumAccount!: boolean
-  @Getter(useStore) isRoleStaff!: boolean
   @Getter(useStore) isSummaryMode!: boolean
   @Getter(useStore) showFeeSummary!: boolean
 

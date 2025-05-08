@@ -4,6 +4,7 @@ import PaymentErrorDialog from '@/dialogs/PaymentErrorDialog.vue'
 import ErrorContact from '@/components/common/ErrorContact.vue'
 import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
+import { AuthorizationRoles } from '@/enums'
 
 const vuetify = new Vuetify({})
 
@@ -21,7 +22,7 @@ describe('Payment Error Dialog', () => {
   }]
 
   it('renders the component properly as a staff user', () => {
-    store.stateModel.tombstone.keycloakRoles = ['staff', 'edit', 'view']
+    store.stateModel.tombstone.authRoles = [AuthorizationRoles.STAFF]
     const wrapper = shallowMount(PaymentErrorDialog,
       {
         vuetify,
@@ -40,7 +41,7 @@ describe('Payment Error Dialog', () => {
   })
 
   it('renders the component properly as a regular user', () => {
-    store.stateModel.tombstone.keycloakRoles = ['edit', 'view']
+    store.stateModel.tombstone.authRoles = [AuthorizationRoles.VIEW]
     const wrapper = shallowMount(PaymentErrorDialog,
       {
         vuetify,
@@ -84,7 +85,7 @@ describe('Payment Error Dialog', () => {
   })
 
   it('renders error messages correctly when they are present', () => {
-    store.stateModel.tombstone.keycloakRoles = ['edit', 'view']
+    store.stateModel.tombstone.authRoles = [AuthorizationRoles.VIEW]
     const wrapper = shallowMount(PaymentErrorDialog,
       {
         vuetify,
@@ -111,7 +112,7 @@ describe('Payment Error Dialog', () => {
   })
 
   it('renders warning messages correctly when they are present', () => {
-    store.stateModel.tombstone.authRoles = ['edit', 'view']
+    store.stateModel.tombstone.authRoles = [AuthorizationRoles.VIEW]
     const wrapper = shallowMount(PaymentErrorDialog,
       {
         vuetify,

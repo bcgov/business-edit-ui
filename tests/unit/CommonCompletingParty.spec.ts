@@ -4,7 +4,7 @@ import CompletingParty from '@/components/common/CompletingParty.vue'
 import { CompletingParty as CompletingPartyShared } from '@bcrs-shared-components/completing-party/'
 import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
-import { FilingTypes } from '@/enums'
+import { AuthorizationRoles, FilingTypes } from '@/enums'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 
 const vuetify = new Vuetify({})
@@ -35,7 +35,7 @@ for (const test of firmTestCases) {
     let wrapper: any
 
     beforeAll(() => {
-      store.stateModel.tombstone.keycloakRoles = ['staff']
+      store.stateModel.tombstone.authRoles = [AuthorizationRoles.STAFF]
       store.stateModel.tombstone.businessId = 'BC1234567'
       store.stateModel.tombstone.filingType = FilingTypes.CHANGE_OF_REGISTRATION
       store.stateModel.tombstone.entityType = CorpTypeCd.SOLE_PROP

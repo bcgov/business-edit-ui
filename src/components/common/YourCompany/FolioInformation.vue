@@ -25,8 +25,8 @@ import { ActionKvIF, EntitySnapshotIF, FlagsCompanyInfoIF } from '@/interfaces/'
 import { AuthServices } from '@/services/'
 import { CommonMixin } from '@/mixins/'
 import { FolioNumber as FolioNumberShared } from '@bcrs-shared-components/folio-number/'
-
 import { useStore } from '@/store/store'
+import { AuthorizedActions } from '@/enums'
 
 @Component({
   components: {
@@ -45,7 +45,6 @@ export default class FolioInformation extends Mixins(CommonMixin) {
   @Getter(useStore) isAlterationFiling!: boolean
   @Getter(useStore) isCorrectionFiling!: boolean
   @Getter(useStore) isPremiumAccount!: boolean
-  @Getter(useStore) isRoleStaff!: boolean
   @Getter(useStore) isSpecialResolutionFiling!: boolean
 
   // Global setters

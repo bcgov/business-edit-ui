@@ -1,13 +1,18 @@
 import Vue from 'vue'
 import { Component } from 'vue-property-decorator'
 import { OrgPersonIF } from '@/interfaces'
-import { ActionTypes, PartyTypes, RoleTypes } from '@/enums/'
+import { ActionTypes, AuthorizedActions, PartyTypes, RoleTypes } from '@/enums/'
+import { IsAuthorized } from '@/utils'
 
 /**
  * Mixin that provides common OrgPerson methods.
  */
 @Component({})
 export default class OrgPersonMixin extends Vue {
+  // For components that import this mixin
+  readonly AuthorizedActions = AuthorizedActions
+  readonly IsAuthorized = IsAuthorized
+
   //
   // Role Type helpers
   //

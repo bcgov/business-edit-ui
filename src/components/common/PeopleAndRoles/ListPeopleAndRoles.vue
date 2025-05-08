@@ -527,8 +527,8 @@ import OrgPerson from './OrgPerson.vue'
 import { CommonMixin, OrgPersonMixin } from '@/mixins/'
 import { IsSame } from '@/utils/'
 import { OrgPersonIF } from '@/interfaces/'
-
 import { useStore } from '@/store/store'
+import { AuthorizedActions } from '@/enums'
 
 @Component({
   components: {
@@ -576,7 +576,6 @@ export default class ListPeopleAndRoles extends Mixins(CommonMixin, OrgPersonMix
   @Getter(useStore) isFirmCorrectionFiling!: boolean
   @Getter(useStore) isLimitedRestorationExtension!: boolean
   @Getter(useStore) isLimitedRestorationToFull!: boolean
-  @Getter(useStore) isRoleStaff!: boolean
 
   /** V-model for dropdown menus. */
   dropdown: Array<boolean> = []
@@ -647,7 +646,7 @@ export default class ListPeopleAndRoles extends Mixins(CommonMixin, OrgPersonMix
   /** Returns True if the specified org-person can be replaced. */
   canReplace (orgPerson: OrgPersonIF): boolean {
     // staff only
-    if (this.isRoleStaff) {
+    if (this.IsAuthorized(AuthorizedActions.FIRM_REPLACE_PERSON)) {
       // change filing only
       if (this.isFirmChangeFiling) {
         // proprietor-org only

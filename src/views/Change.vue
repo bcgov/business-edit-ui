@@ -107,7 +107,7 @@ import { BusinessContactInfo, BusinessStartDate, BusinessType, CertifySection, C
 import { AuthServices, LegalServices } from '@/services/'
 import { CommonMixin, FeeMixin, FilingTemplateMixin } from '@/mixins/'
 import { EntitySnapshotIF, ResourceIF } from '@/interfaces/'
-import { FilingStatus, PartyTypes } from '@/enums/'
+import { AuthorizedActions, FilingStatus, PartyTypes } from '@/enums/'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 import { ChangeResourceSp, ChangeResourceGp, ChangeResourceSpOrganization } from '@/resources/Change/'
 import ViewWrapper from '@/components/ViewWrapper.vue'
@@ -142,7 +142,6 @@ export default class Change extends Mixins(CommonMixin, FeeMixin, FilingTemplate
   @Getter(useStore) isEntityPartnership!: boolean
   @Getter(useStore) isEntitySoleProp!: boolean
   @Getter(useStore) isPremiumAccount!: boolean
-  @Getter(useStore) isRoleStaff!: boolean
   @Getter(useStore) isSbcStaff!: boolean
   @Getter(useStore) isSummaryMode!: boolean
   @Getter(useStore) showFeeSummary!: boolean

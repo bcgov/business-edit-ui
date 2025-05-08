@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
 import flushPromises from 'flush-promises'
-import { ActionTypes, FilingTypes } from '@/enums'
+import { ActionTypes, AuthorizationRoles, FilingTypes } from '@/enums'
 import { AuthServices, LegalServices, PayServices } from '@/services/'
 import { shallowMount } from '@vue/test-utils'
 import LimitedRestorationToFull from '@/views/LimitedRestorationToFull.vue'
@@ -214,7 +214,7 @@ describe('Limited Restoration To Full component - edit page', () => {
     store.stateModel.summaryMode = false
     store.stateModel.validationFlags.appValidate = false
     store.stateModel.tombstone.businessId = 'BC1234567' // normally set in App.vue
-    store.stateModel.tombstone.keycloakRoles = ['staff'] // normally set in App.vue
+    store.stateModel.tombstone.authRoles = [AuthorizationRoles.STAFF] // normally set in App.vue
     store.stateModel.tombstone.filingType = FilingTypes.RESTORATION
     store.stateModel.restoration = filing.restoration as any
     store.stateModel.entitySnapshot = entitySnapshot as any
@@ -317,7 +317,7 @@ describe('Limited Restoration To Full component - summary page (with no filing c
     store.stateModel.summaryMode = true
     store.stateModel.validationFlags.appValidate = false
     store.stateModel.tombstone.businessId = 'BC1234567' // normally set in App.vue
-    store.stateModel.tombstone.keycloakRoles = ['staff'] // normally set in App.vue
+    store.stateModel.tombstone.authRoles = [AuthorizationRoles.STAFF] // normally set in App.vue
     store.stateModel.tombstone.filingType = FilingTypes.RESTORATION
     store.stateModel.restoration = filing.restoration as any
     store.stateModel.entitySnapshot = entitySnapshot as any
@@ -401,7 +401,7 @@ describe('Limited Restoration To Full component - summary page (with filing chan
     store.stateModel.summaryMode = true
     store.stateModel.validationFlags.appValidate = false
     store.stateModel.tombstone.businessId = 'BC1234567' // normally set in App.vue
-    store.stateModel.tombstone.keycloakRoles = ['staff'] // normally set in App.vue
+    store.stateModel.tombstone.authRoles = [AuthorizationRoles.STAFF] // normally set in App.vue
     store.stateModel.tombstone.filingType = FilingTypes.RESTORATION
     store.stateModel.restoration = filing.restoration as any
     store.stateModel.entitySnapshot = entitySnapshot as any
