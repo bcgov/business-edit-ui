@@ -1,11 +1,10 @@
-import { FilingTypes } from '@/enums/'
+import { AuthorizationRoles, FilingTypes } from '@/enums/'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 
 /** Interface for tombstone object in store (not to/from API). */
 export interface TombStoneIF {
   filingType: FilingTypes
-  keycloakRoles: Array<string>
-  authRoles: Array<string>
+  authRoles: Array<AuthorizationRoles>
   userInfo: any // from auth profile
   orgInfo: any // from auth
   businessId: string

@@ -2,15 +2,14 @@ import Vue from 'vue'
 import Vuetify from 'vuetify'
 import flushPromises from 'flush-promises'
 import { mount } from '@vue/test-utils'
-import { AssociationType, BusinessContactInfo, CertifySection, CompletingParty, CourtOrderPoa, Detail, EntityName,
-  OfficeAddresses,
-  PeopleAndRoles,
-  RecognitionDateTime,
-  StaffPayment, YourCompanyWrapper } from '@/components/common/'
+import {
+  AssociationType, BusinessContactInfo, CertifySection, CompletingParty, CourtOrderPoa, Detail, EntityName,
+  OfficeAddresses, PeopleAndRoles, RecognitionDateTime, StaffPayment, YourCompanyWrapper
+} from '@/components/common/'
 import CoopCorrection from '@/views/Correction/CoopCorrection.vue'
 import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
-import { AccountTypes, CoopTypes, CorrectionErrorTypes, FilingTypes } from '@/enums'
+import { AuthorizationRoles, CoopTypes, CorrectionErrorTypes, FilingTypes } from '@/enums'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 import { Memorandum, Resolution, Rules } from '@/components/SpecialResolution'
 import { AuthServices, LegalServices } from '@/services'
@@ -28,7 +27,7 @@ describe('Coop Correction component', () => {
   store.stateModel.tombstone.entityType = CorpTypeCd.COOP
   store.stateModel.tombstone.businessId = 'CP1234567'
   store.stateModel.tombstone.filingType = FilingTypes.CORRECTION
-  store.stateModel.accountInformation.accountType = AccountTypes.PREMIUM
+  store.stateModel.tombstone.authRoles = [AuthorizationRoles.STAFF]
   store.stateModel.completingParty = {
     firstName: 'First',
     lastName: 'Last',

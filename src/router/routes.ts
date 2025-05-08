@@ -19,7 +19,6 @@ export const routes = [
     component: Alteration,
     meta: {
       requiresAuth: true,
-      isStaffOnly: false,
       filingType: FilingTypes.ALTERATION,
       title: 'Company Information page'
     }
@@ -30,7 +29,6 @@ export const routes = [
     component: Change,
     meta: {
       requiresAuth: true,
-      isStaffOnly: false,
       filingType: FilingTypes.CHANGE_OF_REGISTRATION,
       title: 'Business Information'
     }
@@ -41,7 +39,6 @@ export const routes = [
     component: Conversion,
     meta: {
       requiresAuth: true,
-      isStaffOnly: true,
       filingType: FilingTypes.CONVERSION,
       title: 'Record Conversion'
     }
@@ -52,7 +49,6 @@ export const routes = [
     component: Correction,
     meta: {
       requiresAuth: true,
-      isStaffOnly: true,
       filingType: FilingTypes.CORRECTION,
       title: 'Register Correction'
     }
@@ -66,7 +62,6 @@ export const routes = [
     }),
     meta: {
       requiresAuth: true,
-      isStaffOnly: true,
       filingType: FilingTypes.RESTORATION,
       title: 'Limited Restoration Extension'
     }
@@ -80,7 +75,6 @@ export const routes = [
     }),
     meta: {
       requiresAuth: true,
-      isStaffOnly: true,
       filingType: FilingTypes.RESTORATION,
       title: 'Conversion to Full Restoration'
     }
@@ -91,7 +85,6 @@ export const routes = [
     component: SpecialResolution,
     meta: {
       requiresAuth: true,
-      isStaffOnly: false,
       filingType: FilingTypes.SPECIAL_RESOLUTION,
       title: 'Special Resolution'
     }

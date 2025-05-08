@@ -5,7 +5,7 @@ import { mount, shallowMount } from '@vue/test-utils'
 import PeopleAndRoles from '@/components/common/PeopleAndRoles/PeopleAndRoles.vue'
 import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
-import { ActionTypes, FilingTypes } from '@/enums'
+import { ActionTypes, AuthorizationRoles, FilingTypes } from '@/enums'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 
 // mock the console.warn function to hide "[Vuetify] Unable to locate target XXX"
@@ -493,7 +493,7 @@ describe('People And Roles component for Change of Registration', () => {
   })
 
   it('change button is not visible to users for SP where the sole proprietor is an organization', () => {
-    store.stateModel.tombstone.keycloakRoles = ['user']
+    store.stateModel.tombstone.authRoles = [AuthorizationRoles.VIEW]
     store.stateModel.tombstone.entityType = CorpTypeCd.SOLE_PROP
     store.stateModel.peopleAndRoles.orgPeople = [
       {
@@ -505,7 +505,7 @@ describe('People And Roles component for Change of Registration', () => {
   })
 
   it('change button is visible to staff for SP where the sole proprietor is an organization', () => {
-    store.stateModel.tombstone.keycloakRoles = ['staff']
+    store.stateModel.tombstone.authRoles = [AuthorizationRoles.STAFF]
     store.stateModel.tombstone.entityType = CorpTypeCd.SOLE_PROP
     store.stateModel.peopleAndRoles.orgPeople = [
       {
@@ -517,7 +517,7 @@ describe('People And Roles component for Change of Registration', () => {
   })
 
   it('change button is visible to users for SP where the sole proprietor is an individual', () => {
-    store.stateModel.tombstone.keycloakRoles = ['user']
+    store.stateModel.tombstone.authRoles = [AuthorizationRoles.VIEW]
     store.stateModel.tombstone.entityType = CorpTypeCd.SOLE_PROP
     store.stateModel.peopleAndRoles.orgPeople = [
       {

@@ -80,6 +80,7 @@
             @valid="setDocumentOptionalEmailValidity($event)"
           />
 
+          <!-- Transactional Folio Number is mutually exclusive with Staff Payment -->
           <TransactionalFolioNumber
             v-if="showTransactionalFolioNumber"
             class="mt-10"
@@ -97,15 +98,16 @@
             class="mt-10"
             :sectionNumber="showTransactionalFolioNumber ? '4.' : '3.'"
             :validate="getAppValidate"
+            :disableEdit="false"
           />
 
-          <template v-if="isRoleStaff">
-            <StaffPayment
-              class="mt-10"
-              sectionNumber="4."
-              @haveChanges="onStaffPaymentChanges()"
-            />
-          </template>
+          <!-- Staff Payment is mutually exclusive with Transactional Folio Number -->
+          <StaffPayment
+            v-if="IsAuthorized(AuthorizedActions.STAFF_PAYMENT)"
+            class="mt-10"
+            sectionNumber="4."
+            @haveChanges="onStaffPaymentChanges()"
+          />
         </div>
       </v-slide-x-reverse-transition>
 
@@ -141,19 +143,22 @@
 import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
 import { SpecialResolutionSummary, Resolution } from '@/components/SpecialResolution'
-import { AssociationType, BusinessContactInfo, BusinessType, CertifySection, CompletingParty, CurrentDirectors,
+import {
+  AssociationType, BusinessContactInfo, BusinessType, CertifySection, CompletingParty, CurrentDirectors,
   DocumentsDelivery, EntityName, FolioInformation, OfficeAddresses, StaffPayment, TransactionalFolioNumber,
-  YourCompanyWrapper } from '@/components/common/'
+  YourCompanyWrapper
+} from '@/components/common/'
 import { AuthServices, LegalServices } from '@/services/'
 import { CommonMixin, FeeMixin, FilingTemplateMixin } from '@/mixins/'
 import { EntitySnapshotIF, FilingDataIF, ResourceIF } from '@/interfaces/'
-import { FilingStatus } from '@/enums/'
+import { AuthorizedActions, FilingStatus } from '@/enums/'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 import { SpecialResolutionResourceCp } from '@/resources/SpecialResolution/'
 import ViewWrapper from '@/components/ViewWrapper.vue'
 import { useStore } from '@/store/store'
 import Rules from '@/components/SpecialResolution/Rules.vue'
 import Memorandum from '@/components/SpecialResolution/Memorandum.vue'
+import { IsAuthorized } from '@/utils'
 
 @Component({
   components: {
@@ -178,13 +183,15 @@ import Memorandum from '@/components/SpecialResolution/Memorandum.vue'
   }
 })
 export default class SpecialResolution extends Mixins(CommonMixin, FeeMixin, FilingTemplateMixin) {
+  // for template
+  readonly IsAuthorized = IsAuthorized
+  readonly AuthorizedActions = AuthorizedActions
+
   // Store getters
   @Getter(useStore) getAppValidate!: boolean
   @Getter(useStore) getUserFirstName!: string
   @Getter(useStore) getUserLastName!: string
   @Getter(useStore) isEntityCoop!: boolean
-  @Getter(useStore) isPremiumAccount!: boolean
-  @Getter(useStore) isRoleStaff!: boolean
   @Getter(useStore) isSummaryMode!: boolean
   @Getter(useStore) showFeeSummary!: boolean
 
@@ -201,7 +208,8 @@ export default class SpecialResolution extends Mixins(CommonMixin, FeeMixin, Fil
 
   /** Whether to show the Transactional Folio Number section. */
   get showTransactionalFolioNumber (): boolean {
-    return (this.isPremiumAccount && !this.isRoleStaff)
+    // mutually exclusive with Staff Payment
+    return !IsAuthorized(AuthorizedActions.STAFF_PAYMENT)
   }
 
   /** The id of the alteration being edited. */
@@ -228,6 +236,13 @@ export default class SpecialResolution extends Mixins(CommonMixin, FeeMixin, Fil
 
     // do not proceed if we are not authenticated (safety check - should never happen)
     if (!this.isAuthenticated) return
+
+    // do not proceed if not authorized
+    if (!IsAuthorized(AuthorizedActions.SPECIAL_RESOLUTION_FILING)) {
+      window.alert('You are not authorized to use Special Resolution filings.')
+      this.$root.$emit('go-to-dashboard', true)
+      return
+    }
 
     // try to fetch data
     try {
@@ -284,8 +299,8 @@ export default class SpecialResolution extends Mixins(CommonMixin, FeeMixin, Fil
       await this.setFeePricesFromFilingData(true)
 
       // set current profile name to store for field pre population
-      // do this only if we are not staff
-      if (!this.isRoleStaff) {
+      // do this except if we are authorized to skip it
+      if (!IsAuthorized(AuthorizedActions.BLANK_CERTIFY_STATE)) {
         // pre-populate Certified By name
         this.setCertifyState(
           {

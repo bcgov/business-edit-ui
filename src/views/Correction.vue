@@ -12,11 +12,11 @@
 <script lang="ts">
 import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
-import { GetFeatureFlag } from '@/utils/'
+import { GetFeatureFlag, IsAuthorized } from '@/utils/'
 import { CommonMixin } from '@/mixins/'
 import { LegalServices } from '@/services/'
 import { CorrectionFilingIF } from '@/interfaces/'
-import { FilingStatus, FilingTypes } from '@/enums/'
+import { AuthorizedActions, FilingStatus, FilingTypes } from '@/enums/'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 import CoopCorrection from '@/views/Correction/CoopCorrection.vue'
@@ -40,10 +40,9 @@ export default class Correction extends Mixins(CommonMixin) {
   // Store getters
   @Getter(useStore) getBusinessId!: string
   @Getter(useStore) getEntityType!: CorpTypeCd
-  @Getter(useStore) isBaseCompany!: boolean
   @Getter(useStore) isEntityCoop!: boolean
+  @Getter(useStore) isEntityCorp!: boolean
   @Getter(useStore) isEntityFirm!: boolean
-  @Getter(useStore) isRoleStaff!: boolean
 
   // Store actions
   @Action(useStore) setFilingId!: (x: number) => void
@@ -54,9 +53,17 @@ export default class Correction extends Mixins(CommonMixin) {
   /** The dynamic component to render. */
   get component (): string {
     if (this.isEntityCoop) return 'CoopCorrection'
-    if (this.isBaseCompany) return 'CorpCorrection'
+    if (this.isEntityCorp) return 'CorpCorrection'
     if (this.isEntityFirm) return 'FirmCorrection'
     return null // should never happen
+  }
+
+  /** Whether user is authorized to use this correction filing. */
+  get isAuthorized (): boolean {
+    if (this.isEntityCoop) return IsAuthorized(AuthorizedActions.COOP_CORRECTION_FILING)
+    if (this.isEntityCorp) return IsAuthorized(AuthorizedActions.CORP_CORRECTION_FILING)
+    if (this.isEntityFirm) return IsAuthorized(AuthorizedActions.FIRM_CORRECTION_FILING)
+    return false // should never happen
   }
 
   /** True if user is authenticated. */
@@ -76,14 +83,6 @@ export default class Correction extends Mixins(CommonMixin) {
 
     // do not proceed if we are not authenticated (safety check - should never happen)
     if (!this.isAuthenticated) return
-
-    // do not proceed if user is not staff
-    const isStaffOnly = this.$route.matched.some(r => r.meta?.isStaffOnly)
-    if (isStaffOnly && !this.isRoleStaff) {
-      window.alert('Only staff can correct a filing.')
-      this.$root.$emit('go-to-dashboard', true)
-      return
-    }
 
     // fetch the correction filing
     try {
@@ -115,24 +114,32 @@ export default class Correction extends Mixins(CommonMixin) {
         throw new Error('Invalid correction info')
       }
 
+      // do not proceed if this isn't a DRAFT filing
+      if (filing.header?.status !== FilingStatus.DRAFT) {
+        throw new Error('Invalid correction status')
+      }
+
       // set entity type for misc functionality to work
-      // do not proceed if this isn't a base company / firm / coop correction
       this.setEntityType(filing.business?.legalType || null)
-      if (!this.isBaseCompany && !this.isEntityFirm && !this.isEntityCoop) {
+
+      // do not proceed if this isn't a base company / firm / coop correction
+      if (!this.isEntityCorp && !this.isEntityFirm && !this.isEntityCoop) {
         throw new Error('Invalid correction type')
       }
 
-      // NB: specific entities are targeted via LaunchDarkly
+      // do not proceed if not authorized
+      if (!this.isAuthorized) {
+        window.alert('You are not authorized to use Correction filings.')
+        this.$root.$emit('go-to-dashboard', true)
+        return
+      }
+
+      // do not process if FF doesn't include this entity type
       if (!GetFeatureFlag('supported-correction-entities')?.includes(this.getEntityType)) {
         window.alert('Corrections for this entity type are not available at the moment.\n' +
           'Please check again later.')
         this.$root.$emit('go-to-dashboard', true)
         return
-      }
-
-      // do not proceed if this isn't a DRAFT filing
-      if (filing.header?.status !== FilingStatus.DRAFT) {
-        throw new Error('Invalid correction status')
       }
 
       // assign prop to trigger sub-components
@@ -146,7 +153,7 @@ export default class Correction extends Mixins(CommonMixin) {
   /** Emits Fetch Error event. */
   @Emit('fetchError')
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  emitFetchError (err: unknown = null): void {}
+  emitFetchError (err = null): void {}
 
   /** Emits Have Data event. */
   @Emit('haveData')
