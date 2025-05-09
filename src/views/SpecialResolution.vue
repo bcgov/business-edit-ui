@@ -178,6 +178,8 @@ import Memorandum from '@/components/SpecialResolution/Memorandum.vue'
   }
 })
 export default class SpecialResolution extends Mixins(CommonMixin, FeeMixin, FilingTemplateMixin) {
+  readonly isRoleStaff = true
+
   // Store getters
   @Getter(useStore) getAppValidate!: boolean
   @Getter(useStore) getUserFirstName!: string

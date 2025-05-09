@@ -87,16 +87,6 @@ export const useStore = defineStore('store', {
       return (this.stateModel.tombstone.filingType === FilingTypes.SPECIAL_RESOLUTION)
     },
 
-    /** Whether the current filing is a Change of Registration. */
-    isChangeRegFiling (): boolean {
-      return (this.stateModel.tombstone.filingType === FilingTypes.CHANGE_OF_REGISTRATION)
-    },
-
-    /** Whether the current filing is a Conversion. */
-    isConversionFiling (): boolean {
-      return (this.stateModel.tombstone.filingType === FilingTypes.CONVERSION)
-    },
-
     /** Whether the current filing is a Restoration. */
     isRestorationFiling (): boolean {
       return (this.stateModel.tombstone.filingType === FilingTypes.RESTORATION)
@@ -112,9 +102,12 @@ export const useStore = defineStore('store', {
       return (this.getRestoration.type === RestorationTypes.LTD_TO_FULL)
     },
 
-    /** Whether the current filing is a Change of Registration for a firm corp class. */
+    /** Whether the current filing is a Change of Registration for a firm. */
     isFirmChangeFiling (): boolean {
-      return (this.isEntityFirm && this.isChangeRegFiling)
+      return (
+        this.isEntityFirm &&
+        this.stateModel.tombstone.filingType === FilingTypes.CHANGE_OF_REGISTRATION
+      )
     },
 
     /** Whether the current filing is a Correction for a base company. */
@@ -134,7 +127,10 @@ export const useStore = defineStore('store', {
 
     /** Whether the current filing is a Conversion for a firm. */
     isFirmConversionFiling (): boolean {
-      return (this.isEntityFirm && this.isConversionFiling)
+      return (
+        this.isEntityFirm &&
+        this.stateModel.tombstone.filingType === FilingTypes.CONVERSION
+        )
     },
 
     /** Whether the corrected filing is an Incorporation Application. */
@@ -1292,10 +1288,11 @@ export const useStore = defineStore('store', {
      * added to ensure that changes made in business-edit-ui are also updated by
      * staff in COLIN */
     hideChangeButtonForSoleProps (): boolean {
+      const isRoleStaff = true // ***
       const isProprietor = this.getOrgPeople[0]?.roles[0]?.roleType === RoleTypes.PROPRIETOR
       const isOrganization = this.getOrgPeople[0]?.officer?.partyType === PartyTypes.ORGANIZATION
       const isDba = isProprietor && isOrganization
-      return !this.isRoleStaff && isDba
+      return !isRoleStaff && isDba
     },
 
     /**

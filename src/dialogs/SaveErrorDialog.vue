@@ -127,6 +127,8 @@ import { AuthorizedActions } from '@/enums'
   }
 })
 export default class SaveErrorDialog extends Vue {
+  readonly isRoleStaff = true
+
   /** Prop containing filing name. */
   @Prop({ default: 'Filing' }) readonly filingName!: string
 

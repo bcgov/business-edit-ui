@@ -62,6 +62,8 @@ import { AuthorizedActions } from '@/enums'
   }
 })
 export default class FetchErrorDialog extends Vue {
+  readonly isRoleStaff = true
+
   /** Prop to display the dialog. */
   @Prop() readonly dialog!: boolean
 

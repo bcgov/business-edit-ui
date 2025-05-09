@@ -135,6 +135,8 @@ import { useStore } from '@/store/store'
   }
 })
 export default class Change extends Mixins(CommonMixin, FeeMixin, FilingTemplateMixin) {
+  readonly isRoleStaff = true
+
   // Store getters
   @Getter(useStore) getAppValidate!: boolean
   @Getter(useStore) getUserFirstName!: string

@@ -188,6 +188,8 @@ export default class LimitedRestorationToFull extends Mixins(
   FilingTemplateMixin,
   OrgPersonMixin
 ) {
+  readonly isRoleStaff = true
+
   // Store getters
   @Getter(useStore) getAppValidate!: boolean
   @Getter(useStore) getApprovalTypeValid!: boolean

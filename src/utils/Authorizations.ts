@@ -58,29 +58,29 @@ function isSbcFieldOfficeStaff (): boolean {
  * Ultimately we won't need this list and we'll just check auth roles for everything.
  */
 const BusinessRegistryStaffRoles = [
-  AuthorizedActions.AMALGAMATION_FILING,
-  AuthorizedActions.AML_OVERRIDES,
-  AuthorizedActions.BLANK_CERTIFY_STATE,
+  AuthorizedActions.ALTERATION_FILING,
+  // AuthorizedActions.BLANK_CERTIFY_STATE,
   AuthorizedActions.BLANK_COMPLETING_PARTY,
-  AuthorizedActions.CONTINUATION_IN_FILING,
-  AuthorizedActions.COURT_ORDER_POA,
-  AuthorizedActions.EDITABLE_CERTIFY_NAME,
+  AuthorizedActions.CORP_CORRECTION_FILING,
+  // AuthorizedActions.COURT_ORDER_POA,
+  // AuthorizedActions.EDITABLE_CERTIFY_NAME,
   AuthorizedActions.EDITABLE_COMPLETING_PARTY,
   AuthorizedActions.FILE_AND_PAY,
-  AuthorizedActions.FIRM_ADD_BUSINESS,
-  AuthorizedActions.FIRM_DISSOLUTION_FILING,
-  AuthorizedActions.FIRM_EDITABLE_COMPLETING_PARTY,
-  AuthorizedActions.FIRM_EDITABLE_EMAIL_ADDRESS,
+  // AuthorizedActions.FIRM_ADD_BUSINESS,
+  AuthorizedActions.FIRM_CHANGE_FILING,
+  AuthorizedActions.FIRM_CONVERSION_FILING,
+  AuthorizedActions.FIRM_CORRECTION_FILING,
+  // AuthorizedActions.FIRM_EDITABLE_COMPLETING_PARTY,
+  // AuthorizedActions.FIRM_EDITABLE_EMAIL_ADDRESS,
+  AuthorizedActions.FIRM_NO_HELP_SECTION,
   AuthorizedActions.FIRM_NO_MIN_START_DATE,
-  AuthorizedActions.INCORPORATION_APPLICATION_FILING,
-  AuthorizedActions.NO_COMPLETING_PARTY_MESSAGE_BOX,
-  AuthorizedActions.NO_CONTACT_INFO,
-  AuthorizedActions.OTHER_DISSOLUTION_FILING,
-  AuthorizedActions.REGISTRATION_FILING,
+  AuthorizedActions.FIRM_REPLACE_PERSON,
+  // AuthorizedActions.NO_COMPLETING_PARTY_MESSAGE_BOX,
+  // AuthorizedActions.NO_CONTACT_INFO,
   AuthorizedActions.RESTORATION_FILING,
   AuthorizedActions.SAVE_DRAFT,
   AuthorizedActions.STAFF_BREADCRUMBS,
-  AuthorizedActions.STAFF_COMMENTS,
+  // AuthorizedActions.STAFF_COMMENTS,
   AuthorizedActions.STAFF_PAYMENT,
   AuthorizedActions.THIRD_PARTY_CERTIFY_STMT
 ]
@@ -102,20 +102,14 @@ const ContactCentreStaffRoles = []
  * Ultimately we won't need this list and we'll just check auth roles for everything.
  */
 const SbcFieldOfficeStaffRoles = [
-  AuthorizedActions.AMALGAMATION_FILING,
-  AuthorizedActions.BLANK_CERTIFY_STATE,
+  // AuthorizedActions.BLANK_CERTIFY_STATE,
   AuthorizedActions.BLANK_COMPLETING_PARTY,
-  AuthorizedActions.CONTINUATION_IN_FILING,
-  AuthorizedActions.EDITABLE_CERTIFY_NAME,
-  AuthorizedActions.FILE_AND_PAY,
-  AuthorizedActions.FIRM_DISSOLUTION_FILING,
-  AuthorizedActions.FIRM_EDITABLE_COMPLETING_PARTY,
-  AuthorizedActions.FIRM_EDITABLE_EMAIL_ADDRESS,
-  AuthorizedActions.INCORPORATION_APPLICATION_FILING,
-  AuthorizedActions.OTHER_DISSOLUTION_FILING,
-  AuthorizedActions.REGISTRATION_FILING,
-  AuthorizedActions.SAVE_DRAFT,
-  AuthorizedActions.SBC_BREADCRUMBS,
+  // AuthorizedActions.EDITABLE_CERTIFY_NAME,
+  // AuthorizedActions.FILE_AND_PAY,
+  // AuthorizedActions.FIRM_EDITABLE_COMPLETING_PARTY,
+  // AuthorizedActions.FIRM_EDITABLE_EMAIL_ADDRESS,
+  // AuthorizedActions.SAVE_DRAFT,
+  // AuthorizedActions.SBC_BREADCRUMBS,
   AuthorizedActions.THIRD_PARTY_CERTIFY_STMT
 ]
 
@@ -124,12 +118,8 @@ const SbcFieldOfficeStaffRoles = [
  * Ultimately we won't need this list and we'll just check auth roles for everything.
  */
 const DefaultRoles = [
-  AuthorizedActions.AMALGAMATION_FILING,
-  AuthorizedActions.CONTINUATION_IN_FILING,
+  AuthorizedActions.ALTERATION_FILING,
+  AuthorizedActions.FIRM_CHANGE_FILING,
   AuthorizedActions.FILE_AND_PAY,
-  AuthorizedActions.FIRM_DISSOLUTION_FILING,
-  AuthorizedActions.INCORPORATION_APPLICATION_FILING,
-  AuthorizedActions.OTHER_DISSOLUTION_FILING,
-  AuthorizedActions.REGISTRATION_FILING,
-  AuthorizedActions.SAVE_DRAFT
+  AuthorizedActions.SPECIAL_RESOLUTION_FILING
 ]

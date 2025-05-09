@@ -26,6 +26,7 @@ import { AuthServices } from '@/services/'
 import { CommonMixin } from '@/mixins/'
 import { FolioNumber as FolioNumberShared } from '@bcrs-shared-components/folio-number/'
 import { useStore } from '@/store/store'
+import { IsAuthorized } from '@/utils'
 import { AuthorizedActions } from '@/enums'
 
 @Component({
@@ -68,8 +69,8 @@ export default class FolioInformation extends Mixins(CommonMixin) {
   /** Whether to hide the component's actions. */
   get hideActions (): boolean {
     // hide actions in a correction filing
-    // hide actions from staff users
-    return (this.isCorrectionFiling || this.isRoleStaff)
+    // mutually exclusive with Staff Payment
+    return (this.isCorrectionFiling || IsAuthorized(AuthorizedActions.STAFF_PAYMENT))
   }
 
   /** Helps builds edit label and determine if folio number update should be instant. */

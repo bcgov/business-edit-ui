@@ -12,7 +12,7 @@
 <script lang="ts">
 import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
-import { GetFeatureFlag } from '@/utils/'
+import { GetFeatureFlag, IsAuthorized } from '@/utils/'
 import { CommonMixin } from '@/mixins/'
 import { LegalServices } from '@/services/'
 import { CorrectionFilingIF } from '@/interfaces/'
@@ -34,6 +34,8 @@ import { useStore } from '@/store/store'
   }
 })
 export default class Correction extends Mixins(CommonMixin) {
+  readonly isRoleStaff = true
+
   /** Whether App is ready. */
   @Prop({ default: false }) readonly appReady!: boolean
 

@@ -156,6 +156,8 @@ export default class LimitedRestorationExtension extends Mixins(
   FilingTemplateMixin,
   OrgPersonMixin
 ) {
+  readonly isRoleStaff = true
+
   // Store getters
   @Getter(useStore) getAppValidate!: boolean
   // @Getter(useStore) getEntityType!: CorpTypeCd

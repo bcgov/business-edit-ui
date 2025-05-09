@@ -108,6 +108,8 @@ import { AuthorizedActions } from '@/enums'
   }
 })
 export default class PaymentErrorDialog extends Vue {
+  readonly isRoleStaff = true
+
   /** Prop containing filing name. */
   @Prop({ default: 'Filing' }) readonly filingName!: string
 

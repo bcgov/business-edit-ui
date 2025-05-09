@@ -180,6 +180,7 @@ export default class App extends Mixins(CommonMixin, FilingTemplateMixin) {
   @Getter(useStore) getUserPhone!: string
   @Getter(useStore) getUserUsername!: string
   @Getter(useStore) haveUnsavedChanges!: boolean
+  @Getter(useStore) isAlterationFiling!: boolean
   @Getter(useStore) isBusySaving!: boolean
   @Getter(useStore) isCorrectionEditing!: boolean
   @Getter(useStore) isCorrectionFiling!: boolean
@@ -422,6 +423,25 @@ export default class App extends Mixins(CommonMixin, FilingTemplateMixin) {
       return
     }
 
+    // We got filing type from watching the route and we have the user's roles.
+    // Now check if the user is authorized for the subject filing type.
+    if (this.isAlterationFiling && !IsAuthorized(AuthorizedActions.ALTERATION_FILING)) {
+      window.alert('You are not authorized to access Alteration filings.')
+      this.goToDashboard(true)
+      return
+    }
+
+    if (
+      this.isCorrectionFiling &&
+      !IsAuthorized(AuthorizedActions.COOP_CORRECTION_FILING) &&
+      !IsAuthorized(AuthorizedActions.CORP_CORRECTION_FILING) &&
+      !IsAuthorized(AuthorizedActions.FIRM_CORRECTION_FILING)
+    ) {
+      window.alert('You are not authorized to access Correction filings.')
+      this.goToDashboard(true)
+      return
+    }
+
     // load account information
     try {
       await this.loadAccountInformation()
@@ -542,23 +562,6 @@ export default class App extends Mixins(CommonMixin, FilingTemplateMixin) {
     this.saveWarnings = []
   }
 
-  /** Fetches account info and stores it. */
-  private async loadAccountInformation (): Promise<void> {
-    const currentAccount = await this.getCurrentAccount().catch(() => null)
-    if (currentAccount) {
-      this.setAccountInformation(currentAccount)
-    } else {
-      throw new Error('Invalid current account') // *** TODO: remove this?
-    }
-
-    const orgInfo = await AuthServices.fetchOrgInfo(currentAccount?.id).catch(() => null)
-    if (orgInfo) {
-      this.setOrgInfo(orgInfo)
-    } else {
-      throw new Error('Invalid org info') // *** TODO: remove this?
-    }
-  }
-
   /** Fetches authorizations and verifies roles. */
   private async checkAuth (): Promise<any> {
     // NB: will throw if API error
@@ -578,6 +581,23 @@ export default class App extends Mixins(CommonMixin, FilingTemplateMixin) {
     }
 
     this.setAuthRoles(authRoles)
+  }
+
+  /** Fetches account info and stores it. */
+  private async loadAccountInformation (): Promise<void> {
+    const currentAccount = await this.getCurrentAccount().catch(() => null)
+    if (currentAccount) {
+      this.setAccountInformation(currentAccount)
+    } else {
+      throw new Error('Invalid current account') // *** TODO: remove this?
+    }
+
+    const orgInfo = await AuthServices.fetchOrgInfo(currentAccount?.id).catch(() => null)
+    if (orgInfo) {
+      this.setOrgInfo(orgInfo)
+    } else {
+      throw new Error('Invalid org info') // *** TODO: remove this?
+    }
   }
 
   /** Fetches user info and stores it. */
