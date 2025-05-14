@@ -102,7 +102,7 @@ import CorrectNameToNumber from './CorrectNameToNumber.vue'
 export default class CorrectName extends Vue {
   /** The options to display */
   @Prop() readonly correctNameChoices!: Array<string>
-  @Prop({ default: false }) readonly isAlterationFiling!: boolean
+  @Prop() readonly nameChangeAction!: string
 
   // local properties
   displayedOptions: Array<CorrectNameOptionIF> = []
@@ -151,10 +151,6 @@ export default class CorrectName extends Vue {
 
   get isOneOption (): boolean {
     return (this.correctNameChoices.length === 1)
-  }
-
-  get nameChangeAction (): string {
-    return this.isAlterationFiling ? 'alter' : 'correct'
   }
 
   /** Trigger form submission */
