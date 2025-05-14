@@ -80,8 +80,6 @@ import Vue from 'vue'
 import { Component, Emit, Prop } from 'vue-property-decorator'
 import { CorrectNameOptionIF } from '@/interfaces/'
 import { CorrectNameOptions } from '@/enums/'
-import { useStore } from '@/store/store'
-import { Getter } from 'pinia-class'
 // These imports below are touchy, please don't change them - they can possibly break tests.
 import CorrectCompanyName from './CorrectCompanyName.vue'
 import CorrectNameRequest from './CorrectNameRequest.vue'
@@ -104,8 +102,7 @@ import CorrectNameToNumber from './CorrectNameToNumber.vue'
 export default class CorrectName extends Vue {
   /** The options to display */
   @Prop() readonly correctNameChoices!: Array<string>
-
-  @Getter(useStore) isAlterationFiling!: boolean
+  @Prop({ default: false }) readonly isAlterationFiling!: boolean
 
   // local properties
   displayedOptions: Array<CorrectNameOptionIF> = []

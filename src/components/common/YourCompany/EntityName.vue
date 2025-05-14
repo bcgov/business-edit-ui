@@ -208,6 +208,7 @@
       >
         <CorrectName
           :correctNameChoices="correctNameChoices"
+          :isAlterationFiling="isAlterationFiling"
           @isSaved="nameChangeHandler($event)"
           @cancel="isEditingNames = false"
         />

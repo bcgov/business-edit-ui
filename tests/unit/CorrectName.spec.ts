@@ -5,11 +5,8 @@ import CorrectName from '@/components/common/YourCompany/CorrectName/CorrectName
 import CorrectCompanyName from '@/components/common/YourCompany/CorrectName/CorrectCompanyName.vue'
 import CorrectNameRequest from '@/components/common/YourCompany/CorrectName/CorrectNameRequest.vue'
 import CorrectNameToNumber from '@/components/common/YourCompany/CorrectName/CorrectNameToNumber.vue'
-import { createPinia, setActivePinia } from 'pinia'
 
 const vuetify = new Vuetify({})
-
-setActivePinia(createPinia())
 
 describe('Correct Name component', () => {
   let wrapperFactory: any
