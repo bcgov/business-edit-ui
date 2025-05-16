@@ -12,7 +12,7 @@
       </v-card-title>
 
       <v-card-text id="dialog-text">
-        <p class="genErr">
+        <p class="font-15">
           Remove this Person or Corporation or Firm from your Company?
         </p>
       </v-card-text>

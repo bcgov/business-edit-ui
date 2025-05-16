@@ -10,16 +10,16 @@ export default class AuthServices {
   /**
    * Fetches authorizations.
    * @param businessIdentifier the business identifier (eg, BC1219948)
-   * @returns a promise to return the roles object
+   * @returns a promise to return the authorizations object
    */
-  static async fetchAuthorizations (businessIdentifier: string): Promise<Array<string>> {
+  static async fetchAuthorizations (businessIdentifier: string): Promise<any> {
     if (!businessIdentifier) throw new Error('Invalid parameter \'businessIdentifier\'')
 
     const authApiUrl = sessionStorage.getItem('AUTH_API_URL')
     const url = `${authApiUrl}entities/${businessIdentifier}/authorizations`
 
     return axios.get(url).then(response => {
-      if (response?.data?.roles) return response.data.roles
+      if (response?.data) return response.data
       throw new Error('Invalid response data ')
     })
   }

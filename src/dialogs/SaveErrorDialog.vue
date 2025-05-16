@@ -25,21 +25,20 @@
 
       <v-card-text id="dialog-text">
         <!-- display generic message (no errors or warnings) -->
-        <div
-          v-if="(numErrors + numWarnings) < 1"
-          class="genErr"
-        >
-          <p>
+        <div v-if="(numErrors + numWarnings) < 1">
+          <p class="font-15">
             We were unable to save your {{ filingName }}. You can continue to try to save this
             filing or you can exit without saving and re-create this filing at another time.
           </p>
-          <p>If you exit this {{ filingName }}, any changes you've made will not be saved.</p>
+          <p class="font-15">
+            If you exit this {{ filingName }}, any changes you've made will not be saved.
+          </p>
         </div>
 
         <!-- display errors -->
         <div
           v-if="numErrors > 0"
-          class="genErr mb-4"
+          class="font-15 mb-4"
         >
           <p>We were unable to save your {{ filingName }} due to the following errors:</p>
           <ul>
@@ -55,7 +54,7 @@
         <!-- display warnings-->
         <div
           v-if="numWarnings > 0"
-          class="genErr mb-4"
+          class="font-15 mb-4"
         >
           <p>Please note the following warnings:</p>
           <ul>
@@ -68,11 +67,11 @@
           </ul>
         </div>
 
-        <template v-if="!isRoleStaff">
-          <p class="genErr">
+        <template v-if="!IsAuthorized(AuthorizedActions.NO_CONTACT_INFO)">
+          <p class="font-15">
             If this error persists, please contact us:
           </p>
-          <error-contact />
+          <ErrorContact />
         </template>
       </v-card-text>
 
@@ -118,9 +117,9 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Component, Prop, Emit } from 'vue-property-decorator'
-import { Getter } from 'pinia-class'
 import { ErrorContact } from '@/components/common/'
-import { useStore } from '@/store/store'
+import { AuthorizedActions } from '@/enums'
+import { IsAuthorized } from '@/utils'
 
 @Component({
   components: {
@@ -128,7 +127,9 @@ import { useStore } from '@/store/store'
   }
 })
 export default class SaveErrorDialog extends Vue {
-  @Getter(useStore) isRoleStaff!: boolean
+  // for template
+  readonly IsAuthorized = IsAuthorized
+  readonly AuthorizedActions = AuthorizedActions
 
   /** Prop containing filing name. */
   @Prop({ default: 'Filing' }) readonly filingName!: string
@@ -140,10 +141,10 @@ export default class SaveErrorDialog extends Vue {
   @Prop() readonly attach!: string
 
   /** Prop containing error messages. */
-  @Prop({ default: () => [] }) readonly errors!: object[]
+  @Prop({ default: () => [] }) readonly errors!: any[]
 
   /** Prop containing warning messages. */
-  @Prop({ default: () => [] }) readonly warnings!: object[]
+  @Prop({ default: () => [] }) readonly warnings!: any[]
 
   // Pass click events to parent.
   @Emit() protected okay (): void {}

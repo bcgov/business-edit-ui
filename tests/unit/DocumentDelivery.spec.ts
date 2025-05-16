@@ -3,7 +3,7 @@ import { mount, Wrapper } from '@vue/test-utils'
 import DocumentsDelivery from '@/components/common/DocumentsDelivery.vue'
 import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
-import { FilingTypes } from '@/enums'
+import { AuthorizationRoles, FilingTypes } from '@/enums'
 
 const vuetify = new Vuetify({})
 
@@ -24,7 +24,7 @@ function createComponent (): Wrapper<DocumentsDelivery> {
 describe('Document Delivery component', () => {
   beforeAll(() => {
     store.stateModel.tombstone.filingType = FilingTypes.ALTERATION
-    store.stateModel.tombstone.keycloakRoles = ['staff']
+    store.stateModel.tombstone.authRoles = [AuthorizationRoles.STAFF]
     store.stateModel.tombstone.userInfo = {
       email: 'currentuser@mail.com',
       contacts: [{ email: 'currentuser@mail.com' }]

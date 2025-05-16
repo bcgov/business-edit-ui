@@ -70,13 +70,14 @@ import { CompletingParty, BusinessStartDate, BusinessType, EntityName, FolioInfo
 import { AuthServices, LegalServices } from '@/services/'
 import { CommonMixin, FeeMixin, FilingTemplateMixin } from '@/mixins/'
 import { EntitySnapshotIF, ResourceIF } from '@/interfaces/'
-import { FilingStatus } from '@/enums/'
+import { AuthorizedActions, FilingStatus } from '@/enums/'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 import { ConversionResourceSp, ConversionResourceGp } from '@/resources/Conversion/'
 import { StatusCodes } from 'http-status-codes'
 import ViewWrapper from '@/components/ViewWrapper.vue'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 import { useStore } from '@/store/store'
+import { IsAuthorized } from '@/utils'
 
 @Component({
   components: {
@@ -98,7 +99,6 @@ export default class Conversion extends Mixins(CommonMixin, FeeMixin, FilingTemp
   @Getter(useStore) getAppValidate!: boolean
   @Getter(useStore) isEntityPartnership!: boolean
   @Getter(useStore) isEntitySoleProp!: boolean
-  @Getter(useStore) isRoleStaff!: boolean
   @Getter(useStore) isSummaryMode!: boolean
   @Getter(useStore) showFeeSummary!: boolean
 
@@ -137,10 +137,9 @@ export default class Conversion extends Mixins(CommonMixin, FeeMixin, FilingTemp
     // do not proceed if we are not authenticated (safety check - should never happen)
     if (!this.isAuthenticated) return
 
-    // do not proceed if user is not staff
-    const isStaffOnly = this.$route.matched.some(r => r.meta?.isStaffOnly)
-    if (isStaffOnly && !this.isRoleStaff) {
-      window.alert('Only staff can convert a record.')
+    // do not proceed if not authorized
+    if (!IsAuthorized(AuthorizedActions.FIRM_CONVERSION_FILING)) {
+      window.alert('You are not authorized to use Conversion filings.')
       this.$root.$emit('go-to-dashboard', true)
       return
     }

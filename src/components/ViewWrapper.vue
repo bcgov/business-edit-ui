@@ -38,7 +38,8 @@
                 :filingData="getFilingData"
                 :payApiUrl="payApiUrl"
                 :isLoading="isBusySaving"
-                :hasConflicts="isConflictingLegalType && (getNameRequestNumber || isNameChangedByType)"
+                :disableSaveResumeLater="disableSaveResumeLater"
+                :hasConflicts="hasConflicts"
                 :confirmLabel="feeSummaryConfirmLabel"
                 :errorMessage="feeSummaryError"
                 :isSummaryMode="isSummaryMode"
@@ -62,7 +63,7 @@
 import { Affix as affix } from 'vue-affix'
 import { Component, Mixins } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
-import { Navigate } from '@/utils/'
+import { IsAuthorized, Navigate } from '@/utils/'
 import PaySystemAlert from 'sbc-common-components/src/components/PaySystemAlert.vue'
 import SbcFeeSummary from 'sbc-common-components/src/components/SbcFeeSummary.vue'
 import { FeeSummary as FeeSummaryShared } from '@bcrs-shared-components/fee-summary/'
@@ -74,7 +75,7 @@ import { FilingDataIF, ConfirmDialogType, FlagsReviewCertifyIF, FlagsCompanyInfo
   AlterationFilingIF, ChgRegistrationFilingIF, ConversionFilingIF, RestorationFilingIF,
   SpecialResolutionFilingIF } from '@/interfaces/'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
-import { ComponentsCompanyInfo, ComponentsReviewCertify } from '@/enums/'
+import { AuthorizedActions, ComponentsCompanyInfo, ComponentsReviewCertify } from '@/enums/'
 import { FeeSummaryActions } from '@bcrs-shared-components/enums/'
 import { useStore } from '@/store/store'
 import flushPromises from 'flush-promises'
@@ -146,9 +147,6 @@ export default class ViewWrapper extends Mixins(CommonMixin, FilingTemplateMixin
   /** Whether the views have loaded their data and the spinner can be hidden. */
   protected haveData = false
 
-  /** The Update Current JS Date timer id. */
-  private updateCurrentJsDateId = 0
-
   /** The URL of the Pay API. */
   get payApiUrl (): string {
     return sessionStorage.getItem('PAY_API_URL')
@@ -157,6 +155,17 @@ export default class ViewWrapper extends Mixins(CommonMixin, FilingTemplateMixin
   /** Whether user is authenticated. */
   get isAuthenticated (): boolean {
     return Boolean(sessionStorage.getItem(SessionStorageKeys.KeyCloakToken))
+  }
+
+  /** Whether user isn't authorized and Save and Resume Later button should be disabled. */
+  get disableSaveResumeLater (): boolean {
+    return !IsAuthorized(AuthorizedActions.SAVE_DRAFT)
+  }
+
+  /** Whether something isn't valid (or authorized) and confirm button should be disabled. */
+  get hasConflicts (): boolean {
+    if (this.isSummaryMode && !IsAuthorized(AuthorizedActions.FILE_AND_PAY)) return true
+    return this.isConflictingLegalType && (!!this.getNameRequestNumber || this.isNameChangedByType)
   }
 
   /** The fee summary confirm button label. */

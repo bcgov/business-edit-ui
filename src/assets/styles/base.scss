@@ -41,13 +41,13 @@ html {
 
 @media (min-width: 960px) {
   html {
-    // default font size (16px)
-    font-size: 1rem;
+    // default font size
+    font-size: $px-16;
   }
 }
 
 body {
-  font-size: 1rem;
+  font-size: $px-16;
 }
 
 h1, h2, h3, h4 {
@@ -60,21 +60,21 @@ h1, h2{
 
 h1 {
   line-height: 2.25rem;
-  font-size: 2rem;
+  font-size: $px-32;
 }
 
 h2 {
-  font-size: 1.125rem;
+  font-size: $px-18;
 }
 
 h3 {
-  font-size: 1rem;
+  font-size: $px-16;
   font-weight: bold;
   line-height: 2.25rem;
 }
 
 label {
-  font-size: 1rem;
+  font-size: $px-16;
   line-height: 1.5rem;
   color: $gray9;
   font-weight: bold;
@@ -316,8 +316,8 @@ ul.list {
   color: $gray6;
 }
 
-.genErr {
-  font-size: 0.9rem; // 14.4 px
+.font-15 {
+  font-size: $px-15;
 }
 
 .has-conflict {
@@ -355,7 +355,7 @@ ul.list {
   margin-top: 0.5rem;
   text-transform: uppercase;
   font-weight: bold;
-  font-size: 0.6rem; // 9.6 px
+  font-size: $px-10;
 }
 
 .message-box {

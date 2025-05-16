@@ -12,7 +12,7 @@
       </v-card-title>
 
       <v-card-text>
-        <p class="genErr">
+        <p class="font-15">
           This account appears to be unable to access this name request, incorporation application,
           or business. You can retry, or you can exit and return to the dashboard.
         </p>

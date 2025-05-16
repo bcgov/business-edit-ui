@@ -12,13 +12,13 @@
       </v-card-title>
 
       <v-card-text>
-        <p class="genErr">
+        <p class="font-15">
           We were unable to retrieve your filing. You can try to retrieve your
           filing now, or you can exit and return to the dashboard.
         </p>
 
-        <template v-if="!isRoleStaff">
-          <p class="genErr">
+        <template v-if="!IsAuthorized(AuthorizedActions.NO_CONTACT_INFO)">
+          <p class="font-15">
             If this error persists, please contact us:
           </p>
           <ErrorContact />
@@ -53,9 +53,9 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Component, Prop, Emit } from 'vue-property-decorator'
-import { Getter } from 'pinia-class'
 import { ErrorContact } from '@/components/common/'
-import { useStore } from '@/store/store'
+import { AuthorizedActions } from '@/enums'
+import { IsAuthorized } from '@/utils'
 
 @Component({
   components: {
@@ -63,7 +63,9 @@ import { useStore } from '@/store/store'
   }
 })
 export default class FetchErrorDialog extends Vue {
-  @Getter(useStore) isRoleStaff!: boolean
+  // for template
+  readonly IsAuthorized = IsAuthorized
+  readonly AuthorizedActions = AuthorizedActions
 
   /** Prop to display the dialog. */
   @Prop() readonly dialog!: boolean

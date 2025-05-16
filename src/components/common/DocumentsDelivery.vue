@@ -28,7 +28,7 @@
         </v-row>
 
         <v-row
-          v-if="isRoleStaff && userEmailOptional"
+          v-if="IsAuthorized(AuthorizedActions.EDITABLE_COMPLETING_PARTY) && userEmailOptional"
           no-gutters
           class="mt-6"
         >
@@ -83,20 +83,23 @@
 import { Component, Mixins, Emit, Watch, Prop } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
 import { CommonMixin } from '@/mixins/'
-import { FilingNames } from '@/enums/'
+import { AuthorizedActions, FilingNames } from '@/enums/'
 import { FlagsReviewCertifyIF, ResourceIF } from '@/interfaces/'
 import { ContactPointIF } from '@bcrs-shared-components/interfaces/'
-
 import { useStore } from '@/store/store'
+import { IsAuthorized } from '@/utils'
 
 // FUTURE: update this component so it doesn't set changes flag initially
 
 @Component({})
 export default class DocumentsDelivery extends Mixins(CommonMixin) {
+  // for template
+  readonly IsAuthorized = IsAuthorized
+  readonly AuthorizedActions = AuthorizedActions
+
   // Store getters
   @Getter(useStore) getUserEmail!: string
   @Getter(useStore) getBusinessContact!: ContactPointIF
-  @Getter(useStore) isRoleStaff!: boolean
   @Getter(useStore) getDocumentOptionalEmail!: string
   @Getter(useStore) getFlagsReviewCertify!: FlagsReviewCertifyIF
   @Getter(useStore) getFilingName!: FilingNames

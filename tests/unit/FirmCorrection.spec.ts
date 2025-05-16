@@ -7,13 +7,14 @@ import { shallowMount, createLocalVue } from '@vue/test-utils'
 import { AxiosInstance as axios } from '@/utils/'
 import FirmCorrection from '@/views/Correction/FirmCorrection.vue'
 import mockRouter from './MockRouter'
-import { BusinessStartDate, BusinessType, CertifySection, CompletingParty, Detail, EntityName,
-  NatureOfBusiness, OfficeAddresses, PeopleAndRoles, StaffPayment, YourCompanyWrapper }
-  from '@/components/common'
+import {
+  BusinessStartDate, BusinessType, CertifySection, CompletingParty, Detail, EntityName,
+  NatureOfBusiness, OfficeAddresses, PeopleAndRoles, StaffPayment, YourCompanyWrapper
+} from '@/components/common'
 import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
-import { ActionTypes, FilingTypes } from '@/enums'
+import { ActionTypes, AuthorizationRoles, FilingTypes } from '@/enums'
 
 const vuetify = new Vuetify({})
 
@@ -35,6 +36,7 @@ describe('Firm Correction component', () => {
 
   store.stateModel.tombstone.entityType = CorpTypeCd.SOLE_PROP
   store.stateModel.tombstone.businessId = 'FM1234567'
+  store.stateModel.tombstone.authRoles = [AuthorizationRoles.STAFF]
 
   beforeEach(async () => {
     // mock the window.location.assign function

@@ -171,7 +171,7 @@
                         </p>
                       </div>
                       <HelpSection
-                        v-if="!isRoleStaff"
+                        v-if="!IsAuthorized(AuthorizedActions.FIRM_NO_HELP_SECTION)"
                         class="mt-6"
                         :helpSection="getResource.changeData.orgPersonInfo.helpSection"
                       />
@@ -211,7 +211,7 @@
                     </p>
 
                     <HelpSection
-                      v-if="!isRoleStaff"
+                      v-if="!IsAuthorized(AuthorizedActions.FIRM_NO_HELP_SECTION)"
                       class="mt-6"
                       :helpSection="getResource.changeData.orgPersonInfo.helpSection"
                     />
@@ -321,9 +321,9 @@
                 />
               </article>
 
-              <!-- Roles (base corrections only) -->
+              <!-- Roles (corp corrections only) -->
               <article
-                v-if="isBaseCorrectionFiling"
+                v-if="isCorpCorrectionFiling"
                 class="roles mt-6"
               >
                 <label class="sub-header">Roles</label>
@@ -494,8 +494,8 @@ export default class OrgPerson extends Mixins(CommonMixin, OrgPersonMixin) {
   @Getter(useStore) getCurrentDate!: string
   @Getter(useStore) getResource!: ResourceIF
   @Getter(useStore) isAlterationFiling!: boolean
-  @Getter(useStore) isBaseCorrectionFiling!: boolean
   @Getter(useStore) isCoopCorrectionFiling!: boolean
+  @Getter(useStore) isCorpCorrectionFiling!: boolean
   @Getter(useStore) isEntityFirm!: boolean
   @Getter(useStore) isFirmCorrectionFiling!: boolean
   @Getter(useStore) isFirmChangeFiling!: boolean
@@ -503,7 +503,6 @@ export default class OrgPerson extends Mixins(CommonMixin, OrgPersonMixin) {
   @Getter(useStore) isLimitedRestorationExtension!: boolean
   @Getter(useStore) isLimitedRestorationToFull!: boolean
   @Getter(useStore) isRestorationFiling!: boolean
-  @Getter(useStore) isRoleStaff!: boolean
 
   // Local variables
   orgPerson: OrgPersonIF = null // current org/person being added/edited
@@ -646,7 +645,7 @@ export default class OrgPerson extends Mixins(CommonMixin, OrgPersonMixin) {
     if (this.isFirmConversionFiling) {
       return true
     }
-    if (this.isBaseCorrectionFiling) {
+    if (this.isCorpCorrectionFiling) {
       return true
     }
     if (this.isFirmCorrectionFiling) {
@@ -682,8 +681,8 @@ export default class OrgPerson extends Mixins(CommonMixin, OrgPersonMixin) {
       // can add proprietor or partner
       return (this.isNew && (this.isProprietor || this.isPartner))
     }
-    if (this.isBaseCorrectionFiling) {
-      // base corrections don't use this component
+    if (this.isCorpCorrectionFiling) {
+      // corp corrections don't use this component
       return false
     }
     if (this.isFirmCorrectionFiling) {
@@ -860,7 +859,7 @@ export default class OrgPerson extends Mixins(CommonMixin, OrgPersonMixin) {
     }
     // Note: For corrections if the appointmentDate isn't included - you may run into some issues where adding a new
     // director as it wont show up in the parties or directors call.
-    if (this.isBaseCorrectionFiling || this.isCoopCorrectionFiling) {
+    if (this.isCorpCorrectionFiling || this.isCoopCorrectionFiling) {
       person.roles = this.setPersonRoles(this.orgPerson)
     } else {
       person.roles = this.orgPerson.roles

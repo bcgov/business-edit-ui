@@ -100,9 +100,9 @@
           >{{ orgPersonLabel }}</label>
         </div>
 
-        <!-- Instructional people and roles text (base corrections only)-->
+        <!-- Instructional people and roles text (corp/coop corrections only)-->
         <article
-          v-if="isBaseCorrectionFiling || isCoopCorrectionFiling"
+          v-if="isCorpCorrectionFiling || isCoopCorrectionFiling"
           class="section-container"
         >
           This application must include the following:
@@ -171,9 +171,9 @@
           </ul>
         </article>
 
-        <!-- Correction section (base corrections only) -->
+        <!-- Correction section (corp/coop corrections only) -->
         <article
-          v-if="isBaseCorrectionFiling || isCoopCorrectionFiling"
+          v-if="isCorpCorrectionFiling || isCoopCorrectionFiling"
           class="section-container"
         >
           <v-btn
@@ -201,7 +201,7 @@
           </p>
 
           <HelpSection
-            v-if="!isRoleStaff && helpSection"
+            v-if="!IsAuthorized(AuthorizedActions.FIRM_NO_HELP_SECTION) && helpSection"
             class="my-5"
             :helpSection="helpSection"
           />
@@ -312,7 +312,7 @@
           :validate="getComponentValidate"
           :validOrgPersons="validOrgPersons"
           :showDeliveryAddressColumn="!(isLimitedRestorationExtension || isLimitedRestorationToFull)"
-          :showRolesColumn="isBaseCorrectionFiling || isCoopCorrectionFiling"
+          :showRolesColumn="isCorpCorrectionFiling || isCoopCorrectionFiling"
           :showEmailColumn="isLimitedRestorationExtension || isLimitedRestorationToFull"
           :showEmailUnderName="showEmailUnderName"
           @initEdit="initEdit($event)"
@@ -366,8 +366,8 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin, OrgPe
   @Getter(useStore) isEntityCccContinueIn!: boolean
   @Getter(useStore) isEntityContinueIn!: boolean
   @Getter(useStore) isEntityUlcContinueIn!: boolean
-  @Getter(useStore) isBaseCorrectionFiling!: boolean
   @Getter(useStore) isCoopCorrectionFiling!: boolean
+  @Getter(useStore) isCorpCorrectionFiling!: boolean
   @Getter(useStore) isCorrectionFiling!: boolean
   @Getter(useStore) isFirmChangeFiling!: boolean
   @Getter(useStore) isFirmConversionFiling!: boolean
@@ -376,7 +376,6 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin, OrgPe
   @Getter(useStore) isLimitedRestorationToFull!: boolean
   @Getter(useStore) isEntityPartnership!: boolean
   @Getter(useStore) isRestorationFiling!: boolean
-  @Getter(useStore) isRoleStaff!: boolean
   @Getter(useStore) isEntitySoleProp!: boolean
 
   // Store actions

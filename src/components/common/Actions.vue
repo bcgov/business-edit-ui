@@ -66,8 +66,9 @@ import { Component, Mixins } from 'vue-property-decorator'
 import { Getter, Action } from 'pinia-class'
 import { DateMixin, FilingTemplateMixin, NameRequestMixin } from '@/mixins/'
 import { LegalServices } from '@/services/'
-import { Navigate, GetFeatureFlag } from '@/utils/'
+import { Navigate, GetFeatureFlag, IsAuthorized } from '@/utils/'
 import { useStore } from '@/store/store'
+import { AuthorizedActions } from '@/enums'
 
 /** This component is only implemented for Correction filings atm. */
 @Component({})
@@ -93,12 +94,18 @@ export default class Actions extends Mixins(DateMixin, FilingTemplateMixin, Name
 
   /** True if the Save button should be disabled. */
   get isSaveButtonDisabled (): boolean {
-    return (this.isBusySaving || this.isCorrectionEditing)
+    return (
+      !IsAuthorized(AuthorizedActions.SAVE_DRAFT) ||
+      this.isBusySaving || this.isCorrectionEditing
+    )
   }
 
   /** True if the Save and Resume button should be disabled. */
   get isSaveResumeButtonDisabled (): boolean {
-    return (this.isBusySaving || this.isCorrectionEditing)
+    return (
+      !IsAuthorized(AuthorizedActions.SAVE_DRAFT) ||
+      this.isBusySaving || this.isCorrectionEditing
+    )
   }
 
   /** True if the Empty Corrections filed and LD flag is True */
@@ -112,7 +119,10 @@ export default class Actions extends Mixins(DateMixin, FilingTemplateMixin, Name
 
   /** True if the File and Pay button should be disabled. */
   get isFilePayButtonDisabled (): boolean {
-    return (this.isBusySaving || !this.isCorrectionValid || this.isCorrectionEditing || !this.isAllowEmptyCorrections)
+    if (!IsAuthorized(AuthorizedActions.FILE_AND_PAY)) return true
+    return (
+      this.isBusySaving || !this.isCorrectionValid || this.isCorrectionEditing || !this.isAllowEmptyCorrections
+    )
   }
 
   /**

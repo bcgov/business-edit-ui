@@ -7,7 +7,7 @@ import { FolioNumber as FolioNumberShared } from '@bcrs-shared-components/folio-
 import AuthServices from '@/services/auth-services'
 import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
-import { FilingTypes } from '@/enums'
+import { AuthorizationRoles, FilingTypes } from '@/enums'
 
 const vuetify = new Vuetify({})
 
@@ -15,11 +15,9 @@ setActivePinia(createPinia())
 const store = useStore()
 
 describe('Folio Information component', () => {
-  it('renders correctly when account is not premium', () => {
-    const wrapper = mount(FolioInformation, {
-      vuetify,
-      computed: { isPremiumAccount: () => false }
-    })
+  it('renders correctly when account is staff', () => {
+    store.stateModel.tombstone.authRoles = [AuthorizationRoles.STAFF]
+    const wrapper = mount(FolioInformation, { vuetify })
 
     expect(wrapper.findComponent(FolioInformation).exists()).toBe(true)
     expect(wrapper.findComponent(FolioNumberShared).exists()).toBe(false)
@@ -27,11 +25,9 @@ describe('Folio Information component', () => {
     wrapper.destroy()
   })
 
-  it('renders correctly when account is premium', () => {
-    const wrapper = mount(FolioInformation, {
-      vuetify,
-      computed: { isPremiumAccount: () => true }
-    })
+  it('renders correctly when account is not staff', () => {
+    store.stateModel.tombstone.authRoles = []
+    const wrapper = mount(FolioInformation, { vuetify })
 
     expect(wrapper.findComponent(FolioInformation).exists()).toBe(true)
     expect(wrapper.findComponent(FolioNumberShared).exists()).toBe(true)
@@ -43,7 +39,6 @@ describe('Folio Information component', () => {
     const wrapper = mount(FolioInformation, {
       vuetify,
       computed: {
-        isPremiumAccount: () => true,
         getComponentValidate: () => false,
         getFlagsCompanyInfo: () => ({})
       }
@@ -59,7 +54,6 @@ describe('Folio Information component', () => {
     const wrapper = mount(FolioInformation, {
       vuetify,
       computed: {
-        isPremiumAccount: () => true,
         getComponentValidate: () => true,
         getFlagsCompanyInfo: () => ({ isValidFolioInfo: false })
       }
@@ -75,7 +69,6 @@ describe('Folio Information component', () => {
     const wrapper = mount(FolioInformation, {
       vuetify,
       computed: {
-        isPremiumAccount: () => true,
         getComponentValidate: () => true,
         getFlagsCompanyInfo: () => ({ isValidFolioInfo: true })
       }
@@ -91,10 +84,7 @@ describe('Folio Information component', () => {
     store.stateModel.tombstone.filingType = FilingTypes.CORRECTION
     store.stateModel.entitySnapshot = { authInfo: { folioNumber: 'A123' } } as any
 
-    const wrapper = mount(FolioInformation, {
-      vuetify,
-      computed: { isPremiumAccount: () => true }
-    })
+    const wrapper = mount(FolioInformation, { vuetify })
     const vm: any = wrapper.vm
 
     expect(vm.originalFolioNumber).toBe('A123')
@@ -106,10 +96,7 @@ describe('Folio Information component', () => {
     store.stateModel.tombstone.filingType = FilingTypes.ALTERATION
     store.stateModel.entitySnapshot = { authInfo: { folioNumber: 'A123' } } as any
 
-    const wrapper = mount(FolioInformation, {
-      vuetify,
-      computed: { isPremiumAccount: () => true }
-    })
+    const wrapper = mount(FolioInformation, { vuetify })
     const vm: any = wrapper.vm
 
     expect(vm.originalFolioNumber).toBe('A123')
@@ -121,10 +108,7 @@ describe('Folio Information component', () => {
     store.stateModel.tombstone.filingType = FilingTypes.CORRECTION
     store.stateModel.entitySnapshot = { authInfo: { folioNumber: null } } as any
 
-    const wrapper = mount(FolioInformation, {
-      vuetify,
-      computed: { isPremiumAccount: () => true }
-    })
+    const wrapper = mount(FolioInformation, { vuetify })
     const vm: any = wrapper.vm
 
     const mockUpdateFolioNumber = vi.spyOn((AuthServices as any), 'updateFolioNumber')
@@ -147,10 +131,7 @@ describe('Folio Information component', () => {
     // mock auth "patch business" endpoint
     sinon.stub(axios, 'patch').withArgs('myhost/basePath/auth/entities/BC1234567')
 
-    const wrapper = mount(FolioInformation, {
-      vuetify,
-      computed: { isPremiumAccount: () => true }
-    })
+    const wrapper = mount(FolioInformation, { vuetify })
     const vm: any = wrapper.vm
 
     const mockUpdateFolioNumber = vi.spyOn((AuthServices as any), 'updateFolioNumber')
@@ -165,10 +146,7 @@ describe('Folio Information component', () => {
   })
 
   it('sets validity in store', async () => {
-    const wrapper = mount(FolioInformation, {
-      vuetify,
-      computed: { isPremiumAccount: () => true }
-    })
+    const wrapper = mount(FolioInformation, { vuetify })
 
     await wrapper.setData({ isEditingFolioNumber: true })
     expect(store.stateModel.validationFlags.flagsCompanyInfo['isValidFolioInfo']).toBe(false)

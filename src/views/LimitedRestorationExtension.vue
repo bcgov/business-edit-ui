@@ -96,9 +96,11 @@
             class="mt-10"
             sectionNumber="2."
             :validate="getAppValidate"
+            :disableEdit="false"
           />
 
           <StaffPayment
+            v-if="IsAuthorized(AuthorizedActions.STAFF_PAYMENT)"
             class="mt-10"
             sectionNumber="3."
             @haveChanges="onStaffPaymentChanges()"
@@ -113,21 +115,24 @@
 import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
 import { cloneDeep } from 'lodash'
-import { GetFeatureFlag } from '@/utils/'
+import { GetFeatureFlag, IsAuthorized } from '@/utils/'
 import RestorationSummary from '@/components/Restoration/RestorationSummary.vue'
 import YourCompanySummary from '@/components/Restoration/YourCompanySummary.vue'
-import { BusinessContactInfo, CertifySection, DocumentsDelivery, EntityName, FolioInformation,
+import {
+  BusinessContactInfo, CertifySection, DocumentsDelivery, EntityName, FolioInformation,
   ListPeopleAndRoles, NameTranslation, OfficeAddresses, PeopleAndRoles, QuestionWrapper,
-  RecognitionDateTime, StaffPayment, YourCompanyWrapper } from '@/components/common/'
+  RecognitionDateTime, StaffPayment, YourCompanyWrapper
+} from '@/components/common/'
 import { CommonMixin, FeeMixin, FilingTemplateMixin, OrgPersonMixin } from '@/mixins/'
 import { EntitySnapshotIF, OrgPersonIF, ResourceIF, RestorationFilingIF } from '@/interfaces/'
-import { FilingStatus, RoleTypes } from '@/enums/'
+import { AuthorizedActions, FilingStatus, RoleTypes } from '@/enums/'
 import * as Resources from '@/resources/LimitedRestorationExtension/'
 import ExtendTimeLimit from '@/components/Restoration/ExtendTimeLimit.vue'
 import ViewWrapper from '@/components/ViewWrapper.vue'
 import { AuthServices, LegalServices } from '@/services'
 import { useStore } from '@/store/store'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
+import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 
 @Component({
   components: {
@@ -160,7 +165,6 @@ export default class LimitedRestorationExtension extends Mixins(
   @Getter(useStore) getAppValidate!: boolean
   // @Getter(useStore) getEntityType!: CorpTypeCd
   @Getter(useStore) getResource!: ResourceIF
-  @Getter(useStore) isRoleStaff!: boolean
   @Getter(useStore) isSummaryMode!: boolean
   @Getter(useStore) showFeeSummary!: boolean
 
@@ -183,6 +187,11 @@ export default class LimitedRestorationExtension extends Mixins(
    */
   isDataLoaded = false
 
+  /** True if user is authenticated. */
+  get isAuthenticated (): boolean {
+    return Boolean(sessionStorage.getItem(SessionStorageKeys.KeyCloakToken))
+  }
+
   /** The resource object for a restoration filing. */
   get restorationResource (): ResourceIF {
     switch (this.getEntityType) {
@@ -204,18 +213,20 @@ export default class LimitedRestorationExtension extends Mixins(
     // do not proceed if app is not ready
     if (!val) return
 
-    // do not proceed if FF is disabled
-    // bypass this when Vitest is running as FF are not fetched
-    if (!this.isVitestRunning && !GetFeatureFlag('restoration-ui-enabled')) {
-      window.alert('Restorations are not available at the moment. Please check again later.')
+    // do not proceed if we are not authenticated (safety check - should never happen)
+    if (!this.isAuthenticated) return
+
+    // do not proceed if not authorized
+    if (!IsAuthorized(AuthorizedActions.RESTORATION_FILING)) {
+      window.alert('You are not authorized to use Restoration filings.')
       this.$root.$emit('go-to-dashboard', true)
       return
     }
 
-    // do not proceed if user is not staff
-    const isStaffOnly = this.$route.matched.some(r => r.meta?.isStaffOnly)
-    if (isStaffOnly && !this.isRoleStaff) {
-      window.alert('Only staff can extend or convert a limited restoration.')
+    // do not proceed if FF is disabled
+    // bypass this when Vitest is running as FF are not fetched
+    if (!this.isVitestRunning && !GetFeatureFlag('restoration-ui-enabled')) {
+      window.alert('Restorations are not available at the moment. Please check again later.')
       this.$root.$emit('go-to-dashboard', true)
       return
     }

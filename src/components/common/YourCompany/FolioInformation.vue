@@ -1,6 +1,7 @@
 <template>
+  <!-- mutually exclusive with Staff Payment -->
   <div
-    v-if="isPremiumAccount"
+    v-if="!IsAuthorized(AuthorizedActions.STAFF_PAYMENT)"
     id="folio-information"
     class="section-container"
     :class="{'invalid-section': invalidSection}"
@@ -25,8 +26,9 @@ import { ActionKvIF, EntitySnapshotIF, FlagsCompanyInfoIF } from '@/interfaces/'
 import { AuthServices } from '@/services/'
 import { CommonMixin } from '@/mixins/'
 import { FolioNumber as FolioNumberShared } from '@bcrs-shared-components/folio-number/'
-
 import { useStore } from '@/store/store'
+import { IsAuthorized } from '@/utils'
+import { AuthorizedActions } from '@/enums'
 
 @Component({
   components: {
@@ -34,6 +36,10 @@ import { useStore } from '@/store/store'
   }
 })
 export default class FolioInformation extends Mixins(CommonMixin) {
+  // for template
+  readonly IsAuthorized = IsAuthorized
+  readonly AuthorizedActions = AuthorizedActions
+
   // Store getters
   @Getter(useStore) getBusinessId!: string
   @Getter(useStore) getComponentValidate!: boolean
@@ -44,8 +50,6 @@ export default class FolioInformation extends Mixins(CommonMixin) {
   @Getter(useStore) getFolioNumber!: string
   @Getter(useStore) isAlterationFiling!: boolean
   @Getter(useStore) isCorrectionFiling!: boolean
-  @Getter(useStore) isPremiumAccount!: boolean
-  @Getter(useStore) isRoleStaff!: boolean
   @Getter(useStore) isSpecialResolutionFiling!: boolean
 
   // Global setters
@@ -69,8 +73,7 @@ export default class FolioInformation extends Mixins(CommonMixin) {
   /** Whether to hide the component's actions. */
   get hideActions (): boolean {
     // hide actions in a correction filing
-    // hide actions from staff users
-    return (this.isCorrectionFiling || this.isRoleStaff)
+    return this.isCorrectionFiling
   }
 
   /** Helps builds edit label and determine if folio number update should be instant. */

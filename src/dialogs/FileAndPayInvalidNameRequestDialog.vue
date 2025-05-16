@@ -12,7 +12,7 @@
       </v-card-title>
       <v-card-text id="dialog-text">
         <!-- display errors -->
-        <div class="genErr mb-4">
+        <div class="font-15 mb-4">
           <p>
             <b>
               The Name Request {{ getNameRequestNumber || 'Unknown' }} and the Incorporation Application for
@@ -28,7 +28,7 @@
             available to anyone wishing to start their business with that name.
           </div>
         </div>
-        <p class="genErr">
+        <p class="font-15">
           Registries contact information:
         </p>
         <ErrorContact />
