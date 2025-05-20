@@ -7,7 +7,6 @@ export const stateModel: StateModelIF = {
   currentJsDate: null,
   tombstone: {
     filingType: null,
-    keycloakRoles: [],
     authRoles: [],
     userInfo: null,
     orgInfo: null,

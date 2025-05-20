@@ -20,7 +20,7 @@
           :isCertified="getCertifyState.valid"
           :entityDisplay="readableEntityType"
           :message="certifyMessage"
-          :isStaff="isRoleStaff"
+          :isStaff="IsAuthorized(AuthorizedActions.THIRD_PARTY_CERTIFY_STMT)"
           :firstColumn="3"
           :secondColumn="9"
           :validate="validate"
@@ -42,6 +42,8 @@ import { DateMixin } from '@/mixins/'
 import { CertifyIF, ResourceIF } from '@/interfaces/'
 import { CorpTypeCd, GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module/'
 import { useStore } from '@/store/store'
+import { IsAuthorized } from '@/utils'
+import { AuthorizedActions } from '@/enums'
 
 @Component({
   components: {
@@ -49,10 +51,13 @@ import { useStore } from '@/store/store'
   }
 })
 export default class CertifySection extends Mixins(DateMixin) {
+  // for template
+  readonly IsAuthorized = IsAuthorized
+  readonly AuthorizedActions = AuthorizedActions
+
   @Getter(useStore) getCertifyState!: CertifyIF
   @Getter(useStore) getCurrentDate!: string
   @Getter(useStore) getResource!: ResourceIF
-  @Getter(useStore) isRoleStaff!: boolean
   @Getter(useStore) getEntityType!: CorpTypeCd
 
   @Action(useStore) setCertifyState!: (x: CertifyIF) => void
@@ -65,7 +70,7 @@ export default class CertifySection extends Mixins(DateMixin) {
   @Prop({ default: false }) readonly validate!: boolean
 
   /** To determine whether user input is enabled. */
-  @Prop({ default: false }) readonly disableEdit!: boolean
+  @Prop({ required: true }) readonly disableEdit!: boolean
 
   /** Called when component is mounted. */
   mounted (): void {

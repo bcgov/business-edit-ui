@@ -44,13 +44,13 @@
       v-if="isClientErrorCorrection"
       class="mt-10"
       sectionNumber="1."
-      validate="true"
+      :validate="true"
     />
 
     <Detail
       class="mt-10"
       :sectionNumber="isClientErrorCorrection ? '2.' : '1.'"
-      validate="true"
+      :validate="true"
       rowCount="5"
     />
 
@@ -58,16 +58,19 @@
       v-if="isClientErrorCorrection"
       class="mt-10"
       :sectionNumber="isClientErrorCorrection ? '3.' : '2.'"
-      validate="true"
+      :validate="true"
+      :disableEdit="false"
     />
 
     <CourtOrderPoa
+      v-if="IsAuthorized(AuthorizedActions.COURT_ORDER_POA)"
       class="mt-10"
       :sectionNumber="isClientErrorCorrection ? '4.' : '2.'"
       autoValidation="true"
     />
 
     <StaffPayment
+      v-if="IsAuthorized(AuthorizedActions.STAFF_PAYMENT)"
       class="mt-10"
       :sectionNumber="isClientErrorCorrection ? '5.' : '3.'"
       @haveChanges="onStaffPaymentChanges()"
@@ -78,9 +81,11 @@
 <script lang="ts">
 import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
 import { SpecialResolutionSummary, Resolution } from '@/components/SpecialResolution'
-import { AssociationType, BusinessContactInfo, BusinessType, CertifySection, CompletingParty, CourtOrderPoa,
+import {
+  AssociationType, BusinessContactInfo, BusinessType, CertifySection, CompletingParty, CourtOrderPoa,
   CurrentDirectors, Detail, DocumentsDelivery, EntityName, FolioInformation, OfficeAddresses, PeopleAndRoles,
-  RecognitionDateTime, StaffPayment, TransactionalFolioNumber, YourCompanyWrapper } from '@/components/common/'
+  RecognitionDateTime, StaffPayment, TransactionalFolioNumber, YourCompanyWrapper
+} from '@/components/common/'
 import { CommonMixin, FeeMixin, FilingTemplateMixin } from '@/mixins/'
 import ViewWrapper from '@/components/ViewWrapper.vue'
 import Rules from '@/components/SpecialResolution/Rules.vue'
@@ -91,7 +96,8 @@ import { CorrectionFilingIF, ResourceIF, EntitySnapshotIF } from '@/interfaces'
 import { CorrectionResourceCp } from '@/resources/Correction'
 import { DateUtilities, LegalServices, AuthServices } from '@/services'
 import { StaffPaymentOptions } from '@bcrs-shared-components/enums'
-import { CorrectionErrorTypes } from '@/enums'
+import { AuthorizedActions, CorrectionErrorTypes } from '@/enums'
+import { IsAuthorized } from '@/utils'
 
 @Component({
   components: {
@@ -120,6 +126,10 @@ import { CorrectionErrorTypes } from '@/enums'
   }
 })
 export default class CoopCorrection extends Mixins(CommonMixin, FeeMixin, FilingTemplateMixin) {
+  // for template
+  readonly IsAuthorized = IsAuthorized
+  readonly AuthorizedActions = AuthorizedActions
+
   // Store getters
   @Getter(useStore) hasResolutionSection!: boolean
 

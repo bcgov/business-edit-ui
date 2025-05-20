@@ -4,6 +4,7 @@ import PaymentErrorDialog from '@/dialogs/PaymentErrorDialog.vue'
 import ErrorContact from '@/components/common/ErrorContact.vue'
 import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
+import { AuthorizationRoles } from '@/enums'
 
 const vuetify = new Vuetify({})
 
@@ -21,7 +22,7 @@ describe('Payment Error Dialog', () => {
   }]
 
   it('renders the component properly as a staff user', () => {
-    store.stateModel.tombstone.keycloakRoles = ['staff', 'edit', 'view']
+    store.stateModel.tombstone.authRoles = [AuthorizationRoles.STAFF]
     const wrapper = shallowMount(PaymentErrorDialog,
       {
         vuetify,
@@ -35,12 +36,13 @@ describe('Payment Error Dialog', () => {
     expect(wrapper.findAll('p').at(0).text()).toContain('We are unable to process your payment')
     expect(wrapper.findComponent(ErrorContact).exists()).toBe(false)
     expect(wrapper.find('#dialog-exit-button').exists()).toBe(true)
+    expect(wrapper.find('#dialog-okay-button').exists()).toBe(true)
 
     wrapper.destroy()
   })
 
   it('renders the component properly as a regular user', () => {
-    store.stateModel.tombstone.keycloakRoles = ['edit', 'view']
+    store.stateModel.tombstone.authRoles = [AuthorizationRoles.VIEW]
     const wrapper = shallowMount(PaymentErrorDialog,
       {
         vuetify,
@@ -60,6 +62,7 @@ describe('Payment Error Dialog', () => {
     expect(wrapper.findAll('li').at(2).text()).toContain('Sunday')
     expect(wrapper.findComponent(ErrorContact).exists()).toBe(true)
     expect(wrapper.find('#dialog-exit-button').exists()).toBe(true)
+    expect(wrapper.find('#dialog-okay-button').exists()).toBe(true)
 
     wrapper.destroy()
   })
@@ -75,7 +78,7 @@ describe('Payment Error Dialog', () => {
 
     // verify and click Exit button
     const exitButton = wrapper.find('#dialog-exit-button')
-    expect(exitButton.text()).toBe('Return to dashboard')
+    expect(exitButton.text()).toBe('Back to My Dashboard')
     await exitButton.trigger('click')
 
     expect(wrapper.emitted('exit').length).toBe(1)
@@ -83,8 +86,27 @@ describe('Payment Error Dialog', () => {
     wrapper.destroy()
   })
 
+  it('emits an event when Okay button is clicked', async () => {
+    const wrapper = mount(PaymentErrorDialog,
+      {
+        vuetify,
+        propsData: { dialog: true }
+      })
+
+    expect(wrapper.emitted('okay')).toBeUndefined()
+
+    // verify and click Exit button
+    const exitButton = wrapper.find('#dialog-okay-button')
+    expect(exitButton.text()).toBe('OK')
+    await exitButton.trigger('click')
+
+    expect(wrapper.emitted('okay').length).toBe(1)
+
+    wrapper.destroy()
+  })
+
   it('renders error messages correctly when they are present', () => {
-    store.stateModel.tombstone.keycloakRoles = ['edit', 'view']
+    store.stateModel.tombstone.authRoles = [AuthorizationRoles.VIEW]
     const wrapper = shallowMount(PaymentErrorDialog,
       {
         vuetify,
@@ -106,12 +128,13 @@ describe('Payment Error Dialog', () => {
 
     expect(wrapper.findComponent(ErrorContact).exists()).toBe(true)
     expect(wrapper.find('#dialog-exit-button').exists()).toBe(true)
+    expect(wrapper.find('#dialog-okay-button').exists()).toBe(true)
 
     wrapper.destroy()
   })
 
   it('renders warning messages correctly when they are present', () => {
-    store.stateModel.tombstone.authRoles = ['edit', 'view']
+    store.stateModel.tombstone.authRoles = [AuthorizationRoles.VIEW]
     const wrapper = shallowMount(PaymentErrorDialog,
       {
         vuetify,
@@ -133,11 +156,10 @@ describe('Payment Error Dialog', () => {
     expect(wrapper.findAll('span').at(1).text()).toContain('Test Warning 1')
     expect(wrapper.findAll('span').at(3).text()).toContain('Test Warning 2')
 
-    expect(wrapper.find('#dialog-exit-button').exists()).toBe(true)
-    expect(wrapper.find('#dialog-okay-button').exists()).toBe(false)
-
     expect(wrapper.findComponent(ErrorContact).exists()).toBe(true)
+
     expect(wrapper.find('#dialog-exit-button').exists()).toBe(true)
+    expect(wrapper.find('#dialog-okay-button').exists()).toBe(true)
 
     wrapper.destroy()
   })

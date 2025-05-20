@@ -1,7 +1,8 @@
 // Pinia Store
 import {
-  AccountTypes,
   ActionTypes,
+  AuthorizationRoles,
+  AuthorizedActions,
   CoopTypes,
   CorrectionErrorTypes,
   FilingNames,
@@ -46,12 +47,12 @@ import {
 } from '@bcrs-shared-components/interfaces/'
 import { GetFeatureFlag, IsSame, OrderShares, RemoveNullProps } from '@/utils/'
 import DateUtilities from '@/services/date-utilities'
-
 import { defineStore } from 'pinia'
 import { resourceModel, stateModel } from './state'
 import { LegalServices } from '@/services'
 import { RulesMemorandumIF } from '@/interfaces/rules-memorandum-interfaces'
 import { isEmpty, isEqual } from 'lodash'
+import { IsAuthorized } from '@/utils'
 
 // Possible to move getters / actions into seperate files:
 // https://github.com/vuejs/pinia/issues/802#issuecomment-1018780409
@@ -60,16 +61,6 @@ export const useStore = defineStore('store', {
   // convert to a function
   state: (): StateIF => ({ resourceModel, stateModel }),
   getters: {
-    /** Whether the user has "staff" Keycloak role. */
-    isRoleStaff (): boolean {
-      return this.stateModel.tombstone.keycloakRoles.includes('staff')
-    },
-
-    /** Whether the current account is SBC Staff. */
-    isSbcStaff (): boolean {
-      return this.stateModel.accountInformation?.accountType === AccountTypes.SBC_STAFF
-    },
-
     /** Whether the current filing is a Correction. */
     isCorrectionFiling (): boolean {
       return (this.stateModel.tombstone.filingType === FilingTypes.CORRECTION)
@@ -83,16 +74,6 @@ export const useStore = defineStore('store', {
     /** Whether the current filing is a Special Resolution. */
     isSpecialResolutionFiling (): boolean {
       return (this.stateModel.tombstone.filingType === FilingTypes.SPECIAL_RESOLUTION)
-    },
-
-    /** Whether the current filing is a Change of Registration. */
-    isChangeRegFiling (): boolean {
-      return (this.stateModel.tombstone.filingType === FilingTypes.CHANGE_OF_REGISTRATION)
-    },
-
-    /** Whether the current filing is a Conversion. */
-    isConversionFiling (): boolean {
-      return (this.stateModel.tombstone.filingType === FilingTypes.CONVERSION)
     },
 
     /** Whether the current filing is a Restoration. */
@@ -110,14 +91,17 @@ export const useStore = defineStore('store', {
       return (this.getRestoration.type === RestorationTypes.LTD_TO_FULL)
     },
 
-    /** Whether the current filing is a Change of Registration for a firm corp class. */
+    /** Whether the current filing is a Change of Registration for a firm. */
     isFirmChangeFiling (): boolean {
-      return (this.isEntityFirm && this.isChangeRegFiling)
+      return (
+        this.isEntityFirm &&
+        this.stateModel.tombstone.filingType === FilingTypes.CHANGE_OF_REGISTRATION
+      )
     },
 
-    /** Whether the current filing is a Correction for a base company. */
-    isBaseCorrectionFiling (): boolean {
-      return (this.isBaseCompany && this.isCorrectionFiling)
+    /** Whether the current filing is a Correction for a corporation. */
+    isCorpCorrectionFiling (): boolean {
+      return (this.isEntityCorp && this.isCorrectionFiling)
     },
 
     /* Whether the current filing is a Correction for a cooperative. */
@@ -132,7 +116,10 @@ export const useStore = defineStore('store', {
 
     /** Whether the current filing is a Conversion for a firm. */
     isFirmConversionFiling (): boolean {
-      return (this.isEntityFirm && this.isConversionFiling)
+      return (
+        this.isEntityFirm &&
+        this.stateModel.tombstone.filingType === FilingTypes.CONVERSION
+      )
     },
 
     /** Whether the corrected filing is an Incorporation Application. */
@@ -225,8 +212,8 @@ export const useStore = defineStore('store', {
       return (this.getEntityType === CorpTypeCd.ULC_CONTINUE_IN)
     },
 
-    /** Whether the entity is a base company (BC/BEN/CC/ULC or C/CBEN/CCC/CUL). */
-    isBaseCompany (): boolean {
+    /** Whether the entity is a corporation (BC/BEN/CC/ULC or C/CBEN/CCC/CUL). */
+    isEntityCorp (): boolean {
       return (
         this.isEntityBcCompany ||
         this.isEntityBenefitCompany ||
@@ -244,11 +231,6 @@ export const useStore = defineStore('store', {
       return (this.isEntityPartnership || this.isEntitySoleProp)
     },
 
-    /** Whether the current account is a premium account. */
-    isPremiumAccount (): boolean {
-      return (this.stateModel.accountInformation?.accountType === AccountTypes.PREMIUM)
-    },
-
     /** The effective date-time object. */
     getEffectiveDateTime (): EffectiveDateTimeIF {
       return this.stateModel.effectiveDateTime
@@ -264,9 +246,14 @@ export const useStore = defineStore('store', {
       return this.getBusinessInformation.startDate
     },
 
+    /** The Account Information object. */
+    getAccountInformation (): AccountInformationIF {
+      return this.stateModel.accountInformation
+    },
+
     /** The current account id. */
     getAccountId (): number {
-      return this.stateModel.accountInformation?.id || null
+      return this.getAccountInformation?.id || null
     },
 
     /** The current date in format (YYYY-MM-DD), which is refreshed every time the app inits. */
@@ -402,9 +389,9 @@ export const useStore = defineStore('store', {
       return this.stateModel.tombstone.userInfo
     },
 
-    /** The current user's keycloak roles. */
-    getKeycloakRoles (): Array<string> {
-      return this.stateModel.tombstone.keycloakRoles
+    /** The user's roles from the Auth API "authorizations" endpoint. */
+    getAuthRoles (): Array<AuthorizationRoles> {
+      return this.stateModel.tombstone.authRoles
     },
 
     /** The org info. (May be null.) */
@@ -566,7 +553,7 @@ export const useStore = defineStore('store', {
      * - staff payment
      */
     hasCorrectionDataChanged (): boolean {
-      if (this.isBaseCorrectionFiling) {
+      if (this.isCorpCorrectionFiling) {
         return (
           this.hasBusinessNameChanged ||
           this.hasBusinessTypeChanged ||
@@ -709,7 +696,7 @@ export const useStore = defineStore('store', {
 
     /** Whether the subject correction filing is valid. */
     isCorrectionValid (): boolean {
-      if (this.isBaseCorrectionFiling) {
+      if (this.isCorpCorrectionFiling) {
         if (this.isClientErrorCorrection) {
           return (
             this.getFlagsCompanyInfo.isValidCompanyName &&
@@ -986,7 +973,7 @@ export const useStore = defineStore('store', {
     hasMailingChanged (): boolean {
       if (
         this.isAlterationFiling ||
-        this.isBaseCorrectionFiling ||
+        this.isCorpCorrectionFiling ||
         this.isRestorationFiling
       ) {
         return !IsSame(
@@ -1022,7 +1009,7 @@ export const useStore = defineStore('store', {
     hasDeliveryChanged (): boolean {
       if (
         this.isAlterationFiling ||
-        this.isBaseCorrectionFiling ||
+        this.isCorpCorrectionFiling ||
         this.isRestorationFiling
       ) {
         return !IsSame(
@@ -1311,16 +1298,18 @@ export const useStore = defineStore('store', {
       return this.getValidationFlags.flagsCompanyInfo.isValidExtensionTime
     },
 
-    /** Returns false when users can change the sole proprietor (SP).
-     * Restricts the ability of non-staff users from changing the sole
-     * proprietor when the SP is an organization.  This restriction has been
+    /**
+     * Unless authorized, restricts the ability of users from changing the sole
+     * proprietor when the SP is an organization. This restriction has been
      * added to ensure that changes made in business-edit-ui are also updated by
-     * staff in COLIN */
+     * staff in COLIN.
+     * @returns False when users can change the sole proprietor.
+     */
     hideChangeButtonForSoleProps (): boolean {
       const isProprietor = this.getOrgPeople[0]?.roles[0]?.roleType === RoleTypes.PROPRIETOR
       const isOrganization = this.getOrgPeople[0]?.officer?.partyType === PartyTypes.ORGANIZATION
       const isDba = isProprietor && isOrganization
-      return !this.isRoleStaff && isDba
+      return !IsAuthorized(AuthorizedActions.FIRM_EDITABLE_DBA) && isDba
     },
 
     /**
@@ -1450,8 +1439,8 @@ export const useStore = defineStore('store', {
     setIsFilingPaying (isFilingPaying: boolean) {
       this.stateModel.tombstone.isFilingPaying = isFilingPaying
     },
-    setKeycloakRoles (keycloakRoles: string[]) {
-      this.stateModel.tombstone.keycloakRoles = keycloakRoles
+    setAuthRoles (roles: Array<AuthorizationRoles>) {
+      this.stateModel.tombstone.authRoles = roles
     },
     setUserInfo (userInfo: any) {
       this.stateModel.tombstone.userInfo = userInfo

@@ -15,7 +15,7 @@
         <!-- display common message -->
         <div
           v-if="numErrors == 0"
-          class="genErr"
+          class="font-15"
         >
           <p>We are unable to process your payment at this time.</p>
         </div>
@@ -23,7 +23,7 @@
         <!-- display errors -->
         <div
           v-else
-          class="genErr mb-4"
+          class="font-15 mb-4"
         >
           <p>We were unable to process your payment due to the following error(s):</p>
           <ul>
@@ -39,7 +39,7 @@
         <!-- display warnings-->
         <div
           v-if="numWarnings > 0"
-          class="genErr mb-4"
+          class="font-15 mb-4"
         >
           <p>Please note the following warning(s):</p>
           <ul>

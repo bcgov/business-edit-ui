@@ -4,7 +4,7 @@ import CompletingParty from '@/components/common/CompletingParty.vue'
 import { CompletingParty as CompletingPartyShared } from '@bcrs-shared-components/completing-party/'
 import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
-import { FilingTypes } from '@/enums'
+import { AuthorizationRoles, FilingTypes } from '@/enums'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 
 const vuetify = new Vuetify({})
@@ -17,25 +17,23 @@ const store = useStore()
 const firmTestCases = [
   {
     entityType: 'SP',
-    isPremium: false,
     isStaff: false
   },
   {
     entityType: 'GP',
-    isPremium: true,
     isStaff: false
   }
 ]
 
 for (const test of firmTestCases) {
-  const type = test.isPremium ? 'premium' : test.isStaff ? 'staff' : 'regular'
+  const type = test.isStaff ? 'staff' : 'regular'
 
   // FUTURE: Fix the error in BaseAddress in sbc-common
   describe.skip(`Completing Party view for a ${test.entityType} as a ${type} user`, () => {
     let wrapper: any
 
     beforeAll(() => {
-      store.stateModel.tombstone.keycloakRoles = ['staff']
+      store.stateModel.tombstone.authRoles = [AuthorizationRoles.STAFF]
       store.stateModel.tombstone.businessId = 'BC1234567'
       store.stateModel.tombstone.filingType = FilingTypes.CHANGE_OF_REGISTRATION
       store.stateModel.tombstone.entityType = CorpTypeCd.SOLE_PROP

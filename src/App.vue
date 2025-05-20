@@ -37,6 +37,7 @@
       :errors="saveErrors"
       :warnings="saveWarnings"
       @exit="goToDashboard()"
+      @okay="paymentErrorDialog = false"
     />
 
     <!-- FUTURE: pass actual filing name -->
@@ -130,7 +131,7 @@
 import { Component, Mixins, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
 import { StatusCodes } from 'http-status-codes'
-import { GetFeatureFlag, GetKeycloakRoles, Navigate, UpdateLdUser, Sleep } from '@/utils/'
+import { GetFeatureFlag, IsAuthorized, Navigate, UpdateLdUser, Sleep } from '@/utils/'
 import SbcHeader from 'sbc-common-components/src/components/SbcHeader.vue'
 import SbcFooter from 'sbc-common-components/src/components/SbcFooter.vue'
 import { Actions, EntityInfo } from '@/components/common/'
@@ -143,7 +144,7 @@ import { CommonMixin, FilingTemplateMixin } from '@/mixins/'
 import { AccountInformationIF, ConfirmDialogType } from '@/interfaces/'
 import { BreadcrumbIF, CompletingPartyIF } from '@bcrs-shared-components/interfaces/'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
-import { FilingTypes, RouteNames } from '@/enums/'
+import { AuthorizationRoles, AuthorizedActions, FilingTypes, RouteNames } from '@/enums/'
 import { getBusinessDashboardBreadcrumb, getMyBusinessRegistryBreadcrumb, getRegistryDashboardBreadcrumb,
   getStaffDashboardBreadcrumb } from '@/resources/BreadCrumbResources'
 import DateUtilities from '@/services/date-utilities'
@@ -172,7 +173,7 @@ export default class App extends Mixins(CommonMixin, FilingTemplateMixin) {
   @Getter(useStore) getComponentValidate!: boolean
   @Getter(useStore) getCurrentJsDate!: Date
   @Getter(useStore) getFilingId!: number
-  @Getter(useStore) getKeycloakRoles!: Array<string>
+  @Getter(useStore) getAuthRoles!: Array<AuthorizationRoles>
   @Getter(useStore) getOrgInfo!: any
   @Getter(useStore) getUserEmail!: string
   @Getter(useStore) getUserFirstName!: string
@@ -183,14 +184,13 @@ export default class App extends Mixins(CommonMixin, FilingTemplateMixin) {
   @Getter(useStore) isBusySaving!: boolean
   @Getter(useStore) isCorrectionEditing!: boolean
   @Getter(useStore) isCorrectionFiling!: boolean
-  @Getter(useStore) isRoleStaff!: boolean
-  @Getter(useStore) isSbcStaff!: boolean
   @Getter(useStore) isSummaryMode!: boolean
   @Getter(useStore) showFeeSummary!: boolean
 
   // Store actions
   @Action(useStore) setAccountInformation!: (x: AccountInformationIF) => void
   @Action(useStore) setAppValidate!: (x: boolean) => void
+  @Action(useStore) setAuthRoles!: (x: Array<AuthorizationRoles>) => void
   @Action(useStore) setBusinessId!: (x: string) => void
   @Action(useStore) setCompletingParty!: (x: CompletingPartyIF) => void
   @Action(useStore) setComponentValidate!: (x: boolean) => void
@@ -201,7 +201,6 @@ export default class App extends Mixins(CommonMixin, FilingTemplateMixin) {
   @Action(useStore) setHaveUnsavedChanges!: (x: boolean) => void
   @Action(useStore) setIsFilingPaying!: (x: boolean) => void
   @Action(useStore) setIsSaving!: (x: boolean) => void
-  @Action(useStore) setKeycloakRoles!: (x: string[]) => void
   @Action(useStore) setOrgInfo!: (x: any) => void
   @Action(useStore) setSummaryMode!: (x: boolean) => void
   @Action(useStore) setUserInfo!: (x: any) => void
@@ -239,13 +238,12 @@ export default class App extends Mixins(CommonMixin, FilingTemplateMixin) {
       }
     ]
 
-    // Set base crumbs based on user role
-    // Staff don't want the home landing page and they can't access the Manage Business Dashboard
-    if (this.isRoleStaff) {
-      // If staff, set StaffDashboard as home crumb
+    // Set breadcrumbs based on authorizations
+    if (IsAuthorized(AuthorizedActions.STAFF_BREADCRUMBS)) {
+      // set StaffDashboard as home crumb
       crumbs.unshift(getStaffDashboardBreadcrumb())
     } else {
-      // For non-staff, set Home and Dashboard crumbs
+      // set Home and Dashboard crumbs
       crumbs.unshift(getRegistryDashboardBreadcrumb(), getMyBusinessRegistryBreadcrumb())
     }
 
@@ -314,7 +312,7 @@ export default class App extends Mixins(CommonMixin, FilingTemplateMixin) {
       this.saveWarnings = error?.response?.data?.warnings || []
 
       if (error?.response?.status === StatusCodes.PAYMENT_REQUIRED) {
-        if (!this.isRoleStaff) {
+        if (!IsAuthorized(AuthorizedActions.STAFF_PAYMENT)) {
           // changes were saved if a 402 is received, so clear flag
           this.setHaveUnsavedChanges(false)
           this.paymentErrorDialog = true
@@ -414,12 +412,11 @@ export default class App extends Mixins(CommonMixin, FilingTemplateMixin) {
     // set current date from "real time" date from server
     this.setCurrentDate(DateUtilities.dateToYyyyMmDd(this.getCurrentJsDate))
 
-    // get and store keycloak roles
+    // ensure user is authorized to access this business
     try {
-      const keycloakRoles = GetKeycloakRoles()
-      this.setKeycloakRoles(keycloakRoles)
+      await this.checkAuth()
     } catch (error) {
-      console.log('Keycloak error =', error) // eslint-disable-line no-console
+      console.log('Auth error =', error) // eslint-disable-line no-console
       this.accountAuthorizationDialog = true
       return
     }
@@ -429,15 +426,6 @@ export default class App extends Mixins(CommonMixin, FilingTemplateMixin) {
       await this.loadAccountInformation()
     } catch (error) {
       console.log('Account info error =', error) // eslint-disable-line no-console
-      this.accountAuthorizationDialog = true
-      return
-    }
-
-    // ensure user is authorized to access this business
-    try {
-      await this.loadAuth()
-    } catch (error) {
-      console.log('Auth error =', error) // eslint-disable-line no-console
       this.accountAuthorizationDialog = true
       return
     }
@@ -452,18 +440,18 @@ export default class App extends Mixins(CommonMixin, FilingTemplateMixin) {
     }
 
     // now that we have user info and org info, populate the completing party
-    // NB: these are all empty for staff
-    const isStaff = this.isRoleStaff || this.isSbcStaff
+    // NB: these are all empty if authorized to leave blank
+    const isBlank = IsAuthorized(AuthorizedActions.BLANK_COMPLETING_PARTY)
     this.setCompletingParty({
-      firstName: isStaff ? '' : this.getUserFirstName,
-      lastName: isStaff ? '' : this.getUserLastName,
+      firstName: isBlank ? '' : this.getUserFirstName,
+      lastName: isBlank ? '' : this.getUserLastName,
       mailingAddress: {
-        addressCity: isStaff ? '' : this.getOrgInfo?.mailingAddress.city,
-        addressCountry: isStaff ? '' : this.getOrgInfo?.mailingAddress.country,
-        addressRegion: isStaff ? '' : this.getOrgInfo?.mailingAddress.region,
-        postalCode: isStaff ? '' : this.getOrgInfo?.mailingAddress.postalCode,
-        streetAddress: isStaff ? '' : this.getOrgInfo?.mailingAddress.street,
-        streetAddressAdditional: isStaff ? '' : this.getOrgInfo?.mailingAddress.streetAdditional
+        addressCity: isBlank ? '' : this.getOrgInfo?.mailingAddress.city,
+        addressCountry: isBlank ? '' : this.getOrgInfo?.mailingAddress.country,
+        addressRegion: isBlank ? '' : this.getOrgInfo?.mailingAddress.region,
+        postalCode: isBlank ? '' : this.getOrgInfo?.mailingAddress.postalCode,
+        streetAddress: isBlank ? '' : this.getOrgInfo?.mailingAddress.street,
+        streetAddressAdditional: isBlank ? '' : this.getOrgInfo?.mailingAddress.streetAdditional
       }
     } as CompletingPartyIF)
 
@@ -553,35 +541,41 @@ export default class App extends Mixins(CommonMixin, FilingTemplateMixin) {
     this.saveWarnings = []
   }
 
-  /** Fetches org information and stores it. */
-  private async loadAccountInformation (): Promise<void> {
-    // NB: staff don't have current account (but SBC Staff do)
-    if (!this.isRoleStaff) {
-      const currentAccount = await this.getCurrentAccount().catch(() => null)
-      if (currentAccount) {
-        this.setAccountInformation(currentAccount)
-      } else {
-        throw new Error('Invalid current account')
-      }
+  /** Fetches authorizations and verifies roles. */
+  private async checkAuth (): Promise<any> {
+    // NB: will throw if API error
+    const authorizations = await AuthServices.fetchAuthorizations(this.getBusinessId)
+    const authRoles: Array<AuthorizationRoles> = authorizations.roles || []
 
-      const orgInfo = await AuthServices.fetchOrgInfo(currentAccount?.id).catch(() => null)
-      if (orgInfo) {
-        this.setOrgInfo(orgInfo)
-      } else {
-        throw new Error('Invalid org info')
-      }
+    if (!Array.isArray(authRoles)) {
+      throw new Error('Invalid auth roles')
     }
+
+    // verify that array has "view" or "staff" roles
+    if (
+      !authRoles.includes(AuthorizationRoles.VIEW) &&
+      !authRoles.includes(AuthorizationRoles.STAFF)
+    ) {
+      throw new Error('Invalid auth roles')
+    }
+
+    this.setAuthRoles(authRoles)
   }
 
-  /** Fetches authorizations and verifies roles. */
-  private async loadAuth (): Promise<any> {
-    // NB: will throw if API error
-    const authRoles = await AuthServices.fetchAuthorizations(this.getBusinessId)
+  /** Fetches account info and stores it. */
+  private async loadAccountInformation (): Promise<void> {
+    const currentAccount = await this.getCurrentAccount().catch(() => null)
+    if (currentAccount) {
+      this.setAccountInformation(currentAccount)
+    } else {
+      throw new Error('Invalid current account') // *** TODO: remove this?
+    }
 
-    // verify that array has at least one role
-    // NB: roles array may contain 'view', 'edit', 'staff' or nothing
-    if (!Array.isArray(authRoles) || authRoles.length < 1) {
-      throw new Error('Invalid auth roles')
+    const orgInfo = await AuthServices.fetchOrgInfo(currentAccount?.id).catch(() => null)
+    if (orgInfo) {
+      this.setOrgInfo(orgInfo)
+    } else {
+      throw new Error('Invalid org info') // *** TODO: remove this?
     }
   }
 
@@ -619,8 +613,8 @@ export default class App extends Mixins(CommonMixin, FilingTemplateMixin) {
     const email = this.getUserEmail
     const firstName = this.getUserFirstName
     const lastName = this.getUserLastName
-    // store Keycloak roles in custom object
-    const custom = { roles: this.getKeycloakRoles } as any
+    // store auth roles in custom object
+    const custom = { roles: this.getAuthRoles } as any
 
     await UpdateLdUser(key, email, firstName, lastName, custom)
   }

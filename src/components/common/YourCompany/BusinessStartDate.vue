@@ -41,7 +41,7 @@
             <p class="mt-4">
               Enter the start date of the business.
 
-              <template v-if="!isRoleStaff">
+              <template v-if="!IsAuthorized(AuthorizedActions.FIRM_NO_MIN_START_DATE)">
                 The start date can be
                 <v-tooltip
                   top
@@ -175,6 +175,8 @@ import { CommonMixin, DateMixin } from '@/mixins/'
 import { DatePicker as DatePickerShared } from '@bcrs-shared-components/date-picker'
 import { ActionKvIF, FlagsCompanyInfoIF } from '@/interfaces'
 import { useStore } from '@/store/store'
+import { IsAuthorized } from '@/utils'
+import { AuthorizedActions } from '@/enums'
 
 @Component({
   components: {
@@ -182,6 +184,10 @@ import { useStore } from '@/store/store'
   }
 })
 export default class BusinessStartDate extends Mixins(CommonMixin, DateMixin) {
+  // for template
+  readonly IsAuthorized = IsAuthorized
+  readonly AuthorizedActions = AuthorizedActions
+
   // Store getters
   @Getter(useStore) getBusinessFoundingDateTime!: string
   @Getter(useStore) getBusinessStartDate!: string
@@ -194,7 +200,6 @@ export default class BusinessStartDate extends Mixins(CommonMixin, DateMixin) {
   @Getter(useStore) hasBusinessStartDateChanged!: boolean
   @Getter(useStore) isFirmConversionFiling!: boolean
   @Getter(useStore) isFirmCorrectionFiling!: boolean
-  @Getter(useStore) isRoleStaff!: boolean
 
   // Global setter
   @Action(useStore) setCorrectionStartDate!: (x: string) => void
@@ -217,8 +222,8 @@ export default class BusinessStartDate extends Mixins(CommonMixin, DateMixin) {
 
   /** The minimum start date that can be entered (up to 10 years before reg date). */
   get startDateMin (): string {
-    // no min date for staff
-    if (this.isRoleStaff) return null
+    // no min date if authorized
+    if (IsAuthorized(AuthorizedActions.FIRM_NO_MIN_START_DATE)) return null
 
     const date = this.apiToDate(this.getBusinessFoundingDateTime)
     date.setFullYear(date.getFullYear() - 10)
