@@ -58,14 +58,6 @@ export default class Correction extends Mixins(CommonMixin) {
     return null // should never happen
   }
 
-  /** Whether user is authorized to use this correction filing. */
-  get isAuthorized (): boolean {
-    if (this.isEntityCoop) return IsAuthorized(AuthorizedActions.COOP_CORRECTION_FILING)
-    if (this.isEntityCorp) return IsAuthorized(AuthorizedActions.CORP_CORRECTION_FILING)
-    if (this.isEntityFirm) return IsAuthorized(AuthorizedActions.FIRM_CORRECTION_FILING)
-    return false // should never happen
-  }
-
   /** True if user is authenticated. */
   get isAuthenticated (): boolean {
     return Boolean(sessionStorage.getItem(SessionStorageKeys.KeyCloakToken))
@@ -83,6 +75,13 @@ export default class Correction extends Mixins(CommonMixin) {
 
     // do not proceed if we are not authenticated (safety check - should never happen)
     if (!this.isAuthenticated) return
+
+    // do not proceed if not authorized
+    if (!IsAuthorized(AuthorizedActions.CORRECTION_FILING)) {
+      window.alert('You are not authorized to use Correction filings.')
+      this.$root.$emit('go-to-dashboard', true)
+      return
+    }
 
     // fetch the correction filing
     try {
@@ -125,13 +124,6 @@ export default class Correction extends Mixins(CommonMixin) {
       // do not proceed if this isn't a base company / firm / coop correction
       if (!this.isEntityCorp && !this.isEntityFirm && !this.isEntityCoop) {
         throw new Error('Invalid correction type')
-      }
-
-      // do not proceed if not authorized
-      if (!this.isAuthorized) {
-        window.alert('You are not authorized to use Correction filings.')
-        this.$root.$emit('go-to-dashboard', true)
-        return
       }
 
       // do not process if FF doesn't include this entity type

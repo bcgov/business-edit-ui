@@ -193,6 +193,13 @@ export default class Change extends Mixins(CommonMixin, FeeMixin, FilingTemplate
     // do not proceed if we are not authenticated (safety check - should never happen)
     if (!this.isAuthenticated) return
 
+    // do not proceed if not authorized
+    if (!IsAuthorized(AuthorizedActions.FIRM_CHANGE_FILING)) {
+      window.alert('You are not authorized to use Change filings.')
+      this.$root.$emit('go-to-dashboard', true)
+      return
+    }
+
     // try to fetch data
     try {
       // fetch entity snapshot
