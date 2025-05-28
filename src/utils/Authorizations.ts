@@ -68,7 +68,6 @@ const BusinessRegistryStaffRoles = [
   AuthorizedActions.FILE_AND_PAY,
   AuthorizedActions.FIRM_CHANGE_FILING,
   AuthorizedActions.FIRM_CONVERSION_FILING,
-  AuthorizedActions.FIRM_EDITABLE_DBA,
   AuthorizedActions.FIRM_NO_HELP_SECTION,
   AuthorizedActions.FIRM_NO_MIN_START_DATE,
   AuthorizedActions.FIRM_REPLACE_PERSON,
@@ -90,6 +89,7 @@ const MaximusStaffRoles = [
   AuthorizedActions.BLANK_CERTIFY_STATE,
   AuthorizedActions.EDITABLE_CERTIFY_NAME,
   AuthorizedActions.FIRM_CHANGE_FILING,
+  AuthorizedActions.STAFF_BREADCRUMBS,
   AuthorizedActions.THIRD_PARTY_CERTIFY_STMT
 ]
 
@@ -102,6 +102,7 @@ const ContactCentreStaffRoles = [
   AuthorizedActions.BLANK_CERTIFY_STATE,
   AuthorizedActions.EDITABLE_CERTIFY_NAME,
   AuthorizedActions.FIRM_CHANGE_FILING,
+  AuthorizedActions.STAFF_BREADCRUMBS,
   AuthorizedActions.THIRD_PARTY_CERTIFY_STMT
 ]
 
@@ -120,6 +121,7 @@ const SbcFieldOfficeStaffRoles = [
   AuthorizedActions.FIRM_CHANGE_FILING,
   AuthorizedActions.RESTORATION_FILING,
   AuthorizedActions.SAVE_DRAFT,
+  AuthorizedActions.STAFF_BREADCRUMBS,
   AuthorizedActions.STAFF_PAYMENT,
   AuthorizedActions.THIRD_PARTY_CERTIFY_STMT
 ]
@@ -130,8 +132,9 @@ const SbcFieldOfficeStaffRoles = [
  */
 const DefaultRoles = [
   AuthorizedActions.ALTERATION_FILING,
-  AuthorizedActions.FIRM_CHANGE_FILING,
   AuthorizedActions.FILE_AND_PAY,
+  AuthorizedActions.FIRM_CHANGE_FILING,
+  AuthorizedActions.FIRM_EDITABLE_DBA,
   AuthorizedActions.SAVE_DRAFT,
   AuthorizedActions.SPECIAL_RESOLUTION_FILING
 ]

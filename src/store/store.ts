@@ -389,7 +389,7 @@ export const useStore = defineStore('store', {
       return this.stateModel.tombstone.userInfo
     },
 
-    /** The user's roles from the Auth API "authorizations" endpoint. */
+    /** The user's roles from the Keycloak token. */
     getAuthRoles (): Array<AuthorizationRoles> {
       return this.stateModel.tombstone.authRoles
     },

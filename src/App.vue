@@ -131,7 +131,7 @@
 import { Component, Mixins, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
 import { StatusCodes } from 'http-status-codes'
-import { GetFeatureFlag, IsAuthorized, Navigate, UpdateLdUser, Sleep } from '@/utils/'
+import { GetFeatureFlag, GetKeycloakRoles, IsAuthorized, Navigate, UpdateLdUser, Sleep } from '@/utils/'
 import SbcHeader from 'sbc-common-components/src/components/SbcHeader.vue'
 import SbcFooter from 'sbc-common-components/src/components/SbcFooter.vue'
 import { Actions, EntityInfo } from '@/components/common/'
@@ -414,7 +414,23 @@ export default class App extends Mixins(CommonMixin, FilingTemplateMixin) {
 
     // ensure user is authorized to access this business
     try {
-      await this.checkAuth()
+      // get roles from KC token
+      const authRoles = GetKeycloakRoles()
+
+      // safety check
+      if (!Array.isArray(authRoles)) {
+        throw new Error('Invalid roles')
+      }
+
+      // verify that response has one of the supported roles
+      // FUTURE: when we fetch authorized actions from Legal API, we'll instead check
+      //         that the list of actions isn't empty
+      const allRoles = Object.values(AuthorizationRoles)
+      if (!allRoles.some(role => authRoles.includes(role))) {
+        throw new Error('Missing valid role')
+      }
+
+      this.setAuthRoles(authRoles)
     } catch (error) {
       console.log('Auth error =', error) // eslint-disable-line no-console
       this.accountAuthorizationDialog = true
@@ -539,27 +555,6 @@ export default class App extends Mixins(CommonMixin, FilingTemplateMixin) {
     this.confirmDeleteAllDialog = false
     this.saveErrors = []
     this.saveWarnings = []
-  }
-
-  /** Fetches authorizations and verifies roles. */
-  private async checkAuth (): Promise<any> {
-    // NB: will throw if API error
-    const authorizations = await AuthServices.fetchAuthorizations(this.getBusinessId)
-    const authRoles: Array<AuthorizationRoles> = authorizations.roles || []
-
-    if (!Array.isArray(authRoles)) {
-      throw new Error('Invalid auth roles')
-    }
-
-    // verify that list of roles isn't empty
-    // we can't check for known roles because regular users may not have any of them
-    // FUTURE: when we fetch authorized actions from Legal API, we'll instead need to check
-    //         that the list of actions isn't empty
-    if (authRoles.length < 1) {
-      throw new Error('Missing auth role')
-    }
-
-    this.setAuthRoles(authRoles)
   }
 
   /** Fetches account info and stores it. */

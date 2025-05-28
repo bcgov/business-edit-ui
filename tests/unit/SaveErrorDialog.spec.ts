@@ -36,7 +36,7 @@ describe('Save Error Dialog', () => {
   })
 
   it('renders the component properly as a regular user with no errors or warnings', () => {
-    store.stateModel.tombstone.authRoles = ['test' as AuthorizationRoles] // need at least 1 role
+    store.stateModel.tombstone.authRoles = [AuthorizationRoles.PUBLIC_USER]
     const wrapper = shallowMount(SaveErrorDialog,
       {
         vuetify,
@@ -58,7 +58,7 @@ describe('Save Error Dialog', () => {
   })
 
   it('renders the component properly when there are only errors', () => {
-    store.stateModel.tombstone.authRoles = ['test' as AuthorizationRoles] // need at least 1 role
+    store.stateModel.tombstone.authRoles = [AuthorizationRoles.PUBLIC_USER]
     const wrapper = shallowMount(SaveErrorDialog,
       {
         vuetify,
@@ -85,7 +85,7 @@ describe('Save Error Dialog', () => {
   })
 
   it('renders the component properly when there are only warnings', () => {
-    store.stateModel.tombstone.authRoles = ['test' as AuthorizationRoles] // need at least 1 role
+    store.stateModel.tombstone.authRoles = [AuthorizationRoles.PUBLIC_USER]
     const wrapper = shallowMount(SaveErrorDialog,
       {
         vuetify,
@@ -112,7 +112,7 @@ describe('Save Error Dialog', () => {
   })
 
   it('renders the component properly when there are both errors and warnings', () => {
-    store.stateModel.tombstone.authRoles = ['test' as AuthorizationRoles] // need at least 1 role
+    store.stateModel.tombstone.authRoles = [AuthorizationRoles.PUBLIC_USER]
     const wrapper = shallowMount(SaveErrorDialog,
       {
         vuetify,

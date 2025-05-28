@@ -1,7 +1,4 @@
-/**
- * List of actions authorized via roles. See Authorizations module.
- * Ultimately, this will be combined into the Authorization Roles enum.
- */
+/** List of actions authorized via roles. See Authorizations module. */
 export enum AuthorizedActions {
   ALTERATION_FILING,
   BLANK_CERTIFY_STATE,

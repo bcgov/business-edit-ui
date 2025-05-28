@@ -493,7 +493,7 @@ describe('People And Roles component for Change of Registration', () => {
   })
 
   it('change button is not visible to users for SP where the sole proprietor is an organization', () => {
-    store.stateModel.tombstone.authRoles = ['test' as AuthorizationRoles] // need at least 1 role
+    store.stateModel.tombstone.authRoles = [AuthorizationRoles.PUBLIC_USER]
     store.stateModel.tombstone.entityType = CorpTypeCd.SOLE_PROP
     store.stateModel.peopleAndRoles.orgPeople = [
       {
@@ -517,7 +517,7 @@ describe('People And Roles component for Change of Registration', () => {
   })
 
   it('change button is visible to users for SP where the sole proprietor is an individual', () => {
-    store.stateModel.tombstone.authRoles = ['test' as AuthorizationRoles] // need at least 1 role
+    store.stateModel.tombstone.authRoles = [AuthorizationRoles.PUBLIC_USER]
     store.stateModel.tombstone.entityType = CorpTypeCd.SOLE_PROP
     store.stateModel.peopleAndRoles.orgPeople = [
       {

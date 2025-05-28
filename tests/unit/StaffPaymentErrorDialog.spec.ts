@@ -57,7 +57,7 @@ describe('Staff Payment Error Dialog', () => {
   })
 
   it('renders Not Enough Balance error messages correctly when they are present', () => {
-    store.stateModel.tombstone.authRoles = ['test' as AuthorizationRoles] // need at least 1 role
+    store.stateModel.tombstone.authRoles = [AuthorizationRoles.PUBLIC_USER]
     const wrapper = shallowMount(StaffPaymentErrorDialog,
       {
         vuetify,
