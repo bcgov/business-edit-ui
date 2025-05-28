@@ -551,12 +551,12 @@ export default class App extends Mixins(CommonMixin, FilingTemplateMixin) {
       throw new Error('Invalid auth roles')
     }
 
-    // verify that response has one of the supported roles
+    // verify that list of roles isn't empty
+    // we can't check for known roles because regular users may not have any of them
     // FUTURE: when we fetch authorized actions from Legal API, we'll instead need to check
     //         that the list of actions isn't empty
-    const allRoles = Object.values(AuthorizationRoles)
-    if (!allRoles.some(role => authRoles.includes(role))) {
-      throw new Error('Missing valid auth role')
+    if (authRoles.length < 1) {
+      throw new Error('Missing auth role')
     }
 
     this.setAuthRoles(authRoles)

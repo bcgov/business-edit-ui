@@ -9,12 +9,11 @@
  * 2. MAXIMUS - have "maximus_staff" role
  * 3. SBC (field offices) - have "sbc_staff" role
  * 4. staff (BC Registries) - have "staff" role
- * 5. clients (regular users) - have "view" role and none of the above
+ * 5. clients (regular users) - have none of the above
  */
 export enum AuthorizationRoles {
   CONTACT_CENTRE_STAFF = 'contact_centre_staff',
   MAXIMUS_STAFF = 'maximus_staff',
   SBC_STAFF = 'sbc_staff',
-  STAFF = 'staff',
-  VIEW = 'view'
+  STAFF = 'staff'
 }
