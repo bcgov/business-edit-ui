@@ -85,24 +85,42 @@ const BusinessRegistryStaffRoles = [
  * The roles if the user is Maximus Staff.
  * Ultimately we won't need this list and we'll just check auth roles for everything.
  */
-const MaximusStaffRoles = []
+const MaximusStaffRoles = [
+  AuthorizedActions.ALTERATION_FILING,
+  AuthorizedActions.BLANK_CERTIFY_STATE,
+  AuthorizedActions.EDITABLE_CERTIFY_NAME,
+  AuthorizedActions.FIRM_CHANGE_FILING,
+  AuthorizedActions.THIRD_PARTY_CERTIFY_STMT
+]
 
 /**
  * The roles if the user is Contact Centre Staff.
  * Ultimately we won't need this list and we'll just check auth roles for everything.
  */
-const ContactCentreStaffRoles = []
+const ContactCentreStaffRoles = [
+  AuthorizedActions.ALTERATION_FILING,
+  AuthorizedActions.BLANK_CERTIFY_STATE,
+  AuthorizedActions.EDITABLE_CERTIFY_NAME,
+  AuthorizedActions.FIRM_CHANGE_FILING,
+  AuthorizedActions.THIRD_PARTY_CERTIFY_STMT
+]
 
 /**
  * The roles if the user is SBC Field Office Staff (aka SBC Staff Tier 2).
  * Ultimately we won't need this list and we'll just check auth roles for everything.
  */
 const SbcFieldOfficeStaffRoles = [
+  AuthorizedActions.ALTERATION_FILING,
   AuthorizedActions.BLANK_CERTIFY_STATE,
   AuthorizedActions.BLANK_COMPLETING_PARTY,
+  AuthorizedActions.COURT_ORDER_POA,
   AuthorizedActions.EDITABLE_CERTIFY_NAME,
+  AuthorizedActions.EDITABLE_COMPLETING_PARTY,
   AuthorizedActions.FILE_AND_PAY,
+  AuthorizedActions.FIRM_CHANGE_FILING,
+  AuthorizedActions.RESTORATION_FILING,
   AuthorizedActions.SAVE_DRAFT,
+  AuthorizedActions.STAFF_PAYMENT,
   AuthorizedActions.THIRD_PARTY_CERTIFY_STMT
 ]
 
