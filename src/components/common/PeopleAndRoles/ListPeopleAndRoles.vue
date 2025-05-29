@@ -408,7 +408,7 @@
                 class="actions mr-4"
               >
                 <span
-                  v-if="!hideChangeButtonForSoleProps"
+                  v-if="showChangeButtonForSoleProps"
                   class="edit-action"
                 >
                   <v-btn
@@ -566,7 +566,7 @@ export default class ListPeopleAndRoles extends Mixins(CommonMixin, OrgPersonMix
   // Store getter
   @Getter(useStore) getEditLabel!: string
   @Getter(useStore) getOrgPeople!: OrgPersonIF[]
-  @Getter(useStore) hideChangeButtonForSoleProps!: boolean
+  @Getter(useStore) showChangeButtonForSoleProps!: boolean
   @Getter(useStore) isAlterationFiling!: boolean
   @Getter(useStore) isCoopCorrectionFiling!: boolean
   @Getter(useStore) isCorpCorrectionFiling!: boolean

@@ -501,7 +501,7 @@ describe('People And Roles component for Change of Registration', () => {
         roles: [{ roleType: 'Proprietor' }]
       }
     ] as any
-    expect(store.hideChangeButtonForSoleProps).toBe(true)
+    expect(store.showChangeButtonForSoleProps).toBe(false)
   })
 
   it('change button is visible to staff for SP where the sole proprietor is an organization', () => {
@@ -513,7 +513,7 @@ describe('People And Roles component for Change of Registration', () => {
         roles: [{ roleType: 'Proprietor' }]
       }
     ] as any
-    expect(store.hideChangeButtonForSoleProps).toBe(false)
+    expect(store.showChangeButtonForSoleProps).toBe(true)
   })
 
   it('change button is visible to users for SP where the sole proprietor is an individual', () => {
@@ -525,7 +525,7 @@ describe('People And Roles component for Change of Registration', () => {
         roles: [{ roleType: 'Proprietor' }]
       }
     ] as any
-    expect(store.hideChangeButtonForSoleProps).toBe(false)
+    expect(store.showChangeButtonForSoleProps).toBe(true)
   })
 
   it('test majority of directors in Canada for CP', () => {
