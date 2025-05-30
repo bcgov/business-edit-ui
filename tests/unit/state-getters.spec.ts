@@ -6,7 +6,7 @@ import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
 import { ActionTypes, CorrectionErrorTypes, FilingTypes } from '@/enums'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
-import * as FeatureFlags from '@/utils/feature-flag-utils'
+import * as utils from '@/utils'
 
 // Vuetify is needed for Actions component
 const vuetify = new Vuetify({})
@@ -418,7 +418,7 @@ describe('SP/GP correction getters - with easy legal name fix', () => {
   }
 
   beforeAll(async () => {
-    vi.spyOn(FeatureFlags, 'GetFeatureFlag').mockImplementation(flag => {
+    vi.spyOn(utils, 'GetFeatureFlag').mockImplementation(flag => {
       if (flag === 'enable-legal-name-fix') return true
       return null
     })

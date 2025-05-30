@@ -36,7 +36,7 @@ describe('Fetch Error Dialog', () => {
   })
 
   it('renders the component properly as a regular user', () => {
-    store.stateModel.tombstone.authRoles = [AuthorizationRoles.VIEW]
+    store.stateModel.tombstone.authRoles = [AuthorizationRoles.PUBLIC_USER]
     const wrapper = shallowMount(FetchErrorDialog,
       {
         vuetify,

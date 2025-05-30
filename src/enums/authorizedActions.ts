@@ -1,7 +1,4 @@
-/**
- * List of actions authorized via roles. See Authorizations module.
- * Ultimately, this will be combined into the Authorization Roles enum.
- */
+/** List of actions authorized via roles. See Authorizations module. */
 export enum AuthorizedActions {
   ALTERATION_FILING,
   BLANK_CERTIFY_STATE,
@@ -18,7 +15,7 @@ export enum AuthorizedActions {
   FIRM_NO_MIN_START_DATE,
   FIRM_REPLACE_PERSON,
   NO_CONTACT_INFO,
-  RESTORATION_FILING,
+  RESTORATION_REINSTATEMENT_FILING,
   SAVE_DRAFT,
   SPECIAL_RESOLUTION_FILING,
   STAFF_BREADCRUMBS,

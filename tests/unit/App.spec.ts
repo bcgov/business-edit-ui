@@ -23,8 +23,9 @@ import ViewWrapper from '@/components/ViewWrapper.vue'
 import mockRouter from './MockRouter'
 import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
-import { FilingTypes } from '@/enums'
+import { AuthorizationRoles, FilingTypes } from '@/enums'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
+import * as utils from '@/utils'
 
 const vuetify = new Vuetify({})
 
@@ -293,15 +294,6 @@ describe.skip('Numbered company setup', () => {
         }
       }))
 
-    // GET authorizations (role)
-    get.withArgs('entities/T7654321/authorizations')
-      .returns(Promise.resolve({
-        data:
-        {
-          roles: ['edit', 'view']
-        }
-      }))
-
     // GET IA filing
     get.withArgs('businesses/T7654321/filings')
       .returns(Promise.resolve({
@@ -325,6 +317,9 @@ describe.skip('Numbered company setup', () => {
           }
         }
       }))
+
+    // mock GetKeycloakRoles so we don't need a KC token
+    vi.spyOn(utils, 'GetKeycloakRoles').mockImplementation(() => [AuthorizationRoles.PUBLIC_USER])
 
     // create a Local Vue and install router on it
     const localVue = createLocalVue()
@@ -412,15 +407,6 @@ describe.skip('App component', () => {
         }
       }))
 
-    // GET authorizations (role)
-    get.withArgs('entities/T1234567/authorizations')
-      .returns(Promise.resolve({
-        data:
-        {
-          roles: ['edit', 'view']
-        }
-      }))
-
     // GET NR data
     get.withArgs('nameRequests/NR 1234567/validate?phone=&email=')
       .returns(Promise.resolve({
@@ -440,6 +426,9 @@ describe.skip('App component', () => {
           }
         }
       }))
+
+    // mock GetKeycloakRoles so we don't need a KC token
+    vi.spyOn(utils, 'GetKeycloakRoles').mockImplementation(() => [AuthorizationRoles.PUBLIC_USER])
 
     // create a Local Vue and install router on it
     const localVue = createLocalVue()
@@ -575,15 +564,6 @@ describe('App component - other', () => {
         }
       }))
 
-    // GET authorizations (role)
-    get.withArgs('https://auth.api.url/entities/BC0007291/authorizations')
-      .returns(Promise.resolve({
-        data:
-        {
-          roles: ['edit', 'view']
-        }
-      }))
-
     // GET org info
     get.withArgs('https://auth.api.url/orgs/668')
       .returns(Promise.resolve({
@@ -598,6 +578,9 @@ describe('App component - other', () => {
           }
         }
       }))
+
+    // mock GetKeycloakRoles so we don't need a KC token
+    vi.spyOn(utils, 'GetKeycloakRoles').mockImplementation(() => [AuthorizationRoles.PUBLIC_USER])
 
     // create a Local Vue and install router on it
     const localVue = createLocalVue()

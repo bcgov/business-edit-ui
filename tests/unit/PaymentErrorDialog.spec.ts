@@ -42,7 +42,7 @@ describe('Payment Error Dialog', () => {
   })
 
   it('renders the component properly as a regular user', () => {
-    store.stateModel.tombstone.authRoles = [AuthorizationRoles.VIEW]
+    store.stateModel.tombstone.authRoles = [AuthorizationRoles.PUBLIC_USER]
     const wrapper = shallowMount(PaymentErrorDialog,
       {
         vuetify,
@@ -106,7 +106,7 @@ describe('Payment Error Dialog', () => {
   })
 
   it('renders error messages correctly when they are present', () => {
-    store.stateModel.tombstone.authRoles = [AuthorizationRoles.VIEW]
+    store.stateModel.tombstone.authRoles = [AuthorizationRoles.PUBLIC_USER]
     const wrapper = shallowMount(PaymentErrorDialog,
       {
         vuetify,
@@ -134,7 +134,7 @@ describe('Payment Error Dialog', () => {
   })
 
   it('renders warning messages correctly when they are present', () => {
-    store.stateModel.tombstone.authRoles = [AuthorizationRoles.VIEW]
+    store.stateModel.tombstone.authRoles = [AuthorizationRoles.PUBLIC_USER]
     const wrapper = shallowMount(PaymentErrorDialog,
       {
         vuetify,

@@ -389,7 +389,7 @@ export const useStore = defineStore('store', {
       return this.stateModel.tombstone.userInfo
     },
 
-    /** The user's roles from the Auth API "authorizations" endpoint. */
+    /** The user's roles from the Keycloak token. */
     getAuthRoles (): Array<AuthorizationRoles> {
       return this.stateModel.tombstone.authRoles
     },
@@ -1299,17 +1299,16 @@ export const useStore = defineStore('store', {
     },
 
     /**
-     * Unless authorized, restricts the ability of users from changing the sole
-     * proprietor when the SP is an organization. This restriction has been
-     * added to ensure that changes made in business-edit-ui are also updated by
-     * staff in COLIN.
-     * @returns False when users can change the sole proprietor.
+     * Whether user can change the proprietor -- when authorized or the proprietor is
+     * not an organization. This restriction has been added to ensure that changes made
+     * in business-edit-ui are also updated by staff in COLIN.
+     * @returns True when users can change the proprietor.
      */
-    hideChangeButtonForSoleProps (): boolean {
+    showChangeButtonForSoleProps (): boolean {
       const isProprietor = this.getOrgPeople[0]?.roles[0]?.roleType === RoleTypes.PROPRIETOR
       const isOrganization = this.getOrgPeople[0]?.officer?.partyType === PartyTypes.ORGANIZATION
       const isDba = isProprietor && isOrganization
-      return !IsAuthorized(AuthorizedActions.FIRM_EDITABLE_DBA) && isDba
+      return IsAuthorized(AuthorizedActions.FIRM_EDITABLE_DBA) || !isDba
     },
 
     /**

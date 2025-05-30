@@ -267,7 +267,7 @@ export default class LimitedRestorationToFull extends Mixins(
     if (!this.isAuthenticated) return
 
     // do not proceed if not authorized
-    if (!IsAuthorized(AuthorizedActions.RESTORATION_FILING)) {
+    if (!IsAuthorized(AuthorizedActions.RESTORATION_REINSTATEMENT_FILING)) {
       window.alert('You are not authorized to use Restoration filings.')
       this.$root.$emit('go-to-dashboard', true)
       return

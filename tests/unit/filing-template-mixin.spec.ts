@@ -4,7 +4,7 @@ import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
 import { FilingTypes } from '@/enums'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
-import * as FeatureFlags from '@/utils/feature-flag-utils'
+import * as utils from '@/utils'
 
 setActivePinia(createPinia())
 const store = useStore()
@@ -148,7 +148,7 @@ describe('Change of Registration Filing', () => {
   let wrapper: any
 
   beforeEach(() => {
-    vi.spyOn(FeatureFlags, 'GetFeatureFlag').mockImplementation(flag => {
+    vi.spyOn(utils, 'GetFeatureFlag').mockImplementation(flag => {
       if (flag === 'enable-legal-name-fix') return true
       return null
     })
