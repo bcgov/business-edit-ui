@@ -6,6 +6,17 @@ import * as Sentry from '@sentry/browser'
  * This file exports an instance of Axios with some extra request headers.
  */
 
+function getAccountId (): string {
+  // if we can't get account id from ACCOUNT_ID
+  // then try to get it from CURRENT_ACCOUNT
+  let accountId = sessionStorage.getItem('ACCOUNT_ID')
+  if (!accountId) {
+    const currentAccount = sessionStorage.getItem('CURRENT_ACCOUNT')
+    accountId = JSON.parse(currentAccount)?.id
+  }
+  return accountId
+}
+
 const instance = axios.create()
 
 // add request interceptor
@@ -25,17 +36,6 @@ instance.interceptors.request.use(
     }
 
     return request
-
-    function getAccountId (): string {
-      // if we can't get account id from ACCOUNT_ID
-      // then try to get it from CURRENT_ACCOUNT
-      let accountId = sessionStorage.getItem('ACCOUNT_ID')
-      if (!accountId) {
-        const currentAccount = sessionStorage.getItem('CURRENT_ACCOUNT')
-        accountId = JSON.parse(currentAccount)?.id
-      }
-      return accountId
-    }
   },
   error => Promise.reject(error)
 )
