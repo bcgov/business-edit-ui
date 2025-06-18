@@ -5,11 +5,12 @@ import { AddressesIF, AlterationFilingIF, BusinessInformationIF, ChgRegistration
   from '@/interfaces/'
 import { RoleTypes } from '@/enums'
 import { NameRequestIF, ShareStructureIF } from '@bcrs-shared-components/interfaces/'
-
 import { BusinessDocumentsIF } from '@/interfaces/business-document-interface'
 import { AxiosResponse } from 'axios'
+
 /**
  * Class that provides integration with the Legal API.
+ * Note: uses "baseURL" for all Axios calls
  */
 export default class LegalServices {
   /**

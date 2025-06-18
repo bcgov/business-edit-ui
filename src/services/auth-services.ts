@@ -2,18 +2,23 @@ import { AxiosInstance as axios } from '@/utils/'
 import { AuthInformationIF } from '@/interfaces/'
 import { ContactPointIF } from '@bcrs-shared-components/interfaces/'
 import { StatusCodes } from 'http-status-codes'
+import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 
 /**
  * Class that provides integration with the Auth API.
  */
 export default class AuthServices {
+  /** The Auth API URL, from session storage. */
+  static get authApiUrl (): string {
+    return sessionStorage.getItem(SessionStorageKeys.AuthApiUrl)
+  }
+
   /**
    * Fetches user info of the current user.
    * @returns a promise to return the user info object
    */
   static async fetchUserInfo (): Promise<any> {
-    const authApiUrl = sessionStorage.getItem('AUTH_API_URL')
-    const url = `${authApiUrl}users/@me`
+    const url = `${this.authApiUrl}users/@me`
 
     return axios.get(url)
   }
@@ -26,8 +31,7 @@ export default class AuthServices {
   static async fetchOrgInfo (orgId: number): Promise<any> {
     if (!orgId) throw new Error('Invalid org id')
 
-    const authApiUrl = sessionStorage.getItem('AUTH_API_URL')
-    const url = `${authApiUrl}orgs/${orgId}`
+    const url = `${this.authApiUrl}orgs/${orgId}`
 
     return axios.get(url)
       .then(response => {
@@ -43,8 +47,7 @@ export default class AuthServices {
   static async fetchAuthInfo (businessId: string): Promise<AuthInformationIF> {
     if (!businessId) throw new Error('Invalid business id')
 
-    const authApiUrl = sessionStorage.getItem('AUTH_API_URL')
-    const url = `${authApiUrl}entities/${businessId}`
+    const url = `${this.authApiUrl}entities/${businessId}`
 
     return axios.get(url).then(response => {
       if (response?.data) {
@@ -72,8 +75,7 @@ export default class AuthServices {
   static async updateContactInfo (contactInfo: ContactPointIF, businessId: string): Promise<any> {
     if (!businessId) throw new Error('Invalid business id')
 
-    const authApiUrl = sessionStorage.getItem('AUTH_API_URL')
-    const url = `${authApiUrl}entities/${businessId}/contacts`
+    const url = `${this.authApiUrl}entities/${businessId}/contacts`
     const data = {
       email: contactInfo.email,
       phone: contactInfo.phone,
@@ -98,8 +100,7 @@ export default class AuthServices {
   static async updateFolioNumber (folioNumber: string, businessId: string): Promise<any> {
     if (!businessId) throw new Error('Invalid business id')
 
-    const authApiUrl = sessionStorage.getItem('AUTH_API_URL')
-    const url = `${authApiUrl}entities/${businessId}`
+    const url = `${this.authApiUrl}entities/${businessId}`
     const data = {
       businessIdentifier: businessId,
       folioNumber: folioNumber || ''
