@@ -71,7 +71,7 @@ Vue.use(TiptapVuetifyPlugin, {
 // main code
 async function start () {
   // initialize Launch Darkly
-  window['ldClientId'] = import.meta.env.VUE_APP_BUSINESS_CREATE_LD_CLIENT_ID
+  window['ldClientId'] = import.meta.env.VUE_APP_BUSINESS_EDIT_LD_CLIENT_ID
   if (window['ldClientId']) {
     console.info('Initializing Launch Darkly...') // eslint-disable-line no-console
     await InitLdClient()
