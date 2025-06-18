@@ -13,7 +13,8 @@ export const defaultFlagSet: LDFlagSet = {
   'restoration-ui-enabled': false,
   'sentry-enable': false, // by default, no sentry logs
   'supported-correction-entities': [],
-  'supported-alteration-change-business-types': []
+  'supported-alteration-change-business-types': [],
+  'use-business-api-gw-url': false // by default, use Legal API URL instead of Business API GW URL
 }
 
 /**

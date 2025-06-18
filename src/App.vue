@@ -557,7 +557,7 @@ export default class App extends Mixins(CommonMixin, FilingTemplateMixin) {
     this.saveWarnings = []
   }
 
-  /** Fetches account info and stores it. */
+  /** Fetches account info and org info and stores them. */
   private async loadAccountInformation (): Promise<void> {
     const currentAccount = await this.getCurrentAccount().catch(() => null)
     if (currentAccount) {
