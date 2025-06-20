@@ -9,6 +9,7 @@ import { useStore } from '@/store/store'
 import { CorpTypeCd, FilingTypes } from '@bcrs-shared-components/enums'
 import * as utils from '@/utils'
 import { AuthorizationRoles } from '@/enums'
+import { setAuthRole } from 'tests/set-auth-roles'
 
 const vuetify = new Vuetify({})
 
@@ -55,7 +56,7 @@ describe('Entity Info component in a Correction as a named Benefit Company', () 
   }
 
   beforeAll(() => {
-    store.stateModel.tombstone.authRoles = [AuthorizationRoles.STAFF]
+    setAuthRole(store, AuthorizationRoles.STAFF)
     store.stateModel.businessInformation = mockFiling.business as any
     store.stateModel.tombstone.businessId = mockFiling.business.identifier
     store.stateModel.businessContact = mockFiling.incorporationApplication.contactPoint
@@ -125,7 +126,7 @@ describe('Entity Info component in a Correction as a numbered Benefit Company', 
   }
 
   beforeAll(() => {
-    store.stateModel.tombstone.authRoles = [AuthorizationRoles.STAFF]
+    setAuthRole(store, AuthorizationRoles.STAFF)
     store.stateModel.businessInformation = mockFiling.business as any
     store.stateModel.tombstone.businessId = mockFiling.business.identifier
     store.stateModel.businessContact = mockFiling.incorporationApplication.contactPoint

@@ -7,6 +7,7 @@ import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
 import { ActionTypes, AuthorizationRoles, FilingTypes } from '@/enums'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
+import { setAuthRole } from 'tests/set-auth-roles'
 
 // mock the console.warn function to hide "[Vuetify] Unable to locate target XXX"
 console.warn = vi.fn()
@@ -493,7 +494,7 @@ describe('People And Roles component for Change of Registration', () => {
   })
 
   it('change button is not visible to users for SP where the sole proprietor is an organization', () => {
-    store.stateModel.tombstone.authRoles = [AuthorizationRoles.PUBLIC_USER]
+    setAuthRole(store, AuthorizationRoles.PUBLIC_USER)
     store.stateModel.tombstone.entityType = CorpTypeCd.SOLE_PROP
     store.stateModel.peopleAndRoles.orgPeople = [
       {
@@ -505,7 +506,7 @@ describe('People And Roles component for Change of Registration', () => {
   })
 
   it('change button is visible to staff for SP where the sole proprietor is an organization', () => {
-    store.stateModel.tombstone.authRoles = [AuthorizationRoles.STAFF]
+    setAuthRole(store, AuthorizationRoles.STAFF)
     store.stateModel.tombstone.entityType = CorpTypeCd.SOLE_PROP
     store.stateModel.peopleAndRoles.orgPeople = [
       {
@@ -517,7 +518,7 @@ describe('People And Roles component for Change of Registration', () => {
   })
 
   it('change button is visible to users for SP where the sole proprietor is an individual', () => {
-    store.stateModel.tombstone.authRoles = [AuthorizationRoles.PUBLIC_USER]
+    setAuthRole(store, AuthorizationRoles.PUBLIC_USER)
     store.stateModel.tombstone.entityType = CorpTypeCd.SOLE_PROP
     store.stateModel.peopleAndRoles.orgPeople = [
       {

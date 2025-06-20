@@ -8,8 +8,9 @@ import Actions from '@/components/common/Actions.vue'
 import mockRouter from './MockRouter'
 import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
-import { CorrectionErrorTypes, FilingTypes } from '@/enums'
+import { AuthorizationRoles, CorrectionErrorTypes, FilingTypes } from '@/enums'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
+import { setAuthRole } from 'tests/set-auth-roles'
 
 const vuetify = new Vuetify({})
 
@@ -249,7 +250,7 @@ describe.skip('Emits error event if NR validation fails in file and pay', () => 
     } as any
     store.stateModel.nameRequestLegalName = 'My Name Request Inc.'
     store.stateModel.tombstone = {
-      authRoles: [],
+      authorizedActions: [],
       userEmail: 'completing-party@example.com'
     } as any
     store.stateModel.certifyState = {
@@ -503,7 +504,7 @@ describe.skip('Actions component - Filing Functionality', () => {
     store.stateModel.nameRequestLegalName = 'My Name Request Inc.'
     store.stateModel.nameTranslations = []
     store.stateModel.tombstone = {
-      authRoles: [],
+      authorizedActions: [],
       userEmail: 'completing-party@example.com'
     } as any
     store.stateModel.certifyState.certifiedBy = filing.filing.header.certifiedBy
@@ -522,6 +523,7 @@ describe.skip('Actions component - Filing Functionality', () => {
     store.stateModel.tombstone.entityType = CorpTypeCd.BENEFIT_COMPANY
     store.stateModel.tombstone.businessId = 'T1234567'
     store.stateModel.effectiveDateTime.isFutureEffective = filing.filing.header.isFutureEffective
+    setAuthRole(store, AuthorizationRoles.PUBLIC_USER)
 
     const localVue = createLocalVue()
     localVue.use(VueRouter)

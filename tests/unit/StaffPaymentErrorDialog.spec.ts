@@ -4,6 +4,7 @@ import StaffPaymentErrorDialog from '@/dialogs/StaffPaymentErrorDialog.vue'
 import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
 import { AuthorizationRoles } from '@/enums'
+import { setAuthRole } from 'tests/set-auth-roles'
 
 const vuetify = new Vuetify({})
 
@@ -20,7 +21,7 @@ describe('Staff Payment Error Dialog', () => {
   }]
 
   it('renders the component properly with generic message', () => {
-    store.stateModel.tombstone.authRoles = [AuthorizationRoles.STAFF]
+    setAuthRole(store, AuthorizationRoles.STAFF)
     const wrapper = shallowMount(StaffPaymentErrorDialog,
       {
         vuetify,
@@ -57,7 +58,7 @@ describe('Staff Payment Error Dialog', () => {
   })
 
   it('renders Not Enough Balance error messages correctly when they are present', () => {
-    store.stateModel.tombstone.authRoles = [AuthorizationRoles.PUBLIC_USER]
+    setAuthRole(store, AuthorizationRoles.PUBLIC_USER)
     const wrapper = shallowMount(StaffPaymentErrorDialog,
       {
         vuetify,

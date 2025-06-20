@@ -16,6 +16,7 @@ import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
 import { ActionTypes, AuthorizationRoles, FilingTypes } from '@/enums'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
+import { setAuthRole } from 'tests/set-auth-roles'
 
 const vuetify = new Vuetify({})
 
@@ -232,7 +233,7 @@ describe('Change component', () => {
   it('Staff Payment, Court Order POA components display only for staff', async () => {
     expect(wrapper.findComponent(StaffPayment).exists()).toBe(false)
     expect(wrapper.findComponent(CourtOrderPoa).exists()).toBe(false)
-    store.stateModel.tombstone.authRoles = [AuthorizationRoles.STAFF]
+    setAuthRole(store, AuthorizationRoles.STAFF)
     store.stateModel.summaryMode = true
     wrapper.vm.showFee = true
     // a wait needed as change to computed value triggers a re-rendering
@@ -240,7 +241,7 @@ describe('Change component', () => {
 
     expect(wrapper.findComponent(StaffPayment).exists()).toBe(true)
     expect(wrapper.findComponent(CourtOrderPoa).exists()).toBe(true)
-    store.stateModel.tombstone.authRoles = []
+    setAuthRole(store)
     store.stateModel.summaryMode = false
     wrapper.vm.showFee = true
   })

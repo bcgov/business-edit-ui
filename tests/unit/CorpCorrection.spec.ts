@@ -16,6 +16,7 @@ import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
 import { ActionTypes, AuthorizationRoles, FilingTypes } from '@/enums'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
+import { setAuthRole } from 'tests/set-auth-roles'
 
 const vuetify = new Vuetify({})
 
@@ -37,7 +38,7 @@ describe('Corp Correction component', () => {
 
   store.stateModel.tombstone.entityType = CorpTypeCd.BENEFIT_COMPANY
   store.stateModel.tombstone.businessId = 'BC1234567'
-  store.stateModel.tombstone.authRoles = [AuthorizationRoles.STAFF]
+  setAuthRole(store, AuthorizationRoles.STAFF)
 
   beforeEach(async () => {
     // mock the window.location.assign function

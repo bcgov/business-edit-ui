@@ -13,6 +13,7 @@ import { AuthorizationRoles, CoopTypes, CorrectionErrorTypes, FilingTypes } from
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 import { Memorandum, Resolution, Rules } from '@/components/SpecialResolution'
 import { AuthServices, LegalServices } from '@/services'
+import { setAuthRole } from 'tests/set-auth-roles'
 
 const vuetify = new Vuetify({})
 
@@ -27,7 +28,7 @@ describe('Coop Correction component', () => {
   store.stateModel.tombstone.entityType = CorpTypeCd.COOP
   store.stateModel.tombstone.businessId = 'CP1234567'
   store.stateModel.tombstone.filingType = FilingTypes.CORRECTION
-  store.stateModel.tombstone.authRoles = [AuthorizationRoles.STAFF]
+  setAuthRole(store, AuthorizationRoles.STAFF)
   store.stateModel.completingParty = {
     firstName: 'First',
     lastName: 'Last',

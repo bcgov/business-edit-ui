@@ -1,7 +1,6 @@
 // Pinia Store
 import {
   ActionTypes,
-  AuthorizationRoles,
   AuthorizedActions,
   CoopTypes,
   CorrectionErrorTypes,
@@ -389,9 +388,9 @@ export const useStore = defineStore('store', {
       return this.stateModel.tombstone.userInfo
     },
 
-    /** The user's roles from the Keycloak token. */
-    getAuthRoles (): Array<AuthorizationRoles> {
-      return this.stateModel.tombstone.authRoles
+    /** The user's authorized actions (aka permissions). */
+    getAuthorizedActions (): Array<AuthorizedActions> {
+      return this.stateModel.tombstone.authorizedActions
     },
 
     /** The org info. (May be null.) */
@@ -1438,8 +1437,8 @@ export const useStore = defineStore('store', {
     setIsFilingPaying (isFilingPaying: boolean) {
       this.stateModel.tombstone.isFilingPaying = isFilingPaying
     },
-    setAuthRoles (roles: Array<AuthorizationRoles>) {
-      this.stateModel.tombstone.authRoles = roles
+    setAuthorizedActions (actions: Array<AuthorizedActions>) {
+      this.stateModel.tombstone.authorizedActions = actions
     },
     setUserInfo (userInfo: any) {
       this.stateModel.tombstone.userInfo = userInfo
