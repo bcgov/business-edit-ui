@@ -8,6 +8,7 @@ import AuthServices from '@/services/auth-services'
 import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
 import { AuthorizationRoles, FilingTypes } from '@/enums'
+import { setAuthRole } from 'tests/set-auth-roles'
 
 const vuetify = new Vuetify({})
 
@@ -16,7 +17,7 @@ const store = useStore()
 
 describe('Folio Information component', () => {
   it('renders correctly when account is staff', () => {
-    store.stateModel.tombstone.authRoles = [AuthorizationRoles.STAFF]
+    setAuthRole(store, AuthorizationRoles.STAFF)
     const wrapper = mount(FolioInformation, { vuetify })
 
     expect(wrapper.findComponent(FolioInformation).exists()).toBe(true)
@@ -26,7 +27,7 @@ describe('Folio Information component', () => {
   })
 
   it('renders correctly when account is not staff', () => {
-    store.stateModel.tombstone.authRoles = []
+    setAuthRole(store)
     const wrapper = mount(FolioInformation, { vuetify })
 
     expect(wrapper.findComponent(FolioInformation).exists()).toBe(true)

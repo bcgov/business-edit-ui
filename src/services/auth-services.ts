@@ -20,7 +20,10 @@ export default class AuthServices {
   static async fetchUserInfo (): Promise<any> {
     const url = `${this.authApiUrl}users/@me`
 
-    return axios.get(url)
+    return axios.get(url).then(response => {
+      if (response?.data) return response.data
+      throw new Error('Invalid response data')
+    })
   }
 
   /**

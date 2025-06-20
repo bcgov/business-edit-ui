@@ -139,7 +139,7 @@ import { Breadcrumb as BreadcrumbShared } from '@bcrs-shared-components/breadcru
 import { ConfirmDialog as ConfirmDialogShared } from '@bcrs-shared-components/confirm-dialog/'
 import * as Views from '@/views/'
 import * as Dialogs from '@/dialogs/'
-import { AuthServices } from '@/services/'
+import { AuthServices, LegalServices } from '@/services/'
 import { CommonMixin, FilingTemplateMixin } from '@/mixins/'
 import { AccountInformationIF, ConfirmDialogType } from '@/interfaces/'
 import { BreadcrumbIF, CompletingPartyIF } from '@bcrs-shared-components/interfaces/'
@@ -173,7 +173,6 @@ export default class App extends Mixins(CommonMixin, FilingTemplateMixin) {
   @Getter(useStore) getComponentValidate!: boolean
   @Getter(useStore) getCurrentJsDate!: Date
   @Getter(useStore) getFilingId!: number
-  @Getter(useStore) getAuthRoles!: Array<AuthorizationRoles>
   @Getter(useStore) getOrgInfo!: any
   @Getter(useStore) getUserEmail!: string
   @Getter(useStore) getUserFirstName!: string
@@ -190,7 +189,7 @@ export default class App extends Mixins(CommonMixin, FilingTemplateMixin) {
   // Store actions
   @Action(useStore) setAccountInformation!: (x: AccountInformationIF) => void
   @Action(useStore) setAppValidate!: (x: boolean) => void
-  @Action(useStore) setAuthRoles!: (x: Array<AuthorizationRoles>) => void
+  @Action(useStore) setAuthorizedActions!: (x: Array<AuthorizedActions>) => void
   @Action(useStore) setBusinessId!: (x: string) => void
   @Action(useStore) setCompletingParty!: (x: CompletingPartyIF) => void
   @Action(useStore) setComponentValidate!: (x: boolean) => void
@@ -217,6 +216,7 @@ export default class App extends Mixins(CommonMixin, FilingTemplateMixin) {
   saveErrors: Array<object> = []
   saveWarnings: Array<object> = []
   staffPaymentErrorDialog = false
+  authRoles = [] as Array<AuthorizationRoles>
 
   // FUTURE: change appReady/haveData to a state machine?
   /** Whether the app is ready and the views can now load their data. */
@@ -238,7 +238,7 @@ export default class App extends Mixins(CommonMixin, FilingTemplateMixin) {
       }
     ]
 
-    // Set breadcrumbs based on authorizations
+    // Set breadcrumbs based on permissions
     if (IsAuthorized(AuthorizedActions.STAFF_BREADCRUMBS)) {
       // set StaffDashboard as home crumb
       crumbs.unshift(getStaffDashboardBreadcrumb())
@@ -412,36 +412,30 @@ export default class App extends Mixins(CommonMixin, FilingTemplateMixin) {
     // set current date from "real time" date from server
     this.setCurrentDate(DateUtilities.dateToYyyyMmDd(this.getCurrentJsDate))
 
-    // ensure user is authorized to access this business
-    try {
-      // get roles from KC token
-      const authRoles = GetKeycloakRoles()
-
-      // safety check
-      if (!Array.isArray(authRoles)) {
-        throw new Error('Invalid roles')
-      }
-
-      // verify that response has one of the supported roles
-      // FUTURE: when we fetch authorized actions from Legal API, we'll instead check
-      //         that the list of actions isn't empty
-      const allRoles = Object.values(AuthorizationRoles)
-      if (!allRoles.some(role => authRoles.includes(role))) {
-        throw new Error('Missing valid role')
-      }
-
-      this.setAuthRoles(authRoles)
-    } catch (error) {
-      console.log('Auth error =', error) // eslint-disable-line no-console
-      this.accountAuthorizationDialog = true
-      return
-    }
-
     // load account information
     try {
       await this.loadAccountInformation()
     } catch (error) {
       console.log('Account info error =', error) // eslint-disable-line no-console
+      this.accountAuthorizationDialog = true
+      return
+    }
+
+    // load authorized actions (aka permissions)
+    // must be called after we have current account info
+    try {
+      await this.loadAuthorizedActions()
+    } catch (error) {
+      console.log('Authorized actions error =', error) // eslint-disable-line no-console
+      this.accountAuthorizationDialog = true
+      return
+    }
+
+    // load auth roles and store locally
+    try {
+      this.authRoles = await this.loadAuthRoles()
+    } catch (error) {
+      console.log('Auth roles error =', error) // eslint-disable-line no-console
       this.accountAuthorizationDialog = true
       return
     }
@@ -455,7 +449,7 @@ export default class App extends Mixins(CommonMixin, FilingTemplateMixin) {
       return
     }
 
-    // now that we have user info and org info, populate the completing party
+    // now that we have account info and user info, populate the completing party
     // NB: these are all empty if authorized to leave blank
     const isBlank = IsAuthorized(AuthorizedActions.BLANK_COMPLETING_PARTY)
     this.setCompletingParty({
@@ -471,7 +465,8 @@ export default class App extends Mixins(CommonMixin, FilingTemplateMixin) {
       }
     } as CompletingPartyIF)
 
-    // update Launch Darkly
+    // update Launch Darkly with user info
+    // this allows targeted feature flags
     try {
       await this.updateLaunchDarkly()
     } catch (error) {
@@ -557,16 +552,68 @@ export default class App extends Mixins(CommonMixin, FilingTemplateMixin) {
     this.saveWarnings = []
   }
 
-  /** Fetches account info and org info and stores them. */
-  private async loadAccountInformation (): Promise<void> {
-    const currentAccount = await this.getCurrentAccount().catch(() => null)
+  /** Gets account info and stores it. */
+  private async loadAccountInformation (): Promise<any> {
+    const currentAccount = await getCurrentAccount()
     if (currentAccount) {
-      this.setAccountInformation(currentAccount)
-    } else {
-      throw new Error('Invalid current account') // *** TODO: remove this?
+      const accountInfo: AccountInformationIF = {
+        accountType: currentAccount.accountType,
+        id: currentAccount.id,
+        label: currentAccount.label,
+        type: currentAccount.type
+      }
+      this.setAccountInformation(accountInfo)
+
+      // get org info
+      await this.loadOrgInfo(accountInfo?.id)
     }
 
-    const orgInfo = await AuthServices.fetchOrgInfo(currentAccount?.id).catch(() => null)
+    /**
+     * Gets current account from object in session storage.
+     * Waits up to 5 sec for current account to be synced (typically by SbcHeader).
+     */
+    async function getCurrentAccount (): Promise<any> {
+      let account = null
+      for (let i = 0; i < 50; i++) {
+        const currentAccount = sessionStorage.getItem(SessionStorageKeys.CurrentAccount)
+        account = JSON.parse(currentAccount)
+        if (account) break
+        await Sleep(100)
+      }
+      return account
+    }
+  }
+
+  /** Fetches and stores authorized actions (aka permissions). */
+  private async loadAuthorizedActions (): Promise<void> {
+    const authorizedActions = await LegalServices.fetchAuthorizedActions().catch(() => null)
+
+    // verify we have _some_ authorized actions
+    if (!Array.isArray(authorizedActions) || authorizedActions.length < 1) {
+      throw new Error('Invalid or missing authorized actions')
+    }
+
+    this.setAuthorizedActions(authorizedActions)
+  }
+
+  /** Fetches auth roles. */
+  private async loadAuthRoles (): Promise<AuthorizationRoles[]> {
+    // get roles from KC token
+    const authRoles = GetKeycloakRoles()
+
+    // safety check
+    if (!Array.isArray(authRoles)) {
+      throw new Error('Invalid roles')
+    }
+
+    return authRoles
+  }
+
+  /** Fetches org info and stores it. */
+  private async loadOrgInfo (orgId: number): Promise<void> {
+    if (!orgId) throw new Error('Invalid org id')
+
+    const orgInfo = await AuthServices.fetchOrgInfo(orgId).catch(() => null)
     if (orgInfo) {
       this.setOrgInfo(orgInfo)
     } else {
@@ -576,29 +623,12 @@ export default class App extends Mixins(CommonMixin, FilingTemplateMixin) {
 
   /** Fetches user info and stores it. */
   private async loadUserInfo (): Promise<any> {
-    // NB: will throw if API error
-    const response = await AuthServices.fetchUserInfo()
-    const userInfo = response?.data
+    const userInfo = await AuthServices.fetchUserInfo().catch(() => null)
     if (userInfo) {
       this.setUserInfo(userInfo)
     } else {
       throw new Error('Invalid user info')
     }
-  }
-
-  /**
-   * Gets current account from object in session storage.
-   * Waits up to 5 sec for current account to be synced (typically by SbcHeader).
-   */
-  private async getCurrentAccount (): Promise<any> {
-    let account: any
-    for (let i = 0; i < 50; i++) {
-      const currentAccount = sessionStorage.getItem(SessionStorageKeys.CurrentAccount) // may be null
-      account = JSON.parse(currentAccount) // may be null
-      if (account) break
-      await Sleep(100)
-    }
-    return account
   }
 
   /** Updates Launch Darkly with user info. */
@@ -609,7 +639,7 @@ export default class App extends Mixins(CommonMixin, FilingTemplateMixin) {
     const firstName = this.getUserFirstName
     const lastName = this.getUserLastName
     // store auth roles in custom object
-    const custom = { roles: this.getAuthRoles } as any
+    const custom = { roles: this.authRoles } as any
 
     await UpdateLdUser(key, email, firstName, lastName, custom)
   }

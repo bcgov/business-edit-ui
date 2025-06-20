@@ -15,6 +15,7 @@ import { AssociationType, BusinessContactInfo, BusinessType, EntityName, FolioIn
 import { Memorandum, Rules } from '@/components/SpecialResolution'
 import { LegalServices } from '@/services'
 import { AuthorizationRoles } from '@/enums'
+import { setAuthRole } from 'tests/set-auth-roles'
 
 const vuetify = new Vuetify({})
 
@@ -280,7 +281,7 @@ describe('Special Resolution component', () => {
   })
 
   it('certify text is not prefilled for staff user', async () => {
-    store.stateModel.tombstone.authRoles = [AuthorizationRoles.STAFF]
+    setAuthRole(store, AuthorizationRoles.STAFF)
     store.stateModel.tombstone.userInfo = {
       firstname: 'Jon',
       lastname: 'Doe'
@@ -292,7 +293,7 @@ describe('Special Resolution component', () => {
   })
 
   it('certify text is prefilled for non-staff user', async () => {
-    store.stateModel.tombstone.authRoles = []
+    setAuthRole(store)
     store.stateModel.tombstone.userInfo = {
       firstname: 'Jon',
       lastname: 'Doe'
