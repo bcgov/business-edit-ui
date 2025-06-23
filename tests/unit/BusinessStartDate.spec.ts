@@ -10,6 +10,7 @@ import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 import { AuthorizationRoles, FilingTypes } from '@/enums'
+import { setAuthRole } from 'tests/set-auth-roles'
 
 const vuetify = new Vuetify({})
 
@@ -88,14 +89,14 @@ describe('Business Start Date', () => {
   })
 
   it('has correct minimum and maximum dates for a staff user ', () => {
-    store.setAuthRoles([AuthorizationRoles.STAFF])
+    setAuthRole(store, AuthorizationRoles.STAFF)
 
     expect(wrapper.vm.startDateMin).toBe(null) // no minimum date
     expect(wrapper.vm.startDateMax).toBe('2021-09-29') // 90 days after founding date
   })
 
   it('has correct minimum and maximum dates for a regular user', () => {
-    store.setAuthRoles([])
+    setAuthRole(store, AuthorizationRoles.PUBLIC_USER)
 
     expect(wrapper.vm.startDateMin).toBe('2011-07-01') // 10 years before founding date
     expect(wrapper.vm.startDateMax).toBe('2021-09-29') // 90 days after founding date

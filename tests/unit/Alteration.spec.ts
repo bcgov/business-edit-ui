@@ -15,6 +15,7 @@ import { BusinessContactInfo, BusinessType, EntityName, FolioInformation, NameTr
   RecognitionDateTime, YourCompanyWrapper } from '@/components/common'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 import { EntitySnapshotIF } from '@/interfaces'
+import { setAuthRole } from 'tests/set-auth-roles'
 
 const vuetify = new Vuetify({})
 
@@ -36,6 +37,7 @@ describe('Alteration component', () => {
   const store = useStore()
 
   store.stateModel.tombstone.businessId = 'BC1234567'
+  setAuthRole(store, AuthorizationRoles.PUBLIC_USER)
 
   beforeEach(async () => {
     // mock the window.location.assign function
@@ -392,7 +394,7 @@ describe('Alteration component', () => {
   })
 
   it('certify text is not prefilled for staff user', async () => {
-    store.stateModel.tombstone.authRoles = [AuthorizationRoles.STAFF]
+    setAuthRole(store, AuthorizationRoles.STAFF)
     store.stateModel.tombstone.userInfo = {
       firstname: 'Jon',
       lastname: 'Doe'
@@ -404,7 +406,7 @@ describe('Alteration component', () => {
   })
 
   it('certify text is prefilled for non-staff user', async () => {
-    store.stateModel.tombstone.authRoles = []
+    setAuthRole(store, AuthorizationRoles.PUBLIC_USER)
     store.stateModel.tombstone.userInfo = {
       firstname: 'Jon',
       lastname: 'Doe'

@@ -15,6 +15,7 @@ import { AssociationType, BusinessContactInfo, BusinessType, EntityName, FolioIn
 import { Memorandum, Rules } from '@/components/SpecialResolution'
 import { LegalServices } from '@/services'
 import { AuthorizationRoles } from '@/enums'
+import { setAuthRole } from 'tests/set-auth-roles'
 
 const vuetify = new Vuetify({})
 
@@ -23,6 +24,9 @@ const store = useStore()
 
 // Prevent the warning "[Vuetify] Unable to locate target [data-app]"
 document.body.setAttribute('data-app', 'true')
+
+// mock alert() as it is not defined in Vitest
+window.alert = vi.fn()
 
 describe('Special Resolution component', () => {
   let wrapper: any
@@ -36,6 +40,7 @@ describe('Special Resolution component', () => {
   sessionStorage.setItem('KEYCLOAK_TOKEN', 'sampletoken')
 
   store.stateModel.tombstone.businessId = 'CP1234567'
+  setAuthRole(store, AuthorizationRoles.PUBLIC_USER)
 
   beforeEach(async () => {
     // mock the window.location.assign function
@@ -202,6 +207,7 @@ describe('Special Resolution component', () => {
           }
         }
       }))
+
     // FUTURE: mock GET alteration filing
 
     // create a Local Vue and install router on it
@@ -280,7 +286,7 @@ describe('Special Resolution component', () => {
   })
 
   it('certify text is not prefilled for staff user', async () => {
-    store.stateModel.tombstone.authRoles = [AuthorizationRoles.STAFF]
+    setAuthRole(store, AuthorizationRoles.STAFF)
     store.stateModel.tombstone.userInfo = {
       firstname: 'Jon',
       lastname: 'Doe'
@@ -292,7 +298,7 @@ describe('Special Resolution component', () => {
   })
 
   it('certify text is prefilled for non-staff user', async () => {
-    store.stateModel.tombstone.authRoles = []
+    setAuthRole(store, AuthorizationRoles.PUBLIC_USER)
     store.stateModel.tombstone.userInfo = {
       firstname: 'Jon',
       lastname: 'Doe'

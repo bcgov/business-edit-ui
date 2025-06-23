@@ -15,6 +15,7 @@ import { BusinessStartDate, BusinessType, EntityName, FolioInformation, OfficeAd
   YourCompanyWrapper } from '@/components/common'
 import { ConversionNOB } from '@/components/Conversion'
 import { AuthorizationRoles } from '@/enums'
+import { setAuthRole } from 'tests/set-auth-roles'
 
 const vuetify = new Vuetify({})
 
@@ -36,7 +37,7 @@ describe('Conversion component', () => {
   sessionStorage.setItem('KEYCLOAK_TOKEN', 'keycloak-token') // anything non-falsy
 
   store.stateModel.tombstone.businessId = 'BC1234567'
-  store.stateModel.tombstone.authRoles = [AuthorizationRoles.STAFF]
+  setAuthRole(store, AuthorizationRoles.STAFF)
 
   beforeEach(async () => {
     // mock the window.location.assign function
