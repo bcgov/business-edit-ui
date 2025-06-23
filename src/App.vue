@@ -572,7 +572,7 @@ export default class App extends Mixins(CommonMixin, FilingTemplateMixin) {
      * Gets current account from object in session storage.
      * Waits up to 5 sec for current account to be synced (typically by SbcHeader).
      */
-    async function getCurrentAccount (): Promise<any> {
+    async function getCurrentAccount (): Promise<AccountInformationIF> {
       let account = null
       for (let i = 0; i < 50; i++) {
         const currentAccount = sessionStorage.getItem(SessionStorageKeys.CurrentAccount)

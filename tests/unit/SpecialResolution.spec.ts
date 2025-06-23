@@ -25,7 +25,7 @@ const store = useStore()
 // Prevent the warning "[Vuetify] Unable to locate target [data-app]"
 document.body.setAttribute('data-app', 'true')
 
-// mock alert() as it is not defined in Jest
+// mock alert() as it is not defined in Vitest
 window.alert = vi.fn()
 
 describe('Special Resolution component', () => {
