@@ -241,7 +241,7 @@ describe('Change component', () => {
 
     expect(wrapper.findComponent(StaffPayment).exists()).toBe(true)
     expect(wrapper.findComponent(CourtOrderPoa).exists()).toBe(true)
-    setAuthRole(store)
+    setAuthRole(store, AuthorizationRoles.PUBLIC_USER)
     store.stateModel.summaryMode = false
     wrapper.vm.showFee = true
   })

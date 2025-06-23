@@ -27,7 +27,7 @@ describe('Folio Information component', () => {
   })
 
   it('renders correctly when account is not staff', () => {
-    setAuthRole(store)
+    setAuthRole(store, AuthorizationRoles.PUBLIC_USER)
     const wrapper = mount(FolioInformation, { vuetify })
 
     expect(wrapper.findComponent(FolioInformation).exists()).toBe(true)

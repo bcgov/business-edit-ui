@@ -96,7 +96,7 @@ describe('Business Start Date', () => {
   })
 
   it('has correct minimum and maximum dates for a regular user', () => {
-    setAuthRole(store)
+    setAuthRole(store, AuthorizationRoles.PUBLIC_USER)
 
     expect(wrapper.vm.startDateMin).toBe('2011-07-01') // 10 years before founding date
     expect(wrapper.vm.startDateMax).toBe('2021-09-29') // 90 days after founding date
