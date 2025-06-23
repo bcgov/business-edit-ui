@@ -64,6 +64,7 @@ describe('Action button states', () => {
     // initialize store
     store.stateModel.tombstone.filingType = FilingTypes.CORRECTION
     store.stateModel.correctionInformation.type = CorrectionErrorTypes.CLIENT
+    setAuthRole(store, AuthorizationRoles.PUBLIC_USER)
 
     wrapper = shallowMount(Actions, { vuetify })
     await Vue.nextTick()

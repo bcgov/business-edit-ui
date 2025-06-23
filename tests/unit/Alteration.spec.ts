@@ -37,6 +37,7 @@ describe('Alteration component', () => {
   const store = useStore()
 
   store.stateModel.tombstone.businessId = 'BC1234567'
+  setAuthRole(store, AuthorizationRoles.PUBLIC_USER)
 
   beforeEach(async () => {
     // mock the window.location.assign function
@@ -405,7 +406,7 @@ describe('Alteration component', () => {
   })
 
   it('certify text is prefilled for non-staff user', async () => {
-    setAuthRole(store)
+    setAuthRole(store, AuthorizationRoles.PUBLIC_USER)
     store.stateModel.tombstone.userInfo = {
       firstname: 'Jon',
       lastname: 'Doe'
