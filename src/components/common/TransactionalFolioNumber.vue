@@ -88,7 +88,7 @@ export default class TransactionalFolioNumber extends Mixins(CommonMixin) {
 
   /** Called when component is mounted. */
   mounted (): void {
-    // assign transactional FN form draft if it exists, otherwise leave field empty
+    // assign transactional FN from draft if it exists, otherwise leave field empty
     this.folioNumber = this.getTransactionalFolioNumber || ''
   }
 
