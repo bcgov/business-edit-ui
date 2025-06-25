@@ -3,13 +3,10 @@
     id="transactional-folio-number-section"
     class="pb-6"
   >
-    <h2>{{ sectionNumber }} Folio or Reference Number for this Filing</h2>
+    <h2>{{ sectionNumber }} Folio or Reference Number (Optional)</h2>
 
     <div class="py-4">
-      Enter the folio or reference number you want to use for this filing for your own tracking purposes. The
-      Business Folio or Reference Number is displayed below (if available). Entering a different value below
-      will not change the Business Folio or Reference Number. Only the number below will appear on the transaction
-      report and receipt for this filing.
+      This is meant for your own tracking purposes and will appear on your receipt.
     </div>
 
     <div :class="{ 'invalid-section': !sectionValid }">
@@ -91,8 +88,8 @@ export default class TransactionalFolioNumber extends Mixins(CommonMixin) {
 
   /** Called when component is mounted. */
   mounted (): void {
-    // assign transactional FN if it exists, otherwise business FN
-    this.folioNumber = this.getTransactionalFolioNumber || this.getFolioNumber
+    // assign transactional FN from draft if it exists, otherwise leave field empty
+    this.folioNumber = this.getTransactionalFolioNumber || ''
   }
 
   /** True if this section is valid. */

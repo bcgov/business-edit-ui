@@ -136,7 +136,7 @@ export default class FilingTemplateMixin extends DateMixin {
         name: FilingTypes.CORRECTION,
         certifiedBy: this.getCertifyState.certifiedBy || '',
         date: this.getCurrentDate, // "absolute day" (YYYY-MM-DD in Pacific time)
-        folioNumber: this.getFolioNumber // folio number, unless overridden below
+        folioNumber: this.getFolioNumber || undefined // folio number, unless overridden below
       },
       business: {
         // use original properties (not specific getters)
@@ -282,7 +282,7 @@ export default class FilingTemplateMixin extends DateMixin {
         name: FilingTypes.ALTERATION,
         certifiedBy: this.getCertifyState.certifiedBy,
         date: this.getCurrentDate, // "absolute day" (YYYY-MM-DD in Pacific time)
-        folioNumber: this.getFolioNumber // business folio number, unless overridden below
+        folioNumber: this.getFolioNumber || undefined // business folio number, unless overridden below
       },
       business: {
         // use original properties (not specific getters)
@@ -375,7 +375,7 @@ export default class FilingTemplateMixin extends DateMixin {
         name: FilingTypes.RESTORATION,
         certifiedBy: this.getCertifyState.certifiedBy,
         date: this.getCurrentDate, // "absolute day" (YYYY-MM-DD in Pacific time)
-        folioNumber: this.getFolioNumber // business folio number, unless overridden below
+        folioNumber: this.getFolioNumber || undefined // business folio number, unless overridden below
       },
       business: {
         // use original properties (not specific getters)
@@ -486,7 +486,7 @@ export default class FilingTemplateMixin extends DateMixin {
         name: FilingTypes.SPECIAL_RESOLUTION,
         certifiedBy: this.getCertifyState.certifiedBy,
         date: this.getCurrentDate, // "absolute day" (YYYY-MM-DD in Pacific time)
-        folioNumber: this.getFolioNumber // business folio number, unless overridden below
+        folioNumber: this.getFolioNumber || undefined // business folio number, unless overridden below
       },
       business: {
         // use original properties (not specific getters)
@@ -584,7 +584,7 @@ export default class FilingTemplateMixin extends DateMixin {
         name: FilingTypes.CHANGE_OF_REGISTRATION,
         certifiedBy: this.getCertifyState.certifiedBy,
         date: this.getCurrentDate, // "absolute day" (YYYY-MM-DD in Pacific time)
-        folioNumber: this.getFolioNumber // business folio number, unless overridden below
+        folioNumber: this.getFolioNumber || undefined // business folio number, unless overridden below
       },
       business: {
         // use original properties (not specific getters)
