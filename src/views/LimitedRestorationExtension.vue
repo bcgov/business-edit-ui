@@ -36,7 +36,7 @@
               <NameTranslation />
             </div>
             <RecognitionDateTime />
-            <OfficeAddresses />
+            <OfficeAddresses :isSummaryView="hasOfficeAddresses" />
             <BusinessContactInfo />
             <FolioInformation />
           </YourCompanyWrapper>
@@ -380,6 +380,20 @@ export default class LimitedRestorationExtension extends Mixins(
     return currentApplicant[0]?.officer.email
   }
 
+  get hasOfficeAddresses (): boolean {
+    const officeAddresses = this.getOfficeAddresses
+    if (!officeAddresses) return false
+
+    const registeredExists = officeAddresses.registeredOffice &&
+      (!this.isEmptyAddress(officeAddresses.registeredOffice.mailingAddress) ||
+      !this.isEmptyAddress(officeAddresses.registeredOffice.deliveryAddress))
+    console.log('hasOfficeAddresses', officeAddresses, registeredExists)
+    const recordsExists = officeAddresses.recordsOffice &&
+      (!this.isEmptyAddress(officeAddresses.recordsOffice.mailingAddress) ||
+      !this.isEmptyAddress(officeAddresses.recordsOffice.deliveryAddress))
+
+    return registeredExists || recordsExists
+  }
   /** Emits Fetch Error event. */
   @Emit('fetchError')
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
