@@ -387,7 +387,7 @@ export default class LimitedRestorationExtension extends Mixins(
     const registeredExists = officeAddresses.registeredOffice &&
       (!this.isEmptyAddress(officeAddresses.registeredOffice.mailingAddress) ||
       !this.isEmptyAddress(officeAddresses.registeredOffice.deliveryAddress))
-    console.log('hasOfficeAddresses', officeAddresses, registeredExists)
+
     const recordsExists = officeAddresses.recordsOffice &&
       (!this.isEmptyAddress(officeAddresses.recordsOffice.mailingAddress) ||
       !this.isEmptyAddress(officeAddresses.recordsOffice.deliveryAddress))
