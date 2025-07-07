@@ -12,12 +12,8 @@ export * from './state-interface'
 export * from './rules-memorandum-interfaces'
 
 // External interfaces
-// NB: importing EmptyAddress doesn't work in local components
 export type {
   BusinessLookupIF,
   BusinessLookupResultIF
 } from '@bcrs-shared-components/interfaces'
 
-export {
-  EmptyAddress
-} from '@bcrs-shared-components/interfaces'
