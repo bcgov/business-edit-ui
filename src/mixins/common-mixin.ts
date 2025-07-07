@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import { Component } from 'vue-property-decorator'
-import { ConfirmDialogType } from '@/interfaces/'
+import { isEmpty } from 'lodash'
+import { AddressIF, ConfirmDialogType } from '@/interfaces/'
 
 /**
  * Mixin that provides some useful common utilities.
@@ -75,6 +76,22 @@ export default class CommonMixin extends Vue {
   /** Changes the specified prop to uppercase. */
   uppercase (prop: string): void {
     this[prop] = this[prop]?.toUpperCase()
+  }
+
+  /**
+   * Whether the address object is empty or with only with default input values.
+   * See also EmptyAddress.
+   */
+  isEmptyAddress (address: AddressIF): boolean {
+    return isEmpty(address) || (
+      !address.addressCity &&
+      (!address.addressCountry || address.addressCountry === 'CA') &&
+      (!address.addressRegion || address.addressRegion === 'BC') &&
+      !address.deliveryInstructions &&
+      !address.postalCode &&
+      !address.streetAddress &&
+      !address.streetAddressAdditional
+    )
   }
 
   /**
