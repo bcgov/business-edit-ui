@@ -1099,7 +1099,7 @@ export const useStore = defineStore('store', {
       }
 
       const findDifference = (current: any, original: any): boolean => {
-        const omittedValues = ['action', 'priority', 'series', 'hasParValue']
+        const omittedValues = ['priority', 'series', 'hasParValue']
 
         if (!original || isEmpty(original)) {
           return !IsSame(current, original, omittedValues)
