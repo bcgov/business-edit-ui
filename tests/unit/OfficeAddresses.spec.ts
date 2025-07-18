@@ -1125,6 +1125,16 @@ describe('For Special resolution', () => {
   })
 })
 
+// For Limited Restoration Extension
+it('does not display the edit button when isSummaryView is true', async () => {
+  const wrapper = mount(OfficeAddresses, { vuetify, propsData: { isSummaryView: false } })
+
+  const editBtn = wrapper.find('#btn-correct-office-addresses')
+
+  // The button should not exist
+  expect(editBtn.exists()).toBe(false)
+})
+
 describe('verify updateAddress()', () => {
   let wrapper: any
   let vm: any

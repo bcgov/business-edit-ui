@@ -6,15 +6,17 @@ import sinon from 'sinon'
 import { shallowMount, createLocalVue } from '@vue/test-utils'
 import { AxiosInstance as axios } from '@/utils/'
 import { Articles } from '@/components/Alteration/'
-import { BusinessContactInfo, CertifySection, CompletingParty, Detail, EntityName, FolioInformation,
-  NameTranslation, OfficeAddresses, PeopleAndRoles, RecognitionDateTime, ShareStructures, StaffPayment,
-  YourCompanyWrapper } from '@/components/common/'
+import {
+  BusinessContactInfo, CertifySection, CompletingParty, Detail, EntityName, FolioInformation, NameTranslation,
+  OfficeAddresses, PeopleAndRoles, RecognitionDateTime, ShareStructures, StaffPayment, YourCompanyWrapper
+} from '@/components/common/'
 import CorpCorrection from '@/views/Correction/CorpCorrection.vue'
 import mockRouter from './MockRouter'
 import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
-import { AccountTypes, ActionTypes, FilingTypes } from '@/enums'
+import { ActionTypes, AuthorizationRoles, FilingTypes } from '@/enums'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
+import { setAuthRole } from 'tests/set-auth-roles'
 
 const vuetify = new Vuetify({})
 
@@ -36,7 +38,7 @@ describe('Corp Correction component', () => {
 
   store.stateModel.tombstone.entityType = CorpTypeCd.BENEFIT_COMPANY
   store.stateModel.tombstone.businessId = 'BC1234567'
-  store.stateModel.accountInformation.accountType = AccountTypes.PREMIUM
+  setAuthRole(store, AuthorizationRoles.STAFF)
 
   beforeEach(async () => {
     // mock the window.location.assign function

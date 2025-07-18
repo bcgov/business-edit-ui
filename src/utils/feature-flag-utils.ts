@@ -14,7 +14,8 @@ export const defaultFlagSet: LDFlagSet = {
   'sentry-enable': false, // by default, no sentry logs
   'supported-correction-entities': [],
   'supported-alteration-change-business-types': [],
-  'enable-document-records': false
+  'enable-document-records': false,
+  'use-business-api-gw-url': false // by default, use Legal API URL instead of Business API GW URL
 }
 
 /**

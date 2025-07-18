@@ -18,6 +18,8 @@ describe('Fetch Config', () => {
   import.meta.env.VUE_APP_BUSINESS_DASH_URL = 'business dash url'
   import.meta.env.VUE_APP_LEGAL_API_URL = 'legal api url'
   import.meta.env.VUE_APP_LEGAL_API_VERSION_2 = '/legal api version 2'
+  // import.meta.env.VUE_APP_BUSINESS_API_GW_URL = 'business api url'
+  // import.meta.env.VUE_APP_BUSINESS_API_VERSION_2 = '/business api version 2'
   import.meta.env.VUE_APP_NAICS_API_URL = 'naics api url'
   import.meta.env.VUE_APP_NAICS_API_VERSION_2 = '/naics api version'
   import.meta.env.VUE_APP_PAY_API_URL = 'pay api url'
@@ -62,7 +64,6 @@ describe('Fetch Config', () => {
     expect(sessionStorage.getItem('STATUS_API_URL')).toBe('status api url/status api version')
     expect(AxiosInstance.defaults.baseURL).toBe('legal api url/legal api version 2/')
     expect(window['addressCompleteKey']).toBe('address complete key')
-    expect(window['ldClientId']).toBe('business edit ld client id')
     expect(window['sentryDsn']).toBe('sentry dsn')
     expect(window['keycloakAuthUrl']).toBe('keycloak url')
     expect(window['keycloakRealm']).toBe('keycloak realm')

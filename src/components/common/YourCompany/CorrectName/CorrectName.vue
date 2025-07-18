@@ -7,7 +7,7 @@
       v-if="!isOneOption"
       class="info-text mb-5 pb-5 bottom-border"
     >
-      You can correct the company name in one of the following ways:
+      You can {{ nameChangeAction }} the company name in one of the following ways:
     </p>
     <v-expansion-panels
       v-model="panel"
@@ -102,6 +102,7 @@ import CorrectNameToNumber from './CorrectNameToNumber.vue'
 export default class CorrectName extends Vue {
   /** The options to display */
   @Prop() readonly correctNameChoices!: Array<string>
+  @Prop() readonly nameChangeAction!: string
 
   // local properties
   displayedOptions: Array<CorrectNameOptionIF> = []

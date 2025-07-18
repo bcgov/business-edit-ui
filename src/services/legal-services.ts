@@ -3,13 +3,14 @@ import { AddressesIF, AlterationFilingIF, BusinessInformationIF, ChgRegistration
   CorrectionFilingIF, DocumentIF, NameTranslationIF, OrgPersonIF, PresignedUrlIF, ResolutionsIF, RestorationFilingIF,
   SpecialResolutionFilingIF }
   from '@/interfaces/'
-import { RoleTypes } from '@/enums'
+import { AuthorizedActions, RoleTypes } from '@/enums'
 import { NameRequestIF, ShareStructureIF } from '@bcrs-shared-components/interfaces/'
-
 import { BusinessDocumentsIF } from '@/interfaces/business-document-interface'
 import { AxiosResponse } from 'axios'
+
 /**
  * Class that provides integration with the Legal API.
+ * Note: uses "baseURL" for all Axios calls
  */
 export default class LegalServices {
   /**
@@ -426,5 +427,17 @@ export default class LegalServices {
       'Content-Disposition': `attachment; filename=${file.name}`
     }
     return axios.put(url, file, { headers })
+  }
+
+  /**
+   * Fetches the current account's authorized actions (permissions).
+   * @returns a promise to return the list of authorized actions
+   */
+  static async fetchAuthorizedActions (): Promise<AuthorizedActions[]> {
+    return axios.get('permissions').then(response => {
+      const data = response?.data
+      if (!data) throw new Error('Invalid API response')
+      return data.authorizedPermissions
+    })
   }
 }

@@ -1,7 +1,7 @@
 // Pinia Store
 import {
-  AccountTypes,
   ActionTypes,
+  AuthorizedActions,
   CoopTypes,
   CorrectionErrorTypes,
   FilingNames,
@@ -45,14 +45,14 @@ import {
   SpecialResolutionIF,
   StaffPaymentIF
 } from '@bcrs-shared-components/interfaces/'
-import { GetFeatureFlag, IsSame } from '@/utils/'
+import { GetFeatureFlag, IsSame, OrderShares, RemoveNullProps } from '@/utils/'
 import DateUtilities from '@/services/date-utilities'
-
 import { defineStore } from 'pinia'
 import { resourceModel, stateModel } from './state'
 import { LegalServices } from '@/services'
 import { RulesMemorandumIF } from '@/interfaces/rules-memorandum-interfaces'
-import { isEqual } from 'lodash'
+import { isEmpty, isEqual } from 'lodash'
+import { IsAuthorized } from '@/utils'
 
 // Possible to move getters / actions into seperate files:
 // https://github.com/vuejs/pinia/issues/802#issuecomment-1018780409
@@ -61,16 +61,6 @@ export const useStore = defineStore('store', {
   // convert to a function
   state: (): StateIF => ({ resourceModel, stateModel }),
   getters: {
-    /** Whether the user has "staff" Keycloak role. */
-    isRoleStaff (): boolean {
-      return this.stateModel.tombstone.keycloakRoles.includes('staff')
-    },
-
-    /** Whether the current account is SBC Staff. */
-    isSbcStaff (): boolean {
-      return this.stateModel.accountInformation?.accountType === AccountTypes.SBC_STAFF
-    },
-
     /** Whether the current filing is a Correction. */
     isCorrectionFiling (): boolean {
       return (this.stateModel.tombstone.filingType === FilingTypes.CORRECTION)
@@ -84,16 +74,6 @@ export const useStore = defineStore('store', {
     /** Whether the current filing is a Special Resolution. */
     isSpecialResolutionFiling (): boolean {
       return (this.stateModel.tombstone.filingType === FilingTypes.SPECIAL_RESOLUTION)
-    },
-
-    /** Whether the current filing is a Change of Registration. */
-    isChangeRegFiling (): boolean {
-      return (this.stateModel.tombstone.filingType === FilingTypes.CHANGE_OF_REGISTRATION)
-    },
-
-    /** Whether the current filing is a Conversion. */
-    isConversionFiling (): boolean {
-      return (this.stateModel.tombstone.filingType === FilingTypes.CONVERSION)
     },
 
     /** Whether the current filing is a Restoration. */
@@ -111,14 +91,17 @@ export const useStore = defineStore('store', {
       return (this.getRestoration.type === RestorationTypes.LTD_TO_FULL)
     },
 
-    /** Whether the current filing is a Change of Registration for a firm corp class. */
+    /** Whether the current filing is a Change of Registration for a firm. */
     isFirmChangeFiling (): boolean {
-      return (this.isEntityFirm && this.isChangeRegFiling)
+      return (
+        this.isEntityFirm &&
+        this.stateModel.tombstone.filingType === FilingTypes.CHANGE_OF_REGISTRATION
+      )
     },
 
-    /** Whether the current filing is a Correction for a base company. */
-    isBaseCorrectionFiling (): boolean {
-      return (this.isBaseCompany && this.isCorrectionFiling)
+    /** Whether the current filing is a Correction for a corporation. */
+    isCorpCorrectionFiling (): boolean {
+      return (this.isEntityCorp && this.isCorrectionFiling)
     },
 
     /* Whether the current filing is a Correction for a cooperative. */
@@ -133,7 +116,10 @@ export const useStore = defineStore('store', {
 
     /** Whether the current filing is a Conversion for a firm. */
     isFirmConversionFiling (): boolean {
-      return (this.isEntityFirm && this.isConversionFiling)
+      return (
+        this.isEntityFirm &&
+        this.stateModel.tombstone.filingType === FilingTypes.CONVERSION
+      )
     },
 
     /** Whether the corrected filing is an Incorporation Application. */
@@ -226,8 +212,8 @@ export const useStore = defineStore('store', {
       return (this.getEntityType === CorpTypeCd.ULC_CONTINUE_IN)
     },
 
-    /** Whether the entity is a base company (BC/BEN/CC/ULC or C/CBEN/CCC/CUL). */
-    isBaseCompany (): boolean {
+    /** Whether the entity is a corporation (BC/BEN/CC/ULC or C/CBEN/CCC/CUL). */
+    isEntityCorp (): boolean {
       return (
         this.isEntityBcCompany ||
         this.isEntityBenefitCompany ||
@@ -245,11 +231,6 @@ export const useStore = defineStore('store', {
       return (this.isEntityPartnership || this.isEntitySoleProp)
     },
 
-    /** Whether the current account is a premium account. */
-    isPremiumAccount (): boolean {
-      return (this.stateModel.accountInformation?.accountType === AccountTypes.PREMIUM)
-    },
-
     /** The effective date-time object. */
     getEffectiveDateTime (): EffectiveDateTimeIF {
       return this.stateModel.effectiveDateTime
@@ -265,9 +246,14 @@ export const useStore = defineStore('store', {
       return this.getBusinessInformation.startDate
     },
 
+    /** The Account Information object. */
+    getAccountInformation (): AccountInformationIF {
+      return this.stateModel.accountInformation
+    },
+
     /** The current account id. */
     getAccountId (): number {
-      return this.stateModel.accountInformation?.id || null
+      return this.getAccountInformation?.id || null
     },
 
     /** The current date in format (YYYY-MM-DD), which is refreshed every time the app inits. */
@@ -403,9 +389,9 @@ export const useStore = defineStore('store', {
       return this.stateModel.tombstone.userInfo
     },
 
-    /** The current user's keycloak roles. */
-    getKeycloakRoles (): Array<string> {
-      return this.stateModel.tombstone.keycloakRoles
+    /** The user's authorized actions (aka permissions). */
+    getAuthorizedActions (): Array<AuthorizedActions> {
+      return this.stateModel.tombstone.authorizedActions
     },
 
     /** The org info. (May be null.) */
@@ -572,7 +558,7 @@ export const useStore = defineStore('store', {
      * - staff payment
      */
     hasCorrectionDataChanged (): boolean {
-      if (this.isBaseCorrectionFiling) {
+      if (this.isCorpCorrectionFiling) {
         return (
           this.hasBusinessNameChanged ||
           this.hasBusinessTypeChanged ||
@@ -715,7 +701,7 @@ export const useStore = defineStore('store', {
 
     /** Whether the subject correction filing is valid. */
     isCorrectionValid (): boolean {
-      if (this.isBaseCorrectionFiling) {
+      if (this.isCorpCorrectionFiling) {
         if (this.isClientErrorCorrection) {
           return (
             this.getFlagsCompanyInfo.isValidCompanyName &&
@@ -997,7 +983,7 @@ export const useStore = defineStore('store', {
     hasMailingChanged (): boolean {
       if (
         this.isAlterationFiling ||
-        this.isBaseCorrectionFiling ||
+        this.isCorpCorrectionFiling ||
         this.isRestorationFiling
       ) {
         return !IsSame(
@@ -1033,7 +1019,7 @@ export const useStore = defineStore('store', {
     hasDeliveryChanged (): boolean {
       if (
         this.isAlterationFiling ||
-        this.isBaseCorrectionFiling ||
+        this.isCorpCorrectionFiling ||
         this.isRestorationFiling
       ) {
         return !IsSame(
@@ -1104,7 +1090,6 @@ export const useStore = defineStore('store', {
 
       return !IsSame(currentOrgPersons, originalOrgPersons, ['actions', 'confirmNameChange'])
     },
-
     /** Whether share structure data has changed. */
     hasShareStructureChanged (): boolean {
       let currentShareClasses = this.getShareClasses
@@ -1112,19 +1097,47 @@ export const useStore = defineStore('store', {
 
       // Null action properties can be assigned to the ShareClasses when cancelling edits
       // This is fail safe to ensure null actions are not included in the comparison
-      const removeNullProps = (obj) => {
-        return Object.fromEntries(
-          Object.entries(obj)
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            .filter(([_, v]) => v != null)
-            .map(([k, v]) => [k, v === Object(v) ? removeNullProps(v) : v])
-        )
+      currentShareClasses = currentShareClasses && RemoveNullProps(currentShareClasses)
+      originalShareClasses = originalShareClasses && RemoveNullProps(originalShareClasses)
+
+      // Need to make sure our two classes are ordered similarly
+      // Moving a share or series in the list can cause IsSame to return false.
+      if (currentShareClasses) {
+        currentShareClasses = OrderShares(currentShareClasses)
+      }
+      if (originalShareClasses) {
+        originalShareClasses = OrderShares(originalShareClasses)
       }
 
-      currentShareClasses = currentShareClasses && removeNullProps(currentShareClasses)
-      originalShareClasses = originalShareClasses && removeNullProps(originalShareClasses)
+      const findDifference = (current: any, original: any): boolean => {
+        const omittedValues = ['action', 'priority', 'series', 'hasParValue']
 
-      return !IsSame(originalShareClasses, currentShareClasses)
+        if (!original || isEmpty(original)) {
+          return !IsSame(current, original, omittedValues)
+        }
+
+        // Check for differences in nested series
+        const seriesChanged = current.some((currentShare: any) => {
+          if (currentShare.type === 'Class' && currentShare.series?.length > 0) {
+            const originalShare = original.find((i: any) => i.id === currentShare.id)
+            return findDifference(currentShare.series, originalShare?.series || [])
+          }
+          return false
+        })
+
+        if (seriesChanged) return true
+
+        // Check differences at current level
+        return Object.entries(current).some(([k]) => {
+          return !IsSame(
+            current[k as keyof ShareClassIF],
+            original[k as keyof ShareClassIF],
+            omittedValues
+          )
+        })
+      }
+
+      return findDifference(currentShareClasses, originalShareClasses)
     },
 
     /** Whether NAICS data has changed. */
@@ -1295,16 +1308,17 @@ export const useStore = defineStore('store', {
       return this.getValidationFlags.flagsCompanyInfo.isValidExtensionTime
     },
 
-    /** Returns false when users can change the sole proprietor (SP).
-     * Restricts the ability of non-staff users from changing the sole
-     * proprietor when the SP is an organization.  This restriction has been
-     * added to ensure that changes made in business-edit-ui are also updated by
-     * staff in COLIN */
-    hideChangeButtonForSoleProps (): boolean {
+    /**
+     * Whether user can change the proprietor -- when authorized or the proprietor is
+     * not an organization. This restriction has been added to ensure that changes made
+     * in business-edit-ui are also updated by staff in COLIN.
+     * @returns True when users can change the proprietor.
+     */
+    showChangeButtonForSoleProps (): boolean {
       const isProprietor = this.getOrgPeople[0]?.roles[0]?.roleType === RoleTypes.PROPRIETOR
       const isOrganization = this.getOrgPeople[0]?.officer?.partyType === PartyTypes.ORGANIZATION
       const isDba = isProprietor && isOrganization
-      return !this.isRoleStaff && isDba
+      return IsAuthorized(AuthorizedActions.FIRM_EDITABLE_DBA) || !isDba
     },
 
     /**
@@ -1434,8 +1448,8 @@ export const useStore = defineStore('store', {
     setIsFilingPaying (isFilingPaying: boolean) {
       this.stateModel.tombstone.isFilingPaying = isFilingPaying
     },
-    setKeycloakRoles (keycloakRoles: string[]) {
-      this.stateModel.tombstone.keycloakRoles = keycloakRoles
+    setAuthorizedActions (actions: Array<AuthorizedActions>) {
+      this.stateModel.tombstone.authorizedActions = actions
     },
     setUserInfo (userInfo: any) {
       this.stateModel.tombstone.userInfo = userInfo

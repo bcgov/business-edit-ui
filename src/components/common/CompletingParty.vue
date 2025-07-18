@@ -10,7 +10,7 @@
       <CompletingPartyShared
         class="section-container py-6"
         :completingParty="getCompletingParty"
-        :enableAddEdit="isRoleStaff || isSbcStaff"
+        :enableAddEdit="IsAuthorized(AuthorizedActions.EDITABLE_COMPLETING_PARTY)"
         :addressSchema="DefaultAddressSchema"
         :validate="validate"
         :invalidSection="invalidSection"
@@ -29,6 +29,8 @@ import { CompletingPartyIF } from '@bcrs-shared-components/interfaces/'
 import { CompletingParty as CompletingPartyShared } from '@bcrs-shared-components/completing-party/'
 import { DefaultAddressSchema } from '@/schemas/'
 import { useStore } from '@/store/store'
+import { IsAuthorized } from '@/utils'
+import { AuthorizedActions } from '@/enums'
 
 @Component({
   components: {
@@ -36,6 +38,10 @@ import { useStore } from '@/store/store'
   }
 })
 export default class CompletingParty extends Vue {
+  // for template
+  readonly IsAuthorized = IsAuthorized
+  readonly AuthorizedActions = AuthorizedActions
+
   /** Prop to provide section number. */
   @Prop({ default: '' }) readonly sectionNumber!: string
 
@@ -44,8 +50,6 @@ export default class CompletingParty extends Vue {
 
   // store getters
   @Getter(useStore) getCompletingParty!: CompletingPartyIF
-  @Getter(useStore) isRoleStaff!: boolean
-  @Getter(useStore) isSbcStaff!: boolean
 
   // store actions
   @Action(useStore) setCompletingParty!: (x: CompletingPartyIF) => void

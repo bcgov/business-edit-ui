@@ -20,7 +20,7 @@ describe('Transactional Folio Number component', () => {
     // verify template
     expect(wrapper.findComponent(TransactionalFolioNumber).exists()).toBe(true)
     expect(wrapper.find('#transactional-folio-number-section').exists()).toBe(true)
-    expect(wrapper.find('h2').text()).toBe('Folio or Reference Number for this Filing')
+    expect(wrapper.find('h2').text()).toBe('Folio or Reference Number (Optional)')
     expect(wrapper.find('label').text()).toBe('Folio or ReferenceNumber') // no space between Reference and Number
     expect(wrapper.find('#folio-number-input').exists()).toBe(true)
 
@@ -42,12 +42,12 @@ describe('Transactional Folio Number component', () => {
     })
 
     // verify title
-    expect(wrapper.find('h2').text()).toBe('123. Folio or Reference Number for this Filing')
+    expect(wrapper.find('h2').text()).toBe('123. Folio or Reference Number (Optional)')
 
     wrapper.destroy()
   })
 
-  it('uses existing Folio Number when there is no Transactional Folio Number', () => {
+  it('shows an empty field when there is no Transactional Folio Number', () => {
     store.stateModel.tombstone.folioNumber = 'A123'
 
     const wrapper = mount(TransactionalFolioNumber, {
@@ -57,7 +57,7 @@ describe('Transactional Folio Number component', () => {
     const vm: any = wrapper.vm
 
     // verify Folio Number
-    expect(vm.folioNumber).toBe('A123')
+    expect(vm.folioNumber).toBe('')
 
     // cleanup
     store.stateModel.tombstone.folioNumber = ''

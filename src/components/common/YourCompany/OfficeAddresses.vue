@@ -192,9 +192,9 @@
         </template>
       </v-row>
 
-      <!-- Records office (base companies only) -->
+      <!-- Records office (corps only) -->
       <v-row
-        v-if="isBaseCompany"
+        v-if="isEntityCorp"
         id="summary-records-address"
         class="mt-4 mx-0"
         no-gutters
@@ -467,9 +467,9 @@
           </li>
         </div>
 
-        <!-- "Same as" checkbox (base companies only)-->
+        <!-- "Same as" checkbox (corps only)-->
         <div
-          v-if="isBaseCompany"
+          v-if="isEntityCorp"
           id="edit-records-address"
         >
           <div
@@ -619,10 +619,10 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
   @Getter(useStore) hasRecMailingChanged!: boolean
   @Getter(useStore) haveOfficeAddressesChanged!: boolean
   @Getter(useStore) isAlterationFiling!: boolean
-  @Getter(useStore) isBaseCompany!: boolean
-  @Getter(useStore) isBaseCorrectionFiling!: boolean
   @Getter(useStore) isCoopCorrectionFiling!: boolean
+  @Getter(useStore) isCorpCorrectionFiling!: boolean
   @Getter(useStore) isCorrectionFiling!: boolean
+  @Getter(useStore) isEntityCorp!: boolean
   @Getter(useStore) isFirmChangeFiling!: boolean
   @Getter(useStore) isFirmConversionFiling!: boolean
   @Getter(useStore) isFirmCorrectionFiling!: boolean
@@ -712,7 +712,7 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
    * Sets local address data and "inherit" flags from store.
    */
   private setLocalProperties (): void {
-    if (this.isBaseCorrectionFiling || this.isAlterationFiling ||
+    if (this.isCorpCorrectionFiling || this.isAlterationFiling ||
       this.isRestorationFiling) {
       // assign registered office addresses (may be {})
       this.mailingAddress = { ...this.getOfficeAddresses?.registeredOffice?.mailingAddress }
@@ -928,8 +928,8 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
    * Sets updated office addresses in store.
    */
   private storeAddresses (): void {
-    if (this.isBaseCorrectionFiling || this.isRestorationFiling) {
-      // at the moment, only base corrections and restorations are supported
+    if (this.isCorpCorrectionFiling || this.isRestorationFiling) {
+      // at the moment, only corp corrections and restorations are supported
       this.setOfficeAddresses({
         registeredOffice: {
           deliveryAddress: this.deliveryAddress,
@@ -1026,7 +1026,7 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
    * Also called when we know what kind of correction this is.
    */
   @Watch('getOfficeAddresses', { deep: true, immediate: true })
-  @Watch('isBaseCorrectionFiling')
+  @Watch('isCorpCorrectionFiling')
   @Watch('isFirmCorrectionFiling')
   @Watch('isRestorationFiling')
   @Watch('isCoopCorrectionFiling')

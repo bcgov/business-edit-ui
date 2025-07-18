@@ -1,9 +1,10 @@
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
+import { AuthorizationRoles } from '@/enums'
 
 /** Gets Keycloak roles and returns them. */
-export function GetKeycloakRoles (): Array<string> {
+export function GetKeycloakRoles (): Array<AuthorizationRoles> {
   const jwt = getJWT()
-  const keycloakRoles = (jwt.roles || []) as Array<string>
+  const keycloakRoles = (jwt.roles || []) as Array<AuthorizationRoles>
   if (keycloakRoles.length < 1) throw new Error('Invalid Keycloak roles')
   return keycloakRoles
 

@@ -31,36 +31,37 @@
 
     <Articles class="mt-10" />
 
-    <template v-if="isClientErrorCorrection">
-      <CompletingParty
-        class="mt-10"
-        sectionNumber="1."
-        validate="true"
-      />
-    </template>
+    <CompletingParty
+      v-if="isClientErrorCorrection"
+      class="mt-10"
+      sectionNumber="1."
+      :validate="true"
+    />
 
     <Detail
       class="mt-10"
       :sectionNumber="isClientErrorCorrection ? '2.' : '1.'"
-      validate="true"
+      :validate="true"
     />
 
-    <template v-if="isClientErrorCorrection">
-      <CertifySection
-        class="mt-10"
-        :sectionNumber="isClientErrorCorrection ? '3.' : '2.'"
-        validate="true"
-      />
-    </template>
+    <CertifySection
+      v-if="isClientErrorCorrection"
+      class="mt-10"
+      :sectionNumber="isClientErrorCorrection ? '3.' : '2.'"
+      :validate="true"
+      :disableEdit="false"
+    />
 
     <DocumentId
+      v-if="IsAuthorized(AuthorizedActions.DOCUMENT_RECORDS)"
       class="mt-10"
-      :sectionNumber="isClientErrorCorrection ? '4.' : '2.'"
+      :sectionNumber="isClientErrorCorrection ? '4.' : '3.'"
     />
 
     <StaffPayment
+      v-if="IsAuthorized(AuthorizedActions.STAFF_PAYMENT)"
       class="mt-10"
-      :sectionNumber="isClientErrorCorrection ? '5.' : '3.'"
+      :sectionNumber="isClientErrorCorrection ? '5.' : '4.'"
       @haveChanges="onStaffPaymentChanges()"
     />
   </section>
@@ -70,9 +71,10 @@
 import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
 import { Action } from 'pinia-class'
 import { Articles } from '@/components/Alteration/'
-import { BusinessContactInfo, CertifySection, CompletingParty, Detail, DocumentId, EntityName, FolioInformation,
-  NameTranslation, OfficeAddresses, PeopleAndRoles, RecognitionDateTime, ShareStructures, StaffPayment,
-  YourCompanyWrapper } from '@/components/common/'
+import {
+  BusinessContactInfo, CertifySection, CompletingParty, Detail, DocumentId, EntityName, FolioInformation, NameTranslation,
+  OfficeAddresses, PeopleAndRoles, RecognitionDateTime, ShareStructures, StaffPayment, YourCompanyWrapper
+} from '@/components/common/'
 import { CommonMixin, FeeMixin, FilingTemplateMixin } from '@/mixins/'
 import { AuthServices, DateUtilities, LegalServices } from '@/services/'
 import { StaffPaymentOptions } from '@bcrs-shared-components/enums/'
@@ -80,6 +82,8 @@ import { CorrectionFilingIF, EntitySnapshotIF, ResourceIF } from '@/interfaces/'
 import * as Resources from '@/resources/Correction/'
 import { useStore } from '@/store/store'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
+import { IsAuthorized } from '@/utils'
+import { AuthorizedActions } from '@/enums'
 
 /** Correction sub-component for corp class "BC" entities. */
 @Component({
@@ -102,6 +106,10 @@ import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
   }
 })
 export default class CorpCorrection extends Mixins(CommonMixin, FeeMixin, FilingTemplateMixin) {
+  // for template
+  readonly IsAuthorized = IsAuthorized
+  readonly AuthorizedActions = AuthorizedActions
+
   // Store getters
   // @Getter(useStore) getEntityType!: CorpTypeCd
 

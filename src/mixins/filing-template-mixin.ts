@@ -81,9 +81,9 @@ export default class FilingTemplateMixin extends DateMixin {
   @Getter(useStore) hasSpecialResolutionRulesChanged!: boolean
   @Getter(useStore) haveNameTranslationsChanged!: boolean
   @Getter(useStore) haveOfficeAddressesChanged!: boolean
-  @Getter(useStore) isBaseCorrectionFiling!: boolean
   @Getter(useStore) isClientErrorCorrection!: boolean
   @Getter(useStore) isCoopCorrectionFiling!: boolean
+  @Getter(useStore) isCorpCorrectionFiling!: boolean
   @Getter(useStore) isEntityTypeFirm!: boolean
   @Getter(useStore) isFirmCorrectionFiling!: boolean
   @Getter(useStore) isLimitedRestorationToFull!: boolean
@@ -137,7 +137,7 @@ export default class FilingTemplateMixin extends DateMixin {
         name: FilingTypes.CORRECTION,
         certifiedBy: this.getCertifyState.certifiedBy || '',
         date: this.getCurrentDate, // "absolute day" (YYYY-MM-DD in Pacific time)
-        folioNumber: this.getFolioNumber, // folio number, unless overridden below
+        folioNumber: this.getFolioNumber || undefined, // folio number, unless overridden below
         documentIdState: this.getDocumentIdState // document id will serve as a barcode number
       },
       business: {
@@ -189,8 +189,8 @@ export default class FilingTemplateMixin extends DateMixin {
       filing.correction.parties = parties
     }
 
-    // add in data specific to base corrections
-    if (this.isBaseCorrectionFiling) {
+    // add in data specific to corp corrections
+    if (this.isCorpCorrectionFiling) {
       filing.correction.nameTranslations = isDraft ? this.getNameTranslations : this.prepareNameTranslations()
       filing.correction.shareStructure = {
         shareClasses: isDraft ? this.getShareClasses : this.prepareShareClasses(),
@@ -284,7 +284,7 @@ export default class FilingTemplateMixin extends DateMixin {
         name: FilingTypes.ALTERATION,
         certifiedBy: this.getCertifyState.certifiedBy,
         date: this.getCurrentDate, // "absolute day" (YYYY-MM-DD in Pacific time)
-        folioNumber: this.getFolioNumber, // business folio number, unless overridden below
+        folioNumber: this.getFolioNumber || undefined, // folio number, unless overridden below
         documentIdState: this.getDocumentIdState // document id will serve as a barcode number
       },
       business: {
@@ -355,12 +355,12 @@ export default class FilingTemplateMixin extends DateMixin {
       filing.header.documentOptionalEmail = this.getDocumentOptionalEmail
     }
 
-    // Build Staff Payment into the filing
+    // build Staff Payment into the filing
     // may override folio number
     filing = this.buildStaffPayment(filing)
 
-    // Build Transactional Folio Number into the filing
-    // will override folio number
+    // build Transactional Folio Number into the filing
+    // will override staff folio number
     filing = this.buildFolioNumber(filing)
 
     return filing
@@ -378,7 +378,7 @@ export default class FilingTemplateMixin extends DateMixin {
         name: FilingTypes.RESTORATION,
         certifiedBy: this.getCertifyState.certifiedBy,
         date: this.getCurrentDate, // "absolute day" (YYYY-MM-DD in Pacific time)
-        folioNumber: this.getFolioNumber, // business folio number, unless overridden below
+        folioNumber: this.getFolioNumber || undefined, // folio number, unless overridden below
         documentIdState: this.getDocumentIdState // document id will serve as a barcode number
       },
       business: {
@@ -461,12 +461,12 @@ export default class FilingTemplateMixin extends DateMixin {
       filing.header.documentOptionalEmail = this.getDocumentOptionalEmail
     }
 
-    // Build Staff Payment into the filing
+    // build Staff Payment into the filing
     // may override folio number
     filing = this.buildStaffPayment(filing)
 
-    // Build Transactional Folio Number into the filing
-    // will override folio number
+    // build Transactional Folio Number into the filing
+    // will override staff folio number
     filing = this.buildFolioNumber(filing)
 
     return filing
@@ -490,7 +490,7 @@ export default class FilingTemplateMixin extends DateMixin {
         name: FilingTypes.SPECIAL_RESOLUTION,
         certifiedBy: this.getCertifyState.certifiedBy,
         date: this.getCurrentDate, // "absolute day" (YYYY-MM-DD in Pacific time)
-        folioNumber: this.getFolioNumber, // business folio number, unless overridden below
+        folioNumber: this.getFolioNumber || undefined, // folio number, unless overridden below
         documentIdState: this.getDocumentIdState // document id will serve as a barcode number
       },
       business: {
@@ -566,12 +566,12 @@ export default class FilingTemplateMixin extends DateMixin {
       filing.header.documentOptionalEmail = this.getDocumentOptionalEmail
     }
 
-    // Build Staff Payment into the filing
+    // build Staff Payment into the filing
     // may override folio number
     filing = this.buildStaffPayment(filing)
 
-    // Build Transactional Folio Number into the filing
-    // will override folio number
+    // build Transactional Folio Number into the filing
+    // will override staff folio number
     filing = this.buildFolioNumber(filing)
 
     return filing
@@ -589,7 +589,7 @@ export default class FilingTemplateMixin extends DateMixin {
         name: FilingTypes.CHANGE_OF_REGISTRATION,
         certifiedBy: this.getCertifyState.certifiedBy,
         date: this.getCurrentDate, // "absolute day" (YYYY-MM-DD in Pacific time)
-        folioNumber: this.getFolioNumber, // business folio number, unless overridden below
+        folioNumber: this.getFolioNumber || undefined, // folio number, unless overridden below
         documentIdState: this.getDocumentIdState // document id will serve as a barcode number
       },
       business: {
@@ -672,12 +672,12 @@ export default class FilingTemplateMixin extends DateMixin {
       filing.changeOfRegistration.startDate = this.getCorrectionStartDate
     }
 
-    // Build Staff Payment into the filing
+    // build Staff Payment into the filing
     // may override folio number
     filing = this.buildStaffPayment(filing)
 
-    // Build Transactional Folio Number into the filing
-    // will override folio number
+    // build Transactional Folio Number into the filing
+    // will override staff folio number
     filing = this.buildFolioNumber(filing)
 
     return filing
@@ -792,8 +792,8 @@ export default class FilingTemplateMixin extends DateMixin {
     // store Correction Information
     this.setCorrectionInformation(cloneDeep(filing.correction))
 
-    // store Business Information for base corrections
-    if (this.isBaseCorrectionFiling) {
+    // store Business Information for corp corrections
+    if (this.isCorpCorrectionFiling) {
       this.setBusinessInformation({
         ...entitySnapshot?.businessInfo,
         ...filing.business,
@@ -860,8 +860,8 @@ export default class FilingTemplateMixin extends DateMixin {
       this.setSpecialResolution(cloneDeep(specialResolution))
     }
 
-    // store Name Translations (base corrections only)
-    if (this.isBaseCorrectionFiling) {
+    // store Name Translations (corp corrections only)
+    if (this.isCorpCorrectionFiling) {
       this.setNameTranslations(cloneDeep(
         this.mapNameTranslations(filing.correction.nameTranslations) ||
         this.mapNameTranslations(entitySnapshot?.nameTranslations) ||
@@ -885,7 +885,7 @@ export default class FilingTemplateMixin extends DateMixin {
     // filter in only the roles we currently support
     orgPersons.forEach(op => {
       op.roles = op.roles.filter(role => {
-        if (this.isBaseCorrectionFiling) return (role.roleType === RoleTypes.DIRECTOR)
+        if (this.isCorpCorrectionFiling) return (role.roleType === RoleTypes.DIRECTOR)
         if (this.isCoopCorrectionFiling) return (role.roleType === RoleTypes.DIRECTOR)
         if (this.isFirmCorrectionFiling) {
           return ([RoleTypes.PARTNER, RoleTypes.PROPRIETOR].includes(role.roleType))
@@ -899,8 +899,8 @@ export default class FilingTemplateMixin extends DateMixin {
 
     this.setPeopleAndRoles(cloneDeep(orgPersons))
 
-    // store Share Classes and Resolution Dates (base corrections only)
-    if (this.isBaseCorrectionFiling) {
+    // store Share Classes and Resolution Dates (corp corrections only)
+    if (this.isCorpCorrectionFiling) {
       this.setShareClasses(cloneDeep(
         filing.correction.shareStructure?.shareClasses ||
         entitySnapshot?.shareStructure?.shareClasses ||
@@ -938,6 +938,7 @@ export default class FilingTemplateMixin extends DateMixin {
       this.setFileNumber(filing.correction.courtOrder?.fileNumber)
       this.setHasPlanOfArrangement(filing.correction.courtOrder?.hasPlanOfArrangement)
     }
+
     // store Staff Payment
     this.storeStaffPayment(filing)
   }
@@ -1140,7 +1141,7 @@ export default class FilingTemplateMixin extends DateMixin {
       this.setFolioNumber(entitySnapshot?.authInfo?.folioNumber)
     }
 
-    // store Transactional Folio Number
+    // if Transactional Folio Number was saved then store it
     if (filing.header.isTransactionalFolioNumber) {
       this.setTransactionalFolioNumber(filing.header.folioNumber)
     }
@@ -1400,8 +1401,11 @@ export default class FilingTemplateMixin extends DateMixin {
     this.setEntityType(entitySnapshot?.businessInfo?.legalType || null)
 
     // store Business Information
-    // *** FUTURE: fix this
-    this.setBusinessInformation({ ...entitySnapshot?.businessInfo } || { ...EmptyBusinessInfo })
+    if (entitySnapshot?.businessInfo) {
+      this.setBusinessInformation({ ...entitySnapshot?.businessInfo })
+    } else {
+      this.setBusinessInformation({ ...EmptyBusinessInfo })
+    }
 
     // store default Name Request data
     this.setNameRequest({
@@ -1673,7 +1677,7 @@ export default class FilingTemplateMixin extends DateMixin {
         filing.header.priority = false
         break
 
-      case StaffPaymentOptions.NONE: // should never happen
+      case StaffPaymentOptions.NONE: // should never happen when user is staff
         break
     }
 

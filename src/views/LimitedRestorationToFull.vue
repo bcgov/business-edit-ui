@@ -123,14 +123,17 @@
             class="mt-10"
             sectionNumber="2."
             :validate="getAppValidate"
+            :disableEdit="false"
           />
 
           <DocumentId
             class="mt-10"
+            v-if="IsAuthorized(AuthorizedActions.DOCUMENT_RECORDS)"
             sectionNumber="3."
           />
 
           <StaffPayment
+            v-if="IsAuthorized(AuthorizedActions.STAFF_PAYMENT)"
             class="mt-10"
             sectionNumber="4."
             @haveChanges="onStaffPaymentChanges()"
@@ -145,24 +148,28 @@
 import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
 import { cloneDeep } from 'lodash'
-import { GetFeatureFlag } from '@/utils/'
+import { GetFeatureFlag, IsAuthorized } from '@/utils/'
 import RestorationSummary from '@/components/Restoration/RestorationSummary.vue'
 import YourCompanySummary from '@/components/Restoration/YourCompanySummary.vue'
-import { BusinessContactInfo, CertifySection, CourtOrderPoa, DocumentsDelivery, DocumentId, EntityName,
+import {
+  BusinessContactInfo, CertifySection, CourtOrderPoa, DocumentsDelivery, DocumentId, EntityName,
   FolioInformation, ListPeopleAndRoles, NameTranslation, OfficeAddresses, PeopleAndRoles,
-  QuestionWrapper, RecognitionDateTime, StaffPayment, YourCompanyWrapper } from '@/components/common/'
+  QuestionWrapper, RecognitionDateTime, StaffPayment, YourCompanyWrapper
+} from '@/components/common/'
 import { AuthServices, LegalServices } from '@/services/'
 import { CommonMixin, FeeMixin, FilingTemplateMixin, OrgPersonMixin } from '@/mixins/'
-import { ActionKvIF, EntitySnapshotIF, FlagsCompanyInfoIF, OrgPersonIF, ResourceIF, RestorationFilingIF }
-  from '@/interfaces/'
+import {
+  ActionKvIF, EntitySnapshotIF, FlagsCompanyInfoIF, OrgPersonIF, ResourceIF, RestorationFilingIF
+} from '@/interfaces/'
 import * as Resources from '@/resources/LimitedRestorationToFull/'
-import { ApprovalTypes, FilingStatus, RoleTypes } from '@/enums/'
+import { ApprovalTypes, AuthorizedActions, FilingStatus, RoleTypes } from '@/enums/'
 import { RelationshipTypes } from '@bcrs-shared-components/enums'
 import { RelationshipsPanel } from '@bcrs-shared-components/relationships-panel'
 import { ApprovalType } from '@bcrs-shared-components/approval-type'
 import ViewWrapper from '@/components/ViewWrapper.vue'
 import { useStore } from '@/store/store'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
+import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 
 @Component({
   components: {
@@ -205,7 +212,6 @@ export default class LimitedRestorationToFull extends Mixins(
   @Getter(useStore) getRestorationCourtOrderNumber!: string
   @Getter(useStore) getRestorationRelationships!: RelationshipTypes[]
   // @Getter(useStore) getStateFilingRestoration!: StateFilingRestorationIF
-  @Getter(useStore) isRoleStaff!: boolean
   @Getter(useStore) isSummaryMode!: boolean
   @Getter(useStore) showFeeSummary!: boolean
 
@@ -238,6 +244,11 @@ export default class LimitedRestorationToFull extends Mixins(
    */
   isCourtOrderRadio = null as boolean
 
+  /** True if user is authenticated. */
+  get isAuthenticated (): boolean {
+    return Boolean(sessionStorage.getItem(SessionStorageKeys.KeyCloakToken))
+  }
+
   /** The resource object for a restoration filing. */
   get restorationResource (): ResourceIF {
     switch (this.getEntityType) {
@@ -259,18 +270,20 @@ export default class LimitedRestorationToFull extends Mixins(
     // do not proceed if app is not ready
     if (!val) return
 
-    // do not proceed if FF is disabled
-    // bypass this when Vitest is running as FF are not fetched
-    if (!this.isVitestRunning && !GetFeatureFlag('restoration-ui-enabled')) {
-      window.alert('Restorations are not available at the moment. Please check again later.')
+    // do not proceed if we are not authenticated (safety check - should never happen)
+    if (!this.isAuthenticated) return
+
+    // do not proceed if not authorized
+    if (!IsAuthorized(AuthorizedActions.RESTORATION_REINSTATEMENT_FILING)) {
+      window.alert('You are not authorized to use Restoration filings.')
       this.$root.$emit('go-to-dashboard', true)
       return
     }
 
-    // do not proceed if user is not staff
-    const isStaffOnly = this.$route.matched.some(r => r.meta?.isStaffOnly)
-    if (isStaffOnly && !this.isRoleStaff) {
-      window.alert('Only staff can extend or convert a limited restoration.')
+    // do not proceed if FF is disabled
+    // bypass this when Vitest is running as FF are not fetched
+    if (!this.isVitestRunning && !GetFeatureFlag('restoration-ui-enabled')) {
+      window.alert('Restorations are not available at the moment. Please check again later.')
       this.$root.$emit('go-to-dashboard', true)
       return
     }

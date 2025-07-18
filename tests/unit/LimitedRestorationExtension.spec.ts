@@ -14,9 +14,10 @@ import BusinessContactInfo from '@/components/common/YourCompany/BusinessContact
 import { RestorationResourceBen } from '@/resources/LimitedRestorationExtension/BEN'
 import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
-import { FilingTypes } from '@/enums'
+import { AuthorizationRoles, FilingTypes } from '@/enums'
 import { EntityName, FolioInformation, NameTranslation, OfficeAddresses, RecognitionDateTime,
   YourCompanyWrapper } from '@/components/common'
+import { setAuthRole } from 'tests/set-auth-roles'
 
 const vuetify = new Vuetify({})
 
@@ -239,7 +240,7 @@ describe('Limited Restoration Extension component - edit page', () => {
     store.stateModel.summaryMode = false
     store.stateModel.validationFlags.appValidate = false
     store.stateModel.tombstone.businessId = 'BC1234567' // normally set in App.vue
-    store.stateModel.tombstone.keycloakRoles = ['staff'] // normally set in App.vue
+    setAuthRole(store, AuthorizationRoles.STAFF) // normally set in App.vue
     store.stateModel.tombstone.filingType = FilingTypes.RESTORATION
     store.stateModel.restoration = filing.restoration as any
     store.stateModel.entitySnapshot = entitySnapshot as any
@@ -314,7 +315,7 @@ describe('Limited Restoration Extension component - summary page (with no filing
     store.stateModel.summaryMode = true
     store.stateModel.validationFlags.appValidate = false
     store.stateModel.tombstone.businessId = 'BC1234567' // normally set in App.vue
-    store.stateModel.tombstone.keycloakRoles = ['staff'] // normally set in App.vue
+    setAuthRole(store, AuthorizationRoles.STAFF) // normally set in App.vue
     store.stateModel.tombstone.filingType = FilingTypes.RESTORATION
     store.stateModel.restoration = filing.restoration as any
     store.stateModel.entitySnapshot = entitySnapshot as any
@@ -410,7 +411,7 @@ describe('Limited Restoration Extension component - summary page (with filing ch
     store.stateModel.summaryMode = true
     store.stateModel.validationFlags.appValidate = false
     store.stateModel.tombstone.businessId = 'BC1234567' // normally set in App.vue
-    store.stateModel.tombstone.keycloakRoles = ['staff'] // normally set in App.vue
+    setAuthRole(store, AuthorizationRoles.STAFF) // normally set in App.vue
     store.stateModel.tombstone.filingType = FilingTypes.RESTORATION
     store.stateModel.restoration = filing.restoration as any
     store.stateModel.entitySnapshot = entitySnapshot as any

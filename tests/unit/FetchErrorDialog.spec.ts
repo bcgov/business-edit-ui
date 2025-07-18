@@ -4,6 +4,8 @@ import FetchErrorDialog from '@/dialogs/FetchErrorDialog.vue'
 import ErrorContact from '@/components/common/ErrorContact.vue'
 import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
+import { AuthorizationRoles } from '@/enums'
+import { setAuthRole } from 'tests/set-auth-roles'
 
 const vuetify = new Vuetify({})
 
@@ -15,7 +17,7 @@ document.body.setAttribute('data-app', 'true')
 
 describe('Fetch Error Dialog', () => {
   it('renders the component properly as a staff user', () => {
-    store.stateModel.tombstone.keycloakRoles = ['staff', 'edit', 'view']
+    setAuthRole(store, AuthorizationRoles.STAFF)
     const wrapper = shallowMount(FetchErrorDialog,
       {
         vuetify,
@@ -35,7 +37,7 @@ describe('Fetch Error Dialog', () => {
   })
 
   it('renders the component properly as a regular user', () => {
-    store.stateModel.tombstone.keycloakRoles = ['edit', 'view']
+    setAuthRole(store, AuthorizationRoles.PUBLIC_USER)
     const wrapper = shallowMount(FetchErrorDialog,
       {
         vuetify,

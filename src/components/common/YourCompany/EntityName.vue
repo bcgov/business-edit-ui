@@ -208,6 +208,7 @@
       >
         <CorrectName
           :correctNameChoices="correctNameChoices"
+          :nameChangeAction="nameChangeAction"
           @isSaved="nameChangeHandler($event)"
           @cancel="isEditingNames = false"
         />
@@ -314,6 +315,10 @@ export default class EntityName extends Mixins(CommonMixin, NameRequestMixin) {
   /** The corp full description. */
   get corpFullDescription (): string {
     return GetCorpFullDescription(this.getNameRequest.legalType as any)
+  }
+
+  get nameChangeAction (): string {
+    return this.isAlterationFiling ? 'alter' : 'correct'
   }
 
   /** Whether the edited label should be displayed. */
