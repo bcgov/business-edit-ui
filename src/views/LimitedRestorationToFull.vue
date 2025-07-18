@@ -127,8 +127,8 @@
           />
 
           <DocumentId
-            class="mt-10"
             v-if="IsAuthorized(AuthorizedActions.DOCUMENT_RECORDS)"
+            class="mt-10"
             sectionNumber="3."
           />
 

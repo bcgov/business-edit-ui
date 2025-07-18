@@ -89,8 +89,8 @@ import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
 import { SpecialResolutionSummary, Resolution } from '@/components/SpecialResolution'
 import {
   AssociationType, BusinessContactInfo, BusinessType, CertifySection, CompletingParty, CourtOrderPoa,
-  CurrentDirectors, Detail, DocumentsDelivery, DocumentId, EntityName, FolioInformation, OfficeAddresses, PeopleAndRoles,
-  RecognitionDateTime, StaffPayment, TransactionalFolioNumber, YourCompanyWrapper
+  CurrentDirectors, Detail, DocumentsDelivery, DocumentId, EntityName, FolioInformation, OfficeAddresses,
+  PeopleAndRoles, RecognitionDateTime, StaffPayment, TransactionalFolioNumber, YourCompanyWrapper
 } from '@/components/common/'
 import { CommonMixin, FeeMixin, FilingTemplateMixin } from '@/mixins/'
 import ViewWrapper from '@/components/ViewWrapper.vue'

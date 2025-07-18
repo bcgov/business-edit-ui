@@ -132,7 +132,7 @@ describe('Filing Template Mixin', () => {
         header: {
           certifiedBy: '',
           date: '',
-          folioNumber: '',
+          folioNumber: undefined,
           name: 'specialResolution',
           documentIdState: {
             consumerDocumentId: '',
@@ -316,7 +316,7 @@ describe('Change of Registration Filing', () => {
         header: {
           certifiedBy: '',
           date: '',
-          folioNumber: '',
+          folioNumber: undefined,
           name: 'changeOfRegistration',
           documentIdState: {
             consumerDocumentId: '',

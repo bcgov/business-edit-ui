@@ -72,8 +72,9 @@ import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
 import { Action } from 'pinia-class'
 import { Articles } from '@/components/Alteration/'
 import {
-  BusinessContactInfo, CertifySection, CompletingParty, Detail, DocumentId, EntityName, FolioInformation, NameTranslation,
-  OfficeAddresses, PeopleAndRoles, RecognitionDateTime, ShareStructures, StaffPayment, YourCompanyWrapper
+  BusinessContactInfo, CertifySection, CompletingParty, Detail, DocumentId, EntityName,
+  FolioInformation, NameTranslation, OfficeAddresses, PeopleAndRoles, RecognitionDateTime,
+  ShareStructures, StaffPayment, YourCompanyWrapper
 } from '@/components/common/'
 import { CommonMixin, FeeMixin, FilingTemplateMixin } from '@/mixins/'
 import { AuthServices, DateUtilities, LegalServices } from '@/services/'
