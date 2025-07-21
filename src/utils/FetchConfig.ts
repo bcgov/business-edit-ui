@@ -70,7 +70,6 @@ export async function FetchConfig (): Promise<any> {
     sessionStorage.setItem('SITEMINDER_LOGOUT_URL', siteminderLogoutUrl)
   }
 
-  sessionStorage.setItem('DOC_API_KEY', import.meta.env.VUE_APP_DOC_API_KEY)
   sessionStorage.setItem(
     'DOC_API_URL', import.meta.env.VUE_APP_DOC_API_URL + import.meta.env.VUE_APP_DOC_API_VERSION + '/'
   )

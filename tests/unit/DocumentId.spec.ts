@@ -9,12 +9,6 @@ const vuetify = new Vuetify({})
 setActivePinia(createPinia())
 const store = useStore()
 
-// Mock session storage values
-const mockApiUrl = 'https://mock-doc-api-url.com'
-const mockApiKey = 'mock-doc-api-key'
-sessionStorage.setItem('DOC_API_URL', mockApiUrl)
-sessionStorage.setItem('DOC_API_KEY', mockApiKey)
-
 /**
  * Helper to create and mount the component.
  */
@@ -33,15 +27,6 @@ describe('DocumentId.vue', () => {
 
     expect(wrapper.findComponent(DocumentId).exists()).toBe(true)
     expect(wrapper.findComponent(DocumentIdShared).exists()).toBe(true)
-
-    wrapper.destroy()
-  })
-
-  it('fetches Document API URL and key from sessionStorage', () => {
-    const wrapper: Wrapper<DocumentId> = createComponent()
-
-    expect((wrapper.vm as any).getDrsApiUrl).toBe(mockApiUrl)
-    expect((wrapper.vm as any).getDrsApiKey).toBe(mockApiKey)
 
     wrapper.destroy()
   })
