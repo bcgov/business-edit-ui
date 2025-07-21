@@ -85,11 +85,17 @@
             :autoValidation="getAppValidate"
           />
 
+          <DocumentId
+            v-if="IsAuthorized(AuthorizedActions.DOCUMENT_RECORDS)"
+            class="mt-10"
+            :sectionNumber="showTransactionalFolioNumber ? '5.' : '4.'"
+          />
+
           <!-- Staff Payment is mutually exclusive with Transactional Folio Number -->
           <StaffPayment
             v-if="IsAuthorized(AuthorizedActions.STAFF_PAYMENT)"
             class="mt-10"
-            :sectionNumber="IsAuthorized(AuthorizedActions.COURT_ORDER_POA) ? '5.' : '4.'"
+            :sectionNumber="IsAuthorized(AuthorizedActions.COURT_ORDER_POA) ? '6.' : '5.'"
             @haveChanges="onStaffPaymentChanges()"
           />
         </div>
@@ -103,7 +109,7 @@ import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
 import { ChangeSummary } from '@/components/Change/'
 import { BusinessContactInfo, BusinessStartDate, BusinessType, CertifySection, CompletingParty,
-  CourtOrderPoa, DocumentsDelivery, EntityName, NatureOfBusiness, OfficeAddresses, PeopleAndRoles,
+  CourtOrderPoa, DocumentsDelivery, DocumentId, EntityName, NatureOfBusiness, OfficeAddresses, PeopleAndRoles,
   StaffPayment, TransactionalFolioNumber, YourCompanyWrapper } from '@/components/common/'
 import { AuthServices, LegalServices } from '@/services/'
 import { CommonMixin, FeeMixin, FilingTemplateMixin } from '@/mixins/'
@@ -126,6 +132,7 @@ import { IsAuthorized } from '@/utils'
     CompletingParty,
     CourtOrderPoa,
     DocumentsDelivery,
+    DocumentId,
     EntityName,
     NatureOfBusiness,
     OfficeAddresses,

@@ -13,5 +13,6 @@ export interface FlagsReviewCertifyIF {
   isValidSpecialResolutionConfirm?: boolean
   isValidCertify: boolean
   isValidCourtOrder?: boolean // staff only
+  isValidDocumentId?: boolean // staff only
   isValidStaffPayment?: boolean // staff only
 }

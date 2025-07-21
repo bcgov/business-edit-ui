@@ -1,3 +1,4 @@
+import { DocumentIdIF } from '@/interfaces/'
 import { FilingStatus } from '@/enums'
 
 /** Interface for filing header object UI sends to API. */
@@ -20,4 +21,5 @@ export interface FilingHeaderIF {
   datNumber?: string
   waiveFees?: boolean
   priority?: boolean
+  documentIdState?: DocumentIdIF
 }

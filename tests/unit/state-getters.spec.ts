@@ -128,6 +128,7 @@ describe('State Getters', () => {
     store.setValidComponent({ key: 'isValidResolutionDate', value: true })
     store.setDetailValidity(true)
     store.setCertifyStateValidity(true)
+    store.setDocumentIdStateValidity(true)
     store.setStaffPaymentValidity(true)
 
     // now, this getter should be true

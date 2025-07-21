@@ -52,10 +52,16 @@
       :disableEdit="false"
     />
 
+    <DocumentId
+      v-if="IsAuthorized(AuthorizedActions.DOCUMENT_RECORDS)"
+      class="mt-10"
+      :sectionNumber="isClientErrorCorrection ? '4.' : '3.'"
+    />
+
     <StaffPayment
       v-if="IsAuthorized(AuthorizedActions.STAFF_PAYMENT)"
       class="mt-10"
-      :sectionNumber="isClientErrorCorrection ? '4.' : '2.'"
+      :sectionNumber="isClientErrorCorrection ? '5.' : '4.'"
       @haveChanges="onStaffPaymentChanges()"
     />
   </section>
@@ -66,8 +72,9 @@ import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
 import { Action } from 'pinia-class'
 import { Articles } from '@/components/Alteration/'
 import {
-  BusinessContactInfo, CertifySection, CompletingParty, Detail, EntityName, FolioInformation, NameTranslation,
-  OfficeAddresses, PeopleAndRoles, RecognitionDateTime, ShareStructures, StaffPayment, YourCompanyWrapper
+  BusinessContactInfo, CertifySection, CompletingParty, Detail, DocumentId, EntityName,
+  FolioInformation, NameTranslation, OfficeAddresses, PeopleAndRoles, RecognitionDateTime,
+  ShareStructures, StaffPayment, YourCompanyWrapper
 } from '@/components/common/'
 import { CommonMixin, FeeMixin, FilingTemplateMixin } from '@/mixins/'
 import { AuthServices, DateUtilities, LegalServices } from '@/services/'
@@ -87,6 +94,7 @@ import { AuthorizedActions } from '@/enums'
     CertifySection,
     CompletingParty,
     Detail,
+    DocumentId,
     EntityName,
     FolioInformation,
     NameTranslation,
