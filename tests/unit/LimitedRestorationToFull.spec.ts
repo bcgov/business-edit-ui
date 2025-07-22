@@ -195,7 +195,7 @@ const newAddress = {
 }
 
 // init session storage variables
-sessionStorage.setItem('PAY_API_URL', 'https://pay.api.url/')
+sessionStorage.setItem('PAY_API_GW_URL', 'https://pay-api-gw.url/')
 sessionStorage.setItem('KEYCLOAK_TOKEN', 'keycloak-token') // anything non-falsy
 
 describe('Limited Restoration To Full component - edit page', () => {
@@ -224,7 +224,7 @@ describe('Limited Restoration To Full component - edit page', () => {
     store.stateModel.businessInformation = { ...entitySnapshot.businessInfo } as any
     store.resourceModel = RestorationResourceBen
 
-    // mock services function
+    // mock services functions
     vi.spyOn((LegalServices as any), 'fetchFilingById').mockImplementation(
       () => Promise.resolve(filing))
     vi.spyOn((LegalServices as any), 'fetchBusinessInfo').mockImplementation(

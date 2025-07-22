@@ -84,7 +84,7 @@ describe('Business Contact Info for an Alteration', () => {
 
   beforeAll(async () => {
     store.stateModel.tombstone.filingType = FilingTypes.ALTERATION
-    sessionStorage.setItem('AUTH_API_URL', `myhost/basePath/auth/`)
+    sessionStorage.setItem('AUTH_API_GW_URL', 'https://auth-api-gw.url/')
     store.stateModel.tombstone.businessId = 'BC1234567'
     store.stateModel.businessContact = contactInfo
     store.stateModel.entitySnapshot = { authInfo: { contact: originalAlterationContact } } as any
@@ -143,7 +143,7 @@ describe('Business Contact Info for a Change of Registration', () => {
   beforeAll(async () => {
     store.stateModel.tombstone.entityType = CorpTypeCd.SOLE_PROP
     store.stateModel.tombstone.filingType = FilingTypes.CHANGE_OF_REGISTRATION
-    sessionStorage.setItem('AUTH_API_URL', `myhost/basePath/auth/`)
+    sessionStorage.setItem('AUTH_API_GW_URL', 'https://auth-api-gw.url/')
     store.stateModel.tombstone.businessId = 'BC1234567'
     store.stateModel.businessContact = contactInfo
     store.stateModel.entitySnapshot = { authInfo: { contact: originalContact } } as any

@@ -30,8 +30,8 @@ describe('Conversion component', () => {
   const { assign } = window.location
 
   // Define Session
-  sessionStorage.setItem('PAY_API_URL', 'https://pay-api.url/')
-  sessionStorage.setItem('AUTH_API_URL', 'https://auth-api.url/')
+  sessionStorage.setItem('PAY_API_GW_URL', 'https://pay-api-gw.url/')
+  sessionStorage.setItem('AUTH_API_GW_URL', 'https://auth-api-gw.url/')
   sessionStorage.setItem('AUTH_WEB_URL', 'https://auth-web.url/')
   sessionStorage.setItem('BUSINESS_DASH_URL', 'https://business-dash.url/')
   sessionStorage.setItem('KEYCLOAK_TOKEN', 'keycloak-token') // anything non-falsy
@@ -47,7 +47,7 @@ describe('Conversion component', () => {
     const get = sinon.stub(axios, 'get')
 
     // GET payment fee for immediate alteration
-    get.withArgs('https://pay-api.url/fees/FM/CONVERSION')
+    get.withArgs('https://pay-api-gw.url/fees/FM/CONVERSION')
       .returns(Promise.resolve({
         data: {
           'filingFees': 100.0,
@@ -66,7 +66,7 @@ describe('Conversion component', () => {
       }))
 
     // GET payment fee for future conversion
-    get.withArgs('https://pay-api.url/fees/FM/CONVERSION?futureEffective=true')
+    get.withArgs('https://pay-api-gw.url/fees/FM/CONVERSION?futureEffective=true')
       .returns(Promise.resolve({
         data: {
           'filingFees': 100.0,
@@ -185,7 +185,7 @@ describe('Conversion component', () => {
       }))
 
     // GET auth info
-    get.withArgs('https://auth-api.url/entities/BC1234567')
+    get.withArgs('https://auth-api-gw.url/entities/BC1234567')
       .returns(Promise.resolve({
         data: {
           contacts: [

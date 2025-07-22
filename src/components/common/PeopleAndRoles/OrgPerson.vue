@@ -182,7 +182,7 @@
                       :class="wasBusinessSelectedFromLookup ? null : 'mb-n6'"
                       :showErrors="showErrors"
                       :businessLookup="inProgressBusinessLookup"
-                      :BusinessLookupServices="BusinessLookupServices"
+                      :BusinessLookupServices="RegistriesSearchServices"
                       :editableBusinessName="wasReplaced(currentOrgPerson)"
                       :searchStatus="searchStatus"
                       @setBusiness="updateBusinessDetails($event)"
@@ -454,7 +454,7 @@ import { CommonMixin, OrgPersonMixin } from '@/mixins/'
 import { RoleTypes } from '@/enums/'
 import { DefaultAddressSchema, InBcCanadaAddressSchema } from '@/schemas/'
 import { Getter } from 'pinia-class'
-import { BusinessLookupServices, LegalServices } from '@/services/'
+import { RegistriesSearchServices, LegalServices } from '@/services/'
 import { VuetifyRuleFunction } from '@/types'
 
 import { useStore } from '@/store/store'
@@ -481,7 +481,7 @@ export default class OrgPerson extends Mixins(CommonMixin, OrgPersonMixin) {
 
   // Declarations for template
   readonly RoleTypes = RoleTypes
-  readonly BusinessLookupServices = BusinessLookupServices
+  readonly RegistriesSearchServices = RegistriesSearchServices
   readonly EmptyBusinessLookup = EmptyBusinessLookup
 
   /** The current org/person to edit or add. */

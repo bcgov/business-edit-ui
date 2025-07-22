@@ -7,9 +7,9 @@ import { FeesIF } from '@/interfaces'
  * Class that provides integration with the Pay API.
  */
 export default class PayServices {
-  /** The Pay API URL, from session storage. */
-  static get payApiUrl (): string {
-    return sessionStorage.getItem('PAY_API_URL')
+  /** The Pay API Gateway URL. */
+  static get payApiGwUrl (): string {
+    return sessionStorage.getItem('PAY_API_GW_URL')
   }
 
   /**
@@ -21,7 +21,7 @@ export default class PayServices {
    */
   static async fetchFilingFees (filingCode: FilingCodes, entityType: CorpTypeCd, isFutureEffective = false)
   : Promise<FeesIF> {
-    let url = this.payApiUrl + 'fees/' + entityType + '/' + filingCode
+    let url = this.payApiGwUrl + 'fees/' + entityType + '/' + filingCode
     if (isFutureEffective) {
       url += '?futureEffective=true'
     }
