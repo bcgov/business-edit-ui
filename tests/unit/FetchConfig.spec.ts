@@ -36,7 +36,7 @@ describe('Fetch Config', () => {
   import.meta.env.VUE_APP_KEYCLOAK_REALM = 'bcregistry'
   import.meta.env.VUE_APP_KEYCLOAK_CLIENTID = 'entity-web'
 
-  it('fetches and loads the configuration correctly', async () => {
+  it('fetches and loads the configuration correctly', () => {
     // mock window.location getters
     delete window.location
     window.location = {
@@ -81,7 +81,7 @@ describe('Fetch Config', () => {
   ]
 
   for (const test of tests) {
-    it(`sets business id correctly for ${test.pathname}`, async () => {
+    it(`sets business id correctly for ${test.pathname}`, () => {
       // mock window.location getters
       delete window.location
       window.location = {
@@ -97,7 +97,7 @@ describe('Fetch Config', () => {
     })
   }
 
-  it('throws error on invalid id', async () => {
+  it('throws error on invalid id', () => {
     // mock window.location getters
     delete window.location
     window.location = {
@@ -108,7 +108,7 @@ describe('Fetch Config', () => {
     // call method
     let error
     try {
-      error = FetchConfig()
+      FetchConfig()
     } catch (e) {
       error = e
     }
