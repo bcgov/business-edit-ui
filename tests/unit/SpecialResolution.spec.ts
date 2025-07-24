@@ -187,27 +187,26 @@ describe('Special Resolution component', () => {
       }))
 
     // GET business documents
-    vi.spyOn((LegalServices as any), 'fetchBusinessDocuments').mockImplementation(
-      () => Promise.resolve({
-        documents: {
-          certifiedMemorandum: 'url',
-          certifiedRules: 'url2'
+    vi.spyOn((LegalServices as any), 'fetchBusinessDocuments').mockResolvedValue({
+      documents: {
+        certifiedMemorandum: 'url',
+        certifiedRules: 'url2'
+      },
+      documentsInfo: {
+        certifiedMemorandum: {
+          key: null,
+          name: 'name2',
+          includedInResolution: true,
+          uploaded: '2022-01-01T08:00:00.000000+00:00'
         },
-        documentsInfo: {
-          certifiedMemorandum: {
-            key: null,
-            name: 'name2',
-            includedInResolution: true,
-            uploaded: '2022-01-01T08:00:00.000000+00:00'
-          },
-          certifiedRules: {
-            key: null,
-            name: 'name',
-            includedInResolution: true,
-            uploaded: '2022-01-01T08:00:00.000000+00:00'
-          }
+        certifiedRules: {
+          key: null,
+          name: 'name',
+          includedInResolution: true,
+          uploaded: '2022-01-01T08:00:00.000000+00:00'
         }
-      }))
+      }
+  })
 
     // FUTURE: mock GET alteration filing
 

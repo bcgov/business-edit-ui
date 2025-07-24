@@ -225,22 +225,14 @@ describe('Limited Restoration To Full component - edit page', () => {
     store.resourceModel = RestorationResourceBen
 
     // mock services functions
-    vi.spyOn((LegalServices as any), 'fetchFilingById').mockImplementation(
-      () => Promise.resolve(filing))
-    vi.spyOn((LegalServices as any), 'fetchBusinessInfo').mockImplementation(
-      () => Promise.resolve(businessInfo))
-    vi.spyOn((AuthServices as any), 'fetchAuthInfo').mockImplementation(
-      () => Promise.resolve(authInfo))
-    vi.spyOn((LegalServices as any), 'fetchAddresses').mockImplementation(
-      () => Promise.resolve(addresses))
-    vi.spyOn((LegalServices as any), 'fetchNameTranslations').mockImplementation(
-      () => Promise.resolve(nameTranslations))
-    vi.spyOn((LegalServices as any), 'fetchDirectors').mockImplementation(
-      () => Promise.resolve(directors))
-    vi.spyOn((LegalServices as any), 'fetchFiling').mockImplementation(
-      () => Promise.resolve(stateFiling))
-    vi.spyOn((PayServices as any), 'fetchFilingFees').mockImplementation(
-      () => Promise.resolve(filingFees))
+    vi.spyOn((LegalServices as any), 'fetchFilingById').mockResolvedValue(filing)
+    vi.spyOn((LegalServices as any), 'fetchBusinessInfo').mockResolvedValue(businessInfo)
+    vi.spyOn((AuthServices as any), 'fetchAuthInfo').mockResolvedValue(authInfo)
+    vi.spyOn((LegalServices as any), 'fetchAddresses').mockResolvedValue(addresses)
+    vi.spyOn((LegalServices as any), 'fetchNameTranslations').mockResolvedValue(nameTranslations)
+    vi.spyOn((LegalServices as any), 'fetchDirectors').mockResolvedValue(directors)
+    vi.spyOn((LegalServices as any), 'fetchFiling').mockResolvedValue(stateFiling)
+    vi.spyOn((PayServices as any), 'fetchFilingFees').mockResolvedValue(filingFees)
 
     // mock the window.location.assign function
     delete window.location
@@ -333,23 +325,15 @@ describe('Limited Restoration To Full component - summary page (with no filing c
     delete window.location
     window.location = { assign: vi.fn() } as any
 
-    // mock services function
-    vi.spyOn((LegalServices as any), 'fetchFilingById').mockImplementation(
-      () => Promise.resolve(filing))
-    vi.spyOn((LegalServices as any), 'fetchBusinessInfo').mockImplementation(
-      () => Promise.resolve(businessInfo))
-    vi.spyOn((AuthServices as any), 'fetchAuthInfo').mockImplementation(
-      () => Promise.resolve(authInfo))
-    vi.spyOn((LegalServices as any), 'fetchAddresses').mockImplementation(
-      () => Promise.resolve(addresses))
-    vi.spyOn((LegalServices as any), 'fetchNameTranslations').mockImplementation(
-      () => Promise.resolve(nameTranslations))
-    vi.spyOn((LegalServices as any), 'fetchDirectors').mockImplementation(
-      () => Promise.resolve(directors))
-    vi.spyOn((LegalServices as any), 'fetchFiling').mockImplementation(
-      () => Promise.resolve(stateFiling))
-    vi.spyOn((PayServices as any), 'fetchFilingFees').mockImplementation(
-      () => Promise.resolve(filingFees))
+    // mock services functions
+    vi.spyOn((LegalServices as any), 'fetchFilingById').mockResolvedValue(filing)
+    vi.spyOn((LegalServices as any), 'fetchBusinessInfo').mockResolvedValue(businessInfo)
+    vi.spyOn((AuthServices as any), 'fetchAuthInfo').mockResolvedValue(authInfo)
+    vi.spyOn((LegalServices as any), 'fetchAddresses').mockResolvedValue(addresses)
+    vi.spyOn((LegalServices as any), 'fetchNameTranslations').mockResolvedValue(nameTranslations)
+    vi.spyOn((LegalServices as any), 'fetchDirectors').mockResolvedValue(directors)
+    vi.spyOn((LegalServices as any), 'fetchFiling').mockResolvedValue(stateFiling)
+    vi.spyOn((PayServices as any), 'fetchFilingFees').mockResolvedValue(filingFees)
 
     wrapper = shallowMount(LimitedRestorationToFull, {
       vuetify,
@@ -413,23 +397,15 @@ describe('Limited Restoration To Full component - summary page (with filing chan
     delete window.location
     window.location = { assign: vi.fn() } as any
 
-    // mock services function
-    vi.spyOn((LegalServices as any), 'fetchFilingById').mockImplementation(
-      () => Promise.resolve(filing))
-    vi.spyOn((LegalServices as any), 'fetchBusinessInfo').mockImplementation(
-      () => Promise.resolve(businessInfo))
-    vi.spyOn((AuthServices as any), 'fetchAuthInfo').mockImplementation(
-      () => Promise.resolve(authInfo))
-    vi.spyOn((LegalServices as any), 'fetchAddresses').mockImplementation(
-      () => Promise.resolve(addresses))
-    vi.spyOn((LegalServices as any), 'fetchNameTranslations').mockImplementation(
-      () => Promise.resolve(nameTranslations))
-    vi.spyOn((LegalServices as any), 'fetchDirectors').mockImplementation(
-      () => Promise.resolve(directors))
-    vi.spyOn((LegalServices as any), 'fetchFiling').mockImplementation(
-      () => Promise.resolve(stateFiling))
-    vi.spyOn((PayServices as any), 'fetchFilingFees').mockImplementation(
-      () => Promise.resolve(filingFees))
+    // mock services functions
+    vi.spyOn((LegalServices as any), 'fetchFilingById').mockResolvedValue(filing)
+    vi.spyOn((LegalServices as any), 'fetchBusinessInfo').mockResolvedValue(businessInfo)
+    vi.spyOn((AuthServices as any), 'fetchAuthInfo').mockResolvedValue(authInfo)
+    vi.spyOn((LegalServices as any), 'fetchAddresses').mockResolvedValue(addresses)
+    vi.spyOn((LegalServices as any), 'fetchNameTranslations').mockResolvedValue(nameTranslations)
+    vi.spyOn((LegalServices as any), 'fetchDirectors').mockResolvedValue(directors)
+    vi.spyOn((LegalServices as any), 'fetchFiling').mockResolvedValue(stateFiling)
+    vi.spyOn((PayServices as any), 'fetchFilingFees').mockResolvedValue(filingFees)
 
     wrapper = shallowMount(LimitedRestorationToFull, {
       vuetify,

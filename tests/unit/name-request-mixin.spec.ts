@@ -44,9 +44,7 @@ describe('Name Request Mixin', () => {
     console.log = vi.fn()
 
     // mock fetchNameRequest to throw an error
-    vi.spyOn((LegalServices as any), 'fetchNameRequest').mockRejectedValue(() => {
-      return Promise.resolve(null)
-    })
+    vi.spyOn((LegalServices as any), 'fetchNameRequest').mockRejectedValue(null)
 
     try {
       await vm.fetchValidateNameRequest('NR 1234567', 'phone', 'email')
@@ -63,11 +61,9 @@ describe('Name Request Mixin', () => {
 
   it('handles invalid name requests', async () => {
     // mock fetchNameRequest to return invalid NR
-    vi.spyOn((LegalServices as any), 'fetchNameRequest').mockImplementation(() => (
-      {
-        applicants: { emailAddress: 'email', phoneNumber: 'phone' }
-      }
-    ))
+    vi.spyOn((LegalServices as any), 'fetchNameRequest').mockResolvedValue({
+      applicants: { emailAddress: 'email', phoneNumber: 'phone' }
+    })
 
     try {
       await vm.fetchValidateNameRequest('NR 1234567', 'phone', 'email')
@@ -81,17 +77,15 @@ describe('Name Request Mixin', () => {
 
   it('handles invalid name request states', async () => {
     // mock fetchNameRequest to return invalid NR state
-    vi.spyOn((LegalServices as any), 'fetchNameRequest').mockImplementation(() => (
-      {
-        applicants: { emailAddress: 'email', phoneNumber: 'phone' },
-        state: 'DRAFT',
-        expirationDate: '2021-11-05T07:01:00+00:00',
-        names: [{ state: 'APPROVED', name: 'name' }],
-        nrNum: 'NR 1234567',
-        requestTypeCd: 'CR',
-        request_action_cd: 'CHG'
-      }
-    ))
+    vi.spyOn((LegalServices as any), 'fetchNameRequest').mockResolvedValue({
+      applicants: { emailAddress: 'email', phoneNumber: 'phone' },
+      state: 'DRAFT',
+      expirationDate: '2021-11-05T07:01:00+00:00',
+      names: [{ state: 'APPROVED', name: 'name' }],
+      nrNum: 'NR 1234567',
+      requestTypeCd: 'CR',
+      request_action_cd: 'CHG'
+    })
 
     try {
       await vm.fetchValidateNameRequest('NR 1234567', 'phone', 'email')
@@ -105,18 +99,16 @@ describe('Name Request Mixin', () => {
 
   it('handles conditional state with consent required', async () => {
     // mock fetchNameRequest to return invalid NR state
-    vi.spyOn((LegalServices as any), 'fetchNameRequest').mockImplementation(() => (
-      {
-        applicants: { emailAddress: 'email', phoneNumber: 'phone' },
-        state: 'CONDITIONAL',
-        consentFlag: 'Y',
-        expirationDate: '2021-11-05T07:01:00+00:00',
-        names: [{ state: 'APPROVED', name: 'name' }],
-        nrNum: 'NR 1234567',
-        requestTypeCd: 'CR',
-        request_action_cd: 'CHG'
-      }
-    ))
+    vi.spyOn((LegalServices as any), 'fetchNameRequest').mockResolvedValue({
+      applicants: { emailAddress: 'email', phoneNumber: 'phone' },
+      state: 'CONDITIONAL',
+      consentFlag: 'Y',
+      expirationDate: '2021-11-05T07:01:00+00:00',
+      names: [{ state: 'APPROVED', name: 'name' }],
+      nrNum: 'NR 1234567',
+      requestTypeCd: 'CR',
+      request_action_cd: 'CHG'
+    })
 
     try {
       await vm.fetchValidateNameRequest('NR 1234567', 'phone', 'email')
@@ -130,18 +122,16 @@ describe('Name Request Mixin', () => {
 
   it('handles conditional state with consent received', async () => {
     // mock fetchNameRequest to return valid NR state
-    vi.spyOn((LegalServices as any), 'fetchNameRequest').mockImplementation(() => (
-      {
-        applicants: { emailAddress: 'email', phoneNumber: 'phone' },
-        state: 'CONDITIONAL',
-        consentFlag: 'R',
-        expirationDate: '2021-11-05T07:01:00+00:00',
-        names: [{ state: 'APPROVED', name: 'name' }],
-        nrNum: 'NR 1234567',
-        requestTypeCd: 'CR',
-        request_action_cd: 'CHG'
-      }
-    ))
+    vi.spyOn((LegalServices as any), 'fetchNameRequest').mockResolvedValue({
+      applicants: { emailAddress: 'email', phoneNumber: 'phone' },
+      state: 'CONDITIONAL',
+      consentFlag: 'R',
+      expirationDate: '2021-11-05T07:01:00+00:00',
+      names: [{ state: 'APPROVED', name: 'name' }],
+      nrNum: 'NR 1234567',
+      requestTypeCd: 'CR',
+      request_action_cd: 'CHG'
+    })
 
     const nr = await vm.fetchValidateNameRequest('NR 1234567', 'phone', 'email')
     expect(nr).not.toBeUndefined()
