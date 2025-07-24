@@ -206,7 +206,7 @@ describe('Special Resolution component', () => {
           uploaded: '2022-01-01T08:00:00.000000+00:00'
         }
       }
-  })
+    })
 
     // FUTURE: mock GET alteration filing
 
