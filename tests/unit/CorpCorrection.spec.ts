@@ -31,8 +31,9 @@ describe('Corp Correction component', () => {
   const { assign } = window.location
 
   // Define Session
-  sessionStorage.setItem('PAY_API_URL', 'https://pay-api.url/')
-  sessionStorage.setItem('AUTH_API_URL', 'https://auth-api.url/')
+  sessionStorage.setItem('PAY_API_GW_URL', 'https://pay-api-gw.url/')
+  sessionStorage.setItem('AUTH_API_GW_URL', 'https://auth-api-gw.url/')
+  sessionStorage.setItem('LEGAL_API_URL', 'https://legal-api.url/')
   sessionStorage.setItem('AUTH_WEB_URL', 'https://auth-web.url/')
   sessionStorage.setItem('BUSINESS_DASH_URL', 'https://business-dash.url/')
 
@@ -49,7 +50,7 @@ describe('Corp Correction component', () => {
 
     // FUTURE
     // GET payment fee for immediate correction
-    // get.withArgs('https://pay-api.url/fees/BEN/CORRECTION')
+    // get.withArgs('https://pay-api-gw.url/fees/BEN/CORRECTION')
     //   .returns(Promise.resolve({
     //     data: {
     //       'filingFees': 100.0,
@@ -69,7 +70,7 @@ describe('Corp Correction component', () => {
 
     // FUTURE
     // GET payment fee for future correction
-    // get.withArgs('https://pay-api.url/fees/BEN/CORRECTION?futureEffective=true')
+    // get.withArgs('https://pay-api-gw.url/fees/BEN/CORRECTION?futureEffective=true')
     //   .returns(Promise.resolve({
     //     data: {
     //       'filingFees': 100.0,
@@ -88,13 +89,13 @@ describe('Corp Correction component', () => {
     //   }))
 
     // GET business info
-    get.withArgs('businesses/BC1234567')
+    get.withArgs('https://legal-api.url/businesses/BC1234567')
       .returns(Promise.resolve({
         data: { business: { legalType: 'BC' } }
       }))
 
     // GET auth info
-    get.withArgs('https://auth-api.url/entities/BC1234567')
+    get.withArgs('https://auth-api-gw.url/entities/BC1234567')
       .returns(Promise.resolve({
         data: {
           contacts: [
@@ -107,31 +108,31 @@ describe('Corp Correction component', () => {
       }))
 
     // GET addresses
-    get.withArgs('businesses/BC1234567/addresses')
+    get.withArgs('https://legal-api.url/businesses/BC1234567/addresses')
       .returns(Promise.resolve({
         data: {}
       }))
 
     // GET parties
-    get.withArgs('businesses/BC1234567/parties')
+    get.withArgs('https://legal-api.url/businesses/BC1234567/parties')
       .returns(Promise.resolve({
         data: { parties: [] }
       }))
 
     // GET share structure
-    get.withArgs('businesses/BC1234567/share-classes')
+    get.withArgs('https://legal-api.url/businesses/BC1234567/share-classes')
       .returns(Promise.resolve({
         data: { shareClasses: [] }
       }))
 
     // GET name translations
-    get.withArgs('businesses/BC1234567/aliases')
+    get.withArgs('https://legal-api.url/businesses/BC1234567/aliases')
       .returns(Promise.resolve({
         data: { aliases: [] }
       }))
 
     // GET resolutions
-    get.withArgs('businesses/BC1234567/resolutions')
+    get.withArgs('https://legal-api.url/businesses/BC1234567/resolutions')
       .returns(Promise.resolve({
         data: { resolutions: [] }
       }))

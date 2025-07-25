@@ -124,13 +124,13 @@ describe('Folio Information component', () => {
   })
 
   it('updates folio number for an alteration', async () => {
-    sessionStorage.setItem('AUTH_API_URL', `myhost/basePath/auth/`)
+    sessionStorage.setItem('AUTH_API_GW_URL', 'https://auth-api-gw.url/')
     store.stateModel.tombstone.businessId = 'BC1234567'
     store.stateModel.tombstone.filingType = FilingTypes.ALTERATION
     store.stateModel.entitySnapshot = { authInfo: { folioNumber: 'A123' } } as any
 
     // mock auth "patch business" endpoint
-    sinon.stub(axios, 'patch').withArgs('myhost/basePath/auth/entities/BC1234567')
+    sinon.stub(axios, 'patch').withArgs('https://auth-api-gw.url/entities/BC1234567')
 
     const wrapper = mount(FolioInformation, { vuetify })
     const vm: any = wrapper.vm

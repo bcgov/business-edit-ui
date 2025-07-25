@@ -1,11 +1,11 @@
-import { NaicsResultIF } from '@bcrs-shared-components/interfaces/'
 import { AxiosInstance as axios } from '@/utils/'
+import { NaicsResultIF } from '@bcrs-shared-components/interfaces/'
 
 /**
  * Class that provides integration with the NAICS API.
  */
 export default class NaicsServices {
-  /** The NAICS URL, from session storage. */
+  /** The NAICS URL. */
   static get naicsUrl (): string {
     return sessionStorage.getItem('NAICS_URL')
   }

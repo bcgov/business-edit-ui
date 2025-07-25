@@ -1,11 +1,9 @@
 import { AxiosInstance as axios, GetFeatureFlag } from '@/utils/'
 
 /**
- * Fetches config from environment and API.
- * Also identifies Business ID from initial route.
- * @returns A promise to get & set session storage keys with appropriate values.
+ * Fetches config from environment and sets items in session storage or window object.
  */
-export async function FetchConfig (): Promise<any> {
+export function FetchConfig (): void {
   // get config from environment
   const origin = window.location.origin
   const processEnvVueAppPath: string = import.meta.env.VUE_APP_PATH
@@ -14,7 +12,7 @@ export async function FetchConfig (): Promise<any> {
   const windowLocationOrigin = window.location.origin // eg, http://localhost:8080
 
   if (!origin || !processEnvVueAppPath || !processEnvBaseUrl || !windowLocationPathname || !windowLocationOrigin) {
-    return Promise.reject(new Error('Missing environment variables.'))
+    throw new Error('Missing environment variables.')
   }
 
   const authWebUrl: string = import.meta.env.VUE_APP_AUTH_WEB_URL
@@ -36,11 +34,13 @@ export async function FetchConfig (): Promise<any> {
   if (GetFeatureFlag('use-business-api-gw-url')) {
     const businessApiGwUrl: string =
       (import.meta.env.VUE_APP_BUSINESS_API_GW_URL + import.meta.env.VUE_APP_BUSINESS_API_VERSION_2 + '/')
+    sessionStorage.setItem('BUSINESS_API_GW_URL', businessApiGwUrl)
     // set base URL for axios calls
     axios.defaults.baseURL = businessApiGwUrl
   } else {
     const legalApiUrl: string =
       (import.meta.env.VUE_APP_LEGAL_API_URL + import.meta.env.VUE_APP_LEGAL_API_VERSION_2 + '/')
+    sessionStorage.setItem('LEGAL_API_URL', legalApiUrl)
     // set base URL for axios calls
     axios.defaults.baseURL = legalApiUrl
   }
@@ -52,14 +52,22 @@ export async function FetchConfig (): Promise<any> {
     (import.meta.env.VUE_APP_REGISTRIES_SEARCH_API_URL + import.meta.env.VUE_APP_REGISTRIES_SEARCH_API_VERSION + '/')
   sessionStorage.setItem('REGISTRIES_SEARCH_API_URL', registriesSearchApiUrl)
 
-  const registriesSearchApiKey: string = import.meta.env.VUE_APP_REGISTRIES_SEARCH_API_KEY
-  sessionStorage.setItem('REGISTRIES_SEARCH_API_KEY', registriesSearchApiKey)
-
+  // WARNING: AUTH_API_URL is needed for SbcHeader common component to load CURRENT_ACCOUNT object into session storage
+  // FUTURE: SBC Header component should use Auth API GW URL
   const authApiUrl: string = (import.meta.env.VUE_APP_AUTH_API_URL + import.meta.env.VUE_APP_AUTH_API_VERSION + '/')
   sessionStorage.setItem('AUTH_API_URL', authApiUrl)
 
+  const authApiGwUrl: string =
+    (import.meta.env.VUE_APP_AUTH_API_GW_URL + import.meta.env.VUE_APP_AUTH_API_VERSION + '/')
+  sessionStorage.setItem('AUTH_API_GW_URL', authApiGwUrl)
+
+  // WARNING: PAY_API_URL is needed for SbcFeeSummary common component to fetch fees
+  // FUTURE: Fee Summary component should use Pay API GW URL
   const payApiUrl: string = (import.meta.env.VUE_APP_PAY_API_URL + import.meta.env.VUE_APP_PAY_API_VERSION + '/')
   sessionStorage.setItem('PAY_API_URL', payApiUrl)
+
+  const payApiGwUrl: string = (import.meta.env.VUE_APP_PAY_API_GW_URL + import.meta.env.VUE_APP_PAY_API_VERSION + '/')
+  sessionStorage.setItem('PAY_API_GW_URL', payApiGwUrl)
 
   // for system alert banner (sbc-common-components)
   const statusApiUrl: string = (import.meta.env.VUE_APP_STATUS_API_URL + import.meta.env.VUE_APP_STATUS_API_VERSION)
@@ -96,7 +104,7 @@ export async function FetchConfig (): Promise<any> {
   if (businessIdRegex.test(id)) { // Allow corps/firms/coop
     sessionStorage.setItem('BUSINESS_ID', id)
   } else {
-    return Promise.reject(new Error('Missing or invalid Business ID.'))
+    throw new Error('Missing or invalid Business ID.')
   }
 
   // set Base for Vue Router
@@ -104,7 +112,7 @@ export async function FetchConfig (): Promise<any> {
   const vueRouterBase = processEnvBaseUrl + id + '/'
   sessionStorage.setItem('VUE_ROUTER_BASE', vueRouterBase)
 
-  // set Base URL for returning from redirects
+  // set Base URL for fetching local documents and for returning from redirects
   // eg, http://localhost:8080/basePath/BCxxx/
   const baseUrl = windowLocationOrigin + vueRouterBase
   sessionStorage.setItem('BASE_URL', baseUrl)

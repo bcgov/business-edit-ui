@@ -1,18 +1,23 @@
-import { AxiosInstance as axios } from '@/utils/'
+import { AxiosInstance as axios, GetFeatureFlag } from '@/utils/'
 import { AddressesIF, AlterationFilingIF, BusinessInformationIF, ChgRegistrationFilingIF, ConversionFilingIF,
   CorrectionFilingIF, DocumentIF, NameTranslationIF, OrgPersonIF, PresignedUrlIF, ResolutionsIF, RestorationFilingIF,
-  SpecialResolutionFilingIF }
-  from '@/interfaces/'
+  SpecialResolutionFilingIF } from '@/interfaces/'
 import { AuthorizedActions, RoleTypes } from '@/enums'
 import { NameRequestIF, ShareStructureIF } from '@bcrs-shared-components/interfaces/'
 import { BusinessDocumentsIF } from '@/interfaces/business-document-interface'
 import { AxiosResponse } from 'axios'
 
 /**
- * Class that provides integration with the Legal API.
- * Note: uses "baseURL" for all Axios calls
+ * Class that provides integration with the Legal (aka Business) API.
  */
 export default class LegalServices {
+  /** The Legal API URL or Business API Gateway URL, depending on the FF. */
+  static get legalBusinessUrl (): string {
+    return GetFeatureFlag('use-business-api-gw-url')
+      ? sessionStorage.getItem('BUSINESS_API_GW_URL')
+      : sessionStorage.getItem('LEGAL_API_URL')
+  }
+
   /**
    * Fetches a filing by its URL.
    * @param url the full URL of the filing
@@ -38,7 +43,7 @@ export default class LegalServices {
    * @returns a promise to return the filing
    */
   static async fetchFilingById (businessId: string, filingId: number): Promise<any> {
-    const url = `businesses/${businessId}/filings/${filingId}`
+    const url = `${this.legalBusinessUrl}businesses/${businessId}/filings/${filingId}`
 
     return axios.get(url)
       .then(response => {
@@ -58,7 +63,7 @@ export default class LegalServices {
    * @returns a promise to delete the filing
    */
   static async deleteFilingById (businessId: string, filingId: number): Promise<any> {
-    const url = `businesses/${businessId}/filings/${filingId}`
+    const url = `${this.legalBusinessUrl}businesses/${businessId}/filings/${filingId}`
 
     return axios.delete(url)
       .catch(error => {
@@ -84,20 +89,22 @@ export default class LegalServices {
     isDraft: boolean
   ): Promise<any> {
     // put updated filing to filings endpoint
-    let url = `businesses/${businessId}/filings/${filingId}`
+    let url = `${this.legalBusinessUrl}businesses/${businessId}/filings/${filingId}`
     if (isDraft) {
       url += '?draft=true'
     }
-    return axios.put(url, { filing }).then(response => {
-      const filing = response?.data?.filing
-      const filingId = +filing?.header?.filingId
-      if (filing && filingId) {
-        return filing
-      }
-      // eslint-disable-next-line no-console
-      console.log('updateFiling() error - invalid response =', response)
-      throw new Error('Invalid API response')
-    })
+
+    return axios.put(url, { filing })
+      .then(response => {
+        const filing = response?.data?.filing
+        const filingId = +filing?.header?.filingId
+        if (filing && filingId) {
+          return filing
+        }
+        // eslint-disable-next-line no-console
+        console.log('updateFiling() error - invalid response =', response)
+        throw new Error('Invalid API response')
+      })
     // NB: for error handling, see "save-error-event"
   }
 
@@ -114,21 +121,22 @@ export default class LegalServices {
     isDraft: boolean
   ): Promise<any> {
     // put updated filing to filings endpoint
-    let url = `businesses/${businessId}/filings`
+    let url = `${this.legalBusinessUrl}businesses/${businessId}/filings`
     if (isDraft) {
       url += '?draft=true'
     }
 
-    return axios.post(url, { filing }).then(response => {
-      const filing = response?.data?.filing
-      const filingId = +filing?.header?.filingId
-      if (filing && filingId) {
-        return filing
-      }
-      // eslint-disable-next-line no-console
-      console.log('createFiling() error - invalid response =', response)
-      throw new Error('Invalid API response')
-    })
+    return axios.post(url, { filing })
+      .then(response => {
+        const filing = response?.data?.filing
+        const filingId = +filing?.header?.filingId
+        if (filing && filingId) {
+          return filing
+        }
+        // eslint-disable-next-line no-console
+        console.log('createFiling() error - invalid response =', response)
+        throw new Error('Invalid API response')
+      })
     // NB: for error handling, see "save-error-event"
   }
 
@@ -138,7 +146,7 @@ export default class LegalServices {
    * @returns a promise to return the data
    */
   static async fetchBusinessInfo (businessId: string): Promise<BusinessInformationIF> {
-    const url = `businesses/${businessId}`
+    const url = `${this.legalBusinessUrl}businesses/${businessId}`
 
     return axios.get(url)
       .then(response => {
@@ -157,7 +165,7 @@ export default class LegalServices {
    * @returns a promise to return the data
    */
   static async fetchNameTranslations (businessId: string): Promise<NameTranslationIF[]> {
-    const url = `businesses/${businessId}/aliases`
+    const url = `${this.legalBusinessUrl}businesses/${businessId}/aliases`
 
     return axios.get(url)
       .then(response => {
@@ -176,7 +184,7 @@ export default class LegalServices {
    * @returns a promise to return the data
    */
   static async fetchAddresses (businessId: string): Promise<AddressesIF> {
-    const url = `businesses/${businessId}/addresses`
+    const url = `${this.legalBusinessUrl}businesses/${businessId}/addresses`
 
     return axios.get(url)
       .then(response => {
@@ -195,7 +203,7 @@ export default class LegalServices {
    * @returns a promise to return the data
    */
   static async fetchDirectors (businessId: string): Promise<OrgPersonIF[]> {
-    const url = `businesses/${businessId}/directors`
+    const url = `${this.legalBusinessUrl}businesses/${businessId}/directors`
 
     return axios.get(url)
       .then(response => {
@@ -239,7 +247,7 @@ export default class LegalServices {
    * @returns a promise to return the data
    */
   static async fetchParties (businessId: string): Promise<OrgPersonIF[]> {
-    const url = `businesses/${businessId}/parties`
+    const url = `${this.legalBusinessUrl}businesses/${businessId}/parties`
 
     return axios.get(url)
       .then(response => {
@@ -268,7 +276,7 @@ export default class LegalServices {
    * @returns a promise to return the data
    */
   static async fetchShareStructure (businessId: string): Promise<ShareStructureIF> {
-    const url = `businesses/${businessId}/share-classes`
+    const url = `${this.legalBusinessUrl}businesses/${businessId}/share-classes`
 
     return axios.get(url)
       .then(response => {
@@ -295,7 +303,7 @@ export default class LegalServices {
    * @returns a promise to return the data
    */
   static async fetchResolutions (businessId: string, isSpecialResolution = false): Promise<ResolutionsIF[]> {
-    let url = `businesses/${businessId}/resolutions`
+    let url = `${this.legalBusinessUrl}businesses/${businessId}/resolutions`
 
     if (isSpecialResolution) url += '?type=SPECIAL'
 
@@ -318,7 +326,7 @@ export default class LegalServices {
    * @returns a promise to return the NR data, or null if not found
    */
   static async fetchNameRequest (nrNumber: string, phone = '', email = ''): Promise<NameRequestIF> {
-    const url = `nameRequests/${nrNumber}/validate?phone=${phone}&email=${email}`
+    const url = `${this.legalBusinessUrl}nameRequests/${nrNumber}/validate?phone=${phone}&email=${email}`
 
     return axios.get(url)
       .then(response => {
@@ -336,7 +344,7 @@ export default class LegalServices {
    * @returns a promise to return the data
    */
   static async fetchBusinessDocuments (businessId: string): Promise<BusinessDocumentsIF> {
-    const url = `businesses/${businessId}/documents`
+    const url = `${this.legalBusinessUrl}businesses/${businessId}/documents`
 
     return axios.get(url)
       .then(response => {
@@ -365,39 +373,40 @@ export default class LegalServices {
       responseType: 'blob' as 'json'
     }
 
-    return axios.get(document.link, config).then(response => {
-      if (!response?.data) {
-        // eslint-disable-next-line no-console
-        console.log('fetchDocument() error - invalid response =', response)
-        throw new Error('Invalid API response')
-      }
+    return axios.get(document.link, config)
+      .then(response => {
+        if (!response?.data) {
+          // eslint-disable-next-line no-console
+          console.log('fetchDocument() error - invalid response =', response)
+          throw new Error('Invalid API response')
+        }
 
-      /* solution from https://github.com/axios/axios/issues/1392 */
+        /* solution from https://github.com/axios/axios/issues/1392 */
 
-      // it is necessary to create a new blob object with mime-type explicitly set
-      // otherwise only Chrome works like it should
-      const blob = new Blob([response.data], { type: 'application/pdf' })
+        // it is necessary to create a new blob object with mime-type explicitly set
+        // otherwise only Chrome works like it should
+        const blob = new Blob([response.data], { type: 'application/pdf' })
 
-      // use Navigator.msSaveOrOpenBlob if available (possibly IE)
-      // warning: this is now deprecated
-      // ref: https://developer.mozilla.org/en-US/docs/Web/API/Navigator/msSaveOrOpenBlob
-      if (window.navigator && window.navigator['msSaveOrOpenBlob']) {
-        window.navigator['msSaveOrOpenBlob'](blob, document.filename)
-      } else {
-        // for other browsers, create a link pointing to the ObjectURL containing the blob
-        const url = window.URL.createObjectURL(blob)
-        const a = window.document.createElement('a')
-        window.document.body.appendChild(a)
-        a.setAttribute('style', 'display: none')
-        a.href = url
-        a.download = document.filename
-        a.click()
-        window.URL.revokeObjectURL(url)
-        a.remove()
-      }
+        // use Navigator.msSaveOrOpenBlob if available (possibly IE)
+        // warning: this is now deprecated
+        // ref: https://developer.mozilla.org/en-US/docs/Web/API/Navigator/msSaveOrOpenBlob
+        if (window.navigator && window.navigator['msSaveOrOpenBlob']) {
+          window.navigator['msSaveOrOpenBlob'](blob, document.filename)
+        } else {
+          // for other browsers, create a link pointing to the ObjectURL containing the blob
+          const url = window.URL.createObjectURL(blob)
+          const a = window.document.createElement('a')
+          window.document.body.appendChild(a)
+          a.setAttribute('style', 'display: none')
+          a.href = url
+          a.download = document.filename
+          a.click()
+          window.URL.revokeObjectURL(url)
+          a.remove()
+        }
 
-      return response
-    })
+        return response
+      })
   }
 
   /**
@@ -406,7 +415,8 @@ export default class LegalServices {
    * @returns the presigned url object
    */
   static async getPresignedUrl (fileName: string): Promise<PresignedUrlIF> {
-    const url = `documents/${fileName}/signatures`
+    const url = `${this.legalBusinessUrl}documents/${fileName}/signatures`
+
     return axios.get(url)
       .then(response => response?.data)
   }
@@ -426,6 +436,7 @@ export default class LegalServices {
       'x-amz-meta-key': `${key}`,
       'Content-Disposition': `attachment; filename=${file.name}`
     }
+
     return axios.put(url, file, { headers })
   }
 
@@ -434,10 +445,13 @@ export default class LegalServices {
    * @returns a promise to return the list of authorized actions
    */
   static async fetchAuthorizedActions (): Promise<AuthorizedActions[]> {
-    return axios.get('permissions').then(response => {
-      const data = response?.data
-      if (!data) throw new Error('Invalid API response')
-      return data.authorizedPermissions
-    })
+    const url = `${this.legalBusinessUrl}permissions`
+
+    return axios.get(url)
+      .then(response => {
+        const data = response?.data
+        if (!data) throw new Error('Invalid API response')
+        return data.authorizedPermissions
+      })
   }
 }

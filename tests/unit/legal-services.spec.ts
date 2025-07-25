@@ -3,6 +3,8 @@ import { AxiosInstance as axios } from '@/utils/'
 import LegalServices from '@/services/legal-services'
 import { DocumentIF } from '@/interfaces'
 
+sessionStorage.setItem('LEGAL_API_URL', 'https://legal-api.url/')
+
 describe('Legal Services', () => {
   let del: any
   let get: any
@@ -26,7 +28,7 @@ describe('Legal Services', () => {
     }
 
     // mock endpoint
-    get.withArgs('businesses/CP1234567/filings/1234')
+    get.withArgs('https://legal-api.url/businesses/CP1234567/filings/1234')
       .returns(Promise.resolve({ data: { filing: FILING } }))
 
     // call method
@@ -38,7 +40,7 @@ describe('Legal Services', () => {
 
   it('deletes filing by id correctly', async () => {
     // mock endpoint
-    del.withArgs('businesses/CP1234567/filings/1234')
+    del.withArgs('https://legal-api.url/businesses/CP1234567/filings/1234')
       .returns(Promise.resolve(true))
 
     // call method
@@ -55,7 +57,7 @@ describe('Legal Services', () => {
     }
 
     // mock endpoint
-    put.withArgs('businesses/CP1234567/filings/1234?draft=true')
+    put.withArgs('https://legal-api.url/businesses/CP1234567/filings/1234?draft=true')
       .returns(Promise.resolve({ data: { filing: FILING } }))
 
     // call method
@@ -72,7 +74,7 @@ describe('Legal Services', () => {
     }
 
     // mock endpoint
-    post.withArgs('businesses/CP1234567/filings?draft=true')
+    post.withArgs('https://legal-api.url/businesses/CP1234567/filings?draft=true')
       .returns(Promise.resolve({ data: { filing: ALTERATION } }))
 
     // call method
@@ -91,7 +93,7 @@ describe('Legal Services', () => {
     }
 
     // mock endpoint
-    get.withArgs('businesses/CP1234567')
+    get.withArgs('https://legal-api.url/businesses/CP1234567')
       .returns(Promise.resolve({ data: BUSINESS_INFO }))
 
     // call method
@@ -108,7 +110,7 @@ describe('Legal Services', () => {
     ]
 
     // mock endpoint
-    get.withArgs('businesses/CP1234567/aliases')
+    get.withArgs('https://legal-api.url/businesses/CP1234567/aliases')
       .returns(Promise.resolve({ data: { aliases: TRANSLATIONS } }))
 
     // call method
@@ -125,7 +127,7 @@ describe('Legal Services', () => {
     }
 
     // mock endpoint
-    get.withArgs('businesses/CP1234567/addresses')
+    get.withArgs('https://legal-api.url/businesses/CP1234567/addresses')
       .returns(Promise.resolve({ data: ADDRESSES }))
 
     // call method
@@ -146,7 +148,7 @@ describe('Legal Services', () => {
     ]
 
     // mock endpoint
-    get.withArgs('businesses/CP1234567/directors')
+    get.withArgs('https://legal-api.url/businesses/CP1234567/directors')
       .returns(Promise.resolve({ data: { directors: DIRECTORS } }))
 
     // call method
@@ -165,7 +167,7 @@ describe('Legal Services', () => {
     ]
 
     // mock endpoint
-    get.withArgs('businesses/CP1234567/parties')
+    get.withArgs('https://legal-api.url/businesses/CP1234567/parties')
       .returns(Promise.resolve({ data: { parties: PARTIES } }))
 
     // call method
@@ -185,7 +187,7 @@ describe('Legal Services', () => {
     }
 
     // mock endpoint
-    get.withArgs('businesses/CP1234567/share-classes')
+    get.withArgs('https://legal-api.url/businesses/CP1234567/share-classes')
       .returns(Promise.resolve({ data: CLASSES }))
 
     // call method
@@ -206,7 +208,7 @@ describe('Legal Services', () => {
     ]
 
     // mock endpoint
-    get.withArgs('businesses/CP1234567/resolutions')
+    get.withArgs('https://legal-api.url/businesses/CP1234567/resolutions')
       .returns(Promise.resolve({ data: { resolutions: RESOLUTIONS } }))
 
     // call method
@@ -222,7 +224,7 @@ describe('Legal Services', () => {
     }
 
     // mock endpoint
-    get.withArgs('nameRequests/NR1234567/validate?phone=&email=')
+    get.withArgs('https://legal-api.url/nameRequests/NR1234567/validate?phone=&email=')
       .returns(Promise.resolve({ data: NR }))
 
     // call method
@@ -255,7 +257,7 @@ describe('Legal Services', () => {
         }
       }
     }
-    get.withArgs('businesses/CP1234567/documents').returns(Promise.resolve({ data: {
+    get.withArgs('https://legal-api.url/businesses/CP1234567/documents').returns(Promise.resolve({ data: {
       ...BUSINESS_DOCUMENTS } }))
     const businessDocuments = await LegalServices.fetchBusinessDocuments('CP1234567')
     expect(businessDocuments).toEqual(BUSINESS_DOCUMENTS)
@@ -285,57 +287,57 @@ describe('Legal Services', () => {
     console.log = vi.fn()
 
     // verify fetchFilingById with no response.data
-    get.withArgs('businesses/CP1234567/filings/1234').returns(Promise.resolve({}))
+    get.withArgs('https://legal-api.url/businesses/CP1234567/filings/1234').returns(Promise.resolve({}))
     await expect(LegalServices.fetchFilingById('CP1234567', 1234)).rejects.toThrow('Invalid API response')
 
     // verify deleteFilingById with axios error
-    del.withArgs('businesses/CP1234567/filings/1234').returns(Promise.reject(new Error()))
+    del.withArgs('https://legal-api.url/businesses/CP1234567/filings/1234').returns(Promise.reject(new Error()))
     await expect(LegalServices.deleteFilingById('CP1234567', 1234)).rejects.toThrow('Invalid API response')
 
     // verify updateFiling with no response.data.filing.filingId
-    put.withArgs('businesses/CP1234567/filings/1234?draft=true')
+    put.withArgs('https://legal-api.url/businesses/CP1234567/filings/1234?draft=true')
       .returns(Promise.resolve({ data: { filing: {} } }))
     await expect(LegalServices.updateFiling('CP1234567', 1234, {} as any, true)).rejects.toThrow('Invalid API response')
 
     // verify createFiling with no response.data.filing.header.filingId
-    post.withArgs('businesses/CP1234567/filings?draft=true')
+    post.withArgs('https://legal-api.url/businesses/CP1234567/filings?draft=true')
       .returns(Promise.resolve({ data: { filing: { header: {} } } }))
     await expect(LegalServices.createFiling('CP1234567', {} as any, true)).rejects.toThrow('Invalid API response')
 
     // verify fetchBusinessInfo with no response.data
-    get.withArgs('businesses/CP1234567').returns(Promise.resolve({}))
+    get.withArgs('https://legal-api.url/businesses/CP1234567').returns(Promise.resolve({}))
     await expect(LegalServices.fetchBusinessInfo('CP1234567')).rejects.toThrow('Invalid API response')
 
     // verify fetchNameTranslations with no response.data
-    get.withArgs('businesses/CP1234567/aliases').returns(Promise.resolve({}))
+    get.withArgs('https://legal-api.url/businesses/CP1234567/aliases').returns(Promise.resolve({}))
     await expect(LegalServices.fetchNameTranslations('CP1234567')).rejects.toThrow('Invalid API response')
 
     // verify fetchAddresses with no response.data
-    get.withArgs('businesses/CP1234567/addresses').returns(Promise.resolve({}))
+    get.withArgs('https://legal-api.url/businesses/CP1234567/addresses').returns(Promise.resolve({}))
     await expect(LegalServices.fetchAddresses('CP1234567')).rejects.toThrow('Invalid API response')
 
     // verify directors with no response.data
-    get.withArgs('businesses/CP1234567/directors').returns(Promise.resolve({}))
+    get.withArgs('https://legal-api.url/businesses/CP1234567/directors').returns(Promise.resolve({}))
     await expect(LegalServices.fetchDirectors('CP1234567')).rejects.toThrow('Invalid API response')
 
     // verify parties with no response.data
-    get.withArgs('businesses/CP1234567/parties').returns(Promise.resolve({}))
+    get.withArgs('https://legal-api.url/businesses/CP1234567/parties').returns(Promise.resolve({}))
     await expect(LegalServices.fetchParties('CP1234567')).rejects.toThrow('Invalid API response')
 
     // verify fetchShareStructure with no response.data
-    get.withArgs('businesses/CP1234567/share-classes').returns(Promise.resolve({}))
+    get.withArgs('https://legal-api.url/businesses/CP1234567/share-classes').returns(Promise.resolve({}))
     await expect(LegalServices.fetchShareStructure('CP1234567')).rejects.toThrow('Invalid API response')
 
     // verify fetchResolutions with no response.data
-    get.withArgs('businesses/CP1234567/resolutions').returns(Promise.resolve({}))
+    get.withArgs('https://legal-api.url/businesses/CP1234567/resolutions').returns(Promise.resolve({}))
     await expect(LegalServices.fetchResolutions('CP1234567')).rejects.toThrow('Invalid API response')
 
     // verify fetchNameRequest with no response.data
-    get.withArgs('nameRequests/NR1234567/validate?phone=&email=').returns(Promise.resolve({}))
+    get.withArgs('https://legal-api.url/nameRequests/NR1234567/validate?phone=&email=').returns(Promise.resolve({}))
     await expect(LegalServices.fetchNameRequest('NR1234567')).rejects.toThrow('Invalid API response')
 
     // verify fetchBusinessDocuments with no response.data
-    get.withArgs('businesses/CP1234567/documents').returns(Promise.resolve({}))
+    get.withArgs('https://legal-api.url/businesses/CP1234567/documents').returns(Promise.resolve({}))
     await expect(LegalServices.fetchBusinessDocuments('CP1234567')).rejects.toThrow('Invalid API response')
 
     // verify fetchDocuments with no response.data

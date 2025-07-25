@@ -24,7 +24,7 @@ const resource = {
  * Creates and mounts a component, so that it can be tested.
  */
 function createComponent (): Wrapper<CertifySection> {
-  return mount(CertifySection, { vuetify })
+  return mount(CertifySection, { vuetify, propsData: { disableEdit: false } })
 }
 
 describe('Certify component', () => {
