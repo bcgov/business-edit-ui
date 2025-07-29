@@ -271,10 +271,11 @@ export default class FileUploadPdf extends Vue {
           return null
         }
         res = await DocumentServices.uploadDocumentToDRS(
-          file,
-          this.documentClass,
-          this.documentType,
-          this.businessIdentifier
+          file,{
+            documentClass: this.documentClass,
+            documentType: this.documentType,
+            consumerIdentifier: this.businessIdentifier
+          }
         )
       } else {
         // NB: will throw on API error
