@@ -101,12 +101,6 @@
             :disableEdit="false"
           />
 
-          <DocumentId
-            v-if="IsAuthorized(AuthorizedActions.DOCUMENT_RECORDS)"
-            class="mt-10"
-            sectionNumber="4."
-          />
-
           <!-- Staff Payment is mutually exclusive with Transactional Folio Number -->
           <StaffPayment
             v-if="IsAuthorized(AuthorizedActions.STAFF_PAYMENT)"

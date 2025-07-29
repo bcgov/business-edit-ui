@@ -67,7 +67,7 @@ export default class UploadRulesOrMemorandum extends Vue {
 
   @Prop({ default: false })
   readonly invalidSection: boolean
-  @Prop({ default: null })
+  @Prop({ default: false })
   readonly isMemorandum!: boolean
 
   readonly LegalServices = LegalServices

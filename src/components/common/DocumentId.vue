@@ -14,6 +14,8 @@
     </header>
 
     <DocumentIdShared
+      :docId="getDocumentIdState.consumerDocumentId"
+      :isDocIdValid="getDocumentIdState.valid"
       :docApiUrl="getDrsApiUrl"
       :docApiKey="getDrsApiKey"
       :validate="getAppValidate"
@@ -70,8 +72,8 @@ export default class DocumentId extends Vue {
     return import.meta.env.VUE_APP_DOC_API_KEY
   }
 
-  @Watch('docId', { immediate: true })
-  @Watch('isDocIdValid', { immediate: true })
+  @Watch('docId')
+  @Watch('isDocIdValid')
   // Update Document Id state
   private onDocumentIdStateChange (): void {
     this.setDocumentIdState({
