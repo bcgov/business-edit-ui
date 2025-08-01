@@ -36,9 +36,6 @@ export default class FileUploadPdf extends Vue {
   @Prop({ default: null }) readonly pageSize!: PageSizes
   @Prop({ required: true }) readonly userId!: string
 
-  /** Set `required` to true for the three variables below once the feature flag is removed:
-   * `documentClass`, `documentType`, `businessIdentifier`
-  */
   @Prop({ default: null }) readonly documentClass!: string
   @Prop({ default: null }) readonly documentType!: string
   @Prop({ default: null }) readonly businessIdentifier!: string

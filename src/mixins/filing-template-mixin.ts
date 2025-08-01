@@ -942,6 +942,12 @@ export default class FilingTemplateMixin extends DateMixin {
 
     // store Staff Payment
     this.storeStaffPayment(filing)
+  
+    // store document service state
+    this.setDocumentIdState({
+      valid: filing.header.documentIdState.valid,
+      consumerDocumentId: filing.header.documentIdState.consumerDocumentId
+    })
   }
 
   /**
