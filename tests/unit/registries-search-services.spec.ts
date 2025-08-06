@@ -1,10 +1,10 @@
-import axios from 'axios'
+import { AxiosInstance as axios } from '@/utils/'
 import sinon from 'sinon'
-import BusinessLookupServices from '@/services/business-lookup-services'
+import RegistriesSearchServices from '@/services/registries-search-services'
 
-describe('Business Lookup Services', () => {
+describe('Registries Search Services', () => {
   beforeAll(() => {
-    sessionStorage.setItem('REGISTRIES_SEARCH_API_URL', 'https://search.api.url/')
+    sessionStorage.setItem('REGISTRIES_SEARCH_API_URL', 'https://registries-search-api.url/')
   })
 
   it('returns a result when the business is found', async () => {
@@ -19,12 +19,12 @@ describe('Business Lookup Services', () => {
 
     // mock successsful search
     sinon.stub(axios, 'get')
-      .withArgs('https://search.api.url/businesses/search/facets?start=0&rows=20&categories=legalType:' +
+      .withArgs('https://registries-search-api.url/businesses/search/facets?start=0&rows=20&categories=legalType:' +
         'SP::status:ACTIVE&query=value:FM1000002')
       .returns(new Promise(resolve => resolve({ data: { searchResults: { results: [result] } } })))
 
     // search and look at results
-    const results = await BusinessLookupServices.search('FM1000002', 'ACTIVE', 'SP')
+    const results = await RegistriesSearchServices.search('FM1000002', 'ACTIVE', 'SP')
     expect(results.length).toBe(1)
     expect(results[0]).toEqual(result)
 
@@ -34,12 +34,12 @@ describe('Business Lookup Services', () => {
   it('does not return a result when the business is not found', async () => {
     // mock unsuccesssful search
     sinon.stub(axios, 'get')
-      .withArgs('https://search.api.url/businesses/search/facets?start=0&rows=20&categories=legalType' +
+      .withArgs('https://registries-search-api.url/businesses/search/facets?start=0&rows=20&categories=legalType' +
         ':SP::status:ACTIVE&query=value:FM1000003')
       .returns(new Promise(resolve => resolve({ data: { searchResults: { results: [] } } })))
 
     // search and look at results
-    const results = await BusinessLookupServices.search('FM1000003', 'ACTIVE', 'SP')
+    const results = await RegistriesSearchServices.search('FM1000003', 'ACTIVE', 'SP')
     expect(results.length).toBe(0)
 
     sinon.restore()
@@ -64,12 +64,12 @@ describe('Business Lookup Services', () => {
 
     // mock successsful search
     sinon.stub(axios, 'get')
-      .withArgs('https://search.api.url/businesses/search/facets?start=0&rows=20&categories=legalType:' +
+      .withArgs('https://registries-search-api.url/businesses/search/facets?start=0&rows=20&categories=legalType:' +
         'GP,SP&query=value:FM100000')
       .returns(new Promise(resolve => resolve({ data: { searchResults: { results: [result1, result2] } } })))
 
     // search and look at results
-    const results = await BusinessLookupServices.search('FM100000', '', 'GP,SP')
+    const results = await RegistriesSearchServices.search('FM100000', '', 'GP,SP')
     expect(results.length).toBe(2)
     expect(results[0]).toEqual(result1)
     expect(results[1]).toEqual(result2)

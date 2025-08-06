@@ -201,7 +201,7 @@ const newAddress = {
 }
 
 // init session storage variables
-sessionStorage.setItem('PAY_API_URL', 'https://pay.api.url/')
+sessionStorage.setItem('PAY_API_GW_URL', 'https://pay-api-gw.url/')
 sessionStorage.setItem('KEYCLOAK_TOKEN', 'keycloak-token') // anything non-falsy
 
 describe('Limited Restoration Extension component - edit page', () => {
@@ -223,23 +223,15 @@ describe('Limited Restoration Extension component - edit page', () => {
     delete window.location
     window.location = { assign: vi.fn() } as any
 
-    // mock services function
-    vi.spyOn((LegalServices as any), 'fetchFilingById').mockImplementation(
-      () => Promise.resolve(filing))
-    vi.spyOn((LegalServices as any), 'fetchBusinessInfo').mockImplementation(
-      () => Promise.resolve(businessInfo))
-    vi.spyOn((AuthServices as any), 'fetchAuthInfo').mockImplementation(
-      () => Promise.resolve(authInfo))
-    vi.spyOn((LegalServices as any), 'fetchAddresses').mockImplementation(
-      () => Promise.resolve(addresses))
-    vi.spyOn((LegalServices as any), 'fetchNameTranslations').mockImplementation(
-      () => Promise.resolve(nameTranslations))
-    vi.spyOn((LegalServices as any), 'fetchDirectors').mockImplementation(
-      () => Promise.resolve(directors))
-    vi.spyOn((LegalServices as any), 'fetchFiling').mockImplementation(
-      () => Promise.resolve(stateFiling))
-    vi.spyOn((PayServices as any), 'fetchFilingFees').mockImplementation(
-      () => Promise.resolve(filingFees))
+    // mock services functions
+    vi.spyOn((LegalServices as any), 'fetchFilingById').mockResolvedValue(filing)
+    vi.spyOn((LegalServices as any), 'fetchBusinessInfo').mockResolvedValue(businessInfo)
+    vi.spyOn((AuthServices as any), 'fetchAuthInfo').mockResolvedValue(authInfo)
+    vi.spyOn((LegalServices as any), 'fetchAddresses').mockResolvedValue(addresses)
+    vi.spyOn((LegalServices as any), 'fetchNameTranslations').mockResolvedValue(nameTranslations)
+    vi.spyOn((LegalServices as any), 'fetchDirectors').mockResolvedValue(directors)
+    vi.spyOn((LegalServices as any), 'fetchFiling').mockResolvedValue(stateFiling)
+    vi.spyOn((PayServices as any), 'fetchFilingFees').mockResolvedValue(filingFees)
 
     // init store
     store.stateModel.summaryMode = false
@@ -332,23 +324,15 @@ describe('Limited Restoration Extension component - summary page (with no filing
     delete window.location
     window.location = { assign: vi.fn() } as any
 
-    // mock services function
-    vi.spyOn((LegalServices as any), 'fetchFilingById').mockImplementation(
-      () => Promise.resolve(filing))
-    vi.spyOn((LegalServices as any), 'fetchBusinessInfo').mockImplementation(
-      () => Promise.resolve(businessInfo))
-    vi.spyOn((AuthServices as any), 'fetchAuthInfo').mockImplementation(
-      () => Promise.resolve(authInfo))
-    vi.spyOn((LegalServices as any), 'fetchAddresses').mockImplementation(
-      () => Promise.resolve(addresses))
-    vi.spyOn((LegalServices as any), 'fetchNameTranslations').mockImplementation(
-      () => Promise.resolve(nameTranslations))
-    vi.spyOn((LegalServices as any), 'fetchDirectors').mockImplementation(
-      () => Promise.resolve(directors))
-    vi.spyOn((LegalServices as any), 'fetchFiling').mockImplementation(
-      () => Promise.resolve(stateFiling))
-    vi.spyOn((PayServices as any), 'fetchFilingFees').mockImplementation(
-      () => Promise.resolve(filingFees))
+    // mock services functions
+    vi.spyOn((LegalServices as any), 'fetchFilingById').mockResolvedValue(filing)
+    vi.spyOn((LegalServices as any), 'fetchBusinessInfo').mockResolvedValue(businessInfo)
+    vi.spyOn((AuthServices as any), 'fetchAuthInfo').mockResolvedValue(authInfo)
+    vi.spyOn((LegalServices as any), 'fetchAddresses').mockResolvedValue(addresses)
+    vi.spyOn((LegalServices as any), 'fetchNameTranslations').mockResolvedValue(nameTranslations)
+    vi.spyOn((LegalServices as any), 'fetchDirectors').mockResolvedValue(directors)
+    vi.spyOn((LegalServices as any), 'fetchFiling').mockResolvedValue(stateFiling)
+    vi.spyOn((PayServices as any), 'fetchFilingFees').mockResolvedValue(filingFees)
 
     wrapper = shallowMount(LimitedRestorationExtension, {
       vuetify,
@@ -394,23 +378,15 @@ describe('Limited Restoration Extension component - summary page (with filing ch
     delete window.location
     window.location = { assign: vi.fn() } as any
 
-    // mock services function
-    vi.spyOn((LegalServices as any), 'fetchFilingById').mockImplementation(
-      () => Promise.resolve(filing))
-    vi.spyOn((LegalServices as any), 'fetchBusinessInfo').mockImplementation(
-      () => Promise.resolve(businessInfo))
-    vi.spyOn((AuthServices as any), 'fetchAuthInfo').mockImplementation(
-      () => Promise.resolve(authInfo))
-    vi.spyOn((LegalServices as any), 'fetchAddresses').mockImplementation(
-      () => Promise.resolve(addresses))
-    vi.spyOn((LegalServices as any), 'fetchNameTranslations').mockImplementation(
-      () => Promise.resolve(nameTranslations))
-    vi.spyOn((LegalServices as any), 'fetchDirectors').mockImplementation(
-      () => Promise.resolve(directors))
-    vi.spyOn((LegalServices as any), 'fetchFiling').mockImplementation(
-      () => Promise.resolve(stateFiling))
-    vi.spyOn((PayServices as any), 'fetchFilingFees').mockImplementation(
-      () => Promise.resolve(filingFees))
+    // mock services functions
+    vi.spyOn((LegalServices as any), 'fetchFilingById').mockResolvedValue(filing)
+    vi.spyOn((LegalServices as any), 'fetchBusinessInfo').mockResolvedValue(businessInfo)
+    vi.spyOn((AuthServices as any), 'fetchAuthInfo').mockResolvedValue(authInfo)
+    vi.spyOn((LegalServices as any), 'fetchAddresses').mockResolvedValue(addresses)
+    vi.spyOn((LegalServices as any), 'fetchNameTranslations').mockResolvedValue(nameTranslations)
+    vi.spyOn((LegalServices as any), 'fetchDirectors').mockResolvedValue(directors)
+    vi.spyOn((LegalServices as any), 'fetchFiling').mockResolvedValue(stateFiling)
+    vi.spyOn((PayServices as any), 'fetchFilingFees').mockResolvedValue(filingFees)
 
     // init store
     store.stateModel.summaryMode = true

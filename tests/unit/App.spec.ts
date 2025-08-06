@@ -273,7 +273,7 @@ describe.skip('Numbered company setup', () => {
   let wrapper: any
   const { assign } = window.location
   sessionStorage.setItem('AUTH_WEB_URL', 'https://auth-web.url/')
-  sessionStorage.setItem('AUTH_API_URL', 'https://auth-api.url/')
+  sessionStorage.setItem('AUTH_API_GW_URL', 'https://auth-api-gw.url/')
   sessionStorage.setItem('BUSINESS_DASH_URL', 'https://business-dash.url/')
 
   beforeEach(async () => {
@@ -386,7 +386,7 @@ describe.skip('App component', () => {
   let wrapper: any
   const { assign } = window.location
   sessionStorage.setItem('AUTH_WEB_URL', 'https://auth-web.url/')
-  sessionStorage.setItem('AUTH_API_URL', 'https://auth-api.url/')
+  sessionStorage.setItem('AUTH_API_GW_URL', 'https://auth-api-gw.url/')
   sessionStorage.setItem('BUSINESS_DASH_URL', 'https://business-dash.url/')
 
   beforeEach(async () => {
@@ -544,7 +544,7 @@ describe('App component - other', () => {
 
   beforeAll(() => {
     sessionStorage.clear()
-    sessionStorage.setItem('AUTH_API_URL', 'https://auth.api.url/')
+    sessionStorage.setItem('AUTH_API_GW_URL', 'https://auth-api-gw.url/')
     sessionStorage.setItem('KEYCLOAK_TOKEN', 'keycloak-token') // anything non-falsy
     sessionStorage.setItem('BUSINESS_ID', 'BC0007291')
     sessionStorage.setItem('CURRENT_ACCOUNT', '{ "id": 668 }')
@@ -554,7 +554,7 @@ describe('App component - other', () => {
     const get = sinon.stub(axios, 'get')
 
     // GET current user
-    get.withArgs('https://auth.api.url/users/@me')
+    get.withArgs('https://auth-api-gw.url/users/@me')
       .returns(Promise.resolve({
         data:
         {
@@ -565,7 +565,7 @@ describe('App component - other', () => {
       }))
 
     // GET org info
-    get.withArgs('https://auth.api.url/orgs/668')
+    get.withArgs('https://auth-api-gw.url/orgs/668')
       .returns(Promise.resolve({
         data: {
           mailingAddress: {

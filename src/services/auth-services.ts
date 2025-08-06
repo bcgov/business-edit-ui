@@ -2,15 +2,14 @@ import { AxiosInstance as axios } from '@/utils/'
 import { AuthInformationIF } from '@/interfaces/'
 import { ContactPointIF } from '@bcrs-shared-components/interfaces/'
 import { StatusCodes } from 'http-status-codes'
-import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 
 /**
  * Class that provides integration with the Auth API.
  */
 export default class AuthServices {
-  /** The Auth API URL, from session storage. */
-  static get authApiUrl (): string {
-    return sessionStorage.getItem(SessionStorageKeys.AuthApiUrl)
+  /** The Auth API Gateway URL. */
+  static get authApiGwUrl (): string {
+    return sessionStorage.getItem('AUTH_API_GW_URL')
   }
 
   /**
@@ -18,12 +17,13 @@ export default class AuthServices {
    * @returns a promise to return the user info object
    */
   static async fetchUserInfo (): Promise<any> {
-    const url = `${this.authApiUrl}users/@me`
+    const url = `${this.authApiGwUrl}users/@me`
 
-    return axios.get(url).then(response => {
-      if (response?.data) return response.data
-      throw new Error('Invalid response data')
-    })
+    return axios.get(url)
+      .then(response => {
+        if (response?.data) return response.data
+        throw new Error('Invalid response data')
+      })
   }
 
   /**
@@ -34,7 +34,7 @@ export default class AuthServices {
   static async fetchOrgInfo (orgId: number): Promise<any> {
     if (!orgId) throw new Error('Invalid org id')
 
-    const url = `${this.authApiUrl}orgs/${orgId}`
+    const url = `${this.authApiGwUrl}orgs/${orgId}`
 
     return axios.get(url)
       .then(response => {
@@ -50,25 +50,26 @@ export default class AuthServices {
   static async fetchAuthInfo (businessId: string): Promise<AuthInformationIF> {
     if (!businessId) throw new Error('Invalid business id')
 
-    const url = `${this.authApiUrl}entities/${businessId}`
+    const url = `${this.authApiGwUrl}entities/${businessId}`
 
-    return axios.get(url).then(response => {
-      if (response?.data) {
-        return {
-          contact: {
-            // NB: some businesses don't have contacts
-            email: response.data.contacts[0]?.email,
-            phone: response.data.contacts[0]?.phone,
-            extension: response.data.contacts[0]?.phoneExtension
-          },
-          folioNumber: response.data.folioNumber
+    return axios.get(url)
+      .then(response => {
+        if (response?.data) {
+          return {
+            contact: {
+              // NB: some businesses don't have contacts
+              email: response.data.contacts[0]?.email,
+              phone: response.data.contacts[0]?.phone,
+              extension: response.data.contacts[0]?.phoneExtension
+            },
+            folioNumber: response.data.folioNumber
+          }
+        } else {
+          // eslint-disable-next-line no-console
+          console.log('fetchAuthInfo() error - invalid response =', response)
+          throw new Error('Invalid API response')
         }
-      } else {
-        // eslint-disable-next-line no-console
-        console.log('fetchAuthInfo() error - invalid response =', response)
-        throw new Error('Invalid API response')
-      }
-    })
+      })
   }
 
   /**
@@ -78,7 +79,7 @@ export default class AuthServices {
   static async updateContactInfo (contactInfo: ContactPointIF, businessId: string): Promise<any> {
     if (!businessId) throw new Error('Invalid business id')
 
-    const url = `${this.authApiUrl}entities/${businessId}/contacts`
+    const url = `${this.authApiGwUrl}entities/${businessId}/contacts`
     const data = {
       email: contactInfo.email,
       phone: contactInfo.phone,
@@ -103,7 +104,7 @@ export default class AuthServices {
   static async updateFolioNumber (folioNumber: string, businessId: string): Promise<any> {
     if (!businessId) throw new Error('Invalid business id')
 
-    const url = `${this.authApiUrl}entities/${businessId}`
+    const url = `${this.authApiGwUrl}entities/${businessId}`
     const data = {
       businessIdentifier: businessId,
       folioNumber: folioNumber || ''
