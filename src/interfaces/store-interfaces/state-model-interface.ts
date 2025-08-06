@@ -1,6 +1,6 @@
 import {
   AccountInformationIF, AddressesIF, BusinessInformationIF, CertifyIF, CorrectionInformationIF,
-  DocumentDeliveryIF, EffectiveDateTimeIF, EntitySnapshotIF, FeesIF, FilingDataIF, NameTranslationIF,
+  DocumentDeliveryIF, DocumentIdIF, EffectiveDateTimeIF, EntitySnapshotIF, FeesIF, FilingDataIF, NameTranslationIF,
   NewAlterationIF, PeopleAndRolesIF, RestorationStateIF, RulesMemorandumIF, ShareStructureIF,
   StateFilingRestorationIF, TombStoneIF, ValidationFlagsIF
 } from '@/interfaces/'
@@ -52,5 +52,7 @@ export interface StateModelIF {
   feePrices: FeesIF[],
   specialResolution: SpecialResolutionIF
   restoration: RestorationStateIF
-  stateFilingRestoration: StateFilingRestorationIF
+  stateFilingRestoration: StateFilingRestorationIF,
+  // document record service
+  documentIdState: DocumentIdIF
 }

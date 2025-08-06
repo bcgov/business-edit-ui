@@ -69,10 +69,16 @@
       autoValidation="true"
     />
 
+    <DocumentId
+      v-if="IsAuthorized(AuthorizedActions.DOCUMENT_RECORDS)"
+      class="mt-10"
+      :sectionNumber="isClientErrorCorrection ? '5.' : '3.'"
+    />
+
     <StaffPayment
       v-if="IsAuthorized(AuthorizedActions.STAFF_PAYMENT)"
       class="mt-10"
-      :sectionNumber="isClientErrorCorrection ? '5.' : '3.'"
+      :sectionNumber="isClientErrorCorrection ? '6.' : '4.'"
       @haveChanges="onStaffPaymentChanges()"
     />
   </section>
@@ -83,8 +89,8 @@ import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
 import { SpecialResolutionSummary, Resolution } from '@/components/SpecialResolution'
 import {
   AssociationType, BusinessContactInfo, BusinessType, CertifySection, CompletingParty, CourtOrderPoa,
-  CurrentDirectors, Detail, DocumentsDelivery, EntityName, FolioInformation, OfficeAddresses, PeopleAndRoles,
-  RecognitionDateTime, StaffPayment, TransactionalFolioNumber, YourCompanyWrapper
+  CurrentDirectors, Detail, DocumentsDelivery, DocumentId, EntityName, FolioInformation, OfficeAddresses,
+  PeopleAndRoles, RecognitionDateTime, StaffPayment, TransactionalFolioNumber, YourCompanyWrapper
 } from '@/components/common/'
 import { CommonMixin, FeeMixin, FilingTemplateMixin } from '@/mixins/'
 import ViewWrapper from '@/components/ViewWrapper.vue'
@@ -108,6 +114,7 @@ import { IsAuthorized } from '@/utils'
     CompletingParty,
     CourtOrderPoa,
     Detail,
+    DocumentId,
     Resolution,
     CurrentDirectors,
     DocumentsDelivery,

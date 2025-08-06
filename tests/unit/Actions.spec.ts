@@ -205,6 +205,7 @@ describe('Action button states', () => {
     store.setEntityType(CorpTypeCd.BENEFIT_COMPANY)
     store.setPeopleAndRolesChanged(true)
     store.setCertifyStateValidity(true)
+    store.setDocumentIdStateValidity(true)
 
     await Vue.nextTick()
 

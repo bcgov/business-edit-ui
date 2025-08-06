@@ -86,11 +86,17 @@
             :autoValidation="getAppValidate"
           />
 
+          <DocumentId
+            v-if="IsAuthorized(AuthorizedActions.DOCUMENT_RECORDS)"
+            class="mt-10"
+            :sectionNumber="showTransactionalFolioNumber ? '4.' : '3.'"
+          />
+
           <!-- Staff Payment is mutually exclusive with Transactional Folio Number -->
           <StaffPayment
             v-if="IsAuthorized(AuthorizedActions.STAFF_PAYMENT)"
             class="mt-10"
-            :sectionNumber="IsAuthorized(AuthorizedActions.COURT_ORDER_POA) ? '4.' : '3.'"
+            :sectionNumber="IsAuthorized(AuthorizedActions.COURT_ORDER_POA) ? '5.' : '4.'"
             @haveChanges="onStaffPaymentChanges()"
           />
         </div>
@@ -129,7 +135,7 @@ import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
 import { AlterationSummary, Articles } from '@/components/Alteration/'
 import { BusinessContactInfo, BusinessType, CertifySection, CourtOrderPoa, CurrentDirectors,
-  DocumentsDelivery, EntityName, FolioInformation, OfficeAddresses, RecognitionDateTime,
+  DocumentsDelivery, DocumentId, EntityName, FolioInformation, OfficeAddresses, RecognitionDateTime,
   ShareStructures, StaffPayment, TransactionalFolioNumber, YourCompanyWrapper }
   from '@/components/common/'
 import { NameTranslation } from '@/components/common/YourCompany/NameTranslations/'
@@ -154,6 +160,7 @@ import { IsAuthorized } from '@/utils'
     CourtOrderPoa,
     CurrentDirectors,
     DocumentsDelivery,
+    DocumentId,
     EntityName,
     FolioInformation,
     NameTranslation,

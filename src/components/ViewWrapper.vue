@@ -63,12 +63,15 @@
 import { Affix as affix } from 'vue-affix'
 import { Component, Mixins } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
+import { StatusCodes } from 'http-status-codes'
 import { IsAuthorized, Navigate } from '@/utils/'
 import PaySystemAlert from 'sbc-common-components/src/components/PaySystemAlert.vue'
 import SbcFeeSummary from 'sbc-common-components/src/components/SbcFeeSummary.vue'
 import { FeeSummary as FeeSummaryShared } from '@bcrs-shared-components/fee-summary/'
 import { Actions, EntityInfo } from '@/components/common/'
 import { ConfirmDialog as ConfirmDialogShared } from '@bcrs-shared-components/confirm-dialog/'
+import { DocumentServices } from '@bcrs-shared-components/services/'
+import { getDocumentInfo } from '@bcrs-shared-components/services/utils'
 import { LegalServices } from '@/services/'
 import { CommonMixin, FilingTemplateMixin } from '@/mixins/'
 import { FilingDataIF, ConfirmDialogType, FlagsReviewCertifyIF, FlagsCompanyInfoIF,
@@ -333,6 +336,45 @@ export default class ViewWrapper extends Mixins(CommonMixin, FilingTemplateMixin
     }
   }
 
+  /** Creates a DRS record for a completed staff filing if one does not already exist. */
+  private async createDocumentForStaffFiling (filingComplete) {
+    if (filingComplete) {
+      // Ensure the user has permission to create document records
+      if (IsAuthorized(AuthorizedActions.DOCUMENT_RECORDS)) {
+        // Skip creating a DRS record if rules and memorandum files are already uploaded
+        if (!(this.isSpecialResolutionFiling && filingComplete?.alteration.memorandumFileKey)) {
+          // Extract data for search and creation
+          const { documentClass, documentType } = getDocumentInfo(
+            filingComplete.header?.name,
+            filingComplete.business?.legalType
+          )
+          const payload = {
+            consumerDocumentId: this.getDocumentIdState.consumerDocumentId,
+            documentClass: documentClass,
+            documentType: documentType,
+            consumerIdentifier: filingComplete.business?.identifier,
+            consumerReferenceId: filingComplete.header?.filingId
+          }
+
+          // Search for existing DRS record
+          const searchResponse = await DocumentServices.searchDocument(payload)
+          // If no existing record found, create a new DRS record
+          if (searchResponse.status === StatusCodes.OK && !searchResponse.data.resultCount) {
+            DocumentServices.postDocument(payload).then((response) => {
+              // Update document ID state
+              this.getDocumentIdState.consumerDocumentId && this.setDocumentIdState({
+                consumerDocumentId: response.data.consumerDocumentId,
+                valid: true
+              })
+            }).catch((error) => {
+              console.log('Failed to create DRS record for staff filing', error)
+            })
+          }
+        }
+      }
+    }
+  }
+
   /**
    * Will create/update a draft alteration or file and pay.
    * @returns a promise (ie, this is an async method).
@@ -367,6 +409,7 @@ export default class ViewWrapper extends Mixins(CommonMixin, FilingTemplateMixin
 
     // if filing is not a draft, proceed with payment
     if (!isDraft && filingComplete) {
+      this.createDocumentForStaffFiling(filingComplete)
       // If Saving or Filing is successful then setIsFilingPaying should't be reset to false,
       // this prevent buttons from being re-enabled if the page is slow to redirect.
       this.setIsFilingPaying(true)

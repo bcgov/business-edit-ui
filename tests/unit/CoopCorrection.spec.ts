@@ -312,7 +312,12 @@ describe('Coop Correction component', () => {
         correctionFiling: {
           business: {},
           correction: { correctedFilingId: 123 },
-          header: {}
+          header: {
+            documentIdState: {
+              consumerDocumentId: 'DS12345678',
+              valid: true
+            }
+          }
         }
       } })
 

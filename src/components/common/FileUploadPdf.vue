@@ -22,6 +22,9 @@ import { Component, Emit, Prop } from 'vue-property-decorator'
 import { PageSizes, PAGE_SIZE_DICT } from '@/enums'
 import { PdfInfoIF, PresignedUrlIF } from '@/interfaces'
 import * as pdfjs from 'pdfjs-dist/legacy/build/pdf'
+import { GetFeatureFlag } from '@/utils'
+import { DocumentServices } from '@bcrs-shared-components/services'
+import { StatusCodes } from 'http-status-codes'
 
 @Component({})
 export default class FileUploadPdf extends Vue {
@@ -33,6 +36,10 @@ export default class FileUploadPdf extends Vue {
   @Prop({ default: null }) readonly pageSize!: PageSizes
   @Prop({ required: true }) readonly userId!: string
 
+  @Prop({ default: null }) readonly documentClass!: string
+  @Prop({ default: null }) readonly documentType!: string
+  @Prop({ default: null }) readonly businessIdentifier!: string
+
   // Network service functions
   @Prop({ required: true })
   readonly getPresignedUrl!: (fileName: string) => Promise<PresignedUrlIF>
@@ -41,6 +48,7 @@ export default class FileUploadPdf extends Vue {
 
   pdfjsLib: any
   /** Component key, used to force it to re-render. */
+  enableDocumentRecords = GetFeatureFlag('enable-document-records')
   count = 0
 
   /** Custom errors messages, use to put component into manual error mode. */
@@ -107,6 +115,10 @@ export default class FileUploadPdf extends Vue {
 
   /** When file is selected or cleared, validates the file and uploads it. */
   async onChange (file: File): Promise<void> {
+    // remove previous doc if exists
+    if (this.fileKey) {
+      await DocumentServices.deleteDocumentFromDRS(this.fileKey)
+    }
     // update parent for later reactivity
     this.updateFile(file)
     this.updateFileKey(null)
@@ -246,16 +258,32 @@ export default class FileUploadPdf extends Vue {
    * @returns the file key on success, or null on failure
    */
   async uploadFile (file: File): Promise<string> {
+    let psu: PresignedUrlIF
+    let res
+
     try {
-      // NB: will throw on API error
-      const psu = await this.getPresignedUrl(file.name)
+      if (this.enableDocumentRecords) {
+        if (!this.documentClass || !this.documentType) {
+          this.errorMessages = ['An error occurred while uploading. Please try again.']
+          return null
+        }
+        res = await DocumentServices.uploadDocumentToDRS(
+          file, {
+            documentClass: this.documentClass,
+            documentType: this.documentType,
+            consumerIdentifier: this.businessIdentifier
+          }
+        )
+      } else {
+        // NB: will throw on API error
+        psu = await this.getPresignedUrl(file.name)
 
-      // NB: will throw on API error
-      const res = await this.uploadToUrl(psu.preSignedUrl, file, psu.key, this.userId)
-
+        // NB: will throw on API error
+        res = await this.uploadToUrl(psu.preSignedUrl, file, psu.key, this.userId)
+      }
       // check if successful
-      if (res?.status === 200) {
-        return psu.key
+      if (res && [StatusCodes.OK, StatusCodes.CREATED].includes(res.status)) {
+        return this.enableDocumentRecords ? res.data.documentServiceId : psu.key
       }
       throw new Error()
     } catch (err) {

@@ -3,7 +3,7 @@ import { Action, Getter } from 'pinia-class'
 import { cloneDeep } from 'lodash'
 import { DateMixin } from '@/mixins/'
 import { AddressesIF, AlterationFilingIF, BusinessInformationIF, CertifyIF, CoopAlterationIF,
-  CorrectionInformationIF, CorrectionFilingIF, CourtOrderIF, EffectiveDateTimeIF, EmptyBusinessInfo,
+  CorrectionInformationIF, CorrectionFilingIF, CourtOrderIF, DocumentIdIF, EffectiveDateTimeIF, EmptyBusinessInfo,
   EntitySnapshotIF, ChgRegistrationFilingIF, ConversionFilingIF, NameTranslationIF, OrgPersonIF,
   RestorationFilingIF, RestorationStateIF, SpecialResolutionFilingIF, StateFilingRestorationIF, RulesMemorandumIF }
   from '@/interfaces/'
@@ -41,6 +41,7 @@ export default class FilingTemplateMixin extends DateMixin {
   @Getter(useStore) getCurrentNaics!: NaicsIF
   @Getter(useStore) getDetailComment!: string
   @Getter(useStore) getDocumentOptionalEmail: string
+  @Getter(useStore) getDocumentIdState!: DocumentIdIF
   @Getter(useStore) getEffectiveDateTime!: EffectiveDateTimeIF
   @Getter(useStore) getEntitySnapshot!: EntitySnapshotIF
   @Getter(useStore) getEntityType!: CorpTypeCd
@@ -95,6 +96,7 @@ export default class FilingTemplateMixin extends DateMixin {
   @Action(useStore) setCorrectionStartDate!: (x: string) => void
   @Action(useStore) setEffectiveDateTimeString!: (x: string) => void
   @Action(useStore) setDetailComment!: (x: string) => void
+  @Action(useStore) setDocumentIdState!: (x: DocumentIdIF) => void
   @Action(useStore) setDocumentOptionalEmail!: (x: string) => void
   @Action(useStore) setEntitySnapshot!: (x: EntitySnapshotIF) => void
   @Action(useStore) setEntityType!: (x: CorpTypeCd) => void
@@ -136,7 +138,8 @@ export default class FilingTemplateMixin extends DateMixin {
         name: FilingTypes.CORRECTION,
         certifiedBy: this.getCertifyState.certifiedBy || '',
         date: this.getCurrentDate, // "absolute day" (YYYY-MM-DD in Pacific time)
-        folioNumber: this.getFolioNumber || undefined // folio number, unless overridden below
+        folioNumber: this.getFolioNumber || undefined, // folio number, unless overridden below
+        documentIdState: this.getDocumentIdState // document id will serve as a barcode number
       },
       business: {
         // use original properties (not specific getters)
@@ -282,7 +285,8 @@ export default class FilingTemplateMixin extends DateMixin {
         name: FilingTypes.ALTERATION,
         certifiedBy: this.getCertifyState.certifiedBy,
         date: this.getCurrentDate, // "absolute day" (YYYY-MM-DD in Pacific time)
-        folioNumber: this.getFolioNumber || undefined // business folio number, unless overridden below
+        folioNumber: this.getFolioNumber || undefined, // folio number, unless overridden below
+        documentIdState: this.getDocumentIdState // document id will serve as a barcode number
       },
       business: {
         // use original properties (not specific getters)
@@ -375,7 +379,8 @@ export default class FilingTemplateMixin extends DateMixin {
         name: FilingTypes.RESTORATION,
         certifiedBy: this.getCertifyState.certifiedBy,
         date: this.getCurrentDate, // "absolute day" (YYYY-MM-DD in Pacific time)
-        folioNumber: this.getFolioNumber || undefined // business folio number, unless overridden below
+        folioNumber: this.getFolioNumber || undefined, // folio number, unless overridden below
+        documentIdState: this.getDocumentIdState // document id will serve as a barcode number
       },
       business: {
         // use original properties (not specific getters)
@@ -486,7 +491,8 @@ export default class FilingTemplateMixin extends DateMixin {
         name: FilingTypes.SPECIAL_RESOLUTION,
         certifiedBy: this.getCertifyState.certifiedBy,
         date: this.getCurrentDate, // "absolute day" (YYYY-MM-DD in Pacific time)
-        folioNumber: this.getFolioNumber || undefined // business folio number, unless overridden below
+        folioNumber: this.getFolioNumber || undefined, // folio number, unless overridden below
+        documentIdState: this.getDocumentIdState // document id will serve as a barcode number
       },
       business: {
         // use original properties (not specific getters)
@@ -584,7 +590,8 @@ export default class FilingTemplateMixin extends DateMixin {
         name: FilingTypes.CHANGE_OF_REGISTRATION,
         certifiedBy: this.getCertifyState.certifiedBy,
         date: this.getCurrentDate, // "absolute day" (YYYY-MM-DD in Pacific time)
-        folioNumber: this.getFolioNumber || undefined // business folio number, unless overridden below
+        folioNumber: this.getFolioNumber || undefined, // folio number, unless overridden below
+        documentIdState: this.getDocumentIdState // document id will serve as a barcode number
       },
       business: {
         // use original properties (not specific getters)
@@ -689,7 +696,8 @@ export default class FilingTemplateMixin extends DateMixin {
         name: FilingTypes.CONVERSION,
         certifiedBy: this.getCertifyState.certifiedBy,
         date: this.getCurrentDate, // "absolute day" (YYYY-MM-DD in Pacific time)
-        folioNumber: '' // not applicable to SP/GP
+        folioNumber: '', // not applicable to SP/GP
+        documentIdState: this.getDocumentIdState // document id will serve as a barcode number
       },
       business: {
         // use original properties (not specific getters)
@@ -934,6 +942,12 @@ export default class FilingTemplateMixin extends DateMixin {
 
     // store Staff Payment
     this.storeStaffPayment(filing)
+
+    // store document service state
+    this.setDocumentIdState({
+      valid: filing.header.documentIdState?.valid || false,
+      consumerDocumentId: filing.header.documentIdState?.consumerDocumentId || ''
+    })
   }
 
   /**
@@ -1028,6 +1042,12 @@ export default class FilingTemplateMixin extends DateMixin {
 
     // store Staff Payment
     this.storeStaffPayment(filing)
+
+    // store document service state
+    this.setDocumentIdState({
+      valid: filing.header.documentIdState?.valid || false,
+      consumerDocumentId: filing.header.documentIdState?.consumerDocumentId || ''
+    })
   }
 
   /**
@@ -1146,6 +1166,12 @@ export default class FilingTemplateMixin extends DateMixin {
 
     // store Staff Payment
     this.storeStaffPayment(filing)
+
+    // store document service state
+    this.setDocumentIdState({
+      valid: filing.header.documentIdState?.valid || false,
+      consumerDocumentId: filing.header.documentIdState?.consumerDocumentId || ''
+    })
   }
 
   /**
@@ -1220,6 +1246,12 @@ export default class FilingTemplateMixin extends DateMixin {
 
     // store Staff Payment
     this.storeStaffPayment(filing)
+
+    // store document service state
+    this.setDocumentIdState({
+      valid: filing.header.documentIdState?.valid || false,
+      consumerDocumentId: filing.header.documentIdState?.consumerDocumentId || ''
+    })
   }
 
   /**
@@ -1309,6 +1341,12 @@ export default class FilingTemplateMixin extends DateMixin {
 
     // store Staff Payment
     this.storeStaffPayment(filing)
+
+    // store document service state
+    this.setDocumentIdState({
+      valid: filing.header.documentIdState?.valid || false,
+      consumerDocumentId: filing.header.documentIdState?.consumerDocumentId || ''
+    })
   }
 
   /**
@@ -1377,6 +1415,12 @@ export default class FilingTemplateMixin extends DateMixin {
 
     // store Staff Payment
     this.storeStaffPayment(filing)
+
+    // store document service state
+    this.setDocumentIdState({
+      valid: filing.header.documentIdState?.valid || false,
+      consumerDocumentId: filing.header.documentIdState?.consumerDocumentId || ''
+    })
   }
 
   /**

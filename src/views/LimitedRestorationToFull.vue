@@ -126,10 +126,16 @@
             :disableEdit="false"
           />
 
+          <DocumentId
+            v-if="IsAuthorized(AuthorizedActions.DOCUMENT_RECORDS)"
+            class="mt-10"
+            sectionNumber="3."
+          />
+
           <StaffPayment
             v-if="IsAuthorized(AuthorizedActions.STAFF_PAYMENT)"
             class="mt-10"
-            sectionNumber="3."
+            sectionNumber="4."
             @haveChanges="onStaffPaymentChanges()"
           />
         </div>
@@ -146,7 +152,7 @@ import { GetFeatureFlag, IsAuthorized } from '@/utils/'
 import RestorationSummary from '@/components/Restoration/RestorationSummary.vue'
 import YourCompanySummary from '@/components/Restoration/YourCompanySummary.vue'
 import {
-  BusinessContactInfo, CertifySection, CourtOrderPoa, DocumentsDelivery, EntityName,
+  BusinessContactInfo, CertifySection, CourtOrderPoa, DocumentsDelivery, DocumentId, EntityName,
   FolioInformation, ListPeopleAndRoles, NameTranslation, OfficeAddresses, PeopleAndRoles,
   QuestionWrapper, RecognitionDateTime, StaffPayment, YourCompanyWrapper
 } from '@/components/common/'
@@ -172,6 +178,7 @@ import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
     CertifySection,
     CourtOrderPoa,
     DocumentsDelivery,
+    DocumentId,
     EntityName,
     FolioInformation,
     ListPeopleAndRoles,
