@@ -46,7 +46,7 @@ const stateFiling = {
     name: 'restoration',
     status: 'COMPLETED',
     documentIdState: {
-      consumerDocumentId: "DS12345678",
+      consumerDocumentId: 'DS12345678',
       valid: true
     }
   },

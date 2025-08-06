@@ -135,7 +135,7 @@ describe('Firm Correction component', () => {
             correction: { correctedFilingId: 123 },
             header: {
               documentIdState: {
-                consumerDocumentId: "DS12345678",
+                consumerDocumentId: 'DS12345678',
                 valid: true
               }
             }

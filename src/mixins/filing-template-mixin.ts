@@ -945,8 +945,8 @@ export default class FilingTemplateMixin extends DateMixin {
 
     // store document service state
     this.setDocumentIdState({
-      valid: filing.header.documentIdState?.valid,
-      consumerDocumentId: filing.header.documentIdState?.consumerDocumentId
+      valid: filing.header.documentIdState?.valid || false,
+      consumerDocumentId: filing.header.documentIdState?.consumerDocumentId || ''
     })
   }
 
@@ -1045,8 +1045,8 @@ export default class FilingTemplateMixin extends DateMixin {
 
     // store document service state
     this.setDocumentIdState({
-      valid: filing.header.documentIdState?.valid,
-      consumerDocumentId: filing.header.documentIdState?.consumerDocumentId
+      valid: filing.header.documentIdState?.valid || false,
+      consumerDocumentId: filing.header.documentIdState?.consumerDocumentId || ''
     })
   }
 
@@ -1169,8 +1169,8 @@ export default class FilingTemplateMixin extends DateMixin {
 
     // store document service state
     this.setDocumentIdState({
-      valid: filing.header.documentIdState?.valid,
-      consumerDocumentId: filing.header.documentIdState?.consumerDocumentId
+      valid: filing.header.documentIdState?.valid || false,
+      consumerDocumentId: filing.header.documentIdState?.consumerDocumentId || ''
     })
   }
 
@@ -1249,8 +1249,8 @@ export default class FilingTemplateMixin extends DateMixin {
 
     // store document service state
     this.setDocumentIdState({
-      valid: filing.header.documentIdState?.valid,
-      consumerDocumentId: filing.header.documentIdState?.consumerDocumentId
+      valid: filing.header.documentIdState?.valid || false,
+      consumerDocumentId: filing.header.documentIdState?.consumerDocumentId || ''
     })
   }
 
@@ -1344,8 +1344,8 @@ export default class FilingTemplateMixin extends DateMixin {
 
     // store document service state
     this.setDocumentIdState({
-      valid: filing.header.documentIdState?.valid,
-      consumerDocumentId: filing.header.documentIdState?.consumerDocumentId
+      valid: filing.header.documentIdState?.valid || false,
+      consumerDocumentId: filing.header.documentIdState?.consumerDocumentId || ''
     })
   }
 
@@ -1418,8 +1418,8 @@ export default class FilingTemplateMixin extends DateMixin {
 
     // store document service state
     this.setDocumentIdState({
-      valid: filing.header.documentIdState?.valid,
-      consumerDocumentId: filing.header.documentIdState?.consumerDocumentId
+      valid: filing.header.documentIdState?.valid || false,
+      consumerDocumentId: filing.header.documentIdState?.consumerDocumentId || ''
     })
   }
 
