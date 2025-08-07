@@ -32,8 +32,6 @@
         :file="file"
         :fileKey="fileKey"
         :maxSize="30"
-        :getPresignedUrl="LegalServices.getPresignedUrl"
-        :uploadToUrl="LegalServices.uploadToUrl"
         :userId="userKeycloakGuid"
         @update:file="updateFile"
         @update:fileKey="updateDocumentKey"
@@ -50,7 +48,6 @@ import { FormIF, RulesMemorandumIF } from '@/interfaces'
 import { PageSizes } from '@/enums/'
 import FileUploadPdf from '@/components/common/FileUploadPdf.vue'
 import { useStore } from '@/store/store'
-import { LegalServices } from '@/services/'
 
 @Component({
   components: {
@@ -60,10 +57,8 @@ import { LegalServices } from '@/services/'
 export default class UploadRulesOrMemorandum extends Vue {
   @Getter(useStore) getUserInfo!: any
 
-  @Prop({ default: false })
-  readonly invalidSection: boolean
+  @Prop({ default: false }) readonly invalidSection: boolean
 
-  readonly LegalServices = LegalServices
   readonly PageSizes = PageSizes
 
   file: File = null

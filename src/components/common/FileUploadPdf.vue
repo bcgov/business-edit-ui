@@ -17,11 +17,11 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { AxiosResponse } from 'axios'
 import { Component, Emit, Prop } from 'vue-property-decorator'
 import { PageSizes, PAGE_SIZE_DICT } from '@/enums'
-import { PdfInfoIF, PresignedUrlIF } from '@/interfaces'
+import { PdfInfoIF } from '@/interfaces'
 import * as pdfjs from 'pdfjs-dist/legacy/build/pdf'
+import { LegalServices } from '@/services/'
 
 @Component({})
 export default class FileUploadPdf extends Vue {
@@ -33,22 +33,19 @@ export default class FileUploadPdf extends Vue {
   @Prop({ default: null }) readonly pageSize!: PageSizes
   @Prop({ required: true }) readonly userId!: string
 
-  // Network service functions
-  @Prop({ required: true })
-  readonly getPresignedUrl!: (fileName: string) => Promise<PresignedUrlIF>
-  @Prop({ required: true })
-  readonly uploadToUrl!: (url: string, file: File, key: string, userId: string) => Promise<AxiosResponse>
-
+  /** The PDFJS library. */
   pdfjsLib: any
-  /** Component key, used to force it to re-render. */
+
+  /** The component key, used to force it to re-render. */
   count = 0
 
-  /** Custom errors messages, use to put component into manual error mode. */
+  /** The custom errors messages, used to put component into manual error mode. */
   errorMessages = [] as Array<string>
 
   async created () {
-    /** Load the lib and worker this way to avoid a memory leak (esp in unit tests)
-     *  Must use legacy build for unit tests not running in Node 18+
+    /**
+     * Load the lib and worker this way to avoid a memory leak (esp in unit tests).
+     * Must use legacy build for unit tests not running in Node 18+.
      */
     this.pdfjsLib = pdfjs
     this.pdfjsLib.GlobalWorkerOptions.workerSrc = await import('pdfjs-dist/legacy/build/pdf.worker.entry')
@@ -248,10 +245,10 @@ export default class FileUploadPdf extends Vue {
   async uploadFile (file: File): Promise<string> {
     try {
       // NB: will throw on API error
-      const psu = await this.getPresignedUrl(file.name)
+      const psu = await LegalServices.getPresignedUrl(file.name)
 
       // NB: will throw on API error
-      const res = await this.uploadToUrl(psu.preSignedUrl, file, psu.key, this.userId)
+      const res = await LegalServices.uploadToUrl(psu.preSignedUrl, file, psu.key, this.userId)
 
       // check if successful
       if (res?.status === 200) {
