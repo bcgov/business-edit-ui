@@ -28,8 +28,7 @@ const store = useStore() // eslint-disable-line @typescript-eslint/no-unused-var
 const filing = {
   header: {
     name: 'restoration',
-    status: 'DRAFT',
-    documentIdState: {}
+    status: 'DRAFT'
   },
   business: {
     identifier: 'BC1234567',
@@ -37,18 +36,14 @@ const filing = {
     legalType: 'BEN'
   },
   restoration: {
-    expiry: '',
+    expiry: '2023-02-28',
     type: 'limitedRestorationExtension'
   }
 }
 const stateFiling = {
   header: {
     name: 'restoration',
-    status: 'COMPLETED',
-    documentIdState: {
-      consumerDocumentId: 'DS12345678',
-      valid: true
-    }
+    status: 'COMPLETED'
   },
   business: {
     identifier: 'BC1234567',

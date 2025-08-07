@@ -78,10 +78,6 @@ export function FetchConfig (): void {
     sessionStorage.setItem('SITEMINDER_LOGOUT_URL', siteminderLogoutUrl)
   }
 
-  sessionStorage.setItem(
-    'DOC_API_URL', import.meta.env.VUE_APP_DOC_API_URL + import.meta.env.VUE_APP_DOC_API_VERSION
-  )
-
   const keycloakAuthUrl: string = import.meta.env.VUE_APP_KEYCLOAK_AUTH_URL;
   (<any>window).keycloakAuthUrl = keycloakAuthUrl
 
