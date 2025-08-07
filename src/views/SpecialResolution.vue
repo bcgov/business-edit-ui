@@ -105,7 +105,7 @@
           <StaffPayment
             v-if="IsAuthorized(AuthorizedActions.STAFF_PAYMENT)"
             class="mt-10"
-            sectionNumber="5."
+            sectionNumber="4."
             @haveChanges="onStaffPaymentChanges()"
           />
         </div>
@@ -145,7 +145,7 @@ import { Action, Getter } from 'pinia-class'
 import { SpecialResolutionSummary, Resolution } from '@/components/SpecialResolution'
 import {
   AssociationType, BusinessContactInfo, BusinessType, CertifySection, CompletingParty, CurrentDirectors,
-  DocumentsDelivery, DocumentId, EntityName, FolioInformation, OfficeAddresses, StaffPayment, TransactionalFolioNumber,
+  DocumentsDelivery, EntityName, FolioInformation, OfficeAddresses, StaffPayment, TransactionalFolioNumber,
   YourCompanyWrapper
 } from '@/components/common/'
 import { AuthServices, LegalServices } from '@/services/'
@@ -170,7 +170,6 @@ import { IsAuthorized } from '@/utils'
     Resolution,
     CurrentDirectors,
     DocumentsDelivery,
-    DocumentId,
     EntityName,
     FolioInformation,
     OfficeAddresses,

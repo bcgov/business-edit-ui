@@ -134,12 +134,7 @@ describe('Firm Correction component', () => {
           correctionFiling: {
             business: {},
             correction: { correctedFilingId: 123 },
-            header: {
-              documentIdState: {
-                consumerDocumentId: 'DS12345678',
-                valid: true
-              }
-            }
+            header: {}
           }
         },
         data: () => ({

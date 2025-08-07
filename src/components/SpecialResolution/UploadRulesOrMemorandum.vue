@@ -35,9 +35,6 @@
         :getPresignedUrl="LegalServices.getPresignedUrl"
         :uploadToUrl="LegalServices.uploadToUrl"
         :userId="userKeycloakGuid"
-        :businessIdentifier="getBusinessId"
-        :documentClass="DocumentType.class"
-        :documentType="DocumentType.type"
         @update:file="updateFile"
         @update:fileKey="updateDocumentKey"
       />
@@ -51,7 +48,6 @@ import { Component, Prop } from 'vue-property-decorator'
 import { Getter } from 'pinia-class'
 import { FormIF, RulesMemorandumIF } from '@/interfaces'
 import { PageSizes } from '@/enums/'
-import { DOCUMENT_TYPES } from '@bcrs-shared-components/enums'
 import FileUploadPdf from '@/components/common/FileUploadPdf.vue'
 import { useStore } from '@/store/store'
 import { LegalServices } from '@/services/'
@@ -63,16 +59,12 @@ import { LegalServices } from '@/services/'
 })
 export default class UploadRulesOrMemorandum extends Vue {
   @Getter(useStore) getUserInfo!: any
-  @Getter(useStore) getBusinessId!: string
 
   @Prop({ default: false })
   readonly invalidSection: boolean
-  @Prop({ default: false })
-  readonly isMemorandum!: boolean
 
   readonly LegalServices = LegalServices
   readonly PageSizes = PageSizes
-  readonly DocumentType = this.isMemorandum ? DOCUMENT_TYPES.coopMemorandum : DOCUMENT_TYPES.coopRules
 
   file: File = null
   fileKey: string = null

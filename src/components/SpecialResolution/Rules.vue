@@ -166,7 +166,6 @@
                       v-if="uploadDropdown || !hasResolutionSection"
                       ref="uploadRulesRef"
                       :invalidSection="rulesEditingInvalid"
-                      :isMemorandum="false"
                     />
                     <!-- Confirmation -->
                     <v-expand-transition>

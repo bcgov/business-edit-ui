@@ -128,7 +128,6 @@
                 <UploadRulesOrMemorandum
                   v-if="!hasResolutionSection"
                   ref="uploadMemorandumRef"
-                  :isMemorandum="true"
                 />
               </div>
               <v-row
