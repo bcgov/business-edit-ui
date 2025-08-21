@@ -138,9 +138,10 @@ describe('Legal Services', () => {
   })
 
   it('fetchAddresses returns null when business has no addresses (404)', async () => {
+    const response = { status: 404, data: { rootCause: { message: 'CP1234567 address not found' } } }
     get.withArgs('https://legal-api.url/businesses/CP1234567/addresses')
       .returns(Promise.reject(
-        Object.assign(new Error('Not Found'), { response: { status: 404 } })
+        Object.assign(new Error('Not Found'), { response })
       ))
     await expect(LegalServices.fetchAddresses('CP1234567'))
       .resolves.toEqual({ businessOffice: null })
