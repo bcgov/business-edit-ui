@@ -192,7 +192,7 @@ export default class LegalServices {
         return response.data
       }).catch(error => {
         // eslint-disable-next-line no-console
-        if (error.response.status == StatusCodes.NOT_FOUND) return { businessOffice: null }
+        if (error.response.status === StatusCodes.NOT_FOUND) return { businessOffice: null }
         console.log('fetchAddresses() error - invalid response =', error)
         throw new Error('Invalid API response')
       })
