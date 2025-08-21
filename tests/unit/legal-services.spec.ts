@@ -137,16 +137,13 @@ describe('Legal Services', () => {
     expect(response).toEqual(ADDRESSES)
   })
 
-  it('fetches incorporation address correctly with 404(no addresses for business)', async () => {
-
+  it('fetchAddresses returns null when business has no addresses (404)', async () => {
     get.withArgs('https://legal-api.url/businesses/CP1234567/addresses')
-    .returns(Promise.reject({ response: { status: 404 } }))
-
-    // call method
-    const response = await LegalServices.fetchAddresses('CP1234567')
-
-    // verify data
-    expect(response).toEqual({ businessOffice: null })
+      .returns(Promise.reject(
+        Object.assign(new Error('Not Found'), { response: { status: 404 } })
+      ))
+    await expect(LegalServices.fetchAddresses('CP1234567'))
+      .resolves.toEqual({ businessOffice: null })
   })
 
   it('fetches directors correctly', async () => {
