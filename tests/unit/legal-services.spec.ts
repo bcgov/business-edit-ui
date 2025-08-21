@@ -137,6 +137,18 @@ describe('Legal Services', () => {
     expect(response).toEqual(ADDRESSES)
   })
 
+  it('fetches incorporation address correctly with 404(no addresses for business)', async () => {
+
+    get.withArgs('https://legal-api.url/businesses/CP1234567/addresses')
+    .returns(Promise.reject({ response: { status: 404 } }))
+
+    // call method
+    const response = await LegalServices.fetchAddresses('CP1234567')
+
+    // verify data
+    expect(response).toEqual({ businessOffice: null })
+  })
+
   it('fetches directors correctly', async () => {
     const DIRECTORS = [
       { appointmentDate: '2022-04-01', officer: {} },
@@ -311,10 +323,6 @@ describe('Legal Services', () => {
     // verify fetchNameTranslations with no response.data
     get.withArgs('https://legal-api.url/businesses/CP1234567/aliases').returns(Promise.resolve({}))
     await expect(LegalServices.fetchNameTranslations('CP1234567')).rejects.toThrow('Invalid API response')
-
-    // verify fetchAddresses with no response.data
-    get.withArgs('https://legal-api.url/businesses/CP1234567/addresses').returns(Promise.resolve({}))
-    await expect(LegalServices.fetchAddresses('CP1234567')).rejects.toThrow('Invalid API response')
 
     // verify directors with no response.data
     get.withArgs('https://legal-api.url/businesses/CP1234567/directors').returns(Promise.resolve({}))
