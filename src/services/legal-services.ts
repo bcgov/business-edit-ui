@@ -6,6 +6,7 @@ import { AuthorizedActions, RoleTypes } from '@/enums'
 import { NameRequestIF, ShareStructureIF } from '@bcrs-shared-components/interfaces/'
 import { BusinessDocumentsIF } from '@/interfaces/business-document-interface'
 import { AxiosResponse } from 'axios'
+import { StatusCodes } from 'http-status-codes'
 
 /**
  * Class that provides integration with the Legal (aka Business) API.
@@ -188,11 +189,13 @@ export default class LegalServices {
 
     return axios.get(url)
       .then(response => {
-        if (response?.data) {
-          return response.data
-        }
+        return response.data
+      }).catch(error => {
         // eslint-disable-next-line no-console
-        console.log('fetchAddresses() error - invalid response =', response)
+        if (error.response.status === StatusCodes.NOT_FOUND &&
+          error.response.data?.rootCause?.message.includes('address not found')) return { businessOffice: null }
+
+        console.log('fetchAddresses() error - invalid response =', error)
         throw new Error('Invalid API response')
       })
   }
