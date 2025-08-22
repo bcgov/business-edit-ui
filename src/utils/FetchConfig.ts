@@ -24,8 +24,8 @@ export function FetchConfig (): void {
   const nameRequestUrl: string = import.meta.env.VUE_APP_NAME_REQUEST_URL
   sessionStorage.setItem('NAME_REQUEST_URL', nameRequestUrl)
 
-  const businessesUrl: string = import.meta.env.VUE_APP_BUSINESSES_URL
-  sessionStorage.setItem('BUSINESSES_URL', businessesUrl)
+  const businessRegistryUrl: string = import.meta.env.VUE_APP_BUSINESS_REGISTRY_URL
+  sessionStorage.setItem('BUSINESS_REGISTRY_URL', businessRegistryUrl)
 
   const businessDashUrl: string = import.meta.env.VUE_APP_BUSINESS_DASH_URL
   sessionStorage.setItem('BUSINESS_DASH_URL', businessDashUrl)

@@ -33,7 +33,7 @@ export function getRegistryDashboardBreadcrumb (): BreadcrumbIF {
 export function getMyBusinessRegistryBreadcrumb (): BreadcrumbIF {
   return {
     text: 'My Business Registry',
-    href: `${sessionStorage.getItem('BUSINESSES_URL')}account/${store.getAccountId}/business`
+    href: `${sessionStorage.getItem('BUSINESS_REGISTRY_URL')}account/${store.getAccountId}`
   }
 }
 
@@ -41,6 +41,6 @@ export function getMyBusinessRegistryBreadcrumb (): BreadcrumbIF {
 export function getStaffDashboardBreadcrumb (): BreadcrumbIF {
   return {
     text: 'Staff Dashboard',
-    href: `${sessionStorage.getItem('BUSINESSES_URL')}staff/dashboard/active`
+    href: `${sessionStorage.getItem('AUTH_WEB_URL')}staff/dashboard/active`
   }
 }

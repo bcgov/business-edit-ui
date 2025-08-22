@@ -13,9 +13,9 @@ describe('Fetch Config', () => {
   import.meta.env.VUE_APP_AUTH_API_GW_URL = 'https://auth-api-gw.url'
   import.meta.env.VUE_APP_AUTH_API_VERSION = '/auth-api-version'
   import.meta.env.VUE_APP_AUTH_WEB_URL = 'https://auth-web.url'
-  import.meta.env.VUE_APP_BUSINESSES_URL = 'https://businesses.url'
   import.meta.env.VUE_APP_BUSINESS_EDIT_LD_CLIENT_ID = 'ld-client-id'
   import.meta.env.VUE_APP_BUSINESS_DASH_URL = 'https://business-dash.url'
+  import.meta.env.VUE_APP_BUSINESS_REGISTRY_URL = 'https://business-registry.url'
   import.meta.env.VUE_APP_LEGAL_API_URL = 'https://legal-api.url'
   import.meta.env.VUE_APP_LEGAL_API_VERSION_2 = '/legal-api-version-2'
   // import.meta.env.VUE_APP_BUSINESS_API_GW_URL = 'https://business-api-gw.url'
@@ -51,8 +51,8 @@ describe('Fetch Config', () => {
     // verify data
     expect(sessionStorage.getItem('AUTH_API_GW_URL')).toBe('https://auth-api-gw.url/auth-api-version/')
     expect(sessionStorage.getItem('AUTH_WEB_URL')).toBe('https://auth-web.url')
-    expect(sessionStorage.getItem('BUSINESSES_URL')).toBe('https://businesses.url')
     expect(sessionStorage.getItem('BUSINESS_DASH_URL')).toBe('https://business-dash.url')
+    expect(sessionStorage.getItem('BUSINESS_REGISTRY_URL')).toBe('https://business-registry.url')
     expect(sessionStorage.getItem('LEGAL_API_URL')).toBe('https://legal-api.url/legal-api-version-2/')
     // expect(sessionStorage.getItem('BUSINESS_API_GW_URL')).toBe('https://business-api-gw.url/business-api-version-2/')
     expect(sessionStorage.getItem('NAICS_URL')).toBe('https://naics-api.url/naics-api-version/')
