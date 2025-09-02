@@ -334,21 +334,6 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin, OrgPe
     return this.hasRole(RoleTypes.PARTNER, 2, CompareModes.AT_LEAST)
   }
 
-  // FUTURE: should move rules and text to resource files
-  /** True when the minimum director count is met. */
-  get haveMinimumDirectors (): boolean {
-    if (
-      this.isEntityBcCompany || this.isEntityBenefitCompany || this.isEntityBcUlcCompany ||
-      this.isEntityContinueIn || this.isEntityBenContinueIn || this.isEntityUlcContinueIn
-    ) {
-      return this.hasRole(RoleTypes.DIRECTOR, 0, CompareModes.AT_LEAST)
-    }
-    if (this.isEntityBcCcc || this.isEntityCccContinueIn || this.isCoopCorrectionFiling) {
-      return this.hasRole(RoleTypes.DIRECTOR, 0, CompareModes.AT_LEAST)
-    }
-    return false // should never happen
-  }
-
   /** True when majority of Directors reside in Canada. CP only for now. */
   get haveMajorityDirectorsInCanada (): boolean {
     const existingDirectors = this.getOrgPeople
@@ -424,10 +409,10 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin, OrgPe
         this.isEntityBcUlcCompany || this.isEntityContinueIn || this.isEntityBenContinueIn ||
         this.isEntityUlcContinueIn || this.isEntityCccContinueIn
       ) {
-        return this.haveMinimumDirectors
+        return true
       }
       if (this.isCoopCorrectionFiling) {
-        return this.haveMinimumDirectors && this.haveMajorityDirectorsInCanada
+        return this.haveMajorityDirectorsInCanada
       }
       return false
     }
