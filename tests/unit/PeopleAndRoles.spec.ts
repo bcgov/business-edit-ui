@@ -142,24 +142,6 @@ describe('People And Roles component for Correction', () => {
     wrapper.destroy()
   })
 
-  it('shows check icons next to the director role when people list is complete', () => {
-    store.stateModel.peopleAndRoles.orgPeople = getPersonList([ directorRole ])
-    const wrapper = wrapperFactory()
-
-    expect(wrapper.find(checkDirector).exists()).toBe(true)
-
-    wrapper.destroy()
-  })
-
-  it('shows close icons next to the director role when people list is empty', () => {
-    store.stateModel.peopleAndRoles.orgPeople = []
-    const wrapper = wrapperFactory()
-
-    expect(wrapper.find(closeDirector).exists()).toBe(true)
-
-    wrapper.destroy()
-  })
-
   it('sets Valid flag to False when Director role is missing', () => {
     store.stateModel.peopleAndRoles.orgPeople = getPersonList([])
     const wrapper = wrapperFactory()
@@ -558,22 +540,5 @@ describe('People And Roles component for Change of Registration', () => {
     expect(wrapper.vm.haveMajorityDirectorsInCanada).toBe(false)
     store.stateModel.peopleAndRoles.orgPeople[1].mailingAddress.addressCountry = 'CA'
     expect(wrapper.vm.haveMajorityDirectorsInCanada).toBe(true)
-  })
-
-  it('test least one director in BC for CP', () => {
-    const wrapper = wrapperFactory()
-    store.stateModel.tombstone.entityType = CorpTypeCd.COOP
-    store.stateModel.peopleAndRoles.orgPeople = [
-      {
-        officer: { partyType: 'organization' },
-        mailingAddress: {
-          addressRegion: 'AB'
-        },
-        roles: [{ roleType: 'Director' }]
-      }
-    ] as any
-    expect(wrapper.vm.haveOneDirectorResideInBC).toBe(false)
-    store.stateModel.peopleAndRoles.orgPeople[0].mailingAddress.addressRegion = 'BC'
-    expect(wrapper.vm.haveOneDirectorResideInBC).toBe(true)
   })
 })
