@@ -22,8 +22,6 @@ const orgPersonForm = '#org-person-form'
 const btnAddPerson = '#btn-add-person'
 const gpAddPerson = '#gp-btn-add-person'
 const gpAddCorp = '#gp-btn-add-corp'
-const closeDirector = '.dir-invalid'
-const checkDirector = '.dir-valid'
 
 const directorRole = { roleType: 'Director', appointmentDate: '2020-03-30' }
 
