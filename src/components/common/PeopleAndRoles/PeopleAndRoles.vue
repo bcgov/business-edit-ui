@@ -100,77 +100,6 @@
           >{{ orgPersonLabel }}</label>
         </div>
 
-        <!-- Instructional people and roles text (corp/coop corrections only)-->
-        <article
-          v-if="isCorpCorrectionFiling || isCoopCorrectionFiling"
-          class="section-container"
-        >
-          This application must include the following:
-          <ul>
-            <li>
-              <v-icon
-                v-if="haveMinimumDirectors"
-                color="green darken-2"
-                class="dir-valid"
-              >
-                mdi-check
-              </v-icon>
-              <v-icon
-                v-else
-                color="red"
-                class="dir-invalid"
-              >
-                mdi-close
-              </v-icon>
-              <span class="ml-2">
-                <template
-                  v-if="isEntityBcCompany || isEntityBenefitCompany || isEntityBcUlcCompany ||
-                    isEntityContinueIn || isEntityBenContinueIn || isEntityUlcContinueIn"
-                >
-                  <span>At least one Director</span>
-                </template>
-                <template v-if="isEntityBcCcc || isEntityCccContinueIn || isCoopCorrectionFiling">
-                  <span>At least three Directors</span>
-                </template>
-              </span>
-            </li>
-            <li v-if="isCoopCorrectionFiling">
-              <v-icon
-                v-if="haveMajorityDirectorsInCanada"
-                color="green darken-2"
-                class="dir-valid"
-              >
-                mdi-check
-              </v-icon>
-              <v-icon
-                v-else
-                color="red"
-                class="dir-invalid"
-              >
-                mdi-close
-              </v-icon>
-              <span class="ml-2">The majority of Directors must reside in Canada</span>
-            </li>
-            <li v-if="isCoopCorrectionFiling">
-              <v-icon
-                v-if="haveOneDirectorResideInBC"
-                color="green darken-2"
-                class="dir-valid"
-              >
-                mdi-check
-              </v-icon>
-              <v-icon
-                v-else
-                color="red"
-                class="dir-invalid"
-              >
-                mdi-close
-              </v-icon>
-              <span class="ml-2">At least one Director must reside in BC</span>
-            </li>
-          </ul>
-        </article>
-
         <!-- Correction section (corp/coop corrections only) -->
         <article
           v-if="isCorpCorrectionFiling || isCoopCorrectionFiling"
@@ -405,26 +334,13 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin, OrgPe
     return this.hasRole(RoleTypes.PARTNER, 2, CompareModes.AT_LEAST)
   }
 
-  // FUTURE: should move rules and text to resource files
-  /** True when the minimum director count is met. */
-  get haveMinimumDirectors (): boolean {
-    if (
-      this.isEntityBcCompany || this.isEntityBenefitCompany || this.isEntityBcUlcCompany ||
-      this.isEntityContinueIn || this.isEntityBenContinueIn || this.isEntityUlcContinueIn
-    ) {
-      return this.hasRole(RoleTypes.DIRECTOR, 1, CompareModes.AT_LEAST)
-    }
-    if (this.isEntityBcCcc || this.isEntityCccContinueIn || this.isCoopCorrectionFiling) {
-      return this.hasRole(RoleTypes.DIRECTOR, 3, CompareModes.AT_LEAST)
-    }
-    return false // should never happen
-  }
-
   /** True when majority of Directors reside in Canada. CP only for now. */
   get haveMajorityDirectorsInCanada (): boolean {
     const existingDirectors = this.getOrgPeople
       .filter(people => !this.wasRemoved(people))
       .filter(people => people.roles.some(role => role.roleType === RoleTypes.DIRECTOR))
+
+    if (existingDirectors.length === 0) return true
 
     const numberOfDirectorsResidingInCanada = existingDirectors
       .filter(people => people.mailingAddress.addressCountry === 'CA')
@@ -435,17 +351,6 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin, OrgPe
       .length
 
     return numberOfDirectorsResidingInCanada > numberOfDirectorsResidingOutsideCanada
-  }
-
-  /** True when at least one Director resides in BC. CP only for now. */
-  get haveOneDirectorResideInBC (): boolean {
-    const numberOfDirectorsResidingInBC = this.getOrgPeople
-      .filter(people => !this.wasRemoved(people))
-      .filter(people => people.roles.some(role => role.roleType === RoleTypes.DIRECTOR))
-      .filter(people => people.mailingAddress.addressRegion === 'BC')
-      .length
-
-    return numberOfDirectorsResidingInBC >= 1
   }
 
   /** True when the required applicant count is met. */
@@ -504,12 +409,10 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin, OrgPe
         this.isEntityBcUlcCompany || this.isEntityContinueIn || this.isEntityBenContinueIn ||
         this.isEntityUlcContinueIn || this.isEntityCccContinueIn
       ) {
-        return this.haveMinimumDirectors
+        return true
       }
       if (this.isCoopCorrectionFiling) {
-        return this.haveMinimumDirectors &&
-          this.haveMajorityDirectorsInCanada &&
-          this.haveOneDirectorResideInBC
+        return this.haveMajorityDirectorsInCanada
       }
       return false
     }

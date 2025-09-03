@@ -22,8 +22,6 @@ const orgPersonForm = '#org-person-form'
 const btnAddPerson = '#btn-add-person'
 const gpAddPerson = '#gp-btn-add-person'
 const gpAddCorp = '#gp-btn-add-corp'
-const closeDirector = '.dir-invalid'
-const checkDirector = '.dir-valid'
 
 const directorRole = { roleType: 'Director', appointmentDate: '2020-03-30' }
 
@@ -138,24 +136,6 @@ describe('People And Roles component for Correction', () => {
     // check form
     expect(wrapper.find(orgPersonForm).exists()).toBe(true)
     expect(wrapper.find('.add-person-header').text()).toBe('Add Person')
-
-    wrapper.destroy()
-  })
-
-  it('shows check icons next to the director role when people list is complete', () => {
-    store.stateModel.peopleAndRoles.orgPeople = getPersonList([ directorRole ])
-    const wrapper = wrapperFactory()
-
-    expect(wrapper.find(checkDirector).exists()).toBe(true)
-
-    wrapper.destroy()
-  })
-
-  it('shows close icons next to the director role when people list is empty', () => {
-    store.stateModel.peopleAndRoles.orgPeople = []
-    const wrapper = wrapperFactory()
-
-    expect(wrapper.find(closeDirector).exists()).toBe(true)
 
     wrapper.destroy()
   })
@@ -558,22 +538,5 @@ describe('People And Roles component for Change of Registration', () => {
     expect(wrapper.vm.haveMajorityDirectorsInCanada).toBe(false)
     store.stateModel.peopleAndRoles.orgPeople[1].mailingAddress.addressCountry = 'CA'
     expect(wrapper.vm.haveMajorityDirectorsInCanada).toBe(true)
-  })
-
-  it('test least one director in BC for CP', () => {
-    const wrapper = wrapperFactory()
-    store.stateModel.tombstone.entityType = CorpTypeCd.COOP
-    store.stateModel.peopleAndRoles.orgPeople = [
-      {
-        officer: { partyType: 'organization' },
-        mailingAddress: {
-          addressRegion: 'AB'
-        },
-        roles: [{ roleType: 'Director' }]
-      }
-    ] as any
-    expect(wrapper.vm.haveOneDirectorResideInBC).toBe(false)
-    store.stateModel.peopleAndRoles.orgPeople[0].mailingAddress.addressRegion = 'BC'
-    expect(wrapper.vm.haveOneDirectorResideInBC).toBe(true)
   })
 })
