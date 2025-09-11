@@ -19,6 +19,7 @@ export const RestorationResourceBen: ResourceIF = {
   changeData: {
     correctNameOptions: [
       CorrectNameOptions.CORRECT_NEW_NR,
+      CorrectNameOptions.CORRECT_NEW_NR_STAFF,
       CorrectNameOptions.CORRECT_NAME_TO_NUMBER
     ],
     orgPersonInfo: {
