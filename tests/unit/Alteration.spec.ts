@@ -147,42 +147,6 @@ describe('Alteration component', () => {
         }
       }))
 
-    // GET business directors
-    get.withArgs('https://legal-api.url/businesses/BC1234567/directors')
-      .returns(Promise.resolve({
-        data: {
-          directors: [
-            {
-              appointmentDate: '2020-09-30',
-              cessationDate: null,
-              deliveryAddress: {
-                addressCity: 'Victoria',
-                addressCountry: 'CA',
-                addressRegion: 'BC',
-                deliveryInstructions: '',
-                postalCode: 'V8P 1S8',
-                streetAddress: '1284 Derby Rd',
-                streetAddressAdditional: ''
-              },
-              mailingAddress: {
-                addressCity: 'Victoria',
-                addressCountry: 'CA',
-                addressRegion: 'BC',
-                deliveryInstructions: '',
-                postalCode: 'V8P 1S8',
-                streetAddress: '1284 Derby Rd',
-                streetAddressAdditional: ''
-              },
-              officer: {
-                firstName: 'CAMERON',
-                lastName: 'BOWLER'
-              },
-              role: 'director'
-            }
-          ]
-        }
-      }))
-
     // GET business parties
     get.withArgs('https://legal-api.url/businesses/BC1234567/parties')
       .returns(Promise.resolve({
