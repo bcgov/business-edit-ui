@@ -30,6 +30,9 @@ export function FetchConfig (): void {
   const businessDashUrl: string = import.meta.env.VUE_APP_BUSINESS_DASH_URL
   sessionStorage.setItem('BUSINESS_DASH_URL', businessDashUrl)
 
+  const personRolesUrl: string = import.meta.env.VUE_APP_PERSON_ROLES_URL
+  sessionStorage.setItem('PERSON_ROLES_URL', personRolesUrl)
+
   // set Legal API URL or Business API GW URL depending on FF
   if (GetFeatureFlag('use-business-api-gw-url')) {
     const businessApiGwUrl: string =

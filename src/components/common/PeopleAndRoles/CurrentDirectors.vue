@@ -31,7 +31,7 @@
         <tbody>
           <!-- List Content -->
           <tr
-            v-for="(orgPerson, index) in getOrgPeople"
+            v-for="(orgPerson, index) in directors"
             :key="`director:${index}`"
             class="director-content py-3"
           >
@@ -112,6 +112,13 @@ export default class CurrentDirectors extends Mixins(CommonMixin) {
 
   /** Headers for the person table. */
   readonly tableHeaders = ['Name', 'Mailing Address', 'Delivery Address', 'Effective Dates']
+
+  /** Strip out all but directors */
+  get directors (): OrgPersonIF[] {
+    return this.getOrgPeople.filter(person =>
+      person.roles.some(role => role.roleType === RoleTypes.DIRECTOR)
+    )
+  }
 }
 </script>
 
