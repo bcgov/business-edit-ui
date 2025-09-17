@@ -19,9 +19,9 @@
                 v-bind="attrs"
                 v-on="on"
               >
-                <a
+                <v-btn
                   class="officers-change disabled-link"
-                  @click.prevent
+                  text
                 >
                   <v-icon
                     medium
@@ -41,7 +41,7 @@
                   >
                     Add Officers
                   </span>
-                </a>
+                </v-btn>
               </span>
             </template>
             <span>To manage officers, submit or discard any other changes to business information.</span>
@@ -49,10 +49,11 @@
         </template>
 
         <template v-else>
-          <a
-            :href="officerChangeUrl"
+          <v-btn
+            text
             class="officers-change"
-            @click="handleClick"
+            color="primary"
+            @click="navigateToOfficerChange"
           >
             <v-icon
               medium
@@ -72,7 +73,7 @@
             >
               Add Officers
             </span>
-          </a>
+          </v-btn>
         </template>
       </article>
 
@@ -99,8 +100,8 @@
         <tbody v-if="officers.length > 0">
           <!-- List Content -->
           <tr
-            v-for="(orgPerson, index) in officers"
-            :key="`officer.officer.id:${index}`"
+            v-for="(orgPerson) in officers"
+            :key="orgPerson.officer?.id"
             class="officers-content py-3"
           >
             <!-- Name + Badge -->
@@ -122,15 +123,13 @@
             </td>
             <!-- Roles -->
             <td class="px-0">
-              <span v-if="orgPerson.roles.length > 0">
-                <v-col
-                  v-for="(role, key) in orgPerson.roles"
-                  :key="key"
-                  class="roles-detail"
-                >
-                  <span class="roles-detail">{{ role.roleType }}</span>
-                </v-col>
-              </span>
+              <v-col
+                v-for="(role, key) in orgPerson.roles"
+                :key="key"
+                class="roles-detail"
+              >
+                <span class="roles-detail">{{ role.roleType }}</span>
+              </v-col>
             </td>
             <!-- Delivery Address -->
             <td class="px-0">
@@ -163,7 +162,7 @@ import { Component, Mixins, Prop } from 'vue-property-decorator'
 import { Getter } from 'pinia-class'
 import { OrgPersonIF } from '@/interfaces/'
 import { RoleClass, RoleTypes } from '@/enums/'
-import { CommonMixin, OrgPersonMixin } from '@/mixins/'
+import { CommonMixin } from '@/mixins/'
 import { IsSame } from '@/utils/'
 import { BaseAddress } from '@bcrs-shared-components/base-address'
 
@@ -175,7 +174,7 @@ import { useStore } from '@/store/store'
     MailingAddress: BaseAddress
   }
 })
-export default class CurrentOfficers extends Mixins(CommonMixin, OrgPersonMixin) {
+export default class CurrentOfficers extends Mixins(CommonMixin) {
   // Declarations for template
   readonly RoleTypes = RoleTypes
   readonly IsSame = IsSame
@@ -196,12 +195,17 @@ export default class CurrentOfficers extends Mixins(CommonMixin, OrgPersonMixin)
           role?.roleClass === RoleClass.OFFICER
         )
       )
-      .filter(person => !this.wasRemoved(person))
   }
 
   /** URL to officer change page */
   get officerChangeUrl (): string {
     return sessionStorage.getItem('PERSON_ROLES_URL') + 'officer-change/' + this.getBusinessId
+  }
+
+  navigateToOfficerChange () {
+    if (!this.disableLinks) {
+      window.location.href = this.officerChangeUrl
+    }
   }
 
   handleClick (event: MouseEvent) {
@@ -257,10 +261,6 @@ export default class CurrentOfficers extends Mixins(CommonMixin, OrgPersonMixin)
 [class^="col"] {
   padding-top: 0;
   padding-bottom: 0;
-}
-
-.instructional-text {
-  color: $gray7;
 }
 
 .officers-list-header th {

@@ -177,11 +177,11 @@ describe('Alteration component', () => {
                 firstName: 'CAMERON',
                 lastName: 'BOWLER'
               },
-              roles: {
-                0: {
+              roles: [
+                {
                   roleType: 'Director'
                 }
-              }
+              ]
             },
             {
               appointmentDate: '2020-09-30',
@@ -208,12 +208,12 @@ describe('Alteration component', () => {
                 firstName: 'JON',
                 lastName: 'McCORMICK'
               },
-              roles: {
-                0: {
+              roles: [
+                {
                   roleClass: 'OFFICER',
                   roleType: 'CEO'
                 }
-              }
+              ]
             }
           ]
         }

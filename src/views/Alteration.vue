@@ -229,7 +229,13 @@ export default class Alteration extends Mixins(CommonMixin, FeeMixin, FilingTemp
 
   /** For LD FF */
   get showOfficers (): boolean {
-    return GetFeatureFlag('supported-change-of-officers-entities')
+    const flagValue = GetFeatureFlag('supported-change-of-officers-entities')
+    const businessTypes = (typeof flagValue === 'string') ? flagValue.split(' ') : []
+
+    if (businessTypes.includes(this.getEntityType)) {
+      return true
+    }
+    return false
   }
 
   @Watch('hasBusinessNameChanged')
