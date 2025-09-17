@@ -401,7 +401,7 @@ export default class EntityName extends Mixins(CommonMixin, NameRequestMixin) {
     // safety check
     const changeData = this.getResource.changeData
     if (!changeData) return []
-    
+
     const filterdOptionByAuthAction = IsAuthorized(AuthorizedActions.ADD_ENTITY_NO_AUTHENTICATION)
       ? CorrectNameOptions.CORRECT_NEW_NR
       : CorrectNameOptions.CORRECT_NEW_NR_STAFF

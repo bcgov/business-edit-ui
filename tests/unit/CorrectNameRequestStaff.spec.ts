@@ -1,13 +1,9 @@
 import Vuetify from 'vuetify'
-import { AxiosInstance as axios } from '@/utils/'
-import sinon from 'sinon'
 import flushPromises from 'flush-promises'
 import { mount, Wrapper } from '@vue/test-utils'
-import CorrectNameRequest from '@/components/common/YourCompany/CorrectName/CorrectNameRequestStaff.vue'
 import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
-import { FilingTypes, NrRequestActionCodes } from '@bcrs-shared-components/enums'
 import CorrectNameRequestStaff from '@/components/common/YourCompany/CorrectName/CorrectNameRequestStaff.vue'
 
 // mock the console.warn function to hide "[Vuetify] Unable to locate target XXX"
@@ -34,7 +30,6 @@ describe('CorrectNameRequestStaff', () => {
       vuetify
     })
   }
-  const get = sinon.stub(axios, 'get')
 
   beforeAll(() => {
     sessionStorage.setItem('LEGAL_API_URL', 'https://legal-api.url/')
@@ -145,7 +140,6 @@ describe('CorrectNameRequestStaff', () => {
     wrapper.destroy()
   })
 
-
   it('emits true when the form is valid', async () => {
     const wrapper = wrapperFactory()
     const vm = wrapper.vm as any
@@ -179,5 +173,4 @@ describe('CorrectNameRequestStaff', () => {
 
     wrapper.destroy()
   })
-
 })
