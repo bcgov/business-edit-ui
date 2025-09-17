@@ -101,7 +101,7 @@ export default class CorrectNameRequestStaff extends Mixins(CommonMixin, NameReq
   /** Watches for form submission and emits results. */
   @Watch('formType')
   async onSubmit (): Promise<any> {
-    // this component should only see correct-new-nr form type
+    // this component should only see correct-new-nr-staff form type
     if (this.formType === CorrectNameOptions.CORRECT_NEW_NR_STAFF) {
       try {
         // Fetch and validate the name request
