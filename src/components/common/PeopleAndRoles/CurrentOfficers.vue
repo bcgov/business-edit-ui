@@ -25,12 +25,22 @@
                 >
                   <v-icon
                     medium
-                    class="pencil-outline"
+                    class="add-officer-icon"
                     color="appDkBlue"
+                    v-text="officers.length > 0 ? 'mdi-pencil-outline' : 'mdi-account-plus-outline'"
+                  />
+                  <span
+                    v-if="officers.length > 0"
+                    class="officer-change-text"
                   >
-                    mdi-pencil-outline
-                  </v-icon>
-                  <span class="officer-change-text">Manage Officers</span>
+                    Manage Officers
+                  </span>
+                  <span
+                    v-else
+                    class="officer-change-text"
+                  >
+                    Add Officers
+                  </span>
                 </a>
               </span>
             </template>
@@ -46,19 +56,29 @@
           >
             <v-icon
               medium
-              class="pencil-outline"
+              class="add-officer-icon"
               color="appDkBlue"
+              v-text="officers.length > 0 ? 'mdi-pencil-outline' : 'mdi-account-plus-outline'"
+            />
+            <span
+              v-if="officers.length > 0"
+              class="officer-change-text"
             >
-              mdi-pencil-outline
-            </v-icon>
-            <span class="officer-change-text">Manage Officers</span>
+              Manage Officers
+            </span>
+            <span
+              v-else
+              class="officer-change-text"
+            >
+              Add Officers
+            </span>
           </a>
         </template>
       </article>
 
       <v-simple-table class="officers-table section-container">
         <!-- List Display Section -->
-        <thead v-if="getOrgPeople.length > 0">
+        <thead v-if="officers.length > 0">
           <!-- List Headers -->
           <tr class="officers-list-header pb-3">
             <th
@@ -70,7 +90,13 @@
             </th>
           </tr>
         </thead>
-        <tbody>
+        <thead
+          v-else
+          class="no-officers-header"
+        >
+          There are currently no officers. You can add officers if you are required to do so.
+        </thead>
+        <tbody v-if="officers.length > 0">
           <!-- List Content -->
           <tr
             v-for="(orgPerson, index) in officers"
@@ -166,7 +192,9 @@ export default class CurrentOfficers extends Mixins(CommonMixin, OrgPersonMixin)
   get officers (): OrgPersonIF[] {
     return this.getOrgPeople
       .filter(person =>
-        person.roles.some(role => role.roleClass === RoleClass.OFFICER)
+        person.roles?.some(role =>
+          role?.roleClass === RoleClass.OFFICER
+        )
       )
       .filter(person => !this.wasRemoved(person))
   }
@@ -203,12 +231,11 @@ export default class CurrentOfficers extends Mixins(CommonMixin, OrgPersonMixin)
     color: #1669BB;
     text-align: center;
 
-    /* Paragraph normal */
     font-family: "BC Sans";
     font-size: 16px;
     font-style: normal;
     font-weight: 400;
-    line-height: 150%; /* 24px */
+    line-height: 150%;
   }
   /* To keep link on right when wrapped in tooltip */
   .officers-change-wrapper {
@@ -216,7 +243,7 @@ export default class CurrentOfficers extends Mixins(CommonMixin, OrgPersonMixin)
     display: flex;
     align-items: center;
   }
-  .pencil-outline {
+  .add-officer-icon {
     width: 20px;
     height: 20px;
   }
@@ -271,6 +298,17 @@ export default class CurrentOfficers extends Mixins(CommonMixin, OrgPersonMixin)
 
 .officers-content:hover {
   background: none !important;
+}
+
+.no-officers-header {
+  color: var(--Text-Text-Mid-Gray, #495057);
+  align-self: stretch;
+  /* Paragraph regular/Paragraph regular */
+  font-family: "BC Sans";
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 24px; /* 150% */
 }
 
 </style>
