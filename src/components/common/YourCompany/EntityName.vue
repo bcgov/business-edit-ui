@@ -251,13 +251,13 @@
 <script lang="ts">
 import { Component, Mixins, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
-import { CoopTypes, CorrectNameOptions } from '@/enums/'
+import { AuthorizedActions, CoopTypes, CorrectNameOptions } from '@/enums/'
 import { ActionKvIF, BusinessInformationIF } from '@/interfaces/'
 import { NameRequestIF } from '@bcrs-shared-components/interfaces'
 import CorrectName from '@/components/common/YourCompany/CorrectName/CorrectName.vue'
 import { CommonMixin, NameRequestMixin } from '@/mixins'
 import DateUtilities from '@/services/date-utilities'
-import { ToDisplayPhone } from '@/utils'
+import { IsAuthorized, ToDisplayPhone } from '@/utils'
 import { CorpTypeCd, GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module'
 import { useStore } from '@/store/store'
 
@@ -399,16 +399,29 @@ export default class EntityName extends Mixins(CommonMixin, NameRequestMixin) {
   /** The current options for name changes. */
   get correctNameChoices (): Array<CorrectNameOptions> {
     // safety check
-    if (!this.getResource.changeData) return []
+    const changeData = this.getResource.changeData
+    if (!changeData) return []
 
+    const filterdOptionByAuthAction = IsAuthorized(AuthorizedActions.ADD_ENTITY_NO_AUTHENTICATION)
+      ? CorrectNameOptions.CORRECT_NEW_NR
+      : CorrectNameOptions.CORRECT_NEW_NR_STAFF
+
+    // Filter out the option based on authorized action
+    let filteredOptions = changeData.correctNameOptions.filter(
+      option => option !== filterdOptionByAuthAction
+    )
+
+    // Further filter if it's a numbered company
     // if this is a numbered company, remove correct-name and name-to-number options
     if (this.isNumberedCompany) {
-      return this.getResource.changeData?.correctNameOptions.filter(option => (
-        option !== CorrectNameOptions.CORRECT_NAME &&
-        option !== CorrectNameOptions.CORRECT_NAME_TO_NUMBER
-      ))
+      filteredOptions = filteredOptions.filter(
+        option =>
+          option !== CorrectNameOptions.CORRECT_NAME &&
+          option !== CorrectNameOptions.CORRECT_NAME_TO_NUMBER
+      )
     }
-    return this.getResource.changeData.correctNameOptions
+
+    return filteredOptions
   }
 
   /** Whether to show the name options button and component. */

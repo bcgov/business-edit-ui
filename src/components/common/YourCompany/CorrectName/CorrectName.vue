@@ -31,7 +31,7 @@
           </template>
         </v-expansion-panel-header>
 
-        <v-expansion-panel-content class="name-options-content pt-4">
+        <v-expansion-panel-content :class="['name-options-content', isOneOption ? 'pt-0' : 'pt-4']">
           <div
             v-if="item.description"
             class="info-text mb-4"
@@ -84,6 +84,7 @@ import { CorrectNameOptions } from '@/enums/'
 import CorrectCompanyName from './CorrectCompanyName.vue'
 import CorrectNameRequest from './CorrectNameRequest.vue'
 import CorrectNameToNumber from './CorrectNameToNumber.vue'
+import CorrectNameRequestStaff from './CorrectNameRequestStaff.vue'
 
 /**
  * Operation:
@@ -96,7 +97,8 @@ import CorrectNameToNumber from './CorrectNameToNumber.vue'
   components: {
     CorrectCompanyName,
     CorrectNameToNumber,
-    CorrectNameRequest
+    CorrectNameRequest,
+    CorrectNameRequestStaff
   }
 })
 export default class CorrectName extends Vue {
@@ -133,6 +135,12 @@ export default class CorrectName extends Vue {
       description: 'Enter the new Name Request Number (e.g., NR 1234567) and either the applicant phone number ' +
         'OR the applicant email that was used when the name was requested.',
       component: CorrectNameRequest
+    },
+    {
+      id: CorrectNameOptions.CORRECT_NEW_NR_STAFF,
+      title: 'Use a new name request number',
+      description: '',
+      component: CorrectNameRequestStaff
     }
   ]
 
