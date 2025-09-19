@@ -28,7 +28,6 @@ describe('Fetch Config', () => {
   import.meta.env.VUE_APP_NAME_REQUEST_URL = 'https://name-request.url'
   import.meta.env.VUE_APP_REGISTRIES_SEARCH_API_URL = 'https://registries-search-api.url'
   import.meta.env.VUE_APP_REGISTRIES_SEARCH_API_VERSION = '/registries-search-api-version'
-  import.meta.env.VUE_APP_SENTRY_DSN = 'sentry-dsn'
   import.meta.env.VUE_APP_SITEMINDER_LOGOUT_URL = 'https://siteminder-logout.url'
   import.meta.env.VUE_APP_STATUS_API_URL = 'https://status-api.url'
   import.meta.env.VUE_APP_STATUS_API_VERSION = '/status-api-version'
@@ -64,7 +63,6 @@ describe('Fetch Config', () => {
     expect(sessionStorage.getItem('STATUS_API_URL')).toBe('https://status-api.url/status-api-version')
     expect(AxiosInstance.defaults.baseURL).toBe('https://legal-api.url/legal-api-version-2/')
     expect(window['addressCompleteKey']).toBe('address-complete-key')
-    expect(window['sentryDsn']).toBe('sentry-dsn')
     expect(window['keycloakAuthUrl']).toBe('https://keycloak-auth.url')
     expect(window['keycloakRealm']).toBe('bcregistry')
     expect(window['keycloakClientId']).toBe('entity-web')
