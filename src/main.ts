@@ -27,7 +27,7 @@ import '@/assets/styles/overrides.scss'
 import App from './App.vue'
 
 // Helpers
-import { GetFeatureFlag, InitLdClient, FetchConfig, Navigate, Sleep } from '@/utils/'
+import { InitLdClient, FetchConfig, Navigate, Sleep } from '@/utils/'
 import KeycloakService from 'sbc-common-components/src/services/keycloak.services'
 
 // get rid of "element implicitly has an 'any' type..."
