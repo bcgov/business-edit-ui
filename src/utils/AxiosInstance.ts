@@ -1,6 +1,5 @@
 import axios from 'axios'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
-import * as Sentry from '@sentry/browser'
 
 /**
  * This file exports an instance of Axios with some extra request headers,
@@ -66,15 +65,6 @@ instance.interceptors.request.use(
     return request
   },
   error => Promise.reject(error)
-)
-
-// add response interceptor
-instance.interceptors.response.use(
-  response => response,
-  error => {
-    Sentry.captureException(error)
-    return Promise.reject(error)
-  }
 )
 
 export { instance as AxiosInstance }

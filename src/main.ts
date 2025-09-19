@@ -10,7 +10,6 @@ import VueSanitize from 'vue-sanitize-directive'
 import Affix from 'vue-affix'
 import Vue2Filters from 'vue2-filters' // needed by SbcFeeSummary
 import Hotjar from 'vue-hotjar'
-import * as Sentry from '@sentry/vue'
 import { TiptapVuetifyPlugin } from 'tiptap-vuetify'
 import { getVueRouter } from '@/router/'
 import { getPiniaStore, getVuexStore } from '@/store/'
@@ -28,7 +27,7 @@ import '@/assets/styles/overrides.scss'
 import App from './App.vue'
 
 // Helpers
-import { GetFeatureFlag, InitLdClient, FetchConfig, Navigate, Sleep } from '@/utils/'
+import { InitLdClient, FetchConfig, Navigate, Sleep } from '@/utils/'
 import KeycloakService from 'sbc-common-components/src/services/keycloak.services'
 
 // get rid of "element implicitly has an 'any' type..."
@@ -79,15 +78,6 @@ async function start () {
 
   // fetch config from environment and set it locally
   FetchConfig()
-
-  if (GetFeatureFlag('sentry-enable')) {
-    // initialize Sentry
-    console.info('Initializing Sentry...') // eslint-disable-line no-console
-    Sentry.init({
-      dsn: window['sentryDsn'],
-      Vue
-    })
-  }
 
   // initialize Hotjar
   const hotjarId: string = window['hotjarId']

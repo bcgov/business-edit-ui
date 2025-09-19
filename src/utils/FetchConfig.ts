@@ -93,9 +93,6 @@ export function FetchConfig (): void {
   const addressCompleteKey: string = import.meta.env.VUE_APP_ADDRESS_COMPLETE_KEY;
   (<any>window).addressCompleteKey = addressCompleteKey
 
-  const sentryDsn: string = import.meta.env.VUE_APP_SENTRY_DSN;
-  (<any>window).sentryDsn = sentryDsn
-
   // get Business ID and validate that it looks OK
   // it should be first token after Base URL in Pathname
   // FUTURE: improve Business ID validation
