@@ -30,6 +30,12 @@
 
           <CurrentDirectors class="mt-10" />
 
+          <CurrentOfficers
+            v-if="showOfficers"
+            :disable-links="showFeeSummary"
+            class="mt-10"
+          />
+
           <ShareStructures class="mt-10" />
 
           <Articles class="mt-10" />
@@ -128,7 +134,7 @@
 import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
 import { AlterationSummary, Articles } from '@/components/Alteration/'
-import { BusinessContactInfo, BusinessType, CertifySection, CourtOrderPoa, CurrentDirectors,
+import { BusinessContactInfo, BusinessType, CertifySection, CourtOrderPoa, CurrentDirectors, CurrentOfficers,
   DocumentsDelivery, EntityName, FolioInformation, OfficeAddresses, RecognitionDateTime,
   ShareStructures, StaffPayment, TransactionalFolioNumber, YourCompanyWrapper }
   from '@/components/common/'
@@ -142,7 +148,7 @@ import * as Resources from '@/resources/Alteration/'
 import ViewWrapper from '@/components/ViewWrapper.vue'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 import { useStore } from '@/store/store'
-import { IsAuthorized } from '@/utils'
+import { GetFeatureFlag, IsAuthorized } from '@/utils'
 
 @Component({
   components: {
@@ -153,6 +159,7 @@ import { IsAuthorized } from '@/utils'
     CertifySection,
     CourtOrderPoa,
     CurrentDirectors,
+    CurrentOfficers,
     DocumentsDelivery,
     EntityName,
     FolioInformation,
@@ -218,6 +225,17 @@ export default class Alteration extends Mixins(CommonMixin, FeeMixin, FilingTemp
       case CorpTypeCd.ULC_CONTINUE_IN: return Resources.AlterationResourceCul
       default: return null // should never happen
     }
+  }
+
+  /** For LD FF */
+  get showOfficers (): boolean {
+    const flagValue = GetFeatureFlag('supported-change-of-officers-entities')
+    const businessTypes = (typeof flagValue === 'string') ? flagValue.split(' ') : []
+
+    if (businessTypes.includes(this.getEntityType)) {
+      return true
+    }
+    return false
   }
 
   @Watch('hasBusinessNameChanged')
@@ -362,7 +380,7 @@ export default class Alteration extends Mixins(CommonMixin, FeeMixin, FilingTemp
       AuthServices.fetchAuthInfo(this.getBusinessId),
       LegalServices.fetchAddresses(this.getBusinessId),
       LegalServices.fetchNameTranslations(this.getBusinessId),
-      LegalServices.fetchDirectors(this.getBusinessId),
+      LegalServices.fetchParties(this.getBusinessId),
       LegalServices.fetchShareStructure(this.getBusinessId),
       LegalServices.fetchResolutions(this.getBusinessId)
     ])

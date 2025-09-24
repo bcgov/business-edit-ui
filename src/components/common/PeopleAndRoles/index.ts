@@ -1,4 +1,5 @@
 export { default as CurrentDirectors } from './CurrentDirectors.vue'
+export { default as CurrentOfficers } from './CurrentOfficers.vue'
 export { default as OrgPerson } from './OrgPerson.vue'
 export { default as ListPeopleAndRoles } from './ListPeopleAndRoles.vue'
 

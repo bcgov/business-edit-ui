@@ -147,11 +147,11 @@ describe('Alteration component', () => {
         }
       }))
 
-    // GET business directors
-    get.withArgs('https://legal-api.url/businesses/BC1234567/directors')
+    // GET business parties
+    get.withArgs('https://legal-api.url/businesses/BC1234567/parties')
       .returns(Promise.resolve({
         data: {
-          directors: [
+          parties: [
             {
               appointmentDate: '2020-09-30',
               cessationDate: null,
@@ -177,7 +177,43 @@ describe('Alteration component', () => {
                 firstName: 'CAMERON',
                 lastName: 'BOWLER'
               },
-              role: 'director'
+              roles: [
+                {
+                  roleType: 'Director'
+                }
+              ]
+            },
+            {
+              appointmentDate: '2020-09-30',
+              cessationDate: null,
+              deliveryAddress: {
+                addressCity: 'Victoria',
+                addressCountry: 'CA',
+                addressRegion: 'BC',
+                deliveryInstructions: '',
+                postalCode: 'V8P 1S8',
+                streetAddress: '1284 Derby Rd',
+                streetAddressAdditional: ''
+              },
+              mailingAddress: {
+                addressCity: 'Victoria',
+                addressCountry: 'CA',
+                addressRegion: 'BC',
+                deliveryInstructions: '',
+                postalCode: 'V8P 1S8',
+                streetAddress: '1284 Derby Rd',
+                streetAddressAdditional: ''
+              },
+              officer: {
+                firstName: 'JON',
+                lastName: 'McCORMICK'
+              },
+              roles: [
+                {
+                  roleClass: 'OFFICER',
+                  roleType: 'CEO'
+                }
+              ]
             }
           ]
         }
@@ -309,6 +345,10 @@ describe('Alteration component', () => {
     expect(store.stateModel.peopleAndRoles.orgPeople[0].officer.firstName).toBe('CAMERON')
     expect(store.stateModel.peopleAndRoles.orgPeople[0].officer.lastName).toBe('BOWLER')
     expect(store.stateModel.peopleAndRoles.orgPeople[0].roles[0].roleType).toBe('Director')
+    expect(store.stateModel.peopleAndRoles.orgPeople[1].officer.firstName).toBe('JON')
+    expect(store.stateModel.peopleAndRoles.orgPeople[1].officer.lastName).toBe('McCORMICK')
+    expect(store.stateModel.peopleAndRoles.orgPeople[1].roles[0].roleClass).toBe('OFFICER')
+    expect(store.stateModel.peopleAndRoles.orgPeople[1].roles[0].roleType).toBe('CEO')
 
     // Validate Share Structure
     expect(store.stateModel.shareStructureStep.shareClasses[0].name).toBe('Class A Shares')

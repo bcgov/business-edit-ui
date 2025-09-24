@@ -13,6 +13,7 @@ export * from './filingStatus'
 export * from './partyTypes'
 export * from './pagesSizes'
 export * from './periodTypes'
+export * from './roleClass'
 export * from './roleTypes'
 export * from './routeNames'
 
