@@ -260,6 +260,7 @@ import DateUtilities from '@/services/date-utilities'
 import { IsAuthorized, ToDisplayPhone } from '@/utils'
 import { CorpTypeCd, GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module'
 import { useStore } from '@/store/store'
+import { clone } from 'lodash'
 
 @Component({
   components: {
@@ -398,8 +399,10 @@ export default class EntityName extends Mixins(CommonMixin, NameRequestMixin) {
 
   /** The current options for name changes. */
   get correctNameChoices (): Array<CorrectNameOptions> {
+    // make a copy of the array so we don't splice the original object
+    let correctNameOptions = clone(this.getResource.changeData?.correctNameOptions)
+
     // safety check
-    let correctNameOptions = this.getResource.changeData?.correctNameOptions
     if (!correctNameOptions) return []
 
     // check for (non-staff) correct-new-nr option
