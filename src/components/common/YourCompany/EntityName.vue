@@ -260,6 +260,7 @@ import DateUtilities from '@/services/date-utilities'
 import { IsAuthorized, ToDisplayPhone } from '@/utils'
 import { CorpTypeCd, GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module'
 import { useStore } from '@/store/store'
+import { clone } from 'lodash'
 
 @Component({
   components: {
@@ -398,30 +399,30 @@ export default class EntityName extends Mixins(CommonMixin, NameRequestMixin) {
 
   /** The current options for name changes. */
   get correctNameChoices (): Array<CorrectNameOptions> {
+    // make a copy of the array so we don't splice the original object
+    let correctNameOptions = clone(this.getResource.changeData?.correctNameOptions)
+
     // safety check
-    const changeData = this.getResource.changeData
-    if (!changeData) return []
+    if (!correctNameOptions) return []
 
-    const filterdOptionByAuthAction = IsAuthorized(AuthorizedActions.ADD_ENTITY_NO_AUTHENTICATION)
-      ? CorrectNameOptions.CORRECT_NEW_NR
-      : CorrectNameOptions.CORRECT_NEW_NR_STAFF
+    // check for (non-staff) correct-new-nr option
+    const index = correctNameOptions.indexOf(CorrectNameOptions.CORRECT_NEW_NR)
+    if (index >= 0 && IsAuthorized(AuthorizedActions.ADD_ENTITY_NO_AUTHENTICATION)) {
+      // if user is authorized to add an entity without authentication
+      // then replace non-staff option with staff option
+      correctNameOptions.splice(index, 1, CorrectNameOptions.CORRECT_NEW_NR_STAFF)
+    }
 
-    // Filter out the option based on authorized action
-    let filteredOptions = changeData.correctNameOptions.filter(
-      option => option !== filterdOptionByAuthAction
-    )
-
-    // Further filter if it's a numbered company
     // if this is a numbered company, remove correct-name and name-to-number options
     if (this.isNumberedCompany) {
-      filteredOptions = filteredOptions.filter(
+      correctNameOptions = correctNameOptions.filter(
         option =>
           option !== CorrectNameOptions.CORRECT_NAME &&
           option !== CorrectNameOptions.CORRECT_NAME_TO_NUMBER
       )
     }
 
-    return filteredOptions
+    return correctNameOptions
   }
 
   /** Whether to show the name options button and component. */
