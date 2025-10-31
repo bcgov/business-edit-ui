@@ -242,7 +242,7 @@ export default class CurrentOfficers extends Mixins(CommonMixin) {
     gap: 10px;
     text-decoration: none;
   }
- 
+
   /* To keep link on right when wrapped in tooltip */
   .officers-change-wrapper {
     margin-left: auto;
