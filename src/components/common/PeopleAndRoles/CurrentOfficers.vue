@@ -231,7 +231,7 @@ export default class CurrentOfficers extends Mixins(CommonMixin) {
   align-items: center;
   background-color: $BCgovBlue5O;
   .officer-optional-text {
-    color: var(--Text-Text-Mid-Gray, #495057);
+    color: $gray7;
     margin-left: 10px;
   }
   .officers-change {
