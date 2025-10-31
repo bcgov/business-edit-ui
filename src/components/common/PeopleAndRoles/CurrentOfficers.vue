@@ -252,6 +252,7 @@ export default class CurrentOfficers extends Mixins(CommonMixin) {
   .add-officer-icon {
     width: 20px;
     height: 20px;
+    margin-right: 4px;
   }
   .disabled-link {
     pointer-events: none;
