@@ -254,6 +254,9 @@ export default class CurrentOfficers extends Mixins(CommonMixin) {
     height: 20px;
     margin-right: 4px;
   }
+  .officer-change-text {
+    font-size: $px-16;
+  }
   .disabled-link {
     pointer-events: none;
     opacity: 0.5;
