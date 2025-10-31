@@ -7,6 +7,13 @@
           mdi-account-supervisor
         </v-icon>
         <label class="font-weight-bold pl-2">Officers</label>
+        <span
+          v-if="officers.length <= 0"
+          class="officer-optional-text"
+        >
+          (Optional)
+        </span>
+
         <template v-if="disableLinks">
           <v-tooltip
             top
@@ -93,9 +100,9 @@
         </thead>
         <thead
           v-else
-          class="no-officers-header"
+          class="info-text"
         >
-          There are currently no officers. You can add officers if you are required to do so.
+          There are currently no officers.
         </thead>
         <tbody v-if="officers.length > 0">
           <!-- List Content -->
@@ -223,6 +230,10 @@ export default class CurrentOfficers extends Mixins(CommonMixin) {
   display: flex;
   align-items: center;
   background-color: $BCgovBlue5O;
+  .officer-optional-text {
+    color: $gray7;
+    margin-left: 10px;
+  }
   .officers-change {
     margin-left: auto;
     display: flex;
@@ -231,16 +242,7 @@ export default class CurrentOfficers extends Mixins(CommonMixin) {
     gap: 10px;
     text-decoration: none;
   }
-  .officers-change-text {
-    color: #1669BB;
-    text-align: center;
 
-    font-family: "BC Sans";
-    font-size: 16px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: 150%;
-  }
   /* To keep link on right when wrapped in tooltip */
   .officers-change-wrapper {
     margin-left: auto;
@@ -250,6 +252,10 @@ export default class CurrentOfficers extends Mixins(CommonMixin) {
   .add-officer-icon {
     width: 20px;
     height: 20px;
+    margin-right: 4px;
+  }
+  .officer-change-text {
+    font-size: $px-16;
   }
   .disabled-link {
     pointer-events: none;
@@ -298,17 +304,6 @@ export default class CurrentOfficers extends Mixins(CommonMixin) {
 
 .officers-content:hover {
   background: none !important;
-}
-
-.no-officers-header {
-  color: var(--Text-Text-Mid-Gray, #495057);
-  align-self: stretch;
-  /* Paragraph regular/Paragraph regular */
-  font-family: "BC Sans";
-  font-size: 16px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: 24px; /* 150% */
 }
 
 </style>
