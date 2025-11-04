@@ -64,7 +64,6 @@ import { Affix as affix } from 'vue-affix'
 import { Component, Mixins } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
 import { IsAuthorized, Navigate } from '@/utils/'
-import PaySystemAlert from 'sbc-common-components/src/components/PaySystemAlert.vue'
 import SbcFeeSummary from 'sbc-common-components/src/components/SbcFeeSummary.vue'
 import { FeeSummary as FeeSummaryShared } from '@bcrs-shared-components/fee-summary/'
 import { Actions, EntityInfo } from '@/components/common/'
@@ -87,7 +86,6 @@ import flushPromises from 'flush-promises'
     ConfirmDialogShared,
     EntityInfo,
     FeeSummaryShared,
-    PaySystemAlert,
     SbcFeeSummary
   }
 })
