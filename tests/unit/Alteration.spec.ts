@@ -211,7 +211,7 @@ describe('Alteration component', () => {
               roles: [
                 {
                   roleClass: 'OFFICER',
-                  roleType: 'CEO'
+                  roleType: 'Chief Executive Officer'
                 }
               ]
             }
@@ -348,7 +348,7 @@ describe('Alteration component', () => {
     expect(store.stateModel.peopleAndRoles.orgPeople[1].officer.firstName).toBe('JON')
     expect(store.stateModel.peopleAndRoles.orgPeople[1].officer.lastName).toBe('McCORMICK')
     expect(store.stateModel.peopleAndRoles.orgPeople[1].roles[0].roleClass).toBe('OFFICER')
-    expect(store.stateModel.peopleAndRoles.orgPeople[1].roles[0].roleType).toBe('CEO')
+    expect(store.stateModel.peopleAndRoles.orgPeople[1].roles[0].roleType).toBe('Chief Executive Officer')
 
     // Validate Share Structure
     expect(store.stateModel.shareStructureStep.shareClasses[0].name).toBe('Class A Shares')

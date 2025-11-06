@@ -264,6 +264,23 @@ export default class LegalServices {
               party.officer.middleName = middleInitial
               delete party.officer['middleInitial']
             }
+            if (party.roles?.length) {
+              party.roles.forEach(role => {
+                if (role.roleType) {
+                  const roleTypeLowercase = role.roleType.toLowerCase()
+                  const matchedEnumValue = Object.values(RoleTypes).find(enumValue =>
+                    enumValue.toLowerCase() === roleTypeLowercase) ||
+                  (() => {
+                    const enumKey = Object.keys(RoleTypes).find(key => key.toLowerCase() === roleTypeLowercase)
+                    return enumKey ? RoleTypes[enumKey as keyof typeof RoleTypes] : null
+                  }
+                  )()
+                  if (matchedEnumValue) {
+                    role.roleType = matchedEnumValue as RoleTypes
+                  }
+                }
+              })
+            }
             return party
           })
         }

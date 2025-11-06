@@ -65,7 +65,6 @@
             <v-icon
               medium
               class="add-officer-icon"
-              color="appDkBlue"
               v-text="officers.length > 0 ? 'mdi-pencil-outline' : 'mdi-account-plus-outline'"
             />
             <span
