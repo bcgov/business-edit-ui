@@ -2,6 +2,7 @@ import Vue from 'vue'
 import { Component } from 'vue-property-decorator'
 import { isEmpty } from 'lodash'
 import { AddressIF, ConfirmDialogType } from '@/interfaces/'
+import { RoleTypes } from '@/enums'
 
 /**
  * Mixin that provides some useful common utilities.
@@ -71,6 +72,13 @@ export default class CommonMixin extends Vue {
     if (addressData?.countryTypeCd) fullAddress += addressData.countryTypeCd
 
     return fullAddress.trimEnd()
+  }
+
+  /** formats roles for officers */
+  formatRoleType (roleType: string): string {
+    if (roleType.toLocaleLowerCase() === RoleTypes.CEO.toLocaleLowerCase()) return 'Chief Executive Officer'
+    if (roleType.toLocaleLowerCase() === RoleTypes.CFO.toLocaleLowerCase()) return 'Chief Financial Officer'
+    return roleType
   }
 
   /** Changes the specified prop to uppercase. */
