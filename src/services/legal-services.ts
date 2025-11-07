@@ -264,19 +264,6 @@ export default class LegalServices {
               party.officer.middleName = middleInitial
               delete party.officer['middleInitial']
             }
-            if (party.roles?.length) {
-              party.roles.forEach(role => {
-                if (role.roleType && role.roleClass === 'OFFICER') {
-                  const roleTypeLowercase = role.roleType.toLowerCase()
-                  if (roleTypeLowercase === 'ceo') {
-                    role.roleType = RoleTypes.CEO
-                  }
-                  else if (roleTypeLowercase === 'cfo') {
-                    role.roleType = RoleTypes.CFO
-                  }
-                }
-              })
-            }
             return party
           })
         }

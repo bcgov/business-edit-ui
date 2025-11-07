@@ -134,7 +134,7 @@
                 :key="key"
                 class="roles-detail"
               >
-                <span class="roles-detail">{{ role.roleType }}</span>
+                <span class="roles-detail">{{ formatRoleType(role.roleType) }}</span>
               </v-col>
             </td>
             <!-- Delivery Address -->
@@ -206,6 +206,12 @@ export default class CurrentOfficers extends Mixins(CommonMixin) {
   /** URL to officer change page */
   get officerChangeUrl (): string {
     return sessionStorage.getItem('PERSON_ROLES_URL') + 'officer-change/' + this.getBusinessId
+  }
+
+  formatRoleType (roleType: string): string {
+    if (roleType.toLocaleLowerCase() === 'ceo') return RoleTypes.CEO
+    if (roleType.toLocaleLowerCase() === 'cfo') return RoleTypes.CFO
+    return roleType
   }
 
   navigateToOfficerChange () {
