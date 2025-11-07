@@ -266,17 +266,13 @@ export default class LegalServices {
             }
             if (party.roles?.length) {
               party.roles.forEach(role => {
-                if (role.roleType) {
+                if (role.roleType && role.roleClass === 'OFFICER') {
                   const roleTypeLowercase = role.roleType.toLowerCase()
-                  const matchedEnumValue = Object.values(RoleTypes).find(enumValue =>
-                    enumValue.toLowerCase() === roleTypeLowercase) ||
-                  (() => {
-                    const enumKey = Object.keys(RoleTypes).find(key => key.toLowerCase() === roleTypeLowercase)
-                    return enumKey ? RoleTypes[enumKey as keyof typeof RoleTypes] : null
+                  if (roleTypeLowercase === 'ceo') {
+                    role.roleType = RoleTypes.CEO
                   }
-                  )()
-                  if (matchedEnumValue) {
-                    role.roleType = matchedEnumValue as RoleTypes
+                  else if (roleTypeLowercase === 'cfo') {
+                    role.roleType = RoleTypes.CFO
                   }
                 }
               })
