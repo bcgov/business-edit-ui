@@ -76,8 +76,8 @@ export default class CommonMixin extends Vue {
 
   /** Formats roles for officers */
   formatRoleType (roleType: string): string {
-    if (roleType.toLocaleLowerCase() === RoleTypes.CEO.toLocaleLowerCase()) return 'Chief Executive Officer'
-    if (roleType.toLocaleLowerCase() === RoleTypes.CFO.toLocaleLowerCase()) return 'Chief Financial Officer'
+    if (roleType === RoleTypes.CEO) return 'Chief Executive Officer'
+    if (roleType === RoleTypes.CFO) return 'Chief Financial Officer'
     return roleType
   }
 
