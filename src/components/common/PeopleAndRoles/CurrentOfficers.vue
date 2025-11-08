@@ -65,7 +65,6 @@
             <v-icon
               medium
               class="add-officer-icon"
-              color="appDkBlue"
               v-text="officers.length > 0 ? 'mdi-pencil-outline' : 'mdi-account-plus-outline'"
             />
             <span
@@ -135,7 +134,7 @@
                 :key="key"
                 class="roles-detail"
               >
-                <span class="roles-detail">{{ role.roleType }}</span>
+                <span class="roles-detail">{{ formatRoleType(role.roleType) }}</span>
               </v-col>
             </td>
             <!-- Delivery Address -->
