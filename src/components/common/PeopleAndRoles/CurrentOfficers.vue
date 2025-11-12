@@ -139,22 +139,22 @@
             </td>
             <!-- Delivery Address -->
             <td class="px-0">
-              <template v-if="IsSame(orgPerson.mailingAddress, orgPerson.deliveryAddress, ['id'])">
-                <span class="officers-detail">Same as Mailing Address</span>
-              </template>
-              <template v-else>
-                <DeliveryAddress
-                  class="officers-detail"
-                  :address="orgPerson.deliveryAddress"
-                />
-              </template>
+              <DeliveryAddress
+                class="officers-detail"
+                :address="orgPerson.deliveryAddress"
+              />
             </td>
             <!-- Mailing Address -->
             <td class="px-0">
-              <MailingAddress
-                class="officers-detail"
-                :address="orgPerson.mailingAddress"
-              />
+              <template v-if="IsSame(orgPerson.mailingAddress, orgPerson.deliveryAddress, ['id'])">
+                <span class="officers-detail">Same as Delivery Address</span>
+              </template>
+              <template v-else>
+                <MailingAddress
+                  class="officers-detail"
+                  :address="orgPerson.mailingAddress"
+                />
+              </template>
             </td>
           </tr>
         </tbody>
