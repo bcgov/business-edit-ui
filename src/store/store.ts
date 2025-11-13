@@ -1074,11 +1074,33 @@ export const useStore = defineStore('store', {
         return op
       }
 
+      /** Returns True if provided org-person is a director. */
+      function isDirector (op: OrgPersonIF): boolean {
+        return op.roles.some(role => role.roleType === RoleTypes.DIRECTOR)
+      }
+
+      /** Returns True if provided org-person is a partner. */
+      function isPartner (op: OrgPersonIF): boolean {
+        return op.roles.some(role => role.roleType === RoleTypes.PARTNER)
+      }
+
+      /** Returns True if provided org-person is a proprietor. */
+      function isProprietor (op: OrgPersonIF): boolean {
+        return op.roles.some(role => role.roleType === RoleTypes.PROPRIETOR)
+      }
+
+      // get and normalize the current org-persons
       const currentOrgPersons = this.getOrgPeople?.map(op => normalize(op))
-      const originalOrgPersons = this.getEntitySnapshot?.orgPersons?.map(op => normalize(op))
+
+      // get and normalize the original org-persons
+      // filter in only the roles we currently support
+      const originalOrgPersons = this.getEntitySnapshot?.orgPersons?.filter(
+        op => isDirector(op) || isPartner(op) || isProprietor(op)
+      )?.map(op => normalize(op))
 
       return !IsSame(currentOrgPersons, originalOrgPersons, ['actions', 'confirmNameChange'])
     },
+
     /** Whether share structure data has changed. */
     hasShareStructureChanged (): boolean {
       let currentShareClasses = this.getShareClasses
