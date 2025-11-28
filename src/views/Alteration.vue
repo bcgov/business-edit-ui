@@ -12,8 +12,8 @@
           </header>
 
           <section class="mt-6">
-            You are legally obligated to keep your company information up to date. Necessary fees will be
-            applied as updates are made.
+            You are legally obligated to keep your business information up to date. Officer information is optional. 
+            Necessary fees will be applied as updates are made.
           </section>
 
           <YourCompanyWrapper class="mt-10">
