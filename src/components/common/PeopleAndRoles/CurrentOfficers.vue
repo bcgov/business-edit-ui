@@ -8,7 +8,6 @@
         </v-icon>
         <label class="font-weight-bold pl-2">Officers</label>
         <span
-          v-if="officers.length <= 0"
           class="officer-optional-text"
         >
           (Optional)
