@@ -12,7 +12,7 @@
           </header>
 
           <section class="mt-6">
-            You are legally obligated to keep your business information up to date. Officer information is optional. 
+            You are legally obligated to keep your business information up to date. Officer information is optional.
             Necessary fees will be applied as updates are made.
           </section>
 
