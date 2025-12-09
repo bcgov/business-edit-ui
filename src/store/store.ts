@@ -1436,7 +1436,7 @@ export const useStore = defineStore('store', {
     },
 
     getNumberOfDirectors (): number {
-      return this.getOrgPeople.map(person => person.roles.filter(role => role.roleType === RoleTypes.DIRECTOR)).length
+      return this.getOrgPeople.filter(person => person.roles.some(role => role.roleType === RoleTypes.DIRECTOR)).length
     }
 
   },
