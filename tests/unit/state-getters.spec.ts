@@ -561,3 +561,26 @@ describe('test restoration expiry date', () => {
     expect(store.getRestorationExpiryDate).toEqual('2023-12-31')
   })
 })
+
+describe('getNumberOfDirectors getter', () => {
+  it('returns 0 when no people exist', () => {
+    store.setPeopleAndRoles([])
+    expect(store.getNumberOfDirectors).toBe(0)
+  })
+
+  it('returns 0 when people exist but none have the Director role', () => {
+    store.setPeopleAndRoles([
+      { roles: [{ roleType: 'Officer' }] }
+    ] as any)
+    expect(store.getNumberOfDirectors).toBe(0)
+  })
+
+  it('returns the correct director count when people exist with multiple roles', () => {
+    store.setPeopleAndRoles([
+      { roles: [{ roleType: 'Director' }, { roleType: 'Treasurer' }] },
+      { roles: [{ roleType: 'Officer' }] },
+      { roles: [{ roleType: 'Director' }] }
+    ] as any)
+    expect(store.getNumberOfDirectors).toBe(2)
+  })
+})
