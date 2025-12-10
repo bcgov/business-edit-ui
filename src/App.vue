@@ -456,12 +456,12 @@ export default class App extends Mixins(CommonMixin, FilingTemplateMixin) {
       firstName: isBlank ? '' : this.getUserFirstName,
       lastName: isBlank ? '' : this.getUserLastName,
       mailingAddress: {
-        addressCity: isBlank ? '' : this.getOrgInfo?.mailingAddress.city,
-        addressCountry: isBlank ? '' : this.getOrgInfo?.mailingAddress.country,
-        addressRegion: isBlank ? '' : this.getOrgInfo?.mailingAddress.region,
-        postalCode: isBlank ? '' : this.getOrgInfo?.mailingAddress.postalCode,
-        streetAddress: isBlank ? '' : this.getOrgInfo?.mailingAddress.street,
-        streetAddressAdditional: isBlank ? '' : this.getOrgInfo?.mailingAddress.streetAdditional
+        addressCity: isBlank ? '' : this.getOrgInfo?.mailingAddress?.city,
+        addressCountry: isBlank ? '' : this.getOrgInfo?.mailingAddress?.country,
+        addressRegion: isBlank ? '' : this.getOrgInfo?.mailingAddress?.region,
+        postalCode: isBlank ? '' : this.getOrgInfo?.mailingAddress?.postalCode,
+        streetAddress: isBlank ? '' : this.getOrgInfo?.mailingAddress?.street,
+        streetAddressAdditional: isBlank ? '' : this.getOrgInfo?.mailingAddress?.streetAdditional
       }
     } as CompletingPartyIF)
 
