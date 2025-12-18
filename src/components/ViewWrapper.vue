@@ -73,7 +73,6 @@ import { CommonMixin, FilingTemplateMixin } from '@/mixins/'
 import { FilingDataIF, ConfirmDialogType, FlagsReviewCertifyIF, FlagsCompanyInfoIF,
   AlterationFilingIF, ChgRegistrationFilingIF, ConversionFilingIF, RestorationFilingIF,
   SpecialResolutionFilingIF } from '@/interfaces/'
-import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 import { AuthorizedActions, ComponentsCompanyInfo, ComponentsReviewCertify } from '@/enums/'
 import { FeeSummaryActions } from '@bcrs-shared-components/enums/'
 import { useStore } from '@/store/store'
@@ -96,7 +95,6 @@ export default class ViewWrapper extends Mixins(CommonMixin, FilingTemplateMixin
   }
 
   // Store getters
-  // @Getter(useStore) getCurrentJsDate!: Date
   @Getter(useStore) getAppValidate!: boolean
   @Getter(useStore) getComponentValidate!: boolean
   @Getter(useStore) getFilingData!: FilingDataIF[]
@@ -125,34 +123,9 @@ export default class ViewWrapper extends Mixins(CommonMixin, FilingTemplateMixin
   @Action(useStore) setIsSaving!: (x: boolean) => void
   @Action(useStore) setSummaryMode!: (x: boolean) => void
 
-  // Local properties
-  protected accountAuthorizationDialog = false
-  protected confirmDeleteAllDialog = false
-  protected fetchErrorDialog = false
-  protected fileAndPayInvalidNameRequestDialog = false
-  protected nameRequestErrorDialog = false
-  protected nameRequestErrorType = ''
-  protected paymentErrorDialog = false
-  protected saveErrorDialog = false
-  protected saveErrors: Array<object> = []
-  protected saveWarnings: Array<object> = []
-  protected staffPaymentErrorDialog = false
-
-  // FUTURE: change appReady/haveData to a state machine?
-  /** Whether the app is ready and the views can now load their data. */
-  protected appReady = false
-
-  /** Whether the views have loaded their data and the spinner can be hidden. */
-  protected haveData = false
-
   /** The URL of the Pay API. */
   get payApiUrl (): string {
     return sessionStorage.getItem('PAY_API_URL')
-  }
-
-  /** Whether user is authenticated. */
-  get isAuthenticated (): boolean {
-    return Boolean(sessionStorage.getItem(SessionStorageKeys.KeyCloakToken))
   }
 
   /** Whether user isn't authorized and Save and Resume Later button should be disabled. */
@@ -232,9 +205,10 @@ export default class ViewWrapper extends Mixins(CommonMixin, FilingTemplateMixin
         this.scrollToTop(document.getElementById('app'))
         break
       case FeeSummaryActions.SAVE_RESUME_LATER:
-        // Save filing and return to dashboard.
-        await this.onClickSave()
-        this.goToDashboard()
+        // Save filing and return to dashboard if successful.
+        if (await this.onClickSave(true)) {
+          this.goToDashboard()
+        }
         break
       case FeeSummaryActions.CANCEL:
         this.goToDashboard()
@@ -249,15 +223,6 @@ export default class ViewWrapper extends Mixins(CommonMixin, FilingTemplateMixin
         }
         break
     }
-  }
-
-  /** Navigates to Manage Businesses dashboard. */
-  protected goToManageBusinessDashboard (): void {
-    this.fileAndPayInvalidNameRequestDialog = false
-    this.setHaveUnsavedChanges(false)
-    // FUTURE: Manage Businesses URL should come from config
-    const manageBusinessUrl = `${sessionStorage.getItem('AUTH_WEB_URL')}business`
-    Navigate(manageBusinessUrl)
   }
 
   /** Called to navigate to Business Dashboard. */
@@ -333,11 +298,11 @@ export default class ViewWrapper extends Mixins(CommonMixin, FilingTemplateMixin
 
   /**
    * Will create/update a draft alteration or file and pay.
-   * @returns a promise (ie, this is an async method).
+   * @returns a promise (ie, this is an async method) -- True if save succeeded, else False
    */
-  private async onClickSave (isDraft = true): Promise<void> {
+  private async onClickSave (isDraft: boolean): Promise<boolean> {
     // prevent double saving
-    if (this.isBusySaving) return
+    if (this.isBusySaving) return false
     this.setIsSaving(true)
 
     let filingComplete: any
@@ -360,7 +325,7 @@ export default class ViewWrapper extends Mixins(CommonMixin, FilingTemplateMixin
     } catch (error) {
       this.$root.$emit('save-error-event', error)
       this.setIsSaving(false)
-      return
+      return false
     }
 
     // if filing is not a draft, proceed with payment
@@ -387,11 +352,15 @@ export default class ViewWrapper extends Mixins(CommonMixin, FilingTemplateMixin
           // otherwise go straight to dashboard
           Navigate(returnUrl)
         }
+        return true // success
       } else {
         const error = new Error('Missing Payment Token or Filing ID')
         this.$root.$emit('save-error-event', error)
+        this.setIsSaving(false)
+        return false
       }
     }
+    return true // success
   }
 }
 </script>
