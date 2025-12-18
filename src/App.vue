@@ -54,11 +54,11 @@
     <SaveErrorDialog
       attach="#app"
       filingName="Filing"
-      :dialog="saveErrorDialog"
+      :dialog="saveErrorDialog || updateErrorDialog"
       :errors="saveErrors"
       :warnings="saveWarnings"
       @exit="goToDashboard()"
-      @okay="saveErrorDialog = false"
+      @okay="saveErrorDialog = false; updateErrorDialog = false"
     />
 
     <NameRequestErrorDialog
@@ -213,6 +213,7 @@ export default class App extends Mixins(CommonMixin, FilingTemplateMixin) {
   nameRequestErrorType = ''
   paymentErrorDialog = false
   saveErrorDialog = false
+  updateErrorDialog = false
   saveErrors: Array<object> = []
   saveWarnings: Array<object> = []
   staffPaymentErrorDialog = false
@@ -255,11 +256,12 @@ export default class App extends Mixins(CommonMixin, FilingTemplateMixin) {
     // NB: ignore nameRequestErrorDialog (to leave underlying components rendered)
     // NB: ignore confirmDeleteAllDialog (to leave underlying components rendered)
     // NB: ignore staffPaymentErrorDialog (to leave underlying components rendered)
+    // NB: ignore saveErrorDialog (to leave underlying components rendered)
     return (
       this.accountAuthorizationDialog ||
       this.fetchErrorDialog ||
       this.paymentErrorDialog ||
-      this.saveErrorDialog ||
+      this.updateErrorDialog ||
       this.fileAndPayInvalidNameRequestDialog
     )
   }
@@ -334,7 +336,7 @@ export default class App extends Mixins(CommonMixin, FilingTemplateMixin) {
       this.saveErrors = [{ error: message }]
 
       console.log('Update error =', message) // eslint-disable-line no-console
-      this.saveErrorDialog = true
+      this.updateErrorDialog = true
     })
 
     // listen for invalid name request events
@@ -545,6 +547,7 @@ export default class App extends Mixins(CommonMixin, FilingTemplateMixin) {
     this.fetchErrorDialog = false
     this.paymentErrorDialog = false
     this.saveErrorDialog = false
+    this.updateErrorDialog = false
     this.nameRequestErrorDialog = false
     this.fileAndPayInvalidNameRequestDialog = false
     this.confirmDeleteAllDialog = false
