@@ -352,6 +352,7 @@ export default class ViewWrapper extends Mixins(CommonMixin, FilingTemplateMixin
           // otherwise go straight to dashboard
           Navigate(returnUrl)
         }
+        return true // success
       } else {
         const error = new Error('Missing Payment Token or Filing ID')
         this.$root.$emit('save-error-event', error)
