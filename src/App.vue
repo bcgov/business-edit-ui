@@ -642,29 +642,27 @@ export default class App extends Mixins(CommonMixin, FilingTemplateMixin) {
     // don't run when Vitest is running the code
     if (import.meta.env.VITEST) return
 
-    const userInfo = this.getUserInfo
-    const userContext = userInfo && {
+    const userContext = this.getUserInfo.keycloakGuid && {
       kind: 'user',
-      key: userInfo.keycloakGuid,
+      key: this.getUserInfo.keycloakGuid,
       roles: this.authRoles,
       appSource: import.meta.env.APP_NAME,
-      loginSource: userInfo.loginSource,
-      lastName: userInfo.lastname,
-      firstName: userInfo.firstname,
+      loginSource: this.getUserInfo.loginSource,
+      lastName: this.getUserLastname,
+      firstName: this.getUserFirstname,
       // get email from contacts[0] if it exists (ie, for BCSC users)
       // else get email from root object
-      email: userInfo.contacts[0]?.email || userInfo.email
+      email: this.getUserInfo.contacts[0]?.email || this.getUserInfo.email
     }
 
-    const accountInfo = this.getCurrentAccount
-    const orgContext = accountInfo && {
+    const orgContext = this.getCurrentAccount.id && {
       kind: 'org',
-      key: accountInfo.id?.toString(),
-      type: accountInfo.type,
-      accountStatus: accountInfo.accountStatus,
-      accountType: accountInfo.accountType,
+      key: this.getCurrentAccount.id.toString(),
+      type: this.getCurrentAccount.type,
+      accountStatus: this.getCurrentAccount.accountStatus,
+      accountType: this.getCurrentAccount.accountType,
       appSource: import.meta.env.APP_NAME,
-      label: accountInfo.label
+      label: this.getCurrentAccount.label
     }
 
     await UpdateLdUser(userContext, orgContext)
