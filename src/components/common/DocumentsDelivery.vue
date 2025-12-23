@@ -98,7 +98,7 @@ export default class DocumentsDelivery extends Mixins(CommonMixin) {
   readonly AuthorizedActions = AuthorizedActions
 
   // Store getters
-  @Getter(useStore) getUserEmail!: string
+  @Getter(useStore) getUserInfo!: any
   @Getter(useStore) getBusinessContact!: ContactPointIF
   @Getter(useStore) getDocumentOptionalEmail!: string
   @Getter(useStore) getFlagsReviewCertify!: FlagsReviewCertifyIF
@@ -148,7 +148,13 @@ export default class DocumentsDelivery extends Mixins(CommonMixin) {
   }
 
   get userEmail (): string {
-    return (this.userAltEmail || this.getUserEmail)
+    return (
+      this.userAltEmail ||
+      // else get email from contacts[0] if it exists (ie, for BCSC users)
+      this.getUserInfo?.contacts[0]?.email ||
+      // else get email from root object
+      this.getUserInfo?.email
+    )
   }
 
   get emailLabel (): string {

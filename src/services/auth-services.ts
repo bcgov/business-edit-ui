@@ -32,7 +32,7 @@ export default class AuthServices {
    * @returns a promise to return the org info object
    */
   static async fetchOrgInfo (orgId: number): Promise<any> {
-    if (!orgId) throw new Error('Invalid org id')
+    if (!orgId) throw new Error('Invalid org id =' + orgId)
 
     const url = `${this.authApiGwUrl}orgs/${orgId}`
 
@@ -48,7 +48,7 @@ export default class AuthServices {
    * @returns a promise to return the data
    */
   static async fetchAuthInfo (businessId: string): Promise<AuthInformationIF> {
-    if (!businessId) throw new Error('Invalid business id')
+    if (!businessId) throw new Error('Invalid business id = ' + businessId)
 
     const url = `${this.authApiGwUrl}entities/${businessId}`
 
@@ -77,7 +77,7 @@ export default class AuthServices {
    * @param contactInfo the contact information object
    */
   static async updateContactInfo (contactInfo: ContactPointIF, businessId: string): Promise<any> {
-    if (!businessId) throw new Error('Invalid business id')
+    if (!businessId) throw new Error('Invalid business id = ' + businessId)
 
     const url = `${this.authApiGwUrl}entities/${businessId}/contacts`
     const data = {
@@ -102,7 +102,7 @@ export default class AuthServices {
    * @param folioNumber the folio number
    */
   static async updateFolioNumber (folioNumber: string, businessId: string): Promise<any> {
-    if (!businessId) throw new Error('Invalid business id')
+    if (!businessId) throw new Error('Invalid business id = ' + businessId)
 
     const url = `${this.authApiGwUrl}entities/${businessId}`
     const data = {

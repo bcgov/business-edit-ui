@@ -181,8 +181,8 @@ export default class Alteration extends Mixins(CommonMixin, FeeMixin, FilingTemp
   // Store getters
   @Getter(useStore) getAppValidate!: boolean
   // @Getter(useStore) getEntityType!: CorpTypeCd
-  @Getter(useStore) getUserFirstName!: string
-  @Getter(useStore) getUserLastName!: string
+  @Getter(useStore) getUserFirstname!: string
+  @Getter(useStore) getUserLastname!: string
   // @Getter(useStore) getOriginalLegalType!: CorpTypeCd
   @Getter(useStore) isSummaryMode!: boolean
   @Getter(useStore) showFeeSummary!: boolean
@@ -357,7 +357,7 @@ export default class Alteration extends Mixins(CommonMixin, FeeMixin, FilingTemp
         this.setCertifyState(
           {
             valid: this.getCertifyState.valid,
-            certifiedBy: `${this.getUserFirstName} ${this.getUserLastName}`
+            certifiedBy: `${this.getUserFirstname} ${this.getUserLastname}`
           }
         )
       }
