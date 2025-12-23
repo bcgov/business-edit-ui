@@ -369,11 +369,8 @@ export default class Rules extends Vue {
     @Getter(useStore) getComponentValidate!: boolean
     @Getter(useStore) getSpecialResolutionRules!: RulesMemorandumIF
     @Getter(useStore) getEntitySnapshot!: EntitySnapshotIF
-    @Getter(useStore) getUserFirstName!: string
-    @Getter(useStore) getUserLastName!: string
     @Getter(useStore) getEditedLabel!: string
     @Getter(useStore) getEditLabel!: string
-    @Getter(useStore) getSpecialResolutionRulesValid!: boolean
     @Getter(useStore) getNameRequestLegalName!: string
     @Getter(useStore) hasSpecialResolutionRulesChanged!: boolean
     @Getter(useStore) hasResolutionSection!: boolean

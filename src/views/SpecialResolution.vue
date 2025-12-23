@@ -189,8 +189,8 @@ export default class SpecialResolution extends Mixins(CommonMixin, FeeMixin, Fil
 
   // Store getters
   @Getter(useStore) getAppValidate!: boolean
-  @Getter(useStore) getUserFirstName!: string
-  @Getter(useStore) getUserLastName!: string
+  @Getter(useStore) getUserFirstname!: string
+  @Getter(useStore) getUserLastname!: string
   @Getter(useStore) isEntityCoop!: boolean
   @Getter(useStore) isSummaryMode!: boolean
   @Getter(useStore) showFeeSummary!: boolean
@@ -305,7 +305,7 @@ export default class SpecialResolution extends Mixins(CommonMixin, FeeMixin, Fil
         this.setCertifyState(
           {
             valid: this.getCertifyState.valid,
-            certifiedBy: `${this.getUserFirstName} ${this.getUserLastName}`
+            certifiedBy: `${this.getUserFirstname} ${this.getUserLastname}`
           }
         )
       }

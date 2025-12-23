@@ -143,8 +143,8 @@ export default class Change extends Mixins(CommonMixin, FeeMixin, FilingTemplate
 
   // Store getters
   @Getter(useStore) getAppValidate!: boolean
-  @Getter(useStore) getUserFirstName!: string
-  @Getter(useStore) getUserLastName!: string
+  @Getter(useStore) getUserFirstname!: string
+  @Getter(useStore) getUserLastname!: string
   @Getter(useStore) isEntityPartnership!: boolean
   @Getter(useStore) isEntitySoleProp!: boolean
   @Getter(useStore) isSummaryMode!: boolean
@@ -260,7 +260,7 @@ export default class Change extends Mixins(CommonMixin, FeeMixin, FilingTemplate
         this.setCertifyState(
           {
             valid: this.getCertifyState.valid,
-            certifiedBy: `${this.getUserFirstName} ${this.getUserLastName}`
+            certifiedBy: `${this.getUserFirstname} ${this.getUserLastname}`
           }
         )
       }

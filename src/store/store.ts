@@ -245,14 +245,9 @@ export const useStore = defineStore('store', {
       return this.getBusinessInformation.startDate
     },
 
-    /** The Account Information object. */
-    getAccountInformation (): AccountInformationIF {
+    /** The Current Account object. */
+    getCurrentAccount (): AccountInformationIF {
       return this.stateModel.accountInformation
-    },
-
-    /** The current account id. */
-    getAccountId (): number {
-      return this.getAccountInformation?.id || null
     },
 
     /** The current date in format (YYYY-MM-DD), which is refreshed every time the app inits. */
@@ -383,11 +378,6 @@ export const useStore = defineStore('store', {
       return this.stateModel.tombstone.businessId?.substring(2)
     },
 
-    /** The current user's info. (May be null.) */
-    getUserInfo (): any {
-      return this.stateModel.tombstone.userInfo
-    },
-
     /** The user's authorized actions (aka permissions). */
     getAuthorizedActions (): Array<AuthorizedActions> {
       return this.stateModel.tombstone.authorizedActions
@@ -398,33 +388,19 @@ export const useStore = defineStore('store', {
       return this.stateModel.tombstone.orgInfo
     },
 
-    /** The current user's email. (May be undefined.) */
-    getUserEmail (): string {
-      // get email from contacts[0] if it exists (ie, for BCSC users)
-      // else get email from root object
-      return this.getUserInfo?.contacts[0]?.email || this.getUserInfo?.email
-    },
-
-    /** The current user's phone. (May be undefined.) */
-    getUserPhone (): string {
-      // get phone from contacts[0] if it exists (ie, for BCSC users)
-      // else get phone from root object
-      return this.getUserInfo?.contacts[0]?.phone || this.getUserInfo?.phone
+    /** The current user's info. (May be null.) */
+    getUserInfo (): any {
+      return this.stateModel.tombstone.userInfo
     },
 
     /** The current user's first name. (May be undefined.) */
-    getUserFirstName (): string {
+    getUserFirstname (): string {
       return this.getUserInfo?.firstname
     },
 
     /** The current user's last name. (May be undefined.) */
-    getUserLastName (): string {
+    getUserLastname (): string {
       return this.getUserInfo?.lastname
-    },
-
-    /** The current user's username. (May be undefined.) */
-    getUserUsername (): string {
-      return this.getUserInfo?.username
     },
 
     /** The business folio number. */
@@ -1528,7 +1504,7 @@ export const useStore = defineStore('store', {
       this.stateModel.tombstone.folioNumber = folioNumber
       // NB: folio number was changed immediately in auth db - do not set unsaved Changes flag
     },
-    setAccountInformation (accountInformation: AccountInformationIF) {
+    setCurrentAccount (accountInformation: AccountInformationIF) {
       this.stateModel.accountInformation = accountInformation
     },
     setBusinessInformation (businessInformation: BusinessInformationIF) {

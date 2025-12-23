@@ -45,7 +45,7 @@ describe('Document Delivery component', () => {
   it('shows users email', () => {
     const wrapper: Wrapper<DocumentsDelivery> = createComponent()
 
-    expect((wrapper.vm as any).getUserEmail).toBe('currentuser@mail.com')
+    expect(wrapper.vm.userEmail).toBe('currentuser@mail.com')
 
     wrapper.destroy()
   })
