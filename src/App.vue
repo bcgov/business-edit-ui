@@ -560,7 +560,6 @@ export default class App extends Mixins(CommonMixin, FilingTemplateMixin) {
   /** Fetches and stores account info. */
   private async loadAccountInfo (): Promise<any> {
     const currentAccount = await loadCurrentAccount()
-    console.log('*** current account =', currentAccount)
 
     if (!currentAccount) {
       throw new Error('Failed to load current account info')
