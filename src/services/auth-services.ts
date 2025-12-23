@@ -77,7 +77,7 @@ export default class AuthServices {
    * @param contactInfo the contact information object
    */
   static async updateContactInfo (contactInfo: ContactPointIF, businessId: string): Promise<any> {
-    if (!contactInfo) throw new Error('Invalid contact info = ' + contactInfo)
+    if (!contactInfo) throw new Error('Invalid contact info = ' + JSON.stringify(contactInfo))
     if (!businessId) throw new Error('Invalid business id = ' + businessId)
 
     const url = `${this.authApiGwUrl}entities/${businessId}/contacts`
