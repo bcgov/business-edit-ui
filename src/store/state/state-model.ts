@@ -73,7 +73,8 @@ export const stateModel: StateModelIF = {
     }
   },
   accountInformation: {
-    accountType: '',
+    accountStatus: '',
+    accountType: null,
     id: null,
     label: '',
     type: ''

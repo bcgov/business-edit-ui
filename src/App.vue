@@ -169,25 +169,19 @@ export default class App extends Mixins(CommonMixin, FilingTemplateMixin) {
   }
 
   // Store getters
-  @Getter(useStore) getAppValidate!: boolean
-  @Getter(useStore) getComponentValidate!: boolean
+  @Getter(useStore) getCurrentAccount!: AccountInformationIF
   @Getter(useStore) getCurrentJsDate!: Date
-  @Getter(useStore) getFilingId!: number
   @Getter(useStore) getOrgInfo!: any
-  @Getter(useStore) getUserEmail!: string
-  @Getter(useStore) getUserFirstName!: string
-  @Getter(useStore) getUserLastName!: string
-  @Getter(useStore) getUserPhone!: string
-  @Getter(useStore) getUserUsername!: string
+  @Getter(useStore) getUserInfo!: any
+  @Getter(useStore) getUserFirstname!: string
+  @Getter(useStore) getUserLastname!: string
   @Getter(useStore) haveUnsavedChanges!: boolean
-  @Getter(useStore) isBusySaving!: boolean
   @Getter(useStore) isCorrectionEditing!: boolean
   @Getter(useStore) isCorrectionFiling!: boolean
   @Getter(useStore) isSummaryMode!: boolean
-  @Getter(useStore) showFeeSummary!: boolean
 
   // Store actions
-  @Action(useStore) setAccountInformation!: (x: AccountInformationIF) => void
+  @Action(useStore) setCurrentAccount!: (x: AccountInformationIF) => void
   @Action(useStore) setAppValidate!: (x: boolean) => void
   @Action(useStore) setAuthorizedActions!: (x: Array<AuthorizedActions>) => void
   @Action(useStore) setBusinessId!: (x: string) => void
@@ -198,10 +192,7 @@ export default class App extends Mixins(CommonMixin, FilingTemplateMixin) {
   @Action(useStore) setFilingId!: (x: number) => void
   @Action(useStore) setFilingType!: (x: FilingTypes) => void
   @Action(useStore) setHaveUnsavedChanges!: (x: boolean) => void
-  @Action(useStore) setIsFilingPaying!: (x: boolean) => void
-  @Action(useStore) setIsSaving!: (x: boolean) => void
   @Action(useStore) setOrgInfo!: (x: any) => void
-  @Action(useStore) setSummaryMode!: (x: boolean) => void
   @Action(useStore) setUserInfo!: (x: any) => void
 
   // Local properties
@@ -414,11 +405,21 @@ export default class App extends Mixins(CommonMixin, FilingTemplateMixin) {
     // set current date from "real time" date from server
     this.setCurrentDate(DateUtilities.dateToYyyyMmDd(this.getCurrentJsDate))
 
-    // load account information
+    // load account info
+    // it's important to load this first as it waits for CURRENT_ACCOUNT to be set
     try {
-      await this.loadAccountInformation()
+      await this.loadAccountInfo()
     } catch (error) {
       console.log('Account info error =', error) // eslint-disable-line no-console
+      this.accountAuthorizationDialog = true
+      return
+    }
+
+    // load org info
+    try {
+      await this.loadOrgInfo()
+    } catch (error) {
+      console.log('Org info error =', error) // eslint-disable-line no-console
       this.accountAuthorizationDialog = true
       return
     }
@@ -433,9 +434,9 @@ export default class App extends Mixins(CommonMixin, FilingTemplateMixin) {
       return
     }
 
-    // load auth roles and store locally
+    // load auth roles locally
     try {
-      this.authRoles = await this.loadAuthRoles()
+      this.authRoles = await this.fetchAuthRoles()
     } catch (error) {
       console.log('Auth roles error =', error) // eslint-disable-line no-console
       this.accountAuthorizationDialog = true
@@ -455,15 +456,16 @@ export default class App extends Mixins(CommonMixin, FilingTemplateMixin) {
     // NB: these are all empty if authorized to leave blank
     const isBlank = IsAuthorized(AuthorizedActions.BLANK_COMPLETING_PARTY)
     this.setCompletingParty({
-      firstName: isBlank ? '' : this.getUserFirstName,
-      lastName: isBlank ? '' : this.getUserLastName,
+      firstName: isBlank ? '' : this.getUserFirstname,
+      lastName: isBlank ? '' : this.getUserLastname,
       mailingAddress: {
-        addressCity: isBlank ? '' : (this.getOrgInfo?.mailingAddress?.city ?? ''),
-        addressCountry: isBlank ? '' : (this.getOrgInfo?.mailingAddress?.country ?? ''),
-        addressRegion: isBlank ? '' : (this.getOrgInfo?.mailingAddress?.region ?? ''),
-        postalCode: isBlank ? '' : (this.getOrgInfo?.mailingAddress?.postalCode ?? ''),
-        streetAddress: isBlank ? '' : (this.getOrgInfo?.mailingAddress?.street ?? ''),
-        streetAddressAdditional: isBlank ? '' : (this.getOrgInfo?.mailingAddress?.streetAdditional ?? '')
+        addressCity: isBlank ? '' : (this.getOrgInfo.mailingAddress?.city ?? ''),
+        addressCountry: isBlank ? '' : (this.getOrgInfo.mailingAddress?.country ?? ''),
+        addressRegion: isBlank ? '' : (this.getOrgInfo.mailingAddress?.region ?? ''),
+        deliveryInstructions: isBlank ? '' : (this.getOrgInfo.mailingAddress?.deliveryInstructions ?? ''),
+        postalCode: isBlank ? '' : (this.getOrgInfo.mailingAddress?.postalCode ?? ''),
+        streetAddress: isBlank ? '' : (this.getOrgInfo.mailingAddress?.street ?? ''),
+        streetAddressAdditional: isBlank ? '' : (this.getOrgInfo.mailingAddress?.streetAdditional ?? '')
       }
     } as CompletingPartyIF)
 
@@ -555,27 +557,21 @@ export default class App extends Mixins(CommonMixin, FilingTemplateMixin) {
     this.saveWarnings = []
   }
 
-  /** Gets account info and stores it. */
-  private async loadAccountInformation (): Promise<any> {
-    const currentAccount = await getCurrentAccount()
-    if (currentAccount) {
-      const accountInfo: AccountInformationIF = {
-        accountType: currentAccount.accountType,
-        id: currentAccount.id,
-        label: currentAccount.label,
-        type: currentAccount.type
-      }
-      this.setAccountInformation(accountInfo)
+  /** Fetches and stores account info. */
+  private async loadAccountInfo (): Promise<any> {
+    const currentAccount = await loadCurrentAccount()
 
-      // get org info
-      await this.loadOrgInfo(accountInfo?.id)
+    if (!currentAccount) {
+      throw new Error('Failed to load current account info')
     }
 
+    this.setCurrentAccount(currentAccount)
+
     /**
-     * Gets current account from object in session storage.
+     * Loads current account from object in session storage.
      * Waits up to 5 sec for current account to be synced (typically by SbcHeader).
      */
-    async function getCurrentAccount (): Promise<AccountInformationIF> {
+    async function loadCurrentAccount (): Promise<AccountInformationIF> {
       let account = null
       for (let i = 0; i < 50; i++) {
         const currentAccount = sessionStorage.getItem(SessionStorageKeys.CurrentAccount)
@@ -600,7 +596,7 @@ export default class App extends Mixins(CommonMixin, FilingTemplateMixin) {
   }
 
   /** Fetches auth roles. */
-  private async loadAuthRoles (): Promise<AuthorizationRoles[]> {
+  private async fetchAuthRoles (): Promise<AuthorizationRoles[]> {
     // get roles from KC token
     const authRoles = GetKeycloakRoles()
 
@@ -612,39 +608,64 @@ export default class App extends Mixins(CommonMixin, FilingTemplateMixin) {
     return authRoles
   }
 
-  /** Fetches org info and stores it. */
-  private async loadOrgInfo (orgId: number): Promise<void> {
-    if (!orgId) throw new Error('Invalid org id')
-
+  /**
+   * Fetches and stores org info.
+   * (We only need org info for mailing address currently.)
+   */
+  private async loadOrgInfo (): Promise<void> {
+    const orgId = this.getCurrentAccount.id
     const orgInfo = await AuthServices.fetchOrgInfo(orgId).catch(() => null)
-    if (orgInfo) {
-      this.setOrgInfo(orgInfo)
-    } else {
-      throw new Error('Invalid org info') // *** TODO: remove this?
+
+    if (!orgInfo) {
+      throw new Error('Invalid org info')
     }
+
+    this.setOrgInfo(orgInfo)
   }
 
-  /** Fetches user info and stores it. */
+  /**
+   * Fetches and stores user info.
+   * FUTURE: could maybe get this from KC token instead.
+   */
   private async loadUserInfo (): Promise<any> {
     const userInfo = await AuthServices.fetchUserInfo().catch(() => null)
-    if (userInfo) {
-      this.setUserInfo(userInfo)
-    } else {
+
+    if (!userInfo) {
       throw new Error('Invalid user info')
     }
+
+    this.setUserInfo(userInfo)
   }
 
-  /** Updates Launch Darkly with user info. */
+  /** Updates Launch Darkly with user and org info. */
   private async updateLaunchDarkly (): Promise<any> {
-    // since username is unique, use it as the user key
-    const key = this.getUserUsername
-    const email = this.getUserEmail
-    const firstName = this.getUserFirstName
-    const lastName = this.getUserLastName
-    // store auth roles in custom object
-    const custom = { roles: this.authRoles } as any
+    // don't run when Vitest is running the code
+    if (import.meta.env.VITEST) return
 
-    await UpdateLdUser(key, email, firstName, lastName, custom)
+    const userContext = this.getUserInfo.keycloakGuid && {
+      kind: 'user',
+      key: this.getUserInfo.keycloakGuid,
+      roles: this.authRoles,
+      appSource: import.meta.env.APP_NAME,
+      loginSource: this.getUserInfo.loginSource,
+      lastName: this.getUserLastname,
+      firstName: this.getUserFirstname,
+      // get email from contacts[0] if it exists (ie, for BCSC users)
+      // else get email from root object
+      email: this.getUserInfo.contacts[0]?.email || this.getUserInfo.email
+    }
+
+    const orgContext = this.getCurrentAccount.id && {
+      kind: 'org',
+      key: this.getCurrentAccount.id.toString(),
+      type: this.getCurrentAccount.type,
+      accountStatus: this.getCurrentAccount.accountStatus,
+      accountType: this.getCurrentAccount.accountType,
+      appSource: import.meta.env.APP_NAME,
+      label: this.getCurrentAccount.label
+    }
+
+    await UpdateLdUser(userContext, orgContext)
   }
 }
 </script>

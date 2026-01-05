@@ -7,7 +7,7 @@ const store = useStore()
 
 /** Returns URL param string with Account ID if present, else empty string. */
 function getParams (): string {
-  const accountId = JSON.parse(sessionStorage.getItem('CURRENT_ACCOUNT'))?.id as string
+  const accountId = store.getCurrentAccount?.id
   return accountId ? `?accountid=${accountId}` : ''
 }
 
@@ -33,7 +33,7 @@ export function getRegistryDashboardBreadcrumb (): BreadcrumbIF {
 export function getMyBusinessRegistryBreadcrumb (): BreadcrumbIF {
   return {
     text: 'My Business Registry',
-    href: `${sessionStorage.getItem('BUSINESS_REGISTRY_URL')}account/${store.getAccountId}`
+    href: `${sessionStorage.getItem('BUSINESS_REGISTRY_URL')}account/${store.getCurrentAccount?.id}`
   }
 }
 
