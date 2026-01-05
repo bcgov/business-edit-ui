@@ -5,7 +5,7 @@ declare const window: any
 
 /**
  * Default flag values when LD is not available.
- * Uses "business-edit" project (per LD client id in config).
+ * Uses "entity-ui" project (per LD client id in config).
  */
 export const defaultFlagSet: LDFlagSet = {
   'banner-text': '', // by default, there is no banner text
