@@ -575,8 +575,8 @@ export default class App extends Mixins(CommonMixin, FilingTemplateMixin) {
     async function loadCurrentAccount (): Promise<AccountInformationIF> {
       let account = null
       for (let i = 0; i < 50; i++) {
-        const currentAccount = sessionStorage.getItem(SessionStorageKeys.CurrentAccount)
-        account = JSON.parse(currentAccount)
+        const currentAccountJson = sessionStorage.getItem(SessionStorageKeys.CurrentAccount)
+        account = JSON.parse(currentAccountJson)
         // if there's no route account id, check for account to be set
         if (!routeAccountId && account) break
         // check for current account id to match route account id
