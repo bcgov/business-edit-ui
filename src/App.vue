@@ -500,7 +500,8 @@ export default class App extends Mixins(CommonMixin, FilingTemplateMixin) {
 
   /** Called to navigate to Business Dashboard. */
   async goToDashboard (force = false): Promise<void> {
-    const dashboardUrl = sessionStorage.getItem('BUSINESS_DASH_URL') + this.getBusinessId
+    const businessId = this.getBusinessId || sessionStorage.getItem('BUSINESS_ID')
+    const dashboardUrl = sessionStorage.getItem('BUSINESS_DASH_URL') + businessId
 
     // check if there are no data changes
     if (!this.haveUnsavedChanges || force) {
