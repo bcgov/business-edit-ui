@@ -169,6 +169,7 @@ export default class App extends Mixins(CommonMixin, FilingTemplateMixin) {
   }
 
   // Store getters
+  @Getter(useStore) getAuthRoles!: Array<AuthorizationRoles>
   @Getter(useStore) getCurrentAccount!: AccountInformationIF
   @Getter(useStore) getCurrentJsDate!: Date
   @Getter(useStore) getOrgInfo!: any
@@ -181,12 +182,13 @@ export default class App extends Mixins(CommonMixin, FilingTemplateMixin) {
   @Getter(useStore) isSummaryMode!: boolean
 
   // Store actions
-  @Action(useStore) setCurrentAccount!: (x: AccountInformationIF) => void
+  @Action(useStore) setAuthRoles!: (x: Array<AuthorizationRoles>) => void
   @Action(useStore) setAppValidate!: (x: boolean) => void
   @Action(useStore) setAuthorizedActions!: (x: Array<AuthorizedActions>) => void
   @Action(useStore) setBusinessId!: (x: string) => void
   @Action(useStore) setCompletingParty!: (x: CompletingPartyIF) => void
   @Action(useStore) setComponentValidate!: (x: boolean) => void
+  @Action(useStore) setCurrentAccount!: (x: AccountInformationIF) => void
   @Action(useStore) setCurrentDate!: (x: string) => void
   @Action(useStore) setCurrentJsDate!: (x: Date) => void
   @Action(useStore) setFilingId!: (x: number) => void
@@ -208,7 +210,6 @@ export default class App extends Mixins(CommonMixin, FilingTemplateMixin) {
   saveErrors: Array<object> = []
   saveWarnings: Array<object> = []
   staffPaymentErrorDialog = false
-  authRoles = [] as Array<AuthorizationRoles>
 
   // FUTURE: change appReady/haveData to a state machine?
   /** Whether the app is ready and the views can now load their data. */
@@ -424,7 +425,16 @@ export default class App extends Mixins(CommonMixin, FilingTemplateMixin) {
       return
     }
 
-    // update Launch Darkly with user info and account info
+    // load auth roles
+    try {
+      this.loadAuthRoles()
+    } catch (error) {
+      console.log('Auth roles error =', error) // eslint-disable-line no-console
+      this.accountAuthorizationDialog = true
+      return
+    }
+
+    // update Launch Darkly with user info, account info and auth roles
     // NOTE: this allows targeted feature flags
     try {
       await this.updateLaunchDarkly()
@@ -448,15 +458,6 @@ export default class App extends Mixins(CommonMixin, FilingTemplateMixin) {
       await this.loadAuthorizedActions()
     } catch (error) {
       console.log('Authorized actions error =', error) // eslint-disable-line no-console
-      this.accountAuthorizationDialog = true
-      return
-    }
-
-    // load auth roles locally
-    try {
-      this.authRoles = await this.fetchAuthRoles()
-    } catch (error) {
-      console.log('Auth roles error =', error) // eslint-disable-line no-console
       this.accountAuthorizationDialog = true
       return
     }
@@ -598,8 +599,8 @@ export default class App extends Mixins(CommonMixin, FilingTemplateMixin) {
     this.setAuthorizedActions(authorizedActions)
   }
 
-  /** Fetches auth roles. */
-  private async fetchAuthRoles (): Promise<AuthorizationRoles[]> {
+  /** Loads auth roles. */
+  private loadAuthRoles (): void {
     // get roles from KC token
     const authRoles = GetKeycloakRoles()
 
@@ -608,7 +609,7 @@ export default class App extends Mixins(CommonMixin, FilingTemplateMixin) {
       throw new Error('Invalid roles')
     }
 
-    return authRoles
+    this.setAuthRoles(authRoles)
   }
 
   /**
@@ -648,7 +649,7 @@ export default class App extends Mixins(CommonMixin, FilingTemplateMixin) {
     const userContext = this.getUserInfo.keycloakGuid && {
       kind: 'user',
       key: this.getUserInfo.keycloakGuid,
-      roles: this.authRoles,
+      roles: this.getAuthRoles,
       appSource: import.meta.env.APP_NAME,
       loginSource: this.getUserInfo.loginSource,
       lastName: this.getUserLastname,
