@@ -1,6 +1,7 @@
 // Pinia Store
 import {
   ActionTypes,
+  AuthorizationRoles,
   AuthorizedActions,
   CoopTypes,
   CorrectionErrorTypes,
@@ -60,6 +61,11 @@ export const useStore = defineStore('store', {
   // convert to a function
   state: (): StateIF => ({ resourceModel, stateModel }),
   getters: {
+    /** The current auth roles (from Keycloak token). */
+    getAuthRoles (): Array<AuthorizationRoles> {
+      return this.stateModel.tombstone.authRoles
+    },
+
     /** Whether the current filing is a Correction. */
     isCorrectionFiling (): boolean {
       return (this.stateModel.tombstone.filingType === FilingTypes.CORRECTION)
@@ -1417,6 +1423,9 @@ export const useStore = defineStore('store', {
 
   },
   actions: {
+    setAuthRoles (authRoles: Array<AuthorizationRoles>) {
+      this.stateModel.tombstone.authRoles = authRoles
+    },
     setEntityType (entityType: CorpTypeCd) {
       this.stateModel.tombstone.entityType = entityType
     },

@@ -169,6 +169,7 @@ export default class App extends Mixins(CommonMixin, FilingTemplateMixin) {
   }
 
   // Store getters
+  @Getter(useStore) getAuthRoles!: Array<AuthorizationRoles>
   @Getter(useStore) getCurrentAccount!: AccountInformationIF
   @Getter(useStore) getCurrentJsDate!: Date
   @Getter(useStore) getOrgInfo!: any
@@ -181,12 +182,13 @@ export default class App extends Mixins(CommonMixin, FilingTemplateMixin) {
   @Getter(useStore) isSummaryMode!: boolean
 
   // Store actions
-  @Action(useStore) setCurrentAccount!: (x: AccountInformationIF) => void
+  @Action(useStore) setAuthRoles!: (x: Array<AuthorizationRoles>) => void
   @Action(useStore) setAppValidate!: (x: boolean) => void
   @Action(useStore) setAuthorizedActions!: (x: Array<AuthorizedActions>) => void
   @Action(useStore) setBusinessId!: (x: string) => void
   @Action(useStore) setCompletingParty!: (x: CompletingPartyIF) => void
   @Action(useStore) setComponentValidate!: (x: boolean) => void
+  @Action(useStore) setCurrentAccount!: (x: AccountInformationIF) => void
   @Action(useStore) setCurrentDate!: (x: string) => void
   @Action(useStore) setCurrentJsDate!: (x: Date) => void
   @Action(useStore) setFilingId!: (x: number) => void
@@ -208,7 +210,6 @@ export default class App extends Mixins(CommonMixin, FilingTemplateMixin) {
   saveErrors: Array<object> = []
   saveWarnings: Array<object> = []
   staffPaymentErrorDialog = false
-  authRoles = [] as Array<AuthorizationRoles>
 
   // FUTURE: change appReady/haveData to a state machine?
   /** Whether the app is ready and the views can now load their data. */
@@ -405,14 +406,41 @@ export default class App extends Mixins(CommonMixin, FilingTemplateMixin) {
     // set current date from "real time" date from server
     this.setCurrentDate(DateUtilities.dateToYyyyMmDd(this.getCurrentJsDate))
 
+    // load user info
+    try {
+      await this.loadUserInfo()
+    } catch (error) {
+      console.log('User info error =', error) // eslint-disable-line no-console
+      this.accountAuthorizationDialog = true
+      return
+    }
+
     // load account info
-    // it's important to load this first as it waits for CURRENT_ACCOUNT to be set
+    // NOTE: this waits for CURRENT_ACCOUNT to be set
     try {
       await this.loadAccountInfo()
     } catch (error) {
       console.log('Account info error =', error) // eslint-disable-line no-console
       this.accountAuthorizationDialog = true
       return
+    }
+
+    // load auth roles
+    try {
+      this.loadAuthRoles()
+    } catch (error) {
+      console.log('Auth roles error =', error) // eslint-disable-line no-console
+      this.accountAuthorizationDialog = true
+      return
+    }
+
+    // update Launch Darkly with user info, account info and auth roles
+    // NOTE: this allows targeted feature flags
+    try {
+      await this.updateLaunchDarkly()
+    } catch (error) {
+      // just log the error -- no need to halt app
+      console.log('Launch Darkly update error =', error) // eslint-disable-line no-console
     }
 
     // load org info
@@ -434,24 +462,6 @@ export default class App extends Mixins(CommonMixin, FilingTemplateMixin) {
       return
     }
 
-    // load auth roles locally
-    try {
-      this.authRoles = await this.fetchAuthRoles()
-    } catch (error) {
-      console.log('Auth roles error =', error) // eslint-disable-line no-console
-      this.accountAuthorizationDialog = true
-      return
-    }
-
-    // load user info
-    try {
-      await this.loadUserInfo()
-    } catch (error) {
-      console.log('User info error =', error) // eslint-disable-line no-console
-      this.accountAuthorizationDialog = true
-      return
-    }
-
     // now that we have account info and user info, populate the completing party
     // NB: these are all empty if authorized to leave blank
     const isBlank = IsAuthorized(AuthorizedActions.BLANK_COMPLETING_PARTY)
@@ -467,15 +477,6 @@ export default class App extends Mixins(CommonMixin, FilingTemplateMixin) {
         streetAddressAdditional: isBlank ? '' : this.getOrgInfo?.mailingAddress.streetAdditional
       }
     } as CompletingPartyIF)
-
-    // update Launch Darkly with user info
-    // this allows targeted feature flags
-    try {
-      await this.updateLaunchDarkly()
-    } catch (error) {
-      // just log the error -- no need to halt app
-      console.log('Launch Darkly update error =', error) // eslint-disable-line no-console
-    }
 
     // since corrections are a single page, enable component validation right away
     // FUTURE: remove this when correction filings becomes 2 pages like the others
@@ -499,7 +500,8 @@ export default class App extends Mixins(CommonMixin, FilingTemplateMixin) {
 
   /** Called to navigate to Business Dashboard. */
   async goToDashboard (force = false): Promise<void> {
-    const dashboardUrl = sessionStorage.getItem('BUSINESS_DASH_URL') + this.getBusinessId
+    const businessId = this.getBusinessId || sessionStorage.getItem('BUSINESS_ID')
+    const dashboardUrl = sessionStorage.getItem('BUSINESS_DASH_URL') + businessId
 
     // check if there are no data changes
     if (!this.haveUnsavedChanges || force) {
@@ -558,6 +560,7 @@ export default class App extends Mixins(CommonMixin, FilingTemplateMixin) {
 
   /** Fetches and stores account info. */
   private async loadAccountInfo (): Promise<any> {
+    const routeAccountId = +this.$route.query.accountid || 0
     const currentAccount = await loadCurrentAccount()
 
     if (!currentAccount) {
@@ -573,9 +576,12 @@ export default class App extends Mixins(CommonMixin, FilingTemplateMixin) {
     async function loadCurrentAccount (): Promise<AccountInformationIF> {
       let account = null
       for (let i = 0; i < 50; i++) {
-        const currentAccount = sessionStorage.getItem(SessionStorageKeys.CurrentAccount)
-        account = JSON.parse(currentAccount)
-        if (account) break
+        const currentAccountJson = sessionStorage.getItem(SessionStorageKeys.CurrentAccount)
+        account = JSON.parse(currentAccountJson)
+        // if there's no route account id, check for account to be set
+        if (!routeAccountId && account) break
+        // check for current account id to match route account id
+        if (account?.id === routeAccountId) break
         await Sleep(100)
       }
       return account
@@ -594,8 +600,8 @@ export default class App extends Mixins(CommonMixin, FilingTemplateMixin) {
     this.setAuthorizedActions(authorizedActions)
   }
 
-  /** Fetches auth roles. */
-  private async fetchAuthRoles (): Promise<AuthorizationRoles[]> {
+  /** Loads auth roles. */
+  private loadAuthRoles (): void {
     // get roles from KC token
     const authRoles = GetKeycloakRoles()
 
@@ -604,7 +610,7 @@ export default class App extends Mixins(CommonMixin, FilingTemplateMixin) {
       throw new Error('Invalid roles')
     }
 
-    return authRoles
+    this.setAuthRoles(authRoles)
   }
 
   /**
@@ -644,7 +650,7 @@ export default class App extends Mixins(CommonMixin, FilingTemplateMixin) {
     const userContext = this.getUserInfo.keycloakGuid && {
       kind: 'user',
       key: this.getUserInfo.keycloakGuid,
-      roles: this.authRoles,
+      roles: this.getAuthRoles,
       appSource: import.meta.env.APP_NAME,
       loginSource: this.getUserInfo.loginSource,
       lastName: this.getUserLastname,
