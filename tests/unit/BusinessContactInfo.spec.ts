@@ -20,7 +20,7 @@ const mockUpdateContactInfo = vi.spyOn((AuthServices as any), 'updateContactInfo
 const contactInfo = {
   email: 'mock@example.com',
   confirmEmail: 'mock@example.com',
-  phone: '250-123-4567'
+  phone: '(250) 123-4567'
 }
 
 describe('Business Contact Info for a Correction', () => {
@@ -29,7 +29,7 @@ describe('Business Contact Info for a Correction', () => {
   const originalCorrectionContact = {
     email: 'mockCorrection@email.com',
     confirmEmail: 'mockCorrection@email.com',
-    phone: '250-123-4567'
+    phone: '(250) 123-4567'
   }
 
   beforeAll(() => {
@@ -78,7 +78,7 @@ describe('Business Contact Info for an Alteration', () => {
   const originalAlterationContact = {
     email: 'mockAlteration@email.com',
     confirmEmail: 'mockAlteration@email.com',
-    phone: '250-123-4567',
+    phone: '(250) 123-4567',
     extension: '123'
   }
 
@@ -136,7 +136,7 @@ describe('Business Contact Info for a Change of Registration', () => {
   const originalContact = {
     email: 'mock@example.com',
     confirmEmail: 'mock@example.com',
-    phone: '250-123-4567',
+    phone: '(250) 123-4567',
     extension: '123'
   }
 
