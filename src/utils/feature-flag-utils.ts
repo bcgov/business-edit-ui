@@ -13,7 +13,8 @@ export const defaultFlagSet: LDFlagSet = {
   'restoration-ui-enabled': false,
   'supported-correction-entities': [],
   'supported-alteration-change-business-types': [],
-  'use-business-api-gw-url': false // by default, use Legal API URL instead of Business API GW URL
+  'use-business-api-gw-url': false, // by default, use Legal API URL instead of Business API GW URL
+  'allow-empty-account-mailing-address': false // by default, do not allow empty account mailing address
 }
 
 /**

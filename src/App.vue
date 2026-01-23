@@ -462,21 +462,15 @@ export default class App extends Mixins(CommonMixin, FilingTemplateMixin) {
       return
     }
 
-    // now that we have account info and user info, populate the completing party
-    // NB: these are all empty if authorized to leave blank
-    const isBlank = IsAuthorized(AuthorizedActions.BLANK_COMPLETING_PARTY)
-    this.setCompletingParty({
-      firstName: isBlank ? '' : this.getUserFirstname,
-      lastName: isBlank ? '' : this.getUserLastname,
-      mailingAddress: {
-        addressCity: isBlank ? '' : this.getOrgInfo?.mailingAddress.city,
-        addressCountry: isBlank ? '' : this.getOrgInfo?.mailingAddress.country,
-        addressRegion: isBlank ? '' : this.getOrgInfo?.mailingAddress.region,
-        postalCode: isBlank ? '' : this.getOrgInfo?.mailingAddress.postalCode,
-        streetAddress: isBlank ? '' : this.getOrgInfo?.mailingAddress.street,
-        streetAddressAdditional: isBlank ? '' : this.getOrgInfo?.mailingAddress.streetAdditional
-      }
-    } as CompletingPartyIF)
+    // now that we have org info and user info, load completing party
+    // must be called after we have LD info since it checks a FF
+    try {
+      this.loadCompletingParty()
+    } catch (error) {
+      this.accountAuthorizationDialog = true
+      console.log('Completing party error =', error) // eslint-disable-line no-console
+      return
+    }
 
     // since corrections are a single page, enable component validation right away
     // FUTURE: remove this when correction filings becomes 2 pages like the others
@@ -598,6 +592,46 @@ export default class App extends Mixins(CommonMixin, FilingTemplateMixin) {
     }
 
     this.setAuthorizedActions(authorizedActions)
+  }
+
+  /** Populates completing party object with user name and org mailing address. */
+  private loadCompletingParty (): void {
+    // set property as empty if authorized to leave blank
+    if (IsAuthorized(AuthorizedActions.BLANK_COMPLETING_PARTY)) {
+      this.setCompletingParty({
+        firstName: '',
+        lastName: '',
+        mailingAddress: {
+          addressCity: '',
+          addressCountry: '',
+          addressRegion: '',
+          deliveryInstructions: '',
+          postalCode: '',
+          streetAddress: '',
+          streetAddressAdditional: ''
+        }
+      })
+      return
+    }
+
+    const mailingAddress = this.getOrgInfo.mailingAddress
+    if (!mailingAddress && !GetFeatureFlag('allow-empty-account-mailing-address')) {
+      throw new Error('Invalid mailing address')
+    }
+
+    this.setCompletingParty({
+      firstName: this.getUserFirstname,
+      lastName: this.getUserLastname,
+      mailingAddress: {
+        addressCity: (this.getOrgInfo.mailingAddress?.city ?? ''),
+        addressCountry: (this.getOrgInfo.mailingAddress?.country ?? ''),
+        addressRegion: (this.getOrgInfo.mailingAddress?.region ?? ''),
+        deliveryInstructions: (this.getOrgInfo.mailingAddress?.deliveryInstructions ?? ''),
+        postalCode: (this.getOrgInfo.mailingAddress?.postalCode ?? ''),
+        streetAddress: (this.getOrgInfo.mailingAddress?.street ?? ''),
+        streetAddressAdditional: (this.getOrgInfo.mailingAddress?.streetAdditional ?? '')
+      }
+    })
   }
 
   /** Loads auth roles. */
