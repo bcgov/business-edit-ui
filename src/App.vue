@@ -596,7 +596,7 @@ export default class App extends Mixins(CommonMixin, FilingTemplateMixin) {
 
   /** Populates completing party object with user name and org mailing address. */
   private loadCompletingParty (): void {
-    // set property as empty if authorized to leave blank
+    // set properties as empty if authorized to leave blank
     if (IsAuthorized(AuthorizedActions.BLANK_COMPLETING_PARTY)) {
       this.setCompletingParty({
         firstName: '',
