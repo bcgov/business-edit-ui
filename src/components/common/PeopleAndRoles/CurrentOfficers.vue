@@ -168,7 +168,7 @@ import { Getter } from 'pinia-class'
 import { OrgPersonIF } from '@/interfaces/'
 import { RoleClass, RoleTypes } from '@/enums/'
 import { CommonMixin } from '@/mixins/'
-import { IsSame } from '@/utils/'
+import { IsSame, Navigate } from '@/utils/'
 import { BaseAddress } from '@bcrs-shared-components/base-address'
 
 import { useStore } from '@/store/store'
@@ -202,14 +202,10 @@ export default class CurrentOfficers extends Mixins(CommonMixin) {
       )
   }
 
-  /** URL to officer change page */
-  get officerChangeUrl (): string {
-    return sessionStorage.getItem('PERSON_ROLES_URL') + 'officer-change/' + this.getBusinessId
-  }
-
   navigateToOfficerChange () {
     if (!this.disableLinks) {
-      window.location.href = this.officerChangeUrl
+      const officerChangeUrl = sessionStorage.getItem('PERSON_ROLES_URL') + 'officer-change/' + this.getBusinessId
+      Navigate(officerChangeUrl)
     }
   }
 
