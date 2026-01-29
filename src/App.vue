@@ -99,15 +99,23 @@
     <!-- Alert banner -->
     <v-alert
       v-if="bannerText"
+      id="alert-banner"
+      class="pa-0 ma-0"
       tile
-      dense
-      class="mb-0"
-      color="warning"
     >
-      <div
-        class="mb-0 text-center colour-dk-text"
-        v-html="bannerText"
-      />
+      <div class="container d-flex align-center py-3">
+        <v-icon
+          class="color-dk-text"
+          size="28px"
+        >
+          mdi-information
+        </v-icon>
+
+        <div
+          class="color-dk-text dark-gray-links font-14 pl-2"
+          v-html="bannerText"
+        />
+      </div>
     </v-alert>
 
     <div class="app-body">
@@ -710,8 +718,19 @@ export default class App extends Mixins(CommonMixin, FilingTemplateMixin) {
 </script>
 
 <style lang="scss" scoped>
+@import "@/assets/styles/theme.scss";
+
 // place app header on top of dialogs (and therefore still usable)
 .app-header {
   z-index: 1000;
+}
+
+#alert-banner {
+  background-color: $BCgovGold5;
+  border-color: $BCgovGold5;
+
+  :deep(.dark-gray-links a) {
+    color: $gray9 !important;
+  }
 }
 </style>
