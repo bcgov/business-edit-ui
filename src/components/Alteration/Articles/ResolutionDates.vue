@@ -52,7 +52,7 @@
           class="add-btn mt-n1"
           text
           color="primary"
-          :disabled="haveAddedDates"
+          :disabled="haveAddedDates || disabled"
           @click="isAdding = true"
         >
           <v-icon small>
@@ -102,6 +102,7 @@
               class="remove-btn mt-n1"
               text
               color="primary"
+              :disabled="disabled"
               @click="onRemove(index)"
             >
               <v-icon small>
@@ -197,13 +198,16 @@ export default class ResolutionDates extends Mixins(CommonMixin, DateMixin) {
   /** Boolean indicating rights or restrictions in ShareStructure. */
   @Prop({ default: false }) readonly hasRightsOrRestrictions!: boolean
 
+  /** Whether this component should be disabled. */
+  @Prop({ default: false }) readonly disabled!: boolean
+
   // Store getters
   @Getter(useStore) getBusinessFoundingDateTime!: string
   @Getter(useStore) getCurrentDate!: string
-  @Getter(useStore) haveNewResolutionDates!: boolean
   @Getter(useStore) getIsResolutionDatesValid!: boolean
-  @Getter(useStore) isSummaryMode!: boolean
+  @Getter(useStore) haveNewResolutionDates!: boolean
   @Getter(useStore) isCorrectionFiling!: boolean
+  @Getter(useStore) isSummaryMode!: boolean
 
   // Global setter
   @Action(useStore) setValidComponent!: (x: ActionKvIF) => void

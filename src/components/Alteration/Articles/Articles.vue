@@ -17,6 +17,7 @@
     >
       <CompanyProvisions
         :provisionsRemoved="areProvisionsRemoved"
+        :disabled="disabled"
         @isChanged="setProvisionsRemoved($event)"
         @haveChanges="emitHaveChanges($event)"
         @isEditing="setEditingCompanyProvisions($event)"
@@ -31,6 +32,7 @@
         :addedDates="getNewResolutionDates"
         :originalResolutions="getOriginalResolutions"
         :isEditMode="true"
+        :disabled="disabled"
         :hasRightsOrRestrictions="getHasRightsOrRestrictions"
         @addRemoveDate="setNewResolutionDates($event)"
         @isEditing="setIsAddingResolutionDate($event)"
@@ -47,6 +49,7 @@ import ResolutionDates from './ResolutionDates.vue'
 import { CommonMixin } from '@/mixins/'
 import { ActionKvIF, BusinessInformationIF, ResolutionsIF } from '@/interfaces/'
 import { useStore } from '@/store/store'
+import { Components } from '@/enums/'
 
 @Component({
   components: {
@@ -59,19 +62,25 @@ export default class Articles extends Mixins(CommonMixin) {
   private isAddingResolutionDate = false
 
   // Store getters
-  @Getter(useStore) getBusinessInformation!: BusinessInformationIF
-  @Getter(useStore) getNewResolutionDates!: string[]
   @Getter(useStore) areProvisionsRemoved!: boolean
-  @Getter(useStore) getOriginalResolutions!: ResolutionsIF[]
+  @Getter(useStore) getBusinessInformation!: BusinessInformationIF
+  @Getter(useStore) getComponentValidate!: boolean
+  @Getter(useStore) getDisabledComponents!: Components[]
   @Getter(useStore) getHasRightsOrRestrictions!: boolean
   @Getter(useStore) getIsResolutionDatesValid!: boolean
-  @Getter(useStore) getComponentValidate!: boolean
+  @Getter(useStore) getNewResolutionDates!: string[]
+  @Getter(useStore) getOriginalResolutions!: ResolutionsIF[]
   @Getter(useStore) isAlterationFiling!: boolean
 
   // Store actions
   @Action(useStore) setProvisionsRemoved!: (x: boolean) => void
   @Action(useStore) setNewResolutionDates!: (x: string[]) => void
   @Action(useStore) setValidComponent!: (x: ActionKvIF) => void
+
+  /** Whether this component should be disabled. */
+  get disabled (): boolean {
+    return this.getDisabledComponents.includes(Components.ARTICLES)
+  }
 
   /** Emits Have Changes event. */
   @Emit('haveChanges')

@@ -16,6 +16,27 @@
             Necessary fees will be applied as updates are made.
           </section>
 
+          <MessageBox
+            v-if="!isGoodStanding"
+            id="restricted-actions-nigs"
+            class="mt-6"
+            color="gold"
+          >
+            <header>
+              <v-icon
+                color="orange"
+                size="20px"
+              >
+                mdi-alert
+              </v-icon>
+              <strong class="pl-2 gray9--text text-small-text">Restricted actions</strong>
+            </header>
+            <article class="pl-8 pt-1 small-text">
+              Some actions on this page are unavailable because this company is not in good standing. Bring the
+              business back into good standing to access all actions.
+            </article>
+          </MessageBox>
+
           <YourCompanyWrapper class="mt-10">
             <div>
               <EntityName />
@@ -135,14 +156,14 @@ import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
 import { AlterationSummary, Articles } from '@/components/Alteration/'
 import { BusinessContactInfo, BusinessType, CertifySection, CourtOrderPoa, CurrentDirectors, CurrentOfficers,
-  DocumentsDelivery, EntityName, FolioInformation, OfficeAddresses, RecognitionDateTime,
+  DocumentsDelivery, EntityName, FolioInformation, MessageBox, OfficeAddresses, RecognitionDateTime,
   ShareStructures, StaffPayment, TransactionalFolioNumber, YourCompanyWrapper }
   from '@/components/common/'
 import { NameTranslation } from '@/components/common/YourCompany/NameTranslations/'
 import { AuthServices, LegalServices } from '@/services/'
 import { CommonMixin, FeeMixin, FilingTemplateMixin } from '@/mixins/'
 import { EntitySnapshotIF, ResourceIF } from '@/interfaces/'
-import { AuthorizedActions, FilingStatus } from '@/enums/'
+import { AuthorizedActions, Components, FilingStatus } from '@/enums/'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 import * as Resources from '@/resources/Alteration/'
 import ViewWrapper from '@/components/ViewWrapper.vue'
@@ -163,6 +184,7 @@ import { GetFeatureFlag, IsAuthorized } from '@/utils'
     DocumentsDelivery,
     EntityName,
     FolioInformation,
+    MessageBox,
     NameTranslation,
     OfficeAddresses,
     RecognitionDateTime,
@@ -184,10 +206,12 @@ export default class Alteration extends Mixins(CommonMixin, FeeMixin, FilingTemp
   @Getter(useStore) getUserFirstname!: string
   @Getter(useStore) getUserLastname!: string
   // @Getter(useStore) getOriginalLegalType!: CorpTypeCd
+  @Getter(useStore) isGoodStanding!: boolean
   @Getter(useStore) isSummaryMode!: boolean
   @Getter(useStore) showFeeSummary!: boolean
 
   // Store actions
+  @Action(useStore) setDisabledComponents!: (x: Array<Components>) => void
   @Action(useStore) setDocumentOptionalEmailValidity!: (x: boolean) => void
   @Action(useStore) setFilingId!: (x: number) => void
   @Action(useStore) setHaveUnsavedChanges!: (x: boolean) => void
@@ -398,6 +422,22 @@ export default class Alteration extends Mixins(CommonMixin, FeeMixin, FilingTemp
     } as EntitySnapshotIF
   }
 
+  /**
+   * If this business is NIGS, disable all components except BusinessContactInfo
+   * and FolioInformation.
+   * Note: we need "immediate" so we catch the transition from Null to False.
+   */
+  @Watch('isGoodStanding', { immediate: true })
+  private onIsGoodStandingChanged (): void {
+    this.setDisabledComponents(this.isGoodStanding ? [] : [
+      Components.ENTITY_NAME,
+      Components.BUSINESS_TYPE,
+      Components.NAME_TRANSLATION,
+      Components.SHARE_STRUCTURES,
+      Components.ARTICLES
+    ])
+  }
+
   /** Called when alteration summary data has changed. */
   async onAlterationSummaryChanges (): Promise<void> {
     // update filing data with future effective field
@@ -425,6 +465,10 @@ export default class Alteration extends Mixins(CommonMixin, FeeMixin, FilingTemp
 </script>
 
 <style lang="scss" scoped>
+#restricted-actions-nigs article {
+  line-height: 1.25rem;
+}
+
 #done-button {
   width: 10rem;
 }

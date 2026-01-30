@@ -263,6 +263,7 @@
             id="btn-correct-business-type"
             text
             color="primary"
+            :disabled="disabled"
             @click="isEditingType = true"
           >
             <v-icon small>
@@ -318,14 +319,13 @@
 import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
 import BcRegEntityDetails from '@/components/Alteration/BcRegEntityDetails.vue'
-import { BcRegContacts } from '@/components/common/'
+import { BcRegContacts, MessageBox } from '@/components/common/'
 import { CommonMixin } from '@/mixins/'
 import { CorpTypeCd, GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module/'
 import { EntityTypeOption, ResourceIF } from '@/interfaces/'
 import { NameRequestIF } from '@bcrs-shared-components/interfaces'
 import { GetFeatureFlag, ResourceUtilities } from '@/utils'
 import { useStore } from '@/store/store'
-import MessageBox from '@/components/common/MessageBox.vue'
 
 @Component({
   components: {
@@ -338,6 +338,10 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
   // for template
   readonly GetCorpFullDescription = GetCorpFullDescription
   readonly nameRequestUrl: string = sessionStorage.getItem('NAME_REQUEST_URL') || ''
+
+  /** Whether this component should be disabled. */
+  @Prop({ default: false }) readonly disabled!: boolean
+
   @Prop({ default: false }) readonly invalidSection!: boolean
 
   // Store getters
@@ -353,12 +357,12 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
   @Getter(useStore) getResource!: ResourceIF
   @Getter(useStore) hasBusinessNameChanged!: boolean
   @Getter(useStore) hasBusinessTypeChanged!: boolean
-  @Getter(useStore) isEntityBenefitCompany!: boolean
   @Getter(useStore) isConflictingLegalType!: boolean
+  @Getter(useStore) isEntityBenefitCompany!: boolean
   @Getter(useStore) isEntityTypeChangedByName!: boolean
   @Getter(useStore) isNameChangedByType!: boolean
-  @Getter(useStore) isNumberedCompany!: boolean
   @Getter(useStore) isNameChangedToNumber!: boolean
+  @Getter(useStore) isNumberedCompany!: boolean
 
   @Action(useStore) setEntityType!: (x: CorpTypeCd) => void
   @Action(useStore) setNameRequest!: (x: NameRequestIF) => void

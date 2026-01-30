@@ -165,5 +165,6 @@ export const stateModel: StateModelIF = {
   },
   stateFilingRestoration: null,
   rules: null,
-  memorandum: null
+  memorandum: null,
+  disabledComponents: []
 }

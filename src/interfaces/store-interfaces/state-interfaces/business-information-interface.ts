@@ -10,6 +10,7 @@ import { AlternateNameIF } from '@bcrs-shared-components/interfaces'
 export interface BusinessInformationIF {
   alternateNames?: Array<AlternateNameIF>
   foundingDate: string // actually date-time (API format)
+  goodStanding: boolean
   hasRestrictions?: boolean
   identifier: string
   legalName: string
@@ -31,6 +32,7 @@ export interface BusinessInformationIF {
 export const EmptyBusinessInfo: BusinessInformationIF = {
   associationType: null,
   foundingDate: null,
+  goodStanding: null,
   identifier: '',
   legalName: null,
   legalType: null

@@ -41,6 +41,7 @@
             id="change-company-provisions"
             text
             color="primary"
+            :disabled="disabled"
             @click="isEditing = true"
           >
             <v-icon small>
@@ -81,6 +82,7 @@
                   small
                   color="primary"
                   class="more-actions-btn"
+                  :disabled="disabled"
                   v-on="on"
                 >
                   <v-icon>{{ dropdown ? 'mdi-menu-up' : 'mdi-menu-down' }}</v-icon>
@@ -175,10 +177,11 @@ export default class CompanyProvisions extends Mixins(CommonMixin) {
   private isInvalid = false
   private dropdown = false
 
-  // Props
+  /** Whether this component should be disabled. */
+  @Prop({ default: false }) readonly disabled!: boolean
+
   @Prop({ default: false }) readonly provisionsRemoved!: boolean
 
-  // Emitters
   @Emit('isChanged')
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   private emitIsChanged (provisionsremoved: boolean): void {}
@@ -193,7 +196,6 @@ export default class CompanyProvisions extends Mixins(CommonMixin) {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   private emitHaveChanges (haveChanges: boolean): void {}
 
-  // Watchers
   @Watch('provisionsRemoved')
   private onProvisionsRemovedPropValueChanged (): void {
     if (!this.haveChanges) {
@@ -268,6 +270,7 @@ export default class CompanyProvisions extends Mixins(CommonMixin) {
     min-width: 6.5rem;
   }
 
+  // *** TODO: test this style
   .v-btn[disabled] {
     color: white !important;
     background-color: $app-blue !important;

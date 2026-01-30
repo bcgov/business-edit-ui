@@ -28,6 +28,13 @@
   }
 }
 
+// Disabled Buttons
+.theme--light.v-btn.v-btn--disabled.v-size--default,
+.theme--light.v-btn.v-btn--disabled.v-size--default .v-icon {
+  color: $app-blue !important;
+  opacity: 0.4;
+}
+
 // Text Inputs
 .v-text-field--box .v-label--active,
 .v-text-field--full-width .v-label--active,

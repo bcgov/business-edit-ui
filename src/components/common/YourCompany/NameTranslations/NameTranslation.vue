@@ -58,6 +58,7 @@
             class="correct-name-translation"
             text
             color="primary"
+            :disabled="disabled"
             @click="isEditing = true"
           >
             <v-icon small>
@@ -208,7 +209,7 @@ import { ActionChip as ActionChipShared } from '@bcrs-shared-components/action-c
 import { ConfirmDialog as ConfirmDialogShared } from '@bcrs-shared-components/confirm-dialog/'
 import { ListNameTranslation, AddNameTranslation } from './'
 import { ActionKvIF, ConfirmDialogType, NameTranslationIF, FlagsCompanyInfoIF } from '@/interfaces/'
-import { ActionTypes } from '@/enums/'
+import { ActionTypes, Components } from '@/enums/'
 import { CommonMixin } from '@/mixins/'
 import { useStore } from '@/store/store'
 
@@ -230,6 +231,7 @@ export default class NameTranslation extends Mixins(CommonMixin) {
 
   // Store getters
   @Getter(useStore) getComponentValidate!: boolean
+  @Getter(useStore) getDisabledComponents!: Components[]
   @Getter(useStore) getEditLabel!: string
   @Getter(useStore) getEditedLabel!: string
   @Getter(useStore) getFlagsCompanyInfo!: FlagsCompanyInfoIF
@@ -293,6 +295,11 @@ export default class NameTranslation extends Mixins(CommonMixin) {
       this.isLimitedRestorationToFull ||
       this.isLimitedRestorationExtension
     )
+  }
+
+  /** Whether this component should be disabled. */
+  get disabled (): boolean {
+    return (this.getDisabledComponents.includes(Components.NAME_TRANSLATION))
   }
 
   protected saveNameTranslations (): void {
