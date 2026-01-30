@@ -423,9 +423,8 @@ export default class Alteration extends Mixins(CommonMixin, FeeMixin, FilingTemp
   }
 
   /**
-   * If this business is NIGS, disable all components except BusinessContactInfo
-   * and FolioInformation.
-   * Note: we need "immediate" so we catch the transition from Null to False.
+   * Watch isGoodStanding and clear/disable components accordingly.
+   * Note: use "immediate" to fire even if value doesn't change.
    */
   @Watch('isGoodStanding', { immediate: true })
   private onIsGoodStandingChanged (): void {
@@ -433,6 +432,8 @@ export default class Alteration extends Mixins(CommonMixin, FeeMixin, FilingTemp
       Components.ENTITY_NAME,
       Components.BUSINESS_TYPE,
       Components.NAME_TRANSLATION,
+      // leave BusinessContactInfo enabled
+      // leave FolioInformation enabled
       Components.SHARE_STRUCTURES,
       Components.ARTICLES
     ])

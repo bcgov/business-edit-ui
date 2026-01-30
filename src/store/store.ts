@@ -1422,7 +1422,7 @@ export const useStore = defineStore('store', {
       return this.getOrgPeople.filter(person => person.roles.some(role => role.roleType === RoleTypes.DIRECTOR)).length
     },
 
-    /** True is business is in good standing. */
+    /** True if business is in good standing. */
     isGoodStanding (): boolean {
       return !!this.stateModel.businessInformation.goodStanding
     },

@@ -4,7 +4,7 @@ import { shallowMount } from '@vue/test-utils'
 import Actions from '@/components/common/Actions.vue'
 import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
-import { ActionTypes, CorrectionErrorTypes, FilingTypes } from '@/enums'
+import { ActionTypes, Components, CorrectionErrorTypes, FilingTypes } from '@/enums'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 import * as utils from '@/utils'
 
@@ -235,8 +235,7 @@ describe('Alteration getters', () => {
     store.stateModel.entitySnapshot = {
       businessInfo: {
         legalName: 'MyLegalName',
-        legalType: 'BEN',
-        naicsCode: '100000'
+        legalType: 'BEN'
       },
       shareStructure: {
         shareClasses: []
@@ -299,6 +298,16 @@ describe('Alteration getters', () => {
 
     // finally, this getter should be false
     expect(vm.hasAlterationDataChanged).toBe(false)
+  })
+
+  it('returns isGoodStanding as True when the business is in good standing', () => {
+    store.setBusinessInformation({ goodStanding: true } as any)
+    expect(store.isGoodStanding).toBe(true)
+  })
+
+  it('returns isGoodStanding as False when the business is not in good standing', () => {
+    store.stateModel.businessInformation.goodStanding = false
+    expect(store.isGoodStanding).toBe(false)
   })
 })
 
@@ -582,5 +591,31 @@ describe('getNumberOfDirectors getter', () => {
       { roles: [{ roleType: 'Director' }] }
     ] as any)
     expect(store.getNumberOfDirectors).toBe(2)
+  })
+})
+
+describe('Disabled Components', () => {
+  let wrapper: any
+
+  beforeAll(async () => {
+    // mount the component and wait for everything to stabilize
+    // (this can be any component since we are not really using it)
+    wrapper = shallowMount(Actions)
+    await Vue.nextTick()
+  })
+
+  afterAll(() => {
+    wrapper.destroy()
+  })
+
+  it('returns empty array when there are no disabled components', () => {
+    store.stateModel.disabledComponents = []
+    expect(store.getDisabledComponents).toEqual([])
+  })
+
+  it('returns items when there are disabled components', () => {
+    store.setDisabledComponents([ Components.ARTICLES ])
+    expect(store.getDisabledComponents.includes(Components.ARTICLES)).toEqual(true)
+    expect(store.getDisabledComponents.includes(Components.BUSINESS_TYPE)).toEqual(false)
   })
 })

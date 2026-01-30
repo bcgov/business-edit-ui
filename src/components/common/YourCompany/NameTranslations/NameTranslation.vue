@@ -493,14 +493,6 @@ export default class NameTranslation extends Mixins(CommonMixin) {
     }
   }
 
-  :deep() {
-    .theme--light.v-btn.v-btn--disabled,
-    .theme--light.v-btn.v-btn--disabled .v-icon {
-      color: $app-blue !important;
-      opacity: 0.4;
-    }
-  }
-
   :deep(#correct-name-translation) {
     align-items: flex-start;
   }

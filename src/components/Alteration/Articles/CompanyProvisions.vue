@@ -82,7 +82,6 @@
                   small
                   color="primary"
                   class="more-actions-btn"
-                  :disabled="disabled"
                   v-on="on"
                 >
                   <v-icon>{{ dropdown ? 'mdi-menu-up' : 'mdi-menu-down' }}</v-icon>
@@ -268,13 +267,6 @@ export default class CompanyProvisions extends Mixins(CommonMixin) {
 
   .v-btn {
     min-width: 6.5rem;
-  }
-
-  // *** TODO: test this style
-  .v-btn[disabled] {
-    color: white !important;
-    background-color: $app-blue !important;
-    opacity: 0.2;
   }
 }
 
