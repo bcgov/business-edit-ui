@@ -1,6 +1,6 @@
 /**
  * List of components to optionally disable -- see setDisabledComponents().
- * This is a partial list -- add more when the subject component supports this.
+ * This is a partial list -- add more when needed.
  */
 export enum Components {
   ARTICLES,
