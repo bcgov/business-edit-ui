@@ -152,6 +152,7 @@
               id="btn-correct-company-name"
               text
               color="primary"
+              :disabled="disabled"
               @click="isEditingNames = true"
             >
               <v-icon small>
@@ -251,7 +252,7 @@
 <script lang="ts">
 import { Component, Mixins, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
-import { AuthorizedActions, CoopTypes, CorrectNameOptions } from '@/enums/'
+import { AuthorizedActions, Components, CoopTypes, CorrectNameOptions } from '@/enums/'
 import { ActionKvIF, BusinessInformationIF } from '@/interfaces/'
 import { NameRequestIF } from '@bcrs-shared-components/interfaces'
 import CorrectName from '@/components/common/YourCompany/CorrectName/CorrectName.vue'
@@ -275,6 +276,7 @@ export default class EntityName extends Mixins(CommonMixin, NameRequestMixin) {
   @Getter(useStore) getAssociationType!: CoopTypes
   @Getter(useStore) getBusinessNumber!: string
   @Getter(useStore) getComponentValidate!: boolean
+  @Getter(useStore) getDisabledComponents!: Components[]
   @Getter(useStore) getEditLabel!: string
   @Getter(useStore) getEditedLabel!: string
   @Getter(useStore) getEntityType!: CorpTypeCd
@@ -353,6 +355,11 @@ export default class EntityName extends Mixins(CommonMixin, NameRequestMixin) {
       ) &&
       !this.isNameChangedByType
     )
+  }
+
+  /** Whether this component should be disabled. */
+  get disabled (): boolean {
+    return (this.getDisabledComponents.includes(Components.ENTITY_NAME))
   }
 
   /**

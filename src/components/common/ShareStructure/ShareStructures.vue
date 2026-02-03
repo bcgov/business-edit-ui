@@ -16,6 +16,7 @@
       :hasRightsOrRestrictions="getHasRightsOrRestrictions"
       :invalidSection="invalidShareSection"
       :invalidMinimumShareClass="!hasMinimumShareClass"
+      :disabled="disabled"
       @emitShareClasses="setShareClasses($event)"
       @emitShareStructureChanged="setShareStructureChanged($event)"
       @emitEditingShareStructure="isEditing = $event"
@@ -25,19 +26,15 @@
 </template>
 
 <script lang="ts">
-// Libraries
 import { Component, Mixins, Prop, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
-
-// Components
 import { ShareStructure as ShareStructureShared } from '@bcrs-shared-components/share-structure/'
 import { ResolutionDateDialog } from '@/dialogs/'
 import { CommonMixin } from '@/mixins/'
-
 import { ActionKvIF, EntitySnapshotIF, ShareClassIF, ShareStructureIF, FlagsCompanyInfoIF }
   from '@/interfaces/'
-
 import { useStore } from '@/store/store'
+import { Components } from '@/enums/'
 
 @Component({
   components: {
@@ -51,6 +48,7 @@ export default class ShareStructures extends Mixins(CommonMixin) {
 
   // Store getters
   @Getter(useStore) getComponentValidate!: boolean
+  @Getter(useStore) getDisabledComponents!: Components[]
   @Getter(useStore) getEditLabel!: string
   @Getter(useStore) getEditedLabel!: string
   @Getter(useStore) getEntitySnapshot!: EntitySnapshotIF
@@ -84,6 +82,11 @@ export default class ShareStructures extends Mixins(CommonMixin) {
   /** True if changes to share structure rights will require a resolution date. */
   get resolutionsRequired (): boolean {
     return (this.getNewResolutionDates.length === 0) && this.isAlterationFiling
+  }
+
+  /** Whether this component should be disabled. */
+  get disabled (): boolean {
+    return (this.getDisabledComponents.includes(Components.SHARE_STRUCTURES))
   }
 
   /**

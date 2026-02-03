@@ -1,3 +1,4 @@
+import { Components } from '@/enums/'
 import {
   AccountInformationIF, AddressesIF, BusinessInformationIF, CertifyIF, CorrectionInformationIF,
   DocumentDeliveryIF, EffectiveDateTimeIF, EntitySnapshotIF, FeesIF, FilingDataIF, NameTranslationIF,
@@ -47,10 +48,11 @@ export interface StateModelIF {
   memorandum: RulesMemorandumIF
   editingFlags: EditingFlagsIF
   validationFlags: ValidationFlagsIF
-  summaryMode: boolean,
-  currentFees: FeesIF[],
-  feePrices: FeesIF[],
+  summaryMode: boolean
+  currentFees: FeesIF[]
+  feePrices: FeesIF[]
   specialResolution: SpecialResolutionIF
   restoration: RestorationStateIF
   stateFilingRestoration: StateFilingRestorationIF
+  disabledComponents: Components[]
 }

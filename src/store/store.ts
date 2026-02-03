@@ -3,6 +3,7 @@ import {
   ActionTypes,
   AuthorizationRoles,
   AuthorizedActions,
+  Components,
   CoopTypes,
   CorrectionErrorTypes,
   FilingNames,
@@ -1419,8 +1420,16 @@ export const useStore = defineStore('store', {
 
     getNumberOfDirectors (): number {
       return this.getOrgPeople.filter(person => person.roles.some(role => role.roleType === RoleTypes.DIRECTOR)).length
-    }
+    },
 
+    /** True if business is in good standing. */
+    isGoodStanding (): boolean {
+      return !!this.stateModel.businessInformation.goodStanding
+    },
+
+    getDisabledComponents (): Array<Components> {
+      return this.stateModel.disabledComponents
+    }
   },
   actions: {
     setAuthRoles (authRoles: Array<AuthorizationRoles>) {
@@ -1715,6 +1724,9 @@ export const useStore = defineStore('store', {
     },
     setSpecialResolutionMemorandum (memorandum: RulesMemorandumIF) {
       this.stateModel.memorandum = memorandum
+    },
+    setDisabledComponents (components: Array<Components>) {
+      this.stateModel.disabledComponents = components
     }
   }
 })
