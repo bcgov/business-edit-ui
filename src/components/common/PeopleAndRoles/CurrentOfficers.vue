@@ -102,6 +102,7 @@
         >
           There are currently no officers.
         </thead>
+
         <tbody v-if="officers.length > 0">
           <!-- List Content -->
           <tr
@@ -126,6 +127,27 @@
                 <span class="officers-name">{{ formatFullName(orgPerson.officer) }}</span>
               </v-tooltip>
             </td>
+
+            <!-- Mailing Address -->
+            <td class="px-0">
+              <MailingAddress
+                class="officers-detail"
+                :address="orgPerson.mailingAddress"
+              />
+            </td>
+
+            <!-- Delivery Address -->
+            <td class="px-0">
+              <template v-if="IsSame(orgPerson.mailingAddress, orgPerson.deliveryAddress, ['id'])">
+                <span class="officers-detail">Same as Mailing Address</span>
+              </template>
+              <DeliveryAddress
+                v-else
+                class="officers-detail"
+                :address="orgPerson.deliveryAddress"
+              />
+            </td>
+
             <!-- Roles -->
             <td class="px-0">
               <v-col
@@ -135,25 +157,6 @@
               >
                 <span class="roles-detail">{{ formatRoleType(role.roleType) }}</span>
               </v-col>
-            </td>
-            <!-- Delivery Address -->
-            <td class="px-0">
-              <DeliveryAddress
-                class="officers-detail"
-                :address="orgPerson.deliveryAddress"
-              />
-            </td>
-            <!-- Mailing Address -->
-            <td class="px-0">
-              <template v-if="IsSame(orgPerson.mailingAddress, orgPerson.deliveryAddress, ['id'])">
-                <span class="officers-detail">Same as Delivery Address</span>
-              </template>
-              <template v-else>
-                <MailingAddress
-                  class="officers-detail"
-                  :address="orgPerson.mailingAddress"
-                />
-              </template>
             </td>
           </tr>
         </tbody>
@@ -190,7 +193,7 @@ export default class CurrentOfficers extends Mixins(CommonMixin) {
   @Prop({ type: Boolean, default: false }) readonly disableLinks!: boolean;
 
   /** Headers for the person table. */
-  readonly tableHeaders = ['Name', 'Roles', 'Delivery Address', 'Mailing Address']
+  readonly tableHeaders = ['Name', 'Mailing Address', 'Delivery Address', 'Roles']
 
   /** Gather all officers with appropriate roles */
   get officers (): OrgPersonIF[] {
@@ -299,5 +302,4 @@ export default class CurrentOfficers extends Mixins(CommonMixin) {
 .officers-content:hover {
   background: none !important;
 }
-
 </style>
