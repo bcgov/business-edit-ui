@@ -58,6 +58,7 @@ export default class ShareStructures extends Mixins(CommonMixin) {
   @Getter(useStore) getShareClasses!: ShareClassIF[]
   @Getter(useStore) hasMinimumShareClass!: boolean
   @Getter(useStore) isAlterationFiling!: boolean
+  @Getter(useStore) isCorpCorrectionFiling!: boolean
 
   // Store actions
   @Action(useStore) setCreateShareStructureStepValidity!: (x: boolean) => void
@@ -81,7 +82,7 @@ export default class ShareStructures extends Mixins(CommonMixin) {
 
   /** True if changes to share structure rights will require a resolution date. */
   get resolutionsRequired (): boolean {
-    return (this.getNewResolutionDates.length === 0) && this.isAlterationFiling
+    return (this.getNewResolutionDates.length === 0) && (this.isAlterationFiling || this.isCorpCorrectionFiling)
   }
 
   /** Whether this component should be disabled. */

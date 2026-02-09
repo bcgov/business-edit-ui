@@ -2,6 +2,8 @@ import Vue from 'vue'
 import Vuetify from 'vuetify'
 import { mount } from '@vue/test-utils'
 import ShareStructures from '@/components/common/ShareStructure/ShareStructures.vue'
+import { FilingTypes } from '@/enums'
+import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
 
@@ -111,5 +113,38 @@ describe('Share Structures component', () => {
     // maxNumberOfShares and parValue should be number
     expect(store.stateModel.shareStructureStep.shareClasses[2].maxNumberOfShares).toBe(1)
     expect(store.stateModel.shareStructureStep.shareClasses[2].parValue).toBe(2)
+  })
+
+  describe('resolutionsRequired', () => {
+    beforeEach(async () => {
+      store.stateModel.tombstone.entityType = CorpTypeCd.BC_COMPANY
+      store.stateModel.shareStructureStep.resolutionDates = []
+    })
+
+    it('is true for alteration filings with no resolution dates', async () => {
+      store.stateModel.tombstone.filingType = FilingTypes.ALTERATION
+
+      expect(wrapper.vm.resolutionsRequired).toBe(true)
+    })
+
+    it('is true for corp correction filings with no resolution dates', async () => {
+      store.stateModel.tombstone.filingType = FilingTypes.CORRECTION
+
+      expect(wrapper.vm.resolutionsRequired).toBe(true)
+    })
+
+    it('is false for non-corp correction filings', async () => {
+      store.stateModel.tombstone.filingType = FilingTypes.CORRECTION
+      store.stateModel.tombstone.entityType = CorpTypeCd.SOLE_PROP
+
+      expect(wrapper.vm.resolutionsRequired).toBe(false)
+    })
+
+    it('is false when resolution dates already exist', async () => {
+      store.stateModel.tombstone.filingType = FilingTypes.ALTERATION
+      store.stateModel.shareStructureStep.resolutionDates = ['2024-01-01']
+
+      expect(wrapper.vm.resolutionsRequired).toBe(false)
+    })
   })
 })
