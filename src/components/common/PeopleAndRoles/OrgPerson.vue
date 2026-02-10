@@ -475,8 +475,8 @@ export default class OrgPerson extends Mixins(CommonMixin, OrgPersonMixin) {
   // Refs
   $refs!: {
     orgPersonForm: FormIF,
-    mailingAddress: FormIF,
-    deliveryAddress: FormIF
+    mailingAddress: BaseAddress,
+    deliveryAddress: BaseAddress
   }
 
   // Declarations for template
@@ -773,10 +773,10 @@ export default class OrgPerson extends Mixins(CommonMixin, OrgPersonMixin) {
       this.$refs.orgPersonForm.validate()
     }
     if (this.$refs.mailingAddress?.$refs.addressForm) {
-      this.$refs.mailingAddress.$refs.addressForm.validate()
+      await this.$refs.mailingAddress.validate()
     }
     if (this.$refs.deliveryAddress?.$refs.addressForm) {
-      this.$refs.deliveryAddress.$refs.addressForm.validate()
+      await this.$refs.deliveryAddress.validate()
     }
 
     // verify the main form + mailing address (all roles)
@@ -889,9 +889,9 @@ export default class OrgPerson extends Mixins(CommonMixin, OrgPersonMixin) {
     }
 
     this.$refs.orgPersonForm.reset()
-    this.$refs.mailingAddress.$refs.addressForm.reset()
+    this.$refs.mailingAddress.reset()
     if (this.$refs.deliveryAddress) {
-      this.$refs.deliveryAddress.$refs.addressForm.reset()
+      this.$refs.deliveryAddress.reset()
     }
 
     if (emitEvent) {
@@ -943,9 +943,9 @@ export default class OrgPerson extends Mixins(CommonMixin, OrgPersonMixin) {
 
     // reset the form validations
     if (!this.showErrors) {
-      this.$refs.mailingAddress.$refs.addressForm.reset()
+      this.$refs.mailingAddress.reset()
       if (this.$refs.deliveryAddress) {
-        this.$refs.deliveryAddress.$refs.addressForm.reset()
+        this.$refs.deliveryAddress.reset()
       }
     }
   }
@@ -1020,7 +1020,7 @@ export default class OrgPerson extends Mixins(CommonMixin, OrgPersonMixin) {
       await this.$nextTick()
 
       // validate delivery address
-      this.$refs.deliveryAddress && this.$refs.deliveryAddress.$refs.addressForm.validate()
+      this.$refs.deliveryAddress && await this.$refs.deliveryAddress.validate()
     }
   }
 

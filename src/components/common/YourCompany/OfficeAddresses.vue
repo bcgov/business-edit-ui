@@ -598,8 +598,8 @@ const COUNTRY_CA = 'CA'
 export default class OfficeAddresses extends Mixins(CommonMixin) {
   // Refs for BaseAddress components so we can access form validation
   $refs!: {
-    mailingAddress: any
-    deliveryAddress: any
+    mailingAddress: BaseAddress
+    deliveryAddress: BaseAddress
   }
 
   /** Prop to set readonly state (ie disable form actions). */
@@ -1013,7 +1013,7 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
       await this.$nextTick()
 
       // validate delivery address
-      this.$refs.deliveryAddress && this.$refs.deliveryAddress.$refs.addressForm.validate()
+      this.$refs.deliveryAddress && await this.$refs.deliveryAddress.validate()
     }
   }
 

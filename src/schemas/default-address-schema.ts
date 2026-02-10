@@ -1,4 +1,5 @@
 import { required, maxLength } from 'vuelidate/lib/validators'
+import { isRequiredPostalCode, isValidPostalCode } from '@bcrs-shared-components/validators'
 
 // The schema containing Vuelidate rules.
 // NB: This should match the subject JSON schema.
@@ -21,8 +22,9 @@ export const DefaultAddressSchema = {
     maxLength: maxLength(2)
   },
   postalCode: {
-    required,
-    maxLength: maxLength(15)
+    isRequiredPostalCode,
+    maxLength: maxLength(15),
+    isValidPostalCode
   },
   deliveryInstructions: {
     maxLength: maxLength(80)
