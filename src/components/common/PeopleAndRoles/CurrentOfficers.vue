@@ -227,6 +227,7 @@ export default class CurrentOfficers extends Mixins(CommonMixin) {
   display: flex;
   align-items: center;
   background-color: $BCgovBlue5O;
+
   .officer-optional-text {
     color: $gray7;
     margin-left: 10px;
@@ -282,6 +283,7 @@ export default class CurrentOfficers extends Mixins(CommonMixin) {
     padding-top: 1rem;
     padding-bottom: 1rem;
     vertical-align: text-top;
+    min-width: 10rem; // same as director-content
   }
 
   .officers-detail {
@@ -289,6 +291,7 @@ export default class CurrentOfficers extends Mixins(CommonMixin) {
     color: $gray7;
     font-weight: normal;
   }
+
   .roles-detail {
     font-size: $px-14;
     color: $gray7;
