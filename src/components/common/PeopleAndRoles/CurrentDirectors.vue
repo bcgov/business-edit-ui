@@ -28,6 +28,7 @@
             </th>
           </tr>
         </thead>
+
         <tbody>
           <!-- List Content -->
           <tr
@@ -66,12 +67,11 @@
               <template v-if="IsSame(orgPerson.mailingAddress, orgPerson.deliveryAddress, ['id'])">
                 <span class="director-detail">Same as Mailing Address</span>
               </template>
-              <template v-else>
-                <DeliveryAddress
-                  class="director-detail"
-                  :address="orgPerson.deliveryAddress"
-                />
-              </template>
+              <DeliveryAddress
+                v-else
+                class="director-detail"
+                :address="orgPerson.deliveryAddress"
+              />
             </td>
 
             <!-- Appointment Date -->
@@ -155,6 +155,7 @@ export default class CurrentDirectors extends Mixins(CommonMixin) {
     padding-top: 1rem;
     padding-bottom: 1rem;
     vertical-align: text-top;
+    min-width: 10rem; // same as officers-content
   }
 
   .director-detail {
@@ -167,5 +168,4 @@ export default class CurrentDirectors extends Mixins(CommonMixin) {
 .director-content:hover {
   background: none !important;
 }
-
 </style>
