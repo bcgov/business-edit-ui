@@ -141,6 +141,7 @@ export default class CurrentDirectors extends Mixins(CommonMixin) {
     font-weight: bold;
     vertical-align: text-top;
     width: 8rem; // same as officers-content
+    word-break: break-word;
   }
 
   .director-detail {

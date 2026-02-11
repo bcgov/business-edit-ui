@@ -269,6 +269,7 @@ export default class CurrentOfficers extends Mixins(CommonMixin) {
     font-weight: bold;
     vertical-align: text-top;
     width: 8rem; // same as director-content
+    word-break: break-word;
   }
 
   .officers-detail {

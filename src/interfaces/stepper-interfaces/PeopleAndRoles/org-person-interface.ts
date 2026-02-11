@@ -2,14 +2,15 @@ import { AddressIF, RoleIF } from '@/interfaces/'
 import { ActionTypes, PartyTypes } from '@/enums/'
 
 export interface ApiPersonIF {
-  id?: string // used by UI only
-  partyType: PartyTypes
-  firstName?: string // required when partyType="person"
-  middleName?: string
-  lastName?: string // required when partyType="person"
-  organizationName?: string // required when partyType="organization"
+  alternateName?: string
   email?: string
+  firstName?: string // required when partyType="person"
+  id?: string // used by UI only
   identifier?: string // aka Incorporation/Registration number
+  lastName?: string // required when partyType="person"
+  middleName?: string
+  organizationName?: string // required when partyType="organization"
+  partyType: PartyTypes
   taxId?: string
 }
 
