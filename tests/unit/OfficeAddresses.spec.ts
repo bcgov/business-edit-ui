@@ -18,8 +18,8 @@ setActivePinia(createPinia())
 const store = useStore()
 
 /**
- * Returns a customized Address object (except for country
- * and region, so we get meaningful display strings).
+ * Returns a customized Address object (except for country,
+ * region and postal code, so we get meaningful display strings).
  * @param x the number to append to each property
  */
 function getAddressX (x: number): AddressIF {
@@ -29,7 +29,7 @@ function getAddressX (x: number): AddressIF {
     addressCountry: 'CA',
     addressRegion: 'BC',
     deliveryInstructions: `deliveryInstructions${x}`,
-    postalCode: `postalCode${x}`,
+    postalCode: 'V8V 8V8',
     streetAddress: `streetAddress${x}`,
     streetAddressAdditional: `streetAddressAdditional${x}`
   } as any
@@ -107,7 +107,7 @@ describe('summary mode', () => {
       expect(rows.at(1).text()).toBe('streetAddressAdditional1')
       expect(rows.at(2).text()).toContain('addressCity1')
       expect(rows.at(2).text()).toContain('BC')
-      expect(rows.at(2).text()).toContain('postalCode1')
+      expect(rows.at(2).text()).toContain('V8V 8V8')
       expect(rows.at(3).text()).toBe('Canada')
       expect(rows.at(4).text()).toBe('deliveryInstructions1')
     }
@@ -122,7 +122,7 @@ describe('summary mode', () => {
       expect(rows.at(1).text()).toBe('streetAddressAdditional2')
       expect(rows.at(2).text()).toContain('addressCity2')
       expect(rows.at(2).text()).toContain('BC')
-      expect(rows.at(2).text()).toContain('postalCode2')
+      expect(rows.at(2).text()).toContain('V8V 8V8')
       expect(rows.at(3).text()).toBe('Canada')
       expect(rows.at(4).text()).toBe('deliveryInstructions2')
     }
@@ -166,7 +166,7 @@ describe('summary mode', () => {
       expect(rows.at(1).text()).toBe('streetAddressAdditional1')
       expect(rows.at(2).text()).toContain('addressCity1')
       expect(rows.at(2).text()).toContain('BC')
-      expect(rows.at(2).text()).toContain('postalCode1')
+      expect(rows.at(2).text()).toContain('V8V 8V8')
       expect(rows.at(3).text()).toBe('Canada')
       expect(rows.at(4).text()).toBe('deliveryInstructions1')
     }
@@ -215,7 +215,7 @@ describe('summary mode', () => {
       expect(rows.at(1).text()).toBe('streetAddressAdditional4')
       expect(rows.at(2).text()).toContain('addressCity4')
       expect(rows.at(2).text()).toContain('BC')
-      expect(rows.at(2).text()).toContain('postalCode4')
+      expect(rows.at(2).text()).toContain('V8V 8V8')
       expect(rows.at(3).text()).toBe('Canada')
       expect(rows.at(4).text()).toBe('deliveryInstructions4')
     }
@@ -228,7 +228,7 @@ describe('summary mode', () => {
       expect(rows.at(1).text()).toBe('streetAddressAdditional3')
       expect(rows.at(2).text()).toContain('addressCity3')
       expect(rows.at(2).text()).toContain('BC')
-      expect(rows.at(2).text()).toContain('postalCode3')
+      expect(rows.at(2).text()).toContain('V8V 8V8')
       expect(rows.at(3).text()).toBe('Canada')
       expect(rows.at(4).text()).toBe('deliveryInstructions3')
     }
@@ -281,7 +281,7 @@ describe('summary mode', () => {
       expect(rows.at(1).text()).toBe('streetAddressAdditional3')
       expect(rows.at(2).text()).toContain('addressCity3')
       expect(rows.at(2).text()).toContain('BC')
-      expect(rows.at(2).text()).toContain('postalCode3')
+      expect(rows.at(2).text()).toContain('V8V 8V8')
       expect(rows.at(3).text()).toBe('Canada')
       expect(rows.at(4).text()).toBe('deliveryInstructions3')
     }
@@ -296,7 +296,7 @@ describe('summary mode', () => {
       expect(rows.at(1).text()).toBe('streetAddressAdditional4')
       expect(rows.at(2).text()).toContain('addressCity4')
       expect(rows.at(2).text()).toContain('BC')
-      expect(rows.at(2).text()).toContain('postalCode4')
+      expect(rows.at(2).text()).toContain('V8V 8V8')
       expect(rows.at(3).text()).toBe('Canada')
       expect(rows.at(4).text()).toBe('deliveryInstructions4')
     }
@@ -367,7 +367,7 @@ describe('summary mode', () => {
       expect(rows.at(1).text()).toBe('streetAddressAdditional3')
       expect(rows.at(2).text()).toContain('addressCity3')
       expect(rows.at(2).text()).toContain('BC')
-      expect(rows.at(2).text()).toContain('postalCode3')
+      expect(rows.at(2).text()).toContain('V8V 8V8')
       expect(rows.at(3).text()).toBe('Canada')
       expect(rows.at(4).text()).toBe('deliveryInstructions3')
     }
@@ -410,7 +410,7 @@ describe('summary mode', () => {
       expect(rows.at(1).text()).toBe('streetAddressAdditional2')
       expect(rows.at(2).text()).toContain('addressCity2')
       expect(rows.at(2).text()).toContain('BC')
-      expect(rows.at(2).text()).toContain('postalCode2')
+      expect(rows.at(2).text()).toContain('V8V 8V8')
       expect(rows.at(3).text()).toBe('Canada')
       expect(rows.at(4).text()).toBe('deliveryInstructions2')
     }
@@ -423,7 +423,7 @@ describe('summary mode', () => {
       expect(rows.at(1).text()).toBe('streetAddressAdditional1')
       expect(rows.at(2).text()).toContain('addressCity1')
       expect(rows.at(2).text()).toContain('BC')
-      expect(rows.at(2).text()).toContain('postalCode1')
+      expect(rows.at(2).text()).toContain('V8V 8V8')
       expect(rows.at(3).text()).toBe('Canada')
       expect(rows.at(4).text()).toBe('deliveryInstructions1')
     }
@@ -499,7 +499,7 @@ describe('edit mode', () => {
       expect(address.find('.v-input.street-address-additional').props('value')).toBe('streetAddressAdditional1')
       expect(address.find('.v-input.address-city').props('value')).toBe('addressCity1')
       expect(address.find('.v-input.address-region').props('value')).toBe('BC')
-      expect(address.find('.v-input.postal-code').props('value')).toBe('postalCode1')
+      expect(address.find('.v-input.postal-code').props('value')).toBe('V8V 8V8')
       expect(address.find('.v-input.address-country').props('value')).toBe('CA')
       expect(address.find('.v-input.delivery-instructions').props('value')).toBe('deliveryInstructions1')
     }
@@ -543,7 +543,7 @@ describe('edit mode', () => {
       expect(address.find('.v-input.street-address-additional').props('value')).toBe('streetAddressAdditional2')
       expect(address.find('.v-input.address-city').props('value')).toBe('addressCity2')
       expect(address.find('.v-input.address-region').props('value')).toBe('BC')
-      expect(address.find('.v-input.postal-code').props('value')).toBe('postalCode2')
+      expect(address.find('.v-input.postal-code').props('value')).toBe('V8V 8V8')
       expect(address.find('.v-input.address-country').props('value')).toBe('CA')
       expect(address.find('.v-input.delivery-instructions').props('value')).toBe('deliveryInstructions2')
     }
@@ -623,7 +623,7 @@ describe('edit mode', () => {
       expect(address.find('.v-input.street-address-additional').props('value')).toBe('streetAddressAdditional3')
       expect(address.find('.v-input.address-city').props('value')).toBe('addressCity3')
       expect(address.find('.v-input.address-region').props('value')).toBe('BC')
-      expect(address.find('.v-input.postal-code').props('value')).toBe('postalCode3')
+      expect(address.find('.v-input.postal-code').props('value')).toBe('V8V 8V8')
       expect(address.find('.v-input.address-country').props('value')).toBe('CA')
       expect(address.find('.v-input.delivery-instructions').props('value')).toBe('deliveryInstructions3')
     }
@@ -702,7 +702,7 @@ describe('edit mode', () => {
       expect(address.find('.v-input.street-address-additional').props('value')).toBe('streetAddressAdditional4')
       expect(address.find('.v-input.address-city').props('value')).toBe('addressCity4')
       expect(address.find('.v-input.address-region').props('value')).toBe('BC')
-      expect(address.find('.v-input.postal-code').props('value')).toBe('postalCode4')
+      expect(address.find('.v-input.postal-code').props('value')).toBe('V8V 8V8')
       expect(address.find('.v-input.address-country').props('value')).toBe('CA')
       expect(address.find('.v-input.delivery-instructions').props('value')).toBe('deliveryInstructions4')
     }
@@ -953,6 +953,7 @@ describe('actions and events', () => {
   it('handles an invalid address', async () => {
     // set invalid/blank data (and verify)
     await wrapper.setData({ mailingAddress: wrapper.vm.$data.defaultAddress })
+    await Vue.nextTick()
     expect(wrapper.vm.$data.mailingAddress.addressCity).toBe('')
 
     // verify buttons

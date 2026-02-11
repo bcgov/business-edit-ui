@@ -9,6 +9,7 @@ import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
 import { FilingTypes } from '@/enums'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
+import flushPromises from 'flush-promises'
 
 // mock the console.warn function to hide "[Vuetify] Unable to locate target XXX"
 console.warn = vi.fn()
@@ -283,7 +284,7 @@ describe('Org/Person component for a BEN Correction filing', () => {
     const button = wrapper.find(doneButtonSelector)
     expect(button.attributes('disabled')).toBeUndefined()
     await button.trigger('click')
-    await Vue.nextTick()
+    await flushPromises()
 
     expect(getLastEvent(wrapper, addEditEvent).officer.organizationName).toBe('Different Test Org')
 

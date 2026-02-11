@@ -29,15 +29,14 @@ const firmTestCases = [
 for (const test of firmTestCases) {
   const type = test.isStaff ? 'staff' : 'regular'
 
-  // FUTURE: Fix the error in BaseAddress in sbc-common
-  describe.skip(`Completing Party view for a ${test.entityType} as a ${type} user`, () => {
+  describe(`Completing Party view for a ${test.entityType} as a ${type} user`, () => {
     let wrapper: any
 
     beforeAll(() => {
       setAuthRole(store, AuthorizationRoles.STAFF)
       store.stateModel.tombstone.businessId = 'BC1234567'
-      store.stateModel.tombstone.filingType = FilingTypes.CHANGE_OF_REGISTRATION
-      store.stateModel.tombstone.entityType = CorpTypeCd.SOLE_PROP
+      store.stateModel.tombstone.filingType = FilingTypes.CORRECTION
+      store.stateModel.tombstone.entityType = CorpTypeCd.BENEFIT_COMPANY
       store.stateModel.completingParty = {
         firstName: 'First',
         lastName: 'Last',
@@ -75,25 +74,32 @@ for (const test of firmTestCases) {
       expect(input2.exists()).toBe(true)
       expect(input3.exists()).toBe(true)
 
-      // verify name lengths are valid
+      // set all valid values
       await input1.setValue('Name length is okay')
       await input2.setValue('Name length is okay')
       await input3.setValue('Name length is okay')
+      // verify input values are updated
       expect(input1.element.value).toBe('Name length is okay')
       expect(input2.element.value).toBe('Name length is okay')
       expect(input3.element.value).toBe('Name length is okay')
+      // wait for validation to update
+      await wrapper.vm.$nextTick()
+      // verify name lengths are valid (no errors)
       const validMessages = wrapper.findAll('#completing-party .v-messages__message')
       expect(validMessages.length).toBe(0)
 
-      // verify name lengths are invalid
+      // set all invalid values
       await input1.setValue('Name length is over 20')
       await input2.setValue('Name length is over 20')
       await input3.setValue('Name length is over 30 with many characters')
+      // wait for validation to update
+      await wrapper.vm.$nextTick()
+      // verify name lengths are invalid
       const errorMessages = wrapper.findAll('#completing-party .v-messages__message')
       expect(errorMessages.length).toBe(3)
       expect(errorMessages.at(0).text()).toBe('Cannot exceed 20 characters')
       expect(errorMessages.at(1).text()).toBe('Cannot exceed 20 characters')
-      expect(errorMessages.at(2).text()).toBe('Cannot exceed 20 characters')
+      expect(errorMessages.at(2).text()).toBe('Cannot exceed 30 characters')
     })
   })
 }
