@@ -111,25 +111,12 @@
             class="officers-content py-3"
           >
             <!-- Name + Badge -->
-            <td class="text-truncate px-0">
-              <!-- provide tooltip to display full name if name is longer than 25 chars -->
-              <v-tooltip
-                top
-                :disabled="formatFullName(orgPerson.officer).length < 25"
-                color="primary"
-              >
-                <template #activator="{ on }">
-                  <span
-                    class="officers-name"
-                    v-on="on"
-                  >{{ formatFullName(orgPerson.officer) }}</span>
-                </template>
-                <span class="officers-name">{{ formatFullName(orgPerson.officer) }}</span>
-              </v-tooltip>
+            <td class="py-4 pl-0 pr-1">
+              <span class="officers-name">{{ formatFullName(orgPerson.officer) }}</span>
             </td>
 
             <!-- Mailing Address -->
-            <td class="px-0">
+            <td class="py-4 pl-0 pr-1">
               <MailingAddress
                 class="officers-detail"
                 :address="orgPerson.mailingAddress"
@@ -137,7 +124,7 @@
             </td>
 
             <!-- Delivery Address -->
-            <td class="px-0">
+            <td class="py-4 pl-0 pr-1">
               <template v-if="IsSame(orgPerson.mailingAddress, orgPerson.deliveryAddress, ['id'])">
                 <span class="officers-detail">Same as Mailing Address</span>
               </template>
@@ -149,7 +136,7 @@
             </td>
 
             <!-- Roles -->
-            <td class="px-0">
+            <td class="py-4 pl-0 pr-0">
               <v-col
                 v-for="(role, key) in orgPerson.roles"
                 :key="key"
@@ -280,10 +267,8 @@ export default class CurrentOfficers extends Mixins(CommonMixin) {
     font-size: 1rem;
     color: $gray9;
     font-weight: bold;
-    padding-top: 1rem;
-    padding-bottom: 1rem;
     vertical-align: text-top;
-    min-width: 10rem; // same as director-content
+    width: 8rem; // same as director-content
   }
 
   .officers-detail {
@@ -302,6 +287,7 @@ export default class CurrentOfficers extends Mixins(CommonMixin) {
   }
 }
 
+// do not highlight row on hover
 .officers-content:hover {
   background: none !important;
 }

@@ -37,25 +37,12 @@
             class="director-content py-3"
           >
             <!-- Name + Badge -->
-            <td class="text-truncate px-0">
-              <!-- provide tooltip to display full name if name is longer than 25 chars -->
-              <v-tooltip
-                top
-                :disabled="formatFullName(orgPerson.officer).length < 25"
-                color="primary"
-              >
-                <template #activator="{ on }">
-                  <span
-                    class="director-name"
-                    v-on="on"
-                  >{{ formatFullName(orgPerson.officer) }}</span>
-                </template>
-                <span class="director-name">{{ formatFullName(orgPerson.officer) }}</span>
-              </v-tooltip>
+            <td class="py-4 pl-0 pr-1">
+              <span class="director-name">{{ formatFullName(orgPerson.officer) }}</span>
             </td>
 
             <!-- Mailing Address -->
-            <td class="px-0">
+            <td class="py-4 pl-0 pr-1">
               <MailingAddress
                 class="director-detail"
                 :address="orgPerson.mailingAddress"
@@ -63,7 +50,7 @@
             </td>
 
             <!-- Delivery Address -->
-            <td class="px-0">
+            <td class="py-4 pl-0 pr-1">
               <template v-if="IsSame(orgPerson.mailingAddress, orgPerson.deliveryAddress, ['id'])">
                 <span class="director-detail">Same as Mailing Address</span>
               </template>
@@ -74,8 +61,8 @@
               />
             </td>
 
-            <!-- Appointment Date -->
-            <td class="px-0">
+            <!-- Effective Dates -->
+            <td class="py-4 pl-0 pr-0">
               <span class="director-detail">{{ orgPerson.roles[0].appointmentDate }} to Current</span>
             </td>
           </tr>
@@ -152,10 +139,8 @@ export default class CurrentDirectors extends Mixins(CommonMixin) {
     font-size: 1rem;
     color: $gray9;
     font-weight: bold;
-    padding-top: 1rem;
-    padding-bottom: 1rem;
     vertical-align: text-top;
-    min-width: 10rem; // same as officers-content
+    width: 8rem; // same as officers-content
   }
 
   .director-detail {
@@ -165,6 +150,7 @@ export default class CurrentDirectors extends Mixins(CommonMixin) {
   }
 }
 
+// do not highlight row on hover
 .director-content:hover {
   background: none !important;
 }
