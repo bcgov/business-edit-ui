@@ -2,7 +2,7 @@ import { shallowMount } from '@vue/test-utils'
 import MixinTester from '@/mixin-tester.vue'
 import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
-import { FilingTypes } from '@/enums'
+import { CorrectionErrorTypes, FilingTypes } from '@/enums'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 import * as utils from '@/utils'
 
@@ -137,6 +137,144 @@ describe('Filing Template Mixin', () => {
         }
       })
     )
+  })
+})
+
+describe('Correction Filing', () => {
+  let wrapper: any
+
+  beforeEach(() => {
+    wrapper = shallowMount(MixinTester)
+
+    store.stateModel.tombstone.businessId = 'BC1234567'
+    store.stateModel.tombstone.filingType = FilingTypes.CORRECTION
+    store.stateModel.tombstone.entityType = CorpTypeCd.BC_COMPANY
+
+    store.stateModel.correctionInformation = {
+      correctedFilingId: 123,
+      correctedFilingType: FilingTypes.ALTERATION,
+      correctedFilingDate: '2024-01-02',
+      comment: 'Default Comment',
+      type: CorrectionErrorTypes.STAFF
+    }
+
+    store.stateModel.entitySnapshot = {
+      businessInfo: {
+        foundingDate: 'Jan 01, 2000',
+        legalType: CorpTypeCd.BC_COMPANY,
+        identifier: 'BC1234567',
+        legalName: 'SomeMockBusiness'
+      },
+      addresses: null
+    } as any
+
+    // Reset share structure step between tests
+    store.stateModel.shareStructureStep = {
+      shareClasses: [],
+      resolutionDates: []
+    }
+  })
+
+  afterEach(() => {
+    wrapper.destroy()
+  })
+
+  it('correctly builds a Correction filing', () => {
+    const filing = wrapper.vm.buildCorrectionFiling(true)
+    expect(filing).toEqual(
+      expect.objectContaining({
+        business: {
+          foundingDate: 'Jan 01, 2000',
+          identifier: 'BC1234567',
+          legalName: 'SomeMockBusiness',
+          legalType: 'BC'
+        },
+        correction: {
+          legalType: 'BC',
+          business: {
+            identifier: 'BC1234567'
+          },
+          correctedFilingId: 123,
+          correctedFilingType: 'alteration',
+          correctedFilingDate: '2024-01-02',
+          comment: 'Correction for Alteration filed on January 2, 2024\n',
+          type: 'STAFF',
+          nameRequest: {
+            applicants: {},
+            consentFlag: null,
+            expirationDate: null,
+            furnished: null,
+            legalName: undefined,
+            legalType: null,
+            names: [],
+            nrNum: '',
+            nrNumber: '',
+            priorityCd: null,
+            requestTypeCd: null,
+            request_action_cd: null,
+            state: null
+          },
+          contactPoint: {
+            email: '',
+            extension: undefined,
+            phone: ''
+          },
+          offices: null,
+          parties: [],
+          nameTranslations: []
+        },
+        header: {
+          certifiedBy: '',
+          date: '',
+          folioNumber: undefined,
+          name: 'correction'
+        }
+      })
+    )
+  })
+
+  it('correctly builds a Correction filing with new resolution dates', () => {
+    store.stateModel.shareStructureStep.resolutionDates = ['2025-01-01']
+
+    const filing = wrapper.vm.buildCorrectionFiling(true)
+    expect(filing.correction.shareStructure).toEqual({
+      shareClasses: [],
+      resolutionDates: ['2025-01-01']
+    })
+  })
+
+  it('correctly builds a Correction filing with share structure changes', () => {
+    store.stateModel.shareStructureStep.shareClasses = [
+      {
+        id: '1',
+        name: 'Class A',
+        priority: 1,
+        hasMaximumShares: true,
+        maxNumberOfShares: 1000,
+        hasRightsOrRestrictions: true
+      }
+    ]
+    store.stateModel.shareStructureStep.resolutionDates = ['2025-01-01']
+
+    const filing = wrapper.vm.buildCorrectionFiling(true)
+    expect(filing.correction.shareStructure).toEqual({
+      shareClasses: [
+        {
+          id: '1',
+          name: 'Class A',
+          priority: 1,
+          hasMaximumShares: true,
+          maxNumberOfShares: 1000,
+          hasRightsOrRestrictions: true
+        }
+      ],
+      resolutionDates: ['2025-01-01']
+    })
+  })
+
+  it('does not include shareStructure if nothing changed', () => {
+    const filing = wrapper.vm.buildCorrectionFiling(true)
+    expect(filing.correction.shareStructure).toBeUndefined()
   })
 })
 

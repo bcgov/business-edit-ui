@@ -53,6 +53,7 @@ export default class FilingTemplateMixin extends DateMixin {
   @Getter(useStore) getNameRequestLegalName!: string
   @Getter(useStore) getNameTranslations!: NameTranslationIF[]
   @Getter(useStore) getNewResolutionDates!: string[]
+  @Getter(useStore) haveNewResolutionDates!: boolean
   @Getter(useStore) getOfficeAddresses!: AddressesIF
   @Getter(useStore) getOrgPeople!: OrgPersonIF[]
   @Getter(useStore) getOriginalBusinessInfo!: BusinessInformationIF
@@ -190,9 +191,11 @@ export default class FilingTemplateMixin extends DateMixin {
     // add in data specific to corp corrections
     if (this.isCorpCorrectionFiling) {
       filing.correction.nameTranslations = isDraft ? this.getNameTranslations : this.prepareNameTranslations()
-      filing.correction.shareStructure = {
-        shareClasses: isDraft ? this.getShareClasses : this.prepareShareClasses(),
-        resolutionDates: this.getNewResolutionDates
+      if (this.hasShareStructureChanged || this.haveNewResolutionDates) {
+        filing.correction.shareStructure = {
+          shareClasses: isDraft ? this.getShareClasses : this.prepareShareClasses(),
+          resolutionDates: this.getNewResolutionDates
+        }
       }
     }
 
