@@ -136,7 +136,7 @@ export default class CurrentDirectors extends Mixins(CommonMixin) {
 
 .director-table tbody .director-content {
   td {
-    font-size: 1rem;
+    font-size: $px-16;
     color: $gray9;
     font-weight: bold;
     vertical-align: text-top;
