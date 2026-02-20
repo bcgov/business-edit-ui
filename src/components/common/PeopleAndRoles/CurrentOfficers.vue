@@ -113,6 +113,12 @@
             <!-- Name + Badge -->
             <td class="py-4 pl-0 pr-1">
               <span class="officers-name">{{ formatFullName(orgPerson.officer) }}</span>
+              <div v-if="orgPerson.officer.alternateName">
+                <div class="mt-2 font-italic font-weight-regular">
+                  Preferred Name:
+                </div>
+                <span class="officers-alternate-name">{{ orgPerson.officer.alternateName }}</span>
+              </div>
             </td>
 
             <!-- Mailing Address -->
@@ -264,7 +270,7 @@ export default class CurrentOfficers extends Mixins(CommonMixin) {
 
 .officers-table tbody .officers-content {
   td {
-    font-size: 1rem;
+    font-size: $px-16;
     color: $gray9;
     font-weight: bold;
     vertical-align: text-top;
@@ -281,10 +287,10 @@ export default class CurrentOfficers extends Mixins(CommonMixin) {
   .roles-detail {
     font-size: $px-14;
     color: $gray7;
+    font-weight: normal;
     padding-top: 0;
     padding-bottom: 0;
     padding-left: 0;
-    font-weight: normal;
   }
 }
 

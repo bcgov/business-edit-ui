@@ -10,7 +10,7 @@ import { AlternateNameIF } from '@bcrs-shared-components/interfaces'
 export interface BusinessInformationIF {
   alternateNames?: Array<AlternateNameIF>
   foundingDate: string // actually date-time (API format)
-  goodStanding: boolean
+  goodStanding?: boolean // from API only
   hasRestrictions?: boolean
   identifier: string
   legalName: string
