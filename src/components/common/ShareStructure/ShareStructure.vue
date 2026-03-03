@@ -110,7 +110,7 @@
             {{ row.item.maxNumberOfShares ? (+row.item.maxNumberOfShares).toLocaleString() : 'No Maximum' }}
           </td>
           <td class="text-right">
-            {{ row.item.parValue ? `$${formatParValue(row.item.parValue)}` : 'No Par Value' }}
+            {{ formatParValue(row.item) }}
           </td>
           <td>{{ row.item.parValue ? row.item.currency : null }}</td>
           <td>{{ row.item.hasRightsOrRestrictions ? 'Yes' : 'No' }}</td>
@@ -320,7 +320,7 @@
               {{ seriesItem.maxNumberOfShares ? (+seriesItem.maxNumberOfShares).toLocaleString() : 'No Maximum' }}
             </td>
             <td class="text-right">
-              {{ row.item.parValue ? `$${formatParValue(row.item.parValue)}` : 'No Par Value' }}
+              {{ formatParValue(row.item) }}
             </td>
             <td>{{ row.item.parValue ? row.item.currency : null }}</td>
             <td>{{ seriesItem.hasRightsOrRestrictions ? 'Yes' : 'No' }}</td>
@@ -535,6 +535,7 @@ import { ConfirmDialog } from '@bcrs-shared-components/confirm-dialog'
 import EditShareStructure from './EditShareStructure.vue'
 import { ConfirmDialogType, ShareClassIF, ShareStructureIF } from '@bcrs-shared-components/interfaces'
 import { ActionTypes } from '@bcrs-shared-components/enums'
+import { FormatCurrency } from '@/utils'
 
 @Component({
   components: {
@@ -650,14 +651,17 @@ export default class ShareStructure extends Vue {
     return !!this.shareClasses.find(shareClass => shareClass.series.some(x => x.action))
   }
 
-  /**
-   * Format the display par value with cents value, if it doesn't already contain it.
-   * @param parValue The value to evaluate and format.
-   * @returns A formatted par value string
-   * */
-  protected formatParValue (parValue: string): string {
-    const hasParCents = (parValue.toString()).includes('.')
-    return hasParCents ? parValue : `${parValue}.00`
+  /** Returns a formatted par value. */
+  formatParValue (item: any): string {
+    if (!item.parValue) return 'No Par Value'
+
+    // format some currencies
+    if (['AUD', 'CAD', 'USD'].includes(item.currency)) {
+      return '$' + FormatCurrency(item.parValue)
+    }
+
+    // no formatting for other currencies
+    return item.parValue.toString()
   }
 
   /** Set dropdown models to root state. */

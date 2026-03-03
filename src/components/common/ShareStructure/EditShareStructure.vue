@@ -229,6 +229,7 @@ import { ConfirmDialogType, FormIF, ShareClassIF } from '@bcrs-shared-components
 import { ActionTypes } from '@bcrs-shared-components/enums'
 import CurrencyLookupMixin from '../../../mixins/currency-lookup-mixin'
 import { VuetifyRuleFunction } from '@/types'
+import { SignificantDigits } from '@/utils/SignificantDigits'
 
 @Component({
   components: {
@@ -357,17 +358,14 @@ export default class EditShareStructure extends Mixins(CurrencyLookupMixin) {
 
   /** The rules applying to the Class/Series par value input field. */
   get parValueRule (): Array<VuetifyRuleFunction> {
-    let rules: Array<VuetifyRuleFunction> = []
-    if (!this.hasNoParValue) {
-      rules = [
-        v => (v !== '' && v !== null && v !== undefined) || 'Par value is required',
-        v => v > 0 || 'Amount must be greater than 0',
-        v => (v < 1)
-          ? (/^\d+(\.\d{0,6})?$/.test(v) || 'Amounts less than 1 can be entered with up to 6 decimal places')
-          : (/^\d+(\.\d{1,2})?$/.test(v) || 'Amounts greater than 1 can be entered with up to 2 decimal places')
-      ]
-    }
-    return rules
+    if (this.hasNoParValue) return []
+
+    return [
+      v => (v !== '' && v !== null && v !== undefined) || 'Par value is required',
+      v => Number.isFinite(Number(v)) || 'Par value must be a valid number',
+      v => v > 0 || 'Amount must be greater than 0',
+      v => SignificantDigits(v) <= 16 || 'Amount has too many significant digits'
+    ]
   }
 
   /** The rules applying to the Class/Series currency input field. */
