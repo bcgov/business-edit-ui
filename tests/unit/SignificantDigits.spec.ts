@@ -76,8 +76,7 @@ describe('SignificantDigits', () => {
   it('handles long numbers', () => {
     expect(SignificantDigits(1234567890123456)).toBe(16)
     expect(SignificantDigits(1234567890.123456)).toBe(16)
-    // eslint-disable-next-line @typescript-eslint/no-loss-of-precision
-    expect(SignificantDigits(12345678901234567)).toBe(17)
-    expect(SignificantDigits(1234567890.1234567)).toBe(17)
+    expect(SignificantDigits('12345678901234567')).toBe(17)
+    expect(SignificantDigits('1234567890.1234567')).toBe(17)
   })
 })

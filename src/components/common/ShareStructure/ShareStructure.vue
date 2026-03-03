@@ -999,9 +999,9 @@ export default class ShareStructure extends Vue {
    */
   protected resetData (): void {
     function scrollToTop (element: any): void {
-      const isJestRunning = (import.meta.env.JEST_WORKER_ID !== undefined)
-      // don't call window.scrollTo during Jest tests because jsdom doesn't implement it
-      if (!isJestRunning) window.scrollTo({ top: element.offsetTop, behavior: 'smooth' })
+      const isVitestRunning = (import.meta.env.VITEST !== undefined)
+      // don't call window.scrollTo during Vitest tests because jsdom doesn't implement it
+      if (!isVitestRunning) window.scrollTo({ top: element.offsetTop, behavior: 'smooth' })
     }
 
     this.currentShareStructure = null
