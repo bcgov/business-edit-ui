@@ -1,4 +1,5 @@
 export { default as CommonMixin } from './common-mixin'
+export { default as CurrencyLookupMixin } from './currency-lookup-mixin'
 export { default as DateMixin } from './date-mixin'
 export { default as FeeMixin } from './fee-mixin'
 export { default as FilingTemplateMixin } from './filing-template-mixin'
