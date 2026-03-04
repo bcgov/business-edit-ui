@@ -10,7 +10,7 @@ import { AddressesIF, AlterationFilingIF, BusinessInformationIF, CertifyIF, Coop
 import { CompletingPartyIF, ContactPointIF, NaicsIF, NameRequestIF, ShareClassIF, SpecialResolutionIF,
   StaffPaymentIF } from '@bcrs-shared-components/interfaces/'
 import { ActionTypes, CoopTypes, CorrectionErrorTypes, EffectOfOrders, FilingTypes, PartyTypes, RelationshipTypes,
-  RoleTypes } from '@/enums/'
+  RestorationTypes, RoleTypes } from '@/enums/'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 import { StaffPaymentOptions } from '@bcrs-shared-components/enums/'
 import { FilingTypeToName } from '@/utils'
@@ -398,7 +398,9 @@ export default class FilingTemplateMixin extends DateMixin {
         },
         parties: null, // applied below
         offices: this.getOfficeAddresses,
-        contactPoint: this.getContactPoint
+        contactPoint: this.getRestoration.type !== RestorationTypes.LTD_EXTEND
+          ? this.getContactPoint
+          : undefined
       }
     }
     // Apply parties to filing

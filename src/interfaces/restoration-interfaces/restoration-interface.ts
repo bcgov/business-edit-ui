@@ -13,7 +13,7 @@ export interface RestorationIF {
     identifier: string
     legalType: CorpTypeCd
   }
-  contactPoint: ContactPointIF
+  contactPoint?: ContactPointIF
   courtOrder?: CourtOrderIF
   expiry?: string // YYYY-MM-DD
   // intersection type so we can save original NR + properties needed by Legal API:
