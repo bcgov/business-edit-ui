@@ -399,8 +399,8 @@ export default class FilingTemplateMixin extends DateMixin {
         parties: null, // applied below
         offices: this.getOfficeAddresses,
         contactPoint: this.getRestoration.type !== RestorationTypes.LTD_EXTEND
-        ? this.getContactPoint
-        : undefined
+          ? this.getContactPoint
+          : undefined
       }
     }
     // Apply parties to filing

@@ -11,7 +11,7 @@
       :hasBusinessContactInfoChange="hasBusinessContactInfoChange"
       :editLabel="getEditLabel"
       :editedLabel="getEditSavedLabel"
-      :disableActions="isLimitedRestorationExtension"   
+      :disableActions="isLimitedRestorationExtension"
       :disableActionTooltip="isFirmChangeFiling"
       :invalidSection="invalidSection"
       :optionalPhone="isAlterationFiling || isFirmChangeFiling"
