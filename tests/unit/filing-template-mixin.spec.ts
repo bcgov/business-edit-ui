@@ -2,7 +2,7 @@ import { shallowMount } from '@vue/test-utils'
 import MixinTester from '@/mixin-tester.vue'
 import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
-import { CorrectionErrorTypes, FilingTypes } from '@/enums'
+import { CorrectionErrorTypes, FilingTypes, RestorationTypes } from '@/enums'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 import * as utils from '@/utils'
 
@@ -463,5 +463,46 @@ describe('Change of Registration Filing', () => {
 
   // FUTURE
   it.skip('correctly builds a Conversion filing', () => {
+  })
+})
+
+describe('Restoration Filing', () => {
+  let wrapper: any
+
+  beforeEach(() => {
+    wrapper = shallowMount(MixinTester)
+
+    store.stateModel.tombstone.businessId = 'BC1234567'
+    store.stateModel.tombstone.filingType = FilingTypes.RESTORATION
+    store.stateModel.tombstone.entityType = CorpTypeCd.BC_COMPANY
+
+    store.stateModel.entitySnapshot = {
+      businessInfo: {
+        foundingDate: 'Jan 01, 2000',
+        legalType: CorpTypeCd.BC_COMPANY,
+        identifier: 'BC1234567',
+        legalName: 'SomeMockBusiness'
+      }
+    } as any
+  })
+
+  afterEach(() => {
+    wrapper.destroy()
+  })
+
+  it('excludes contactPoint for a limited restoration extension', () => {
+    store.stateModel.restoration.type = RestorationTypes.LTD_EXTEND
+
+    const filing = wrapper.vm.buildRestorationFiling(true)
+
+    expect(filing.restoration.contactPoint).toBeUndefined()
+  })
+
+  it('includes contactPoint for a limited restoration to full', () => {
+    store.stateModel.restoration.type = RestorationTypes.LTD_TO_FULL
+
+    const filing = wrapper.vm.buildRestorationFiling(true)
+
+    expect(filing.restoration.contactPoint).toBeDefined()
   })
 })
