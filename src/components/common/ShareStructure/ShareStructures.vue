@@ -28,7 +28,7 @@
 <script lang="ts">
 import { Component, Mixins, Prop, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
-import { ShareStructure as ShareStructureShared } from '@bcrs-shared-components/share-structure/'
+import ShareStructureShared from './ShareStructure.vue'
 import { ResolutionDateDialog } from '@/dialogs/'
 import { CommonMixin } from '@/mixins/'
 import { ActionKvIF, EntitySnapshotIF, ShareClassIF, ShareStructureIF, FlagsCompanyInfoIF }
