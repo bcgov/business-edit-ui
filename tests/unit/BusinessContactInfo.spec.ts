@@ -229,3 +229,44 @@ describe('Business Contact Info for a Limited Restoration Extension', () => {
     expect(wrapper.find('#contact-info-edit-btn').exists()).toBe(false)
   })
 })
+
+describe('Business Contact Info for a Limited Restoration to Full', () => {
+  let wrapper: any
+
+  const originalContact = {
+    email: 'mock@example.com',
+    confirmEmail: 'mock@example.com',
+    phone: '(250) 123-4567'
+  }
+
+  beforeAll(async () => {
+    store.stateModel.tombstone.filingType = FilingTypes.RESTORATION
+    store.stateModel.restoration.type = RestorationTypes.LTD_TO_FULL
+    sessionStorage.setItem('AUTH_API_GW_URL', 'https://auth-api-gw.url/')
+    store.stateModel.tombstone.businessId = 'BC1234567'
+    store.stateModel.businessContact = contactInfo
+    store.stateModel.entitySnapshot = { authInfo: { contact: originalContact } } as any
+  })
+
+  beforeEach(async () => {
+    wrapper = mount(BusinessContactInfo, { vuetify })
+  })
+
+  afterEach(() => {
+    wrapper.destroy()
+  })
+
+  it('renders the BusinessContactInfo component', async () => {
+    expect(wrapper.findComponent(BusinessContactInfo).exists()).toBe(true)
+  })
+
+  it('does not disable actions for limited restoration to full', async () => {
+    expect(wrapper.vm.isLimitedRestorationExtension).toBe(false)
+    const contactInfoShared = wrapper.findComponent({ name: 'ContactInfo' })
+    expect(contactInfoShared.props('disableActions')).toBe(false)
+  })
+
+  it('edit button is rendered when actions are not disabled', async () => {
+    expect(wrapper.find('#contact-info-edit-btn').exists()).toBe(true)
+  })
+})
