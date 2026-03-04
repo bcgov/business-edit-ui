@@ -5,7 +5,7 @@ import BusinessContactInfo from '@/components/common/YourCompany/BusinessContact
 import AuthServices from '@/services/auth-services'
 import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
-import { FilingTypes } from '@/enums'
+import { FilingTypes, RestorationTypes } from '@/enums'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 
 const vuetify = new Vuetify({})
@@ -186,5 +186,46 @@ describe('Business Contact Info for a Change of Registration', () => {
 
     // Verify there is NO diff between current and original contact data
     expect(wrapper.vm.hasBusinessContactInfoChange).toBe(false)
+  })
+})
+
+describe('Business Contact Info for a Limited Restoration Extension', () => {
+  let wrapper: any
+
+  const originalContact = {
+    email: 'mock@example.com',
+    confirmEmail: 'mock@example.com',
+    phone: '(250) 123-4567'
+  }
+
+  beforeAll(async () => {
+    store.stateModel.tombstone.filingType = FilingTypes.RESTORATION
+    store.stateModel.restoration.type = RestorationTypes.LTD_EXTEND
+    sessionStorage.setItem('AUTH_API_GW_URL', 'https://auth-api-gw.url/')
+    store.stateModel.tombstone.businessId = 'BC1234567'
+    store.stateModel.businessContact = contactInfo
+    store.stateModel.entitySnapshot = { authInfo: { contact: originalContact } } as any
+  })
+
+  beforeEach(async () => {
+    wrapper = mount(BusinessContactInfo, { vuetify })
+  })
+
+  afterEach(() => {
+    wrapper.destroy()
+  })
+
+  it('renders the BusinessContactInfo component', async () => {
+    expect(wrapper.findComponent(BusinessContactInfo).exists()).toBe(true)
+  })
+
+  it('disables actions for limited restoration extension', async () => {
+    expect(wrapper.vm.isLimitedRestorationExtension).toBe(true)
+    const contactInfoShared = wrapper.findComponent({ name: 'ContactInfo' })
+    expect(contactInfoShared.props('disableActions')).toBe(true)
+  })
+
+  it('edit button is not rendered when actions are disabled', async () => {
+    expect(wrapper.find('#contact-info-edit-btn').exists()).toBe(false)
   })
 })

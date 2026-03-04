@@ -11,6 +11,7 @@
       :hasBusinessContactInfoChange="hasBusinessContactInfoChange"
       :editLabel="getEditLabel"
       :editedLabel="getEditSavedLabel"
+      :disableActions="isLimitedRestorationExtension"   
       :disableActionTooltip="isFirmChangeFiling"
       :invalidSection="invalidSection"
       :optionalPhone="isAlterationFiling || isFirmChangeFiling"
@@ -48,6 +49,7 @@ export default class BusinessContactInfo extends Mixins(CommonMixin) {
   @Getter(useStore) getResource!: ResourceIF
   @Getter(useStore) isAlterationFiling!: boolean
   @Getter(useStore) isFirmChangeFiling!: boolean
+  @Getter(useStore) isLimitedRestorationExtension!: boolean
 
   // Global setters
   @Action(useStore) setBusinessContact!: (x: ContactPointIF) => void
