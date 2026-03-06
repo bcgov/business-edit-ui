@@ -81,7 +81,7 @@ enum ButtonState {
 type ButtonStatusMap = {
   [key in FeeSummaryActions]: ButtonState
 }
-// eslint-enable no-unused-vars
+/* eslint-enable no-unused-vars */
 
 @Component({
   components: { SbcFeeSummary }

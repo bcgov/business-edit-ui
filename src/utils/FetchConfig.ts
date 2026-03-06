@@ -52,11 +52,8 @@ export function FetchConfig (): void {
   // note: PAY_API_URL is also used for SbcFeeSummary
   sessionStorage.setItem('PAY_API_URL', payApiUrl)
 
-  const payApiKey: string = (import.meta.env.VUE_APP_PAY_API_KEY + import.meta.env.VUE_APP_PAY_API_VERSION + '/')
-  sessionStorage.setItem('PAY_API_KEY', payApiKey)
-
   const statusApiUrl: string = (import.meta.env.VUE_APP_STATUS_API_URL + import.meta.env.VUE_APP_STATUS_API_VERSION)
-  // note: STATUS_API_URL is used for whatsnew (SbcHeader)
+  // note: STATUS_API_URL is needed for whatsnew (SbcHeader)
   sessionStorage.setItem('STATUS_API_URL', statusApiUrl)
 
   const siteminderLogoutUrl: string = import.meta.env.VUE_APP_SITEMINDER_LOGOUT_URL
