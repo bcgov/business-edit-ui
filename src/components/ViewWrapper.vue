@@ -33,7 +33,7 @@
 
             <!-- Alteration/Change/Conversion/Restoration filings use the enhanced Fee Summary shared component -->
             <v-expand-transition>
-              <FeeSummaryShared
+              <FeeSummary
                 v-if="showFeeSummaryShared"
                 :filingData="getFilingData"
                 :payApiUrl="payApiUrl"
@@ -65,8 +65,7 @@ import { Component, Mixins } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
 import { IsAuthorized, Navigate } from '@/utils/'
 import SbcFeeSummary from 'sbc-common-components/src/components/SbcFeeSummary.vue'
-import { FeeSummary as FeeSummaryShared } from '@bcrs-shared-components/fee-summary/'
-import { Actions, EntityInfo } from '@/components/common/'
+import { Actions, EntityInfo, FeeSummary } from '@/components/common/'
 import { ConfirmDialog as ConfirmDialogShared } from '@bcrs-shared-components/confirm-dialog/'
 import { LegalServices } from '@/services/'
 import { CommonMixin, FilingTemplateMixin } from '@/mixins/'
@@ -84,7 +83,7 @@ import flushPromises from 'flush-promises'
     affix,
     ConfirmDialogShared,
     EntityInfo,
-    FeeSummaryShared,
+    FeeSummary,
     SbcFeeSummary
   }
 })

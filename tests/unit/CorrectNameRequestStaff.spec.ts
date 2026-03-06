@@ -32,7 +32,7 @@ describe('CorrectNameRequestStaff', () => {
   }
 
   beforeAll(() => {
-    sessionStorage.setItem('LEGAL_API_URL', 'https://legal-api.url/')
+    sessionStorage.setItem('BUSINESS_API_URL', 'https://business-api.url/')
     store.stateModel.tombstone.entityType = CorpTypeCd.BC_COMPANY
   })
 

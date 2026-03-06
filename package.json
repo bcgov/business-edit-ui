@@ -1,6 +1,6 @@
 {
   "name": "business-edit-ui",
-  "version": "4.15.9",
+  "version": "4.16.0",
   "private": true,
   "appName": "Business Edit UI",
   "sbcName": "SBC Common Components",
@@ -32,7 +32,6 @@
     "@bcrs-shared-components/date-picker": "1.2.5",
     "@bcrs-shared-components/detail-comment": "1.1.3",
     "@bcrs-shared-components/enums": "1.1.28",
-    "@bcrs-shared-components/fee-summary": "2.0.46",
     "@bcrs-shared-components/folio-number": "1.1.1",
     "@bcrs-shared-components/help-business-number": "1.1.1",
     "@bcrs-shared-components/interfaces": "1.1.25",
@@ -52,7 +51,7 @@
     "pinia": "^2.0.35",
     "pinia-class": "^0.0.3",
     "regenerator-runtime": "^0.13.11",
-    "sbc-common-components": "3.0.15-a",
+    "sbc-common-components": "3.1.9",
     "tiptap-vuetify": "^2.24.0",
     "uuid": "^9.0.0",
     "vue": "2.7.16",
@@ -96,5 +95,12 @@
     "vuelidate-property-decorators": "1.0.28",
     "vuex-class": "^0.3.2",
     "vuex-module-decorators": "^1.2.0"
+  },
+  "overrides": {
+    "vue": "2.7.16"
+  },
+  "peerDependencies": {
+    "@vue/composition-api": "^1.7.2",
+    "vue": "^2.6.11"
   }
 }

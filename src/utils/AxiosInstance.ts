@@ -12,9 +12,9 @@ function getAccountId (): number {
   return JSON.parse(currentAccount)?.id || null
 }
 
-const authApiGwUrl = sessionStorage.getItem('AUTH_API_GW_URL')
+const authApiUrl = sessionStorage.getItem('AUTH_API_URL')
 const registriesSearchApiUrl = sessionStorage.getItem('REGISTRIES_SEARCH_API_URL')
-const payApiGwUrl = sessionStorage.getItem('PAY_API_GW_URL')
+const payApiUrl = sessionStorage.getItem('PAY_API_URL')
 
 // create a new, independent instance of Axios
 const instance = axios.create()
@@ -37,7 +37,7 @@ instance.interceptors.request.use(
 
       // add headers specific to various APIs
       switch (true) {
-        case request.url?.startsWith(authApiGwUrl):
+        case request.url?.startsWith(authApiUrl):
           request.headers.common['X-Apikey'] = import.meta.env.VUE_APP_AUTH_API_KEY
           break
 
@@ -45,12 +45,12 @@ instance.interceptors.request.use(
           request.headers.common['X-Apikey'] = import.meta.env.VUE_APP_REGISTRIES_SEARCH_API_KEY
           break
 
-        case request.url?.startsWith(payApiGwUrl):
+        case request.url?.startsWith(payApiUrl):
           request.headers.common['X-Apikey'] = import.meta.env.VUE_APP_PAY_API_KEY
           break
 
         default:
-          // used by Business API GW and NAICS API
+          // used for Business API URL
           request.headers.common['X-Apikey'] = import.meta.env.VUE_APP_BUSINESS_API_KEY
           break
       }
