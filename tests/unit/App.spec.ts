@@ -9,7 +9,7 @@ import App from '@/App.vue'
 import SbcHeader from 'sbc-common-components/src/components/SbcHeader.vue'
 import SbcFooter from 'sbc-common-components/src/components/SbcFooter.vue'
 import SbcFeeSummary from 'sbc-common-components/src/components/SbcFeeSummary.vue'
-import { FeeSummary as FeeSummaryShared } from '@bcrs-shared-components/fee-summary/'
+import FeeSummary from '@/components/common/FeeSummary.vue'
 import Actions from '@/components/common/Actions.vue'
 import EntityInfo from '@/components/common/EntityInfo.vue'
 import FileAndPayInvalidNameRequestDialog from '@/dialogs/FileAndPayInvalidNameRequestDialog.vue'
@@ -273,7 +273,7 @@ describe.skip('Numbered company setup', () => {
   let wrapper: any
   const { assign } = window.location
   sessionStorage.setItem('AUTH_WEB_URL', 'https://auth-web.url/')
-  sessionStorage.setItem('AUTH_API_GW_URL', 'https://auth-api-gw.url/')
+  sessionStorage.setItem('AUTH_API_URL', 'https://auth-api.url/')
   sessionStorage.setItem('BUSINESS_DASH_URL', 'https://business-dash.url/')
 
   beforeEach(async () => {
@@ -386,7 +386,7 @@ describe.skip('App component', () => {
   let wrapper: any
   const { assign } = window.location
   sessionStorage.setItem('AUTH_WEB_URL', 'https://auth-web.url/')
-  sessionStorage.setItem('AUTH_API_GW_URL', 'https://auth-api-gw.url/')
+  sessionStorage.setItem('AUTH_API_URL', 'https://auth-api.url/')
   sessionStorage.setItem('BUSINESS_DASH_URL', 'https://business-dash.url/')
 
   beforeEach(async () => {
@@ -544,7 +544,7 @@ describe('App component - other', () => {
 
   beforeAll(() => {
     sessionStorage.clear()
-    sessionStorage.setItem('AUTH_API_GW_URL', 'https://auth-api-gw.url/')
+    sessionStorage.setItem('AUTH_API_URL', 'https://auth-api.url/')
     sessionStorage.setItem('KEYCLOAK_TOKEN', 'keycloak-token') // anything non-falsy
     sessionStorage.setItem('BUSINESS_ID', 'BC0007291')
     sessionStorage.setItem('CURRENT_ACCOUNT', '{ "id": 668 }')
@@ -554,7 +554,7 @@ describe('App component - other', () => {
     const get = sinon.stub(axios, 'get')
 
     // GET current user
-    get.withArgs('https://auth-api-gw.url/users/@me')
+    get.withArgs('https://auth-api.url/users/@me')
       .returns(Promise.resolve({
         data:
         {
@@ -565,7 +565,7 @@ describe('App component - other', () => {
       }))
 
     // GET org info
-    get.withArgs('https://auth-api-gw.url/orgs/668')
+    get.withArgs('https://auth-api.url/orgs/668')
       .returns(Promise.resolve({
         data: {
           mailingAddress: {
@@ -609,7 +609,7 @@ describe('App component - other', () => {
     expect(wrapper.findComponent(SbcHeader).exists()).toBe(true)
     expect(wrapper.findComponent(SbcFooter).exists()).toBe(true)
     expect(wrapper.findComponent(SbcFeeSummary).exists()).toBe(false) // not used for alterations
-    expect(wrapper.findComponent(FeeSummaryShared).exists()).toBe(false) // not displayed initially
+    expect(wrapper.findComponent(FeeSummary).exists()).toBe(false) // not displayed initially
     expect(wrapper.findComponent(SbcFooter).exists()).toBe(true)
     expect(wrapper.findComponent(EntityInfo).exists()).toBe(true)
     expect(wrapper.findComponent(Actions).exists()).toBe(false) // not used for alterations

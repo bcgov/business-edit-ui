@@ -12,7 +12,7 @@ import Vue2Filters from 'vue2-filters' // needed by SbcFeeSummary
 import Hotjar from 'vue-hotjar'
 import { TiptapVuetifyPlugin } from 'tiptap-vuetify'
 import { getVueRouter } from '@/router/'
-import { getPiniaStore, getVuexStore } from '@/store/'
+import { createPinia, PiniaVuePlugin } from 'pinia'
 
 // Styles
 // NB: order matters - do not change
@@ -40,6 +40,7 @@ Vue.use(Vuetify)
 Vue.use(Affix)
 Vue.use(Vuelidate)
 Vue.use(Vue2Filters)
+Vue.use(PiniaVuePlugin)
 
 // Default options - https://github.com/apostrophecms/sanitize-html (under Default options)
 Vue.use(VueSanitize)
@@ -109,9 +110,7 @@ async function start () {
   new Vue({
     vuetify: vuetify,
     router: getVueRouter(),
-    // We still need Vuex for sbc-common-components.
-    store: getVuexStore(),
-    pinia: getPiniaStore(),
+    pinia: createPinia(),
     render: h => h(App)
   }).$mount('#app')
 }

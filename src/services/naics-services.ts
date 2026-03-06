@@ -5,9 +5,9 @@ import { NaicsResultIF } from '@bcrs-shared-components/interfaces/'
  * Class that provides integration with the NAICS API.
  */
 export default class NaicsServices {
-  /** The NAICS URL. */
+  /** The NAICS URL - same as Business API URL. */
   static get naicsUrl (): string {
-    return sessionStorage.getItem('NAICS_URL')
+    return sessionStorage.getItem('BUSINESS_API_URL')
   }
 
   /**

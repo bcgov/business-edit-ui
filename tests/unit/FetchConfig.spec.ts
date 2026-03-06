@@ -16,12 +16,8 @@ describe('Fetch Config', () => {
   import.meta.env.VUE_APP_BUSINESS_EDIT_LD_CLIENT_ID = 'ld-client-id'
   import.meta.env.VUE_APP_BUSINESS_DASH_URL = 'https://business-dash.url'
   import.meta.env.VUE_APP_BUSINESS_REGISTRY_URL = 'https://business-registry.url'
-  import.meta.env.VUE_APP_LEGAL_API_URL = 'https://legal-api.url'
-  import.meta.env.VUE_APP_LEGAL_API_VERSION_2 = '/legal-api-version-2'
-  // import.meta.env.VUE_APP_BUSINESS_API_GW_URL = 'https://business-api-gw.url'
-  // import.meta.env.VUE_APP_BUSINESS_API_VERSION_2 = '/business-api-version-2'
-  import.meta.env.VUE_APP_NAICS_API_URL = 'https://naics-api.url'
-  import.meta.env.VUE_APP_NAICS_API_VERSION_2 = '/naics-api-version'
+  import.meta.env.VUE_APP_BUSINESS_API_GW_URL = 'https://business-api-gw.url'
+  import.meta.env.VUE_APP_BUSINESS_API_VERSION_2 = '/business-api-version-2'
   import.meta.env.VUE_APP_PAY_API_GW_URL = 'https://pay-api-gw.url'
   import.meta.env.VUE_APP_PAY_API_VERSION = '/pay-api-version'
   import.meta.env.VUE_APP_REGISTRY_HOME_URL = 'https://registry-home.url'
@@ -48,20 +44,18 @@ describe('Fetch Config', () => {
     FetchConfig()
 
     // verify data
-    expect(sessionStorage.getItem('AUTH_API_GW_URL')).toBe('https://auth-api-gw.url/auth-api-version/')
+    expect(sessionStorage.getItem('AUTH_API_URL')).toBe('https://auth-api-gw.url/auth-api-version/')
     expect(sessionStorage.getItem('AUTH_WEB_URL')).toBe('https://auth-web.url')
     expect(sessionStorage.getItem('BUSINESS_DASH_URL')).toBe('https://business-dash.url')
     expect(sessionStorage.getItem('BUSINESS_REGISTRY_URL')).toBe('https://business-registry.url')
-    expect(sessionStorage.getItem('LEGAL_API_URL')).toBe('https://legal-api.url/legal-api-version-2/')
-    // expect(sessionStorage.getItem('BUSINESS_API_GW_URL')).toBe('https://business-api-gw.url/business-api-version-2/')
-    expect(sessionStorage.getItem('NAICS_URL')).toBe('https://naics-api.url/naics-api-version/')
-    expect(sessionStorage.getItem('PAY_API_GW_URL')).toBe('https://pay-api-gw.url/pay-api-version/')
+    expect(sessionStorage.getItem('BUSINESS_API_URL')).toBe('https://business-api-gw.url/business-api-version-2/')
+    expect(sessionStorage.getItem('PAY_API_URL')).toBe('https://pay-api-gw.url/pay-api-version/')
     expect(sessionStorage.getItem('REGISTRY_HOME_URL')).toBe('https://registry-home.url')
     expect(sessionStorage.getItem('NAME_REQUEST_URL')).toBe('https://name-request.url')
     expect(sessionStorage.getItem('REGISTRIES_SEARCH_API_URL')).toBe('https://registries-search-api.url/registries-search-api-version/')
     expect(sessionStorage.getItem('SITEMINDER_LOGOUT_URL')).toBe('https://siteminder-logout.url')
     expect(sessionStorage.getItem('STATUS_API_URL')).toBe('https://status-api.url/status-api-version')
-    expect(AxiosInstance.defaults.baseURL).toBe('https://legal-api.url/legal-api-version-2/')
+    expect(AxiosInstance.defaults.baseURL).toBe('https://business-api-gw.url/business-api-version-2/')
     expect(window['addressCompleteKey']).toBe('address-complete-key')
     expect(window['keycloakAuthUrl']).toBe('https://keycloak-auth.url')
     expect(window['keycloakRealm']).toBe('bcregistry')
