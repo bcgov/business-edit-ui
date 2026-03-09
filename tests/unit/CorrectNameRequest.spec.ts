@@ -36,7 +36,7 @@ describe('CorrectNameRequest', () => {
   const get = sinon.stub(axios, 'get')
 
   beforeAll(() => {
-    sessionStorage.setItem('LEGAL_API_URL', 'https://legal-api.url/')
+    sessionStorage.setItem('BUSINESS_API_URL', 'https://business-api.url/')
     store.stateModel.tombstone.entityType = CorpTypeCd.BC_COMPANY
   })
 
@@ -299,7 +299,7 @@ describe('CorrectNameRequest', () => {
     } as any
 
     // GET NR Data
-    get.withArgs('https://legal-api.url/nameRequests/NR 1234567/validate?phone=250 516 8257&email=')
+    get.withArgs('https://business-api.url/nameRequests/NR 1234567/validate?phone=250 516 8257&email=')
       .returns(Promise.resolve({
         data:
           {
@@ -343,7 +343,7 @@ describe('CorrectNameRequest', () => {
     const vm = wrapper.vm as any
 
     // GET NR Data
-    get.withArgs('https://legal-api.url/nameRequests/NR 1234567/validate?phone=250 516 8258&email=mock@example.com')
+    get.withArgs('https://business-api.url/nameRequests/NR 1234567/validate?phone=250 516 8258&email=mock@example.com')
       .returns(Promise.resolve({
         data:
           {
@@ -388,7 +388,7 @@ describe('CorrectNameRequest', () => {
     const vm = wrapper.vm as any
 
     // GET NR Data
-    get.withArgs('https://legal-api.url/nameRequests/NR 1234567/validate?phone=250 516 8258&email=mock@example.com')
+    get.withArgs('https://business-api.url/nameRequests/NR 1234567/validate?phone=250 516 8258&email=mock@example.com')
       .returns(Promise.resolve({
         data:
           {
@@ -435,7 +435,7 @@ describe('CorrectNameRequest', () => {
     store.stateModel.tombstone.currentDate = '2021-01-20'
 
     // GET NR Data
-    get.withArgs('https://legal-api.url/nameRequests/NR 1234567/validate?phone=250 516 8257&email=')
+    get.withArgs('https://business-api.url/nameRequests/NR 1234567/validate?phone=250 516 8257&email=')
       .returns(Promise.resolve({
         data:
           {
@@ -492,7 +492,7 @@ describe('CorrectNameRequest', () => {
     } as any
 
     // GET NR Data
-    get.withArgs('https://legal-api.url/nameRequests/NR 1234567/validate?phone=250 516 8257&email=')
+    get.withArgs('https://business-api.url/nameRequests/NR 1234567/validate?phone=250 516 8257&email=')
       .returns(Promise.resolve({
         data:
           {
@@ -544,7 +544,7 @@ describe('CorrectNameRequest', () => {
     } as any
 
     // GET NR Data
-    get.withArgs('https://legal-api.url/nameRequests/NR 1234567/validate?phone=250 516 8258&email=')
+    get.withArgs('https://business-api.url/nameRequests/NR 1234567/validate?phone=250 516 8258&email=')
       .returns(Promise.resolve({
         data:
           {

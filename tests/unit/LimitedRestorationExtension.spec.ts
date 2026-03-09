@@ -196,7 +196,7 @@ const newAddress = {
 }
 
 // init session storage variables
-sessionStorage.setItem('PAY_API_GW_URL', 'https://pay-api-gw.url/')
+sessionStorage.setItem('PAY_API_URL', 'https://pay-api.url/')
 sessionStorage.setItem('KEYCLOAK_TOKEN', 'keycloak-token') // anything non-falsy
 
 describe('Limited Restoration Extension component - edit page', () => {
