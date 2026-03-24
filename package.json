@@ -1,6 +1,6 @@
 {
   "name": "business-edit-ui",
-  "version": "4.16.1",
+  "version": "4.17.0",
   "private": true,
   "appName": "Business Edit UI",
   "sbcName": "SBC Common Components",
@@ -101,6 +101,6 @@
     "vue": "^2.6.11"
   },
   "engines": {
-    "node": ">=26"
+    "node": ">=24"
   }
 }
