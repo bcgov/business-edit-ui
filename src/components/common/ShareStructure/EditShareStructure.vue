@@ -57,9 +57,10 @@
                     <template #label>
                       <v-row>
                         <v-col cols="6">
+                          <!-- Use type="number" to restrict input to numbers even though the v-model is a string. -->
                           <v-text-field
                             id="txt-max-shares"
-                            v-model.number="shareStructure.maxNumberOfShares"
+                            v-model="maxNumberOfShares"
                             filled
                             label="Maximum Number of Shares"
                             persistent-hint
@@ -98,9 +99,10 @@
                     <template #label>
                       <v-row>
                         <v-col cols="6">
+                          <!-- Use type="number" to restrict input to numbers even though the v-model is a string. -->
                           <v-text-field
                             id="class-par-value"
-                            v-model.number="shareStructure.parValue"
+                            v-model="parValue"
                             filled
                             label="Par Value"
                             :rules="parValueRules"
@@ -148,7 +150,7 @@
                       <v-text-field
                         id="series-par-value"
                         label="Par Value"
-                        :value="shareStructure.parValue"
+                        :value="parValue"
                         :disabled="true"
                         width="10"
                       />
@@ -229,7 +231,7 @@ import { ConfirmDialogType, FormIF, ShareClassIF } from '@bcrs-shared-components
 import { ActionTypes } from '@bcrs-shared-components/enums'
 import CurrencyLookupMixin from '../../../mixins/currency-lookup-mixin'
 import { VuetifyRuleFunction } from '@/types'
-import { SignificantDigits } from '@/utils/SignificantDigits'
+import { FormatDecimal, SignificantDigits } from '@/utils'
 
 @Component({
   components: {
@@ -254,21 +256,23 @@ export default class EditShareStructure extends Mixins(CurrencyLookupMixin) {
   /** Prompt Error. */
   @Prop({ default: false }) readonly invalidSection!: boolean
 
-  // Text-field Rules
-  private nameRules = []
-  private maximumShareRules = []
-  private parValueRules = []
-  private currencyRules = []
-
   // Data Properties
   private shareStructure: ShareClassIF = null
   private formValid = true
   private hasNoMaximumShares = false
   private hasNoParValue = false
   private hasSeriesShares = false
+  private maxNumberOfShares = '' // v-model, which is converted to number before saving
+  private parValue = '' // v-model, which is converted to number before saving
 
   private excludedWordsListForClass: string [] = ['share', 'shares', 'value']
   private excludedWordsListForSeries: string [] = ['share', 'shares']
+
+  /** Returns a value formatted for use as v-model. */
+  numberToString (value: number): string {
+    // if value is null, return empty string (instead of invalid number)
+    return (value !== null) ? FormatDecimal(value, { minDecimals: 0, grouping: false }) : ''
+  }
 
   // Getters
   get isClass (): boolean {
@@ -284,7 +288,7 @@ export default class EditShareStructure extends Mixins(CurrencyLookupMixin) {
   }
 
   /** The rules applying to the Class/Series name input field. */
-  get nameRule (): Array<VuetifyRuleFunction> {
+  get nameRules (): Array<VuetifyRuleFunction> {
     const rules: Array<VuetifyRuleFunction> = [
       (v: string) => !/^\s/g.test(v) || 'Invalid spaces', // leading spaces
       (v: string) => !/\s$/g.test(v) || 'Invalid spaces' // trailing spaces
@@ -319,18 +323,24 @@ export default class EditShareStructure extends Mixins(CurrencyLookupMixin) {
   }
 
   /** The rules applying to the Class/Series max share input field. */
-  get maximumShareRule (): Array<VuetifyRuleFunction> {
+  get maximumShareRules (): Array<VuetifyRuleFunction> {
     let rules: Array<VuetifyRuleFunction> = []
     if (!this.hasNoMaximumShares) {
       rules = [
         (v: string) => (v !== '' && v !== null && v !== undefined) || 'Number of shares is required',
+        (v: string) => Number.isFinite(+v) || 'Must be a valid number',
         (v: string) => /^-?\d+$/.test(v) || 'Must be a whole number',
-        (v: string) => (+v > 0) || 'Number must be greater than 0',
-        (v: string) => (v && v.toString().length < 16) || 'Number must be less than 16 digits'
+        (v: string) => (+v > 0) || 'Must be greater than 0',
+        (v: string) => (v.length <= 20) || 'Maximum 20 characters',
+        (v: string) => (SignificantDigits(v) <= 16) || 'Too many significant digits'
       ]
       // To prevent changing share class value to a lower value after adding series.
-      if (this.isClass && this.activeIndex !== -1 && !this.hasNoMaximumShares &&
-        this.shareStructure.series.length > 0) {
+      if (
+        this.isClass &&
+        this.activeIndex !== -1 &&
+        !this.hasNoMaximumShares &&
+        this.shareStructure.series.length > 0
+      ) {
         const seriesSum = this.shareStructure.series.reduce((a, b) => +a + +b.maxNumberOfShares, 0)
         rules.push(
           (v: string) => !!v || 'Enter the maximum number of shares in the class',
@@ -357,19 +367,20 @@ export default class EditShareStructure extends Mixins(CurrencyLookupMixin) {
   }
 
   /** The rules applying to the Class/Series par value input field. */
-  get parValueRule (): Array<VuetifyRuleFunction> {
+  get parValueRules (): Array<VuetifyRuleFunction> {
     if (this.hasNoParValue) return []
 
     return [
-      v => (v !== '' && v !== null && v !== undefined) || 'Par value is required',
-      v => Number.isFinite(Number(v)) || 'Par value must be a valid number',
-      v => v > 0 || 'Amount must be greater than 0',
-      v => SignificantDigits(v) <= 16 || 'Amount has too many significant digits'
+      (v: string) => (v !== '' && v !== null && v !== undefined) || 'Par value is required',
+      (v: string) => Number.isFinite(+v) || 'Must be a valid number',
+      (v: string) => (+v > 0) || 'Must be greater than 0',
+      (v: string) => (v.length <= 38) || 'Maximum 38 characters',
+      (v: string) => (SignificantDigits(v) <= 16) || 'Too many significant digits'
     ]
   }
 
   /** The rules applying to the Class/Series currency input field. */
-  get currencyRule (): Array<VuetifyRuleFunction> {
+  get currencyRules (): Array<VuetifyRuleFunction> {
     if (!this.hasNoParValue) {
       return [(v: string) => !!v || 'Currency is required']
     }
@@ -384,6 +395,12 @@ export default class EditShareStructure extends Mixins(CurrencyLookupMixin) {
       this.hasNoParValue = !this.shareStructure.hasParValue
       this.hasSeriesShares = this.shareStructure.hasRightsOrRestrictions &&
         (this.shareStructure.series && this.shareStructure.series.length >= 1)
+      if (this.shareStructure.hasMaximumShares) {
+        this.maxNumberOfShares = this.numberToString(this.shareStructure.maxNumberOfShares)
+      }
+      if (this.shareStructure.hasParValue) {
+        this.parValue = this.numberToString(this.shareStructure.parValue)
+      }
       if (this.activeIndex !== -1) {
         const name = this.shareStructure.name
         this.shareStructure.name = name.substr(0, name.indexOf(' Shares'))
@@ -393,11 +410,6 @@ export default class EditShareStructure extends Mixins(CurrencyLookupMixin) {
 
   /** Applies the Rules to the input fields and validate. */
   protected async validateForm (): Promise<void> {
-    this.nameRules = this.nameRule
-    this.maximumShareRules = this.maximumShareRule
-    this.parValueRules = this.parValueRule
-    this.currencyRules = this.currencyRule
-
     // Await the applied rules and validate form
     await Vue.nextTick()
     this.$refs.shareStructureForm.validate()
@@ -430,6 +442,8 @@ export default class EditShareStructure extends Mixins(CurrencyLookupMixin) {
     shareStructureToAdd.name = `${shareStructureToAdd.name} Shares`
     shareStructureToAdd.hasMaximumShares = !this.hasNoMaximumShares
     shareStructureToAdd.hasParValue = !this.hasNoParValue
+    shareStructureToAdd.maxNumberOfShares = this.hasNoMaximumShares ? null : Number(this.maxNumberOfShares)
+    shareStructureToAdd.parValue = this.hasNoParValue ? null : Number(this.parValue)
 
     // Check if Corrections disabled share Classes capability to support Series
     if (!shareStructureToAdd.hasRightsOrRestrictions && shareStructureToAdd.series) {
@@ -473,7 +487,9 @@ export default class EditShareStructure extends Mixins(CurrencyLookupMixin) {
   /** Update the maximum share flag. */
   protected changeMaximumShareFlag (): void {
     if (this.hasNoMaximumShares) {
-      this.shareStructure.maxNumberOfShares = null
+      this.maxNumberOfShares = ''
+      // reset form validation to clear any number of shares error
+      this.$refs.shareStructureForm.resetValidation()
     }
   }
 
@@ -481,7 +497,9 @@ export default class EditShareStructure extends Mixins(CurrencyLookupMixin) {
   protected changeParValueFlag (): void {
     if (this.hasNoParValue) {
       this.shareStructure.currency = null
-      this.shareStructure.parValue = null
+      this.parValue = ''
+      // reset form validation to clear any currency or par value errors
+      this.$refs.shareStructureForm.resetValidation()
     }
   }
 

@@ -1,6 +1,7 @@
 <template>
   <v-card
     id="share-structure"
+    class="mt-4"
     flat
   >
     <ConfirmDialog
@@ -20,7 +21,7 @@
       </div>
 
       <!-- Instructional Text -->
-      <div class="share-info-container info-text pt-6 px-4">
+      <div class="share-info-container info-text pt-6 px-7">
         If your share structure contains a class or series of shares with special rights or restrictions, you must have
         passed a resolution or have a court order to change your share structure. <strong>Note:</strong> All changes
         must have the same Resolution or Court Order Date. If you need to enter changes that occurred on multiple dates
@@ -35,7 +36,7 @@
       </div>
 
       <!-- Add Buttons -->
-      <div class="btn-container py-6 px-4">
+      <div class="btn-container py-6 px-7">
         <v-btn
           id="btn-add-person"
           outlined
@@ -54,7 +55,7 @@
         <v-card
           v-if="showAddShareStructureForm"
           flat
-          class="add-share-structure-container"
+          class="add-share-structure-container px-4"
         >
           <EditShareStructure
             :initialValue="currentShareStructure"
@@ -74,6 +75,7 @@
 
     <v-data-table
       class="share-structure-table"
+      :class="{ 'px-7': isEditMode }"
       :headers="headers"
       :items="shareClasses"
       disable-pagination
@@ -253,10 +255,6 @@
               </span>
             </div>
           </td>
-          <!-- Placeholder template to preserve table cell and stylings -->
-          <template v-else>
-            <span />
-          </template>
         </tr>
 
         <!-- Share Class Edit Form -->
@@ -457,10 +455,6 @@
                 </span>
               </div>
             </td>
-            <!-- Placeholder template to preserve table cell and stylings -->
-            <template v-else>
-              <span />
-            </template>
           </tr>
 
           <!-- Series Share Edit Form -->
@@ -535,7 +529,7 @@ import { ConfirmDialog } from '@bcrs-shared-components/confirm-dialog'
 import EditShareStructure from './EditShareStructure.vue'
 import { ConfirmDialogType, ShareClassIF, ShareStructureIF } from '@bcrs-shared-components/interfaces'
 import { ActionTypes } from '@bcrs-shared-components/enums'
-import { FormatCurrency } from '@/utils'
+import { FormatDecimal } from '@/utils'
 
 @Component({
   components: {
@@ -553,16 +547,12 @@ export default class ShareStructure extends Vue {
     confirm: ConfirmDialogType,
   };
 
-  //
-  // Props:
-  //
-
   /** Edit Mode */
   @Prop({ default: true }) readonly isEditMode!: boolean
 
   @Prop({ default: null }) readonly originalShareStructure!: ShareStructureIF
 
-  @Prop({ default: [] }) readonly shareClasses!: ShareClassIF[]
+  @Prop({ default: () => [] }) readonly shareClasses!: ShareClassIF[]
 
   @Prop({ default: false }) readonly resolutionRequired!: boolean
 
@@ -651,17 +641,17 @@ export default class ShareStructure extends Vue {
     return !!this.shareClasses.find(shareClass => shareClass.series.some(x => x.action))
   }
 
-  /** Returns a formatted par value. */
+  /** Returns a par value formatted for display in the shares table. */
   formatParValue (item: any): string {
     if (!item.parValue) return 'No Par Value'
 
-    // format some currencies
+    // for specific currencies, prepend currency symbol and show numbers with at least 2 decimal places
     if (['AUD', 'CAD', 'USD'].includes(item.currency)) {
-      return '$' + FormatCurrency(item.parValue)
+      return '$' + FormatDecimal(item.parValue, { minDecimals: 2, grouping: true })
     }
 
-    // no formatting for other currencies
-    return item.parValue.toString()
+    // for other currencies, show no currency symbol or decimal places (unless needed)
+    return FormatDecimal(item.parValue, { minDecimals: 0, grouping: true })
   }
 
   /** Set dropdown models to root state. */
@@ -1083,16 +1073,6 @@ export default class ShareStructure extends Vue {
 <style lang="scss" scoped>
 @import '@/assets/styles/theme.scss';
 
-#share-structure {
-  margin-top: 1rem;
-
-  tbody {
-    tr:hover {
-      background-color: transparent !important;
-    }
-  }
-}
-
 .share-summary-header {
   display: flex;
   background-color: $BCgovBlue5O;
@@ -1102,6 +1082,13 @@ export default class ShareStructure extends Vue {
 
   .share-summary-header-title {
     padding-left: .5rem;
+  }
+}
+
+tbody {
+  // remove table row hover/select effect
+  tr:hover {
+    background-color: transparent !important;
   }
 }
 
@@ -1122,6 +1109,7 @@ export default class ShareStructure extends Vue {
 }
 
 .class-row-has-series td:not(:last-child) {
+  // show dashed line between share and first series row
   border-bottom: thin dashed rgba(0, 0, 0, 0.12) !important;
 }
 
@@ -1134,6 +1122,7 @@ export default class ShareStructure extends Vue {
   }
 
   td:not(:last-child) {
+    // show dashed line between series rows
     border-bottom: thin dashed rgba(0, 0, 0, 0.12) !important;
   }
 
@@ -1151,13 +1140,14 @@ export default class ShareStructure extends Vue {
 
 .series-row-last {
   td:not(:last-child) {
+    // show solid line after last series in a class
     border-bottom: thin solid rgba(0, 0, 0, 0.12) !important;
   }
 }
 
 .actions-cell {
   position: absolute;
-  right: 0;
+  right: 16px;
   border-bottom: none !important;
 }
 
@@ -1166,7 +1156,12 @@ export default class ShareStructure extends Vue {
   justify-content: flex-end;
 
   .edit-action, .undo-action {
+    // show vertical line between action and more
     border-right: 1px solid $gray1;
+  }
+
+  .actions__more-actions__btn {
+    min-width: 0.5rem !important;
   }
 
   .v-btn {
@@ -1197,17 +1192,20 @@ export default class ShareStructure extends Vue {
 }
 
 :deep() {
-  .v-data-table > .v-data-table__wrapper > table > thead > tr > th {
-    box-shadow: 1px 2px 0 0 rgba(0,0,0,0.1);
-    border: none !important;
-  }
+  .v-data-table > .v-data-table__wrapper > table {
+    table-layout: fixed; // for even column widths
 
-  .v-data-table > .v-data-table__wrapper > table > thead > tr > th:nth-child(2) {
-    max-width: 140px;
-  }
+    thead > tr > th:not(:last-child) {
+      // show line on bottom and right sides of header cells (except last one)
+      box-shadow: 1px 2px 0 0 rgba(0,0,0,0.1);
+      border: none !important;
+    }
 
-  .v-data-table > .v-data-table__wrapper > table > thead > tr > th:nth-child(5) {
-    border-right: thin solid rgba(0, 0, 0, 0);
+    thead > tr > th:nth-child(5) {
+      // show line on bottom of last header cell
+      box-shadow: 0 2px 0 0 rgba(0,0,0,0.1);
+      border: none !important;
+    }
   }
 
   .theme--light.v-data-table > .v-data-table__wrapper > table > thead > tr > th {
