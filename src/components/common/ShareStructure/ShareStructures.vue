@@ -108,21 +108,8 @@ export default class ShareStructures extends Mixins(CommonMixin) {
 </script>
 
 <style lang="scss" scoped>
-// fix hard-coded whitespace inside shared component
-// we want the same padding as "section-container py-6"
+// fix styling inside component
 :deep() {
-  .share-info-container,
-  .btn-container,
-  .share-structure-table {
-    padding-left: 1.875rem !important;
-    padding-right: 1.875rem !important;
-  }
-
-  .v-card.add-share-structure-container {
-    padding-left: 0.625rem !important;
-    padding-right: 0.625rem !important;
-  }
-
   .form__btns {
     display: flex;
 
