@@ -37,7 +37,7 @@
         />
 
         <label>Hours of Operation:</label>
-        <p>Monday to Friday, 8:30am - 4:30pm Pacific time</p>
+        <p>Monday to Friday, 9:00am - 4:00pm Pacific time</p>
         <div
           class="help-btn bottom"
           @click="helpToggle = !helpToggle"
