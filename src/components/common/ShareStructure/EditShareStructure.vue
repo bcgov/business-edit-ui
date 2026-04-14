@@ -479,9 +479,9 @@ export default class EditShareStructure extends Mixins(CurrencyLookupMixin) {
     shareStructureToAdd.maxNumberOfShares = this.hasNoMaximumShares ? null : Number(this.maxNumberOfShares)
     shareStructureToAdd.parValue = this.hasNoParValue ? null : Number(this.parValue)
 
-    // When a user replaces the grandfathered OTHER currency with a valid ISO code,
-    // clear the legacy currencyAdditional free-text so the backend doesn't keep stale data.
-    if (shareStructureToAdd.currency && shareStructureToAdd.currency !== OTHER_CURRENCY) {
+    // Preserve the legacy free-text currency only while OTHER is selected.
+    // Clear it for valid ISO codes and when par value is removed (currency becomes null).
+    if (shareStructureToAdd.currency !== OTHER_CURRENCY) {
       shareStructureToAdd.currencyAdditional = null
     }
 

@@ -212,8 +212,11 @@
                       :disabled="!isOtherCurrency(row.item)"
                       left
                     >
-                      <template #activator="{ on }">
-                        <div v-on="on">
+                      <template #activator="{ on, attrs }">
+                        <div
+                          v-bind="attrs"
+                          v-on="on"
+                        >
                           <v-list-item
                             class="actions-dropdown_item"
                             :class="{
@@ -661,7 +664,7 @@ export default class ShareStructure extends Vue {
    */
   formatCurrency (item: any): string {
     if (item.currency === OTHER_CURRENCY) {
-      return item.currencyAdditional || 'Other'
+      return item.currencyAdditional?.trim() || 'Other'
     }
     return item.currency
   }
