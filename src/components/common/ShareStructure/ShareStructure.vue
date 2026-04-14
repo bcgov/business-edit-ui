@@ -114,7 +114,7 @@
           <td class="text-right">
             {{ formatParValue(row.item) }}
           </td>
-          <td>{{ row.item.parValue ? row.item.currency : null }}</td>
+          <td>{{ row.item.parValue ? formatCurrency(row.item) : null }}</td>
           <td>{{ row.item.hasRightsOrRestrictions ? 'Yes' : 'No' }}</td>
 
           <!-- Share Class Action Btns -->
@@ -208,17 +208,29 @@
                         <span>Change</span>
                       </v-list-item-subtitle>
                     </v-list-item>
-                    <v-list-item
-                      class="actions-dropdown_item"
-                      :class="{ 'item-disabled': !row.item.hasRightsOrRestrictions }"
-                      :disabled="!row.item.hasRightsOrRestrictions"
-                      @click="initNewShareSeries(row.index)"
+                    <v-tooltip
+                      :disabled="!isOtherCurrency(row.item)"
+                      left
                     >
-                      <v-list-item-subtitle>
-                        <v-icon color="primary">mdi-playlist-plus</v-icon>
-                        <span>Add Series</span>
-                      </v-list-item-subtitle>
-                    </v-list-item>
+                      <template #activator="{ on }">
+                        <div v-on="on">
+                          <v-list-item
+                            class="actions-dropdown_item"
+                            :class="{
+                              'item-disabled': !row.item.hasRightsOrRestrictions || isOtherCurrency(row.item)
+                            }"
+                            :disabled="!row.item.hasRightsOrRestrictions || isOtherCurrency(row.item)"
+                            @click="initNewShareSeries(row.index)"
+                          >
+                            <v-list-item-subtitle>
+                              <v-icon color="primary">mdi-playlist-plus</v-icon>
+                              <span>Add Series</span>
+                            </v-list-item-subtitle>
+                          </v-list-item>
+                        </div>
+                      </template>
+                      <span>Update the currency on this class before adding a series.</span>
+                    </v-tooltip>
                     <v-list-item
                       class="actions-dropdown_item"
                       :class="{ 'item-disabled': isMoveDisabled(row.index, 'up') }"
@@ -320,7 +332,7 @@
             <td class="text-right">
               {{ formatParValue(row.item) }}
             </td>
-            <td>{{ row.item.parValue ? row.item.currency : null }}</td>
+            <td>{{ row.item.parValue ? formatCurrency(row.item) : null }}</td>
             <td>{{ seriesItem.hasRightsOrRestrictions ? 'Yes' : 'No' }}</td>
 
             <!-- Share Series Edit Btn -->
@@ -529,6 +541,7 @@ import { ConfirmDialog } from '@bcrs-shared-components/confirm-dialog'
 import EditShareStructure from './EditShareStructure.vue'
 import { ConfirmDialogType, ShareClassIF, ShareStructureIF } from '@bcrs-shared-components/interfaces'
 import { ActionTypes } from '@bcrs-shared-components/enums'
+import { OTHER_CURRENCY } from '@/constants'
 import { FormatDecimal } from '@/utils'
 
 @Component({
@@ -639,6 +652,23 @@ export default class ShareStructure extends Vue {
   /** True if we have any changes (from original IA). */
   get hasSeriesChanges (): boolean {
     return !!this.shareClasses.find(shareClass => shareClass.series.some(x => x.action))
+  }
+
+  /**
+   * Returns a currency formatted for display in the shares table.
+   * For grandfathered "OTHER" currency (migrated from COLIN), shows the
+   * free-text `currencyAdditional` value, falling back to "Other" if blank.
+   */
+  formatCurrency (item: any): string {
+    if (item.currency === OTHER_CURRENCY) {
+      return item.currencyAdditional || 'Other'
+    }
+    return item.currency
+  }
+
+  /** True if the given share class/series carries the legacy OTHER currency. */
+  isOtherCurrency (item: any): boolean {
+    return item?.currency === OTHER_CURRENCY
   }
 
   /** Returns a par value formatted for display in the shares table. */

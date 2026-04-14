@@ -6,6 +6,20 @@
       @emitClose="showResolutionDateDialog = false"
     />
 
+    <div
+      v-if="isEditMode && hasOtherCurrency"
+      id="other-currency-notice"
+      class="d-flex align-start px-5 pt-5 pb-3"
+    >
+      <v-icon class="mr-2">
+        mdi-information-outline
+      </v-icon>
+      <p class="ma-0">
+        <strong>Important:</strong> Existing share classes may continue to use &ldquo;Other&rdquo;
+        but this option is not supported for new share classes.
+      </p>
+    </div>
+
     <ShareStructureShared
       :isEditMode="isEditMode"
       :shareClasses="getShareClasses"
@@ -34,6 +48,7 @@ import { CommonMixin } from '@/mixins/'
 import { ActionKvIF, EntitySnapshotIF, ShareClassIF, ShareStructureIF, FlagsCompanyInfoIF }
   from '@/interfaces/'
 import { useStore } from '@/store/store'
+import { OTHER_CURRENCY } from '@/constants'
 import { Components } from '@/enums/'
 
 @Component({
@@ -88,6 +103,18 @@ export default class ShareStructures extends Mixins(CommonMixin) {
   /** Whether this component should be disabled. */
   get disabled (): boolean {
     return (this.getDisabledComponents.includes(Components.SHARE_STRUCTURES))
+  }
+
+  /**
+   * True if any share class or nested series in the current structure carries the
+   * legacy "OTHER" currency (migrated from COLIN). Used to surface a section-level
+   * notice that OTHER is grandfathered but not supported for new share classes.
+   */
+  get hasOtherCurrency (): boolean {
+    return (this.getShareClasses || []).some(c =>
+      c.currency === OTHER_CURRENCY ||
+      (c.series || []).some(s => s.currency === OTHER_CURRENCY)
+    )
   }
 
   /**

@@ -566,4 +566,152 @@ describe('Edit Share Structure component', () => {
     expect(wrapper.vm.$data.formValid).toBe(true)
     wrapper.destroy()
   })
+
+  describe('OTHER currency handling', () => {
+    it('shows the "Currency Update" alert when editing a class with OTHER currency', async () => {
+      const shareClass: ShareClassIF = {
+        id: '1',
+        priority: 1,
+        type: 'Class',
+        name: 'Class A',
+        hasMaximumShares: true,
+        maxNumberOfShares: 100,
+        hasParValue: true,
+        parValue: 1,
+        currency: 'OTHER',
+        currencyAdditional: 'Bitcoin',
+        hasRightsOrRestrictions: false,
+        series: []
+      }
+      const wrapper: Wrapper<EditShareStructure> = createComponent(shareClass, 0, 1, null, [shareClass])
+      await Vue.nextTick()
+
+      expect((wrapper.vm as any).isOtherCurrency).toBe(true)
+      const alert = wrapper.find('#other-currency-alert')
+      expect(alert.exists()).toBe(true)
+      expect(alert.text()).toContain('Currency Update:')
+      expect(alert.text()).toContain('no longer supported')
+      wrapper.destroy()
+    })
+
+    it('does not show the alert when editing a class with a valid currency', async () => {
+      const shareClass = createShareStructure('1', 1, 'Class', 'Class A', true, 100, true, 1, 'CAD', false)
+      shareClass.series = []
+      const wrapper: Wrapper<EditShareStructure> = createComponent(shareClass, 0, 1, null, [shareClass])
+      await Vue.nextTick()
+
+      expect((wrapper.vm as any).isOtherCurrency).toBe(false)
+      expect(wrapper.find('#other-currency-alert').exists()).toBe(false)
+      wrapper.destroy()
+    })
+
+    it('currencyRules rejects OTHER and requires selection', () => {
+      const shareClass = createShareStructure('1', 1, 'Class', 'Class A', true, 100, true, 1, 'CAD', false)
+      shareClass.series = []
+      const wrapper: Wrapper<EditShareStructure> = createComponent(shareClass, 0, 1, null, [shareClass])
+      const rules = (wrapper.vm as any).currencyRules as Array<(v: string) => boolean | string>
+
+      // required check
+      expect(rules[0]('')).toBe('Currency is required')
+      expect(rules[0]('CAD')).toBe(true)
+      // OTHER rejection
+      expect(rules[1]('OTHER')).toBe('Select a valid currency')
+      expect(rules[1]('CAD')).toBe(true)
+      wrapper.destroy()
+    })
+
+    it('currencyRules is empty when hasNoParValue is true', async () => {
+      const shareClass = createShareStructure('1', 1, 'Class', 'Class A', true, 100, false, null, null, false)
+      shareClass.series = []
+      const wrapper: Wrapper<EditShareStructure> = createComponent(shareClass, 0, 1, null, [shareClass])
+      await Vue.nextTick()
+
+      const rules = (wrapper.vm as any).currencyRules as Array<any>
+      expect(rules).toEqual([])
+      wrapper.destroy()
+    })
+
+    it('addShareStructure clears currencyAdditional when replacing OTHER with a valid currency', async () => {
+      const shareClass: ShareClassIF = {
+        id: '1',
+        priority: 1,
+        type: 'Class',
+        name: 'Class A',
+        hasMaximumShares: true,
+        maxNumberOfShares: 100,
+        hasParValue: true,
+        parValue: 1,
+        currency: 'OTHER',
+        currencyAdditional: 'Bitcoin',
+        hasRightsOrRestrictions: false,
+        series: []
+      }
+      const wrapper: Wrapper<EditShareStructure> = createComponent(shareClass, 0, 1, null, [shareClass])
+      // simulate user picking a valid currency
+      ;(wrapper.vm as any).shareStructure.currency = 'CAD'
+
+      const result = (wrapper.vm as any).addShareStructure()
+      expect(result.currency).toBe('CAD')
+      expect(result.currencyAdditional).toBeNull()
+      wrapper.destroy()
+    })
+
+    it('addShareStructure does not touch currencyAdditional when currency stays OTHER', async () => {
+      const shareClass: ShareClassIF = {
+        id: '1',
+        priority: 1,
+        type: 'Class',
+        name: 'Class A',
+        hasMaximumShares: true,
+        maxNumberOfShares: 100,
+        hasParValue: true,
+        parValue: 1,
+        currency: 'OTHER',
+        currencyAdditional: 'Bitcoin',
+        hasRightsOrRestrictions: false,
+        series: []
+      }
+      const wrapper: Wrapper<EditShareStructure> = createComponent(shareClass, 0, 1, null, [shareClass])
+
+      const result = (wrapper.vm as any).addShareStructure()
+      expect(result.currency).toBe('OTHER')
+      expect(result.currencyAdditional).toBe('Bitcoin')
+      wrapper.destroy()
+    })
+
+    it('seriesCurrencyDisplay shows the free-text for an OTHER-currency series', async () => {
+      const parentClass: ShareClassIF = {
+        id: '1',
+        priority: 1,
+        type: 'Class',
+        name: 'Class A Shares',
+        hasMaximumShares: true,
+        maxNumberOfShares: 100,
+        hasParValue: true,
+        parValue: 1,
+        currency: 'OTHER',
+        currencyAdditional: 'Bitcoin',
+        hasRightsOrRestrictions: true,
+        series: []
+      }
+      const series: ShareClassIF = {
+        id: '2',
+        priority: 1,
+        type: 'Series',
+        name: 'Series A',
+        hasMaximumShares: true,
+        maxNumberOfShares: 50,
+        hasParValue: true,
+        parValue: 1,
+        currency: 'OTHER',
+        currencyAdditional: 'Bitcoin',
+        hasRightsOrRestrictions: false
+      }
+      const wrapper: Wrapper<EditShareStructure> = createComponent(series, 0, 1, 0, [parentClass])
+      await Vue.nextTick()
+
+      expect((wrapper.vm as any).seriesCurrencyDisplay).toBe('Bitcoin (Other)')
+      wrapper.destroy()
+    })
+  })
 })

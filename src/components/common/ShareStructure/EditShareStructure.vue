@@ -85,6 +85,19 @@
 
                 <v-divider class="separator mx-4" />
 
+                <MessageBox
+                  v-if="isClass && isOtherCurrency"
+                  id="other-currency-alert"
+                  color="gold"
+                  class="mx-4 mb-6"
+                >
+                  <article>
+                    <strong>Currency Update:</strong> The currency option &ldquo;Other&rdquo; is no longer
+                    supported in the new BC Registries system. Please select a valid currency from the
+                    dropdown list.
+                  </article>
+                </MessageBox>
+
                 <v-radio-group
                   v-show="isClass"
                   v-model="hasNoParValue"
@@ -159,7 +172,7 @@
                       <v-text-field
                         id="series-currency"
                         label="Currency"
-                        :value="`${getCurrencyNameByCode(shareStructure.currency)} (${shareStructure.currency})`"
+                        :value="seriesCurrencyDisplay"
                         :disabled="true"
                       />
                     </v-col>
@@ -230,12 +243,15 @@ import { ConfirmDialog } from '@bcrs-shared-components/confirm-dialog'
 import { ConfirmDialogType, FormIF, ShareClassIF } from '@bcrs-shared-components/interfaces'
 import { ActionTypes } from '@bcrs-shared-components/enums'
 import CurrencyLookupMixin from '../../../mixins/currency-lookup-mixin'
+import MessageBox from '@/components/common/MessageBox.vue'
+import { OTHER_CURRENCY } from '@/constants'
 import { VuetifyRuleFunction } from '@/types'
 import { FormatDecimal, SignificantDigits } from '@/utils'
 
 @Component({
   components: {
-    ConfirmDialog
+    ConfirmDialog,
+    MessageBox
   }
 })
 export default class EditShareStructure extends Mixins(CurrencyLookupMixin) {
@@ -285,6 +301,23 @@ export default class EditShareStructure extends Mixins(CurrencyLookupMixin) {
 
   get isNoMaxSharesVisible (): boolean {
     return this.isSeries ? !(this.shareClasses[this.parentIndex].hasMaximumShares) : true
+  }
+
+  /** True if the form's current currency is the grandfathered "OTHER" value from COLIN. */
+  get isOtherCurrency (): boolean {
+    return this.shareStructure?.currency === OTHER_CURRENCY
+  }
+
+  /** Disabled-field display for a series' inherited currency (including legacy OTHER). */
+  get seriesCurrencyDisplay (): string {
+    const code = this.shareStructure?.currency
+    if (!code) return ''
+    if (code === OTHER_CURRENCY) {
+      return this.shareStructure.currencyAdditional
+        ? `${this.shareStructure.currencyAdditional} (Other)`
+        : 'Other'
+    }
+    return `${this.getCurrencyNameByCode(code)} (${code})`
   }
 
   /** The rules applying to the Class/Series name input field. */
@@ -381,10 +414,11 @@ export default class EditShareStructure extends Mixins(CurrencyLookupMixin) {
 
   /** The rules applying to the Class/Series currency input field. */
   get currencyRules (): Array<VuetifyRuleFunction> {
-    if (!this.hasNoParValue) {
-      return [(v: string) => !!v || 'Currency is required']
-    }
-    return []
+    if (this.hasNoParValue) return []
+    return [
+      (v: string) => !!v || 'Currency is required',
+      (v: string) => v !== OTHER_CURRENCY || 'Select a valid currency'
+    ]
   }
 
   /** Called when component is created. */
@@ -444,6 +478,12 @@ export default class EditShareStructure extends Mixins(CurrencyLookupMixin) {
     shareStructureToAdd.hasParValue = !this.hasNoParValue
     shareStructureToAdd.maxNumberOfShares = this.hasNoMaximumShares ? null : Number(this.maxNumberOfShares)
     shareStructureToAdd.parValue = this.hasNoParValue ? null : Number(this.parValue)
+
+    // When a user replaces the grandfathered OTHER currency with a valid ISO code,
+    // clear the legacy currencyAdditional free-text so the backend doesn't keep stale data.
+    if (shareStructureToAdd.currency && shareStructureToAdd.currency !== OTHER_CURRENCY) {
+      shareStructureToAdd.currencyAdditional = null
+    }
 
     // Check if Corrections disabled share Classes capability to support Series
     if (!shareStructureToAdd.hasRightsOrRestrictions && shareStructureToAdd.series) {

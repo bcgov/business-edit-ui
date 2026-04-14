@@ -598,3 +598,41 @@ describe('formatParValue()', () => {
     })
   })
 })
+
+describe('formatCurrency()', () => {
+  let wrapper: any
+
+  beforeAll(() => {
+    wrapper = shallowMount(ShareStructure)
+  })
+
+  afterAll(() => {
+    wrapper.destroy()
+  })
+
+  it('returns the ISO currency code for standard currencies', () => {
+    expect(wrapper.vm.formatCurrency({ currency: 'CAD' })).toBe('CAD')
+    expect(wrapper.vm.formatCurrency({ currency: 'USD' })).toBe('USD')
+    expect(wrapper.vm.formatCurrency({ currency: 'EUR' })).toBe('EUR')
+  })
+
+  it('returns the free-text value for grandfathered OTHER currency', () => {
+    expect(wrapper.vm.formatCurrency({ currency: 'OTHER', currencyAdditional: 'Bitcoin' }))
+      .toBe('Bitcoin')
+    expect(wrapper.vm.formatCurrency({ currency: 'OTHER', currencyAdditional: 'Swiss Francs' }))
+      .toBe('Swiss Francs')
+  })
+
+  it('falls back to "Other" when OTHER currency has no free-text value', () => {
+    expect(wrapper.vm.formatCurrency({ currency: 'OTHER', currencyAdditional: '' })).toBe('Other')
+    expect(wrapper.vm.formatCurrency({ currency: 'OTHER', currencyAdditional: null })).toBe('Other')
+    expect(wrapper.vm.formatCurrency({ currency: 'OTHER' })).toBe('Other')
+  })
+
+  it('isOtherCurrency identifies the grandfathered OTHER value', () => {
+    expect(wrapper.vm.isOtherCurrency({ currency: 'OTHER' })).toBe(true)
+    expect(wrapper.vm.isOtherCurrency({ currency: 'CAD' })).toBe(false)
+    expect(wrapper.vm.isOtherCurrency({ currency: null })).toBe(false)
+    expect(wrapper.vm.isOtherCurrency(null)).toBe(false)
+  })
+})
