@@ -628,11 +628,89 @@ describe('formatCurrency()', () => {
     expect(wrapper.vm.formatCurrency({ currency: 'OTHER', currencyAdditional: null })).toBe('Other')
     expect(wrapper.vm.formatCurrency({ currency: 'OTHER' })).toBe('Other')
   })
+})
 
-  it('isOtherCurrency identifies the grandfathered OTHER value', () => {
-    expect(wrapper.vm.isOtherCurrency({ currency: 'OTHER' })).toBe(true)
-    expect(wrapper.vm.isOtherCurrency({ currency: 'CAD' })).toBe(false)
-    expect(wrapper.vm.isOtherCurrency({ currency: null })).toBe(false)
-    expect(wrapper.vm.isOtherCurrency(null)).toBe(false)
+describe('hasOtherCurrency notice', () => {
+  const mountWith = (classes: any[], isEditMode = true) => mount(ShareStructure, {
+    localVue,
+    vuetify,
+    propsData: { shareClasses: classes, isEditMode }
+  })
+
+  it('is false when no class or series uses OTHER currency', () => {
+    const wrapper = mountWith([
+      { id: '1',
+        name: 'A Shares',
+        priority: 0,
+        maxNumberOfShares: 1,
+        parValue: 1,
+        currency: 'CAD',
+        hasRightsOrRestrictions: false,
+        series: [] }
+    ])
+    expect(wrapper.vm.hasOtherCurrency).toBe(false)
+    expect(wrapper.find('#other-currency-notice').exists()).toBe(false)
+    wrapper.destroy()
+  })
+
+  it('is true when a class uses OTHER currency and renders the notice', () => {
+    const wrapper = mountWith([
+      { id: '1',
+        name: 'A Shares',
+        priority: 0,
+        maxNumberOfShares: 1,
+        parValue: 1,
+        currency: 'OTHER',
+        currencyAdditional: 'Bitcoin',
+        hasRightsOrRestrictions: false,
+        series: [] }
+    ])
+    expect(wrapper.vm.hasOtherCurrency).toBe(true)
+    const notice = wrapper.find('#other-currency-notice')
+    expect(notice.exists()).toBe(true)
+    expect(notice.text()).toContain('Important:')
+    expect(notice.text()).toContain('Other')
+    wrapper.destroy()
+  })
+
+  it('is true when a nested series uses OTHER currency', () => {
+    const wrapper = mountWith([
+      {
+        id: '1',
+        name: 'A Shares',
+        priority: 0,
+        maxNumberOfShares: 1,
+        parValue: 1,
+        currency: 'CAD',
+        hasRightsOrRestrictions: true,
+        series: [
+          { id: '2',
+            name: 'S Shares',
+            priority: 1,
+            maxNumberOfShares: 1,
+            currency: 'OTHER',
+            hasRightsOrRestrictions: false }
+        ]
+      }
+    ])
+    expect(wrapper.vm.hasOtherCurrency).toBe(true)
+    expect(wrapper.find('#other-currency-notice').exists()).toBe(true)
+    wrapper.destroy()
+  })
+
+  it('notice is hidden in review mode even with OTHER present', () => {
+    const wrapper = mountWith([
+      { id: '1',
+        name: 'A Shares',
+        priority: 0,
+        maxNumberOfShares: 1,
+        parValue: 1,
+        currency: 'OTHER',
+        hasRightsOrRestrictions: false,
+        series: [] }
+    ], false)
+    expect(wrapper.vm.hasOtherCurrency).toBe(true)
+    expect(wrapper.find('#other-currency-notice').exists()).toBe(false)
+    wrapper.destroy()
   })
 })

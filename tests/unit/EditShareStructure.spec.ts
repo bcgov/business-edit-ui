@@ -589,7 +589,7 @@ describe('Edit Share Structure component', () => {
       expect((wrapper.vm as any).isOtherCurrency).toBe(true)
       const alert = wrapper.find('#other-currency-alert')
       expect(alert.exists()).toBe(true)
-      expect(alert.text()).toContain('Currency Update:')
+      expect(alert.text()).toContain('Currency Update')
       expect(alert.text()).toContain('no longer supported')
       wrapper.destroy()
     })

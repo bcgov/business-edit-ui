@@ -35,6 +35,21 @@
         </p>
       </div>
 
+      <!-- OTHER-currency notice -->
+      <div
+        v-if="hasOtherCurrency"
+        id="other-currency-notice"
+        class="d-flex align-start px-7 pt-6"
+      >
+        <v-icon class="mr-2">
+          mdi-information-outline
+        </v-icon>
+        <p class="ma-0">
+          <strong>Important:</strong> Existing share classes may continue to use &ldquo;Other&rdquo;
+          but this option is not supported for new share classes.
+        </p>
+      </div>
+
       <!-- Add Buttons -->
       <div class="btn-container py-6 px-7">
         <v-btn
@@ -208,32 +223,17 @@
                         <span>Change</span>
                       </v-list-item-subtitle>
                     </v-list-item>
-                    <v-tooltip
-                      :disabled="!isOtherCurrency(row.item)"
-                      left
+                    <v-list-item
+                      class="actions-dropdown_item"
+                      :class="{ 'item-disabled': !row.item.hasRightsOrRestrictions }"
+                      :disabled="!row.item.hasRightsOrRestrictions"
+                      @click="initNewShareSeries(row.index)"
                     >
-                      <template #activator="{ on, attrs }">
-                        <div
-                          v-bind="attrs"
-                          v-on="on"
-                        >
-                          <v-list-item
-                            class="actions-dropdown_item"
-                            :class="{
-                              'item-disabled': !row.item.hasRightsOrRestrictions || isOtherCurrency(row.item)
-                            }"
-                            :disabled="!row.item.hasRightsOrRestrictions || isOtherCurrency(row.item)"
-                            @click="initNewShareSeries(row.index)"
-                          >
-                            <v-list-item-subtitle>
-                              <v-icon color="primary">mdi-playlist-plus</v-icon>
-                              <span>Add Series</span>
-                            </v-list-item-subtitle>
-                          </v-list-item>
-                        </div>
-                      </template>
-                      <span>Update the currency on this class before adding a series.</span>
-                    </v-tooltip>
+                      <v-list-item-subtitle>
+                        <v-icon color="primary">mdi-playlist-plus</v-icon>
+                        <span>Add Series</span>
+                      </v-list-item-subtitle>
+                    </v-list-item>
                     <v-list-item
                       class="actions-dropdown_item"
                       :class="{ 'item-disabled': isMoveDisabled(row.index, 'up') }"
@@ -652,6 +652,18 @@ export default class ShareStructure extends Vue {
     return this.shareClasses.some(x => x.action)
   }
 
+  /**
+   * True if any share class or nested series carries the legacy "OTHER" currency
+   * (migrated from COLIN). Used to surface the section-level notice that OTHER is
+   * grandfathered but not supported for new share classes.
+   */
+  get hasOtherCurrency (): boolean {
+    return (this.shareClasses || []).some(c =>
+      c.currency === OTHER_CURRENCY ||
+      (c.series || []).some(s => s.currency === OTHER_CURRENCY)
+    )
+  }
+
   /** True if we have any changes (from original IA). */
   get hasSeriesChanges (): boolean {
     return !!this.shareClasses.find(shareClass => shareClass.series.some(x => x.action))
@@ -667,11 +679,6 @@ export default class ShareStructure extends Vue {
       return item.currencyAdditional?.trim() || 'Other'
     }
     return item.currency
-  }
-
-  /** True if the given share class/series carries the legacy OTHER currency. */
-  isOtherCurrency (item: any): boolean {
-    return item?.currency === OTHER_CURRENCY
   }
 
   /** Returns a par value formatted for display in the shares table. */

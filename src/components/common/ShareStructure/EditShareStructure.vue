@@ -91,10 +91,18 @@
                   color="gold"
                   class="mx-4 mb-6"
                 >
-                  <article>
-                    <strong>Currency Update:</strong> The currency option &ldquo;Other&rdquo; is no longer
-                    supported in the new BC Registries system. Please select a valid currency from the
-                    dropdown list.
+                  <header>
+                    <v-icon
+                      color="orange"
+                      size="20px"
+                    >
+                      mdi-alert
+                    </v-icon>
+                    <strong class="pl-2 gray9--text text-small-text">Currency Update</strong>
+                  </header>
+                  <article class="pl-8 pt-1 small-text">
+                    The currency option &ldquo;Other&rdquo; is no longer supported in the new
+                    BC Registries system. Please select a valid currency from the dropdown list.
                   </article>
                 </MessageBox>
 
