@@ -224,7 +224,7 @@ describe('Correction Filing', () => {
           nameTranslations: []
         },
         header: {
-          certifiedBy: '',
+          authorizationReceived: true,
           date: '',
           folioNumber: undefined,
           name: 'correction'

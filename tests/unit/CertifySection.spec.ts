@@ -66,4 +66,28 @@ describe('Certify component', () => {
 
     wrapper.destroy()
   })
+
+  it('sets expected authorizationMode', () => {
+    const wrapper: Wrapper<CertifySection> = createComponent()
+
+    expect((wrapper.vm as any).authorizationMode).toBe('confirm')
+
+    wrapper.destroy()
+  })
+
+  it('sets expected certifyHeader', () => {
+    const wrapper: Wrapper<CertifySection> = createComponent()
+
+    expect((wrapper.vm as any).certifyHeader).toBe('Authorization')
+
+    wrapper.destroy()
+  })
+
+  it('sets expected certifyText', () => {
+    const wrapper: Wrapper<CertifySection> = createComponent()
+
+    expect((wrapper.vm as any).certifyText).contain('Confirm your authorization')
+
+    wrapper.destroy()
+  })
 })
