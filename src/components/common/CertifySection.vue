@@ -135,10 +135,11 @@ export default class CertifySection extends Mixins(DateMixin) {
   }
 
   get certifyText (): string {
-    return this.authorizationMode === 'confirm'
-      ? ('Confirm your authorization to complete and submit this application. ' +
-        'The name of the person submitting this filing will be displayed in the ' +
-        `history of filings for this ${this.readableEntityType}.`)
+    const confirmOrCertifyText = this.authorizationMode === 'confirm' ? 'Confirm' : 'Certify'
+    return this.isEntityCorp
+      ? (`${confirmOrCertifyText} your authorization to complete and submit this filing. ` +
+         'The name of the person submitting this filing will be displayed in the ' +
+         `history of filings for this ${this.readableEntityType}.`)
       : 'Enter the legal name of the person authorized to complete and submit these changes.'
   }
 }
