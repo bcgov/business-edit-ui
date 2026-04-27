@@ -84,6 +84,7 @@ export default class FilingTemplateMixin extends DateMixin {
   @Getter(useStore) isClientErrorCorrection!: boolean
   @Getter(useStore) isCoopCorrectionFiling!: boolean
   @Getter(useStore) isCorpCorrectionFiling!: boolean
+  @Getter(useStore) isEntityCorp!: boolean
   @Getter(useStore) isEntityTypeFirm!: boolean
   @Getter(useStore) isFirmCorrectionFiling!: boolean
   @Getter(useStore) isLimitedRestorationToFull!: boolean
@@ -135,7 +136,7 @@ export default class FilingTemplateMixin extends DateMixin {
     let filing: CorrectionFilingIF = {
       header: {
         name: FilingTypes.CORRECTION,
-        certifiedBy: this.getCertifyState.certifiedBy || '',
+        ...(this.isEntityCorp ? { authorizationReceived: true } : { certifiedBy: this.getCertifyState.certifiedBy }),
         date: this.getCurrentDate, // "absolute day" (YYYY-MM-DD in Pacific time)
         folioNumber: this.getFolioNumber || undefined // folio number, unless overridden below
       },
@@ -283,7 +284,7 @@ export default class FilingTemplateMixin extends DateMixin {
     let filing: AlterationFilingIF = {
       header: {
         name: FilingTypes.ALTERATION,
-        certifiedBy: this.getCertifyState.certifiedBy,
+        ...(this.isEntityCorp ? { authorizationReceived: true } : { certifiedBy: this.getCertifyState.certifiedBy }),
         date: this.getCurrentDate, // "absolute day" (YYYY-MM-DD in Pacific time)
         folioNumber: this.getFolioNumber || undefined // business folio number, unless overridden below
       },
@@ -376,7 +377,7 @@ export default class FilingTemplateMixin extends DateMixin {
     let filing: RestorationFilingIF = {
       header: {
         name: FilingTypes.RESTORATION,
-        certifiedBy: this.getCertifyState.certifiedBy,
+        ...(this.isEntityCorp ? { authorizationReceived: true } : { certifiedBy: this.getCertifyState.certifiedBy }),
         date: this.getCurrentDate, // "absolute day" (YYYY-MM-DD in Pacific time)
         folioNumber: this.getFolioNumber || undefined // business folio number, unless overridden below
       },

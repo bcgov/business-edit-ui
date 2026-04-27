@@ -3,8 +3,9 @@ import { FilingStatus } from '@/enums'
 /** Interface for filing header object UI sends to API. */
 export interface FilingHeaderIF {
   name: string
-  certifiedBy: string
   date: string
+  authorizationReceived?: boolean // corps filings only
+  certifiedBy?: string // non corps filings only
   folioNumber?: string // also used for staff BCOL payments
   isTransactionalFolioNumber?: boolean
   documentOptionalEmail?: string

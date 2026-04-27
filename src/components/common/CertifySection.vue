@@ -3,10 +3,10 @@
     id="certify-section"
     class="pb-6"
   >
-    <h2>{{ sectionNumber }} Certify</h2>
+    <h2>{{ sectionNumber }} {{ certifyHeader }}</h2>
 
     <div class="py-4">
-      Enter the legal name of the person authorized to complete and submit these changes.
+      {{ certifyText }}
     </div>
 
     <div :class="{ 'invalid-section': invalidSection }">
@@ -15,6 +15,7 @@
         class="section-container py-6"
       >
         <CertifyShared
+          :authorizationMode="authorizationMode"
           :currentDate="getCurrentDate"
           :certifiedBy="getCertifyState.certifiedBy"
           :isCertified="getCertifyState.valid"
@@ -26,6 +27,7 @@
           :validate="validate"
           :invalidSection="invalidSection"
           :disableEdit="disableEdit"
+          :showLegalName="!isEntityCorp"
           @update:certifiedBy="onCertifiedBy($event)"
           @update:isCertified="onIsCertified($event)"
         />
@@ -59,6 +61,9 @@ export default class CertifySection extends Mixins(DateMixin) {
   @Getter(useStore) getCurrentDate!: string
   @Getter(useStore) getResource!: ResourceIF
   @Getter(useStore) getEntityType!: CorpTypeCd
+  @Getter(useStore) isEntityCorp!: boolean
+  @Getter(useStore) isLimitedRestorationExtension!: boolean
+  @Getter(useStore) isRestorationFiling!: boolean
 
   @Action(useStore) setCertifyState!: (x: CertifyIF) => void
   @Action(useStore) setCertifyStateValidity!: (x: boolean) => void
@@ -100,7 +105,7 @@ export default class CertifySection extends Mixins(DateMixin) {
         certifiedBy: this.getCertifyState.certifiedBy
       }
     )
-    this.setCertifyStateValidity(Boolean(val && this.getCertifyState.certifiedBy))
+    this.setCertifyStateValidity(Boolean(val && (this.isEntityCorp || this.getCertifyState.certifiedBy)))
   }
 
   /** Handler for CertifiedBy change event. */
@@ -116,7 +121,26 @@ export default class CertifySection extends Mixins(DateMixin) {
 
   /** True if invalid class should be set for certify section container. */
   get invalidSection (): boolean {
-    return (this.validate && !(this.getCertifyState.valid && this.getCertifyState.certifiedBy))
+    return (this.validate && !(this.getCertifyState.valid && (this.isEntityCorp || this.getCertifyState.certifiedBy)))
+  }
+
+  get authorizationMode (): string {
+    return this.isEntityCorp && (!this.isRestorationFiling || this.isLimitedRestorationExtension)
+      ? 'confirm'
+      : 'certify'
+  }
+
+  get certifyHeader (): string {
+    return this.authorizationMode === 'confirm' ? 'Authorization' : 'Certify'
+  }
+
+  get certifyText (): string {
+    const confirmOrCertifyText = this.authorizationMode === 'confirm' ? 'Confirm' : 'Certify'
+    return this.isEntityCorp
+      ? (`${confirmOrCertifyText} your authorization to complete and submit this filing. ` +
+         'The name of the person submitting this filing will be displayed in the ' +
+         `history of filings for this ${this.readableEntityType}.`)
+      : 'Enter the legal name of the person authorized to complete and submit these changes.'
   }
 }
 </script>
