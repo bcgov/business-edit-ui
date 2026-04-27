@@ -225,8 +225,8 @@
                     </v-list-item>
                     <v-list-item
                       class="actions-dropdown_item"
-                      :class="{ 'item-disabled': !row.item.hasRightsOrRestrictions }"
-                      :disabled="!row.item.hasRightsOrRestrictions"
+                      :class="{ 'item-disabled': isAddSeriesDisabled(row.item) }"
+                      :disabled="isAddSeriesDisabled(row.item)"
                       @click="initNewShareSeries(row.index)"
                     >
                       <v-list-item-subtitle>
@@ -679,6 +679,16 @@ export default class ShareStructure extends Vue {
       return item.currencyAdditional?.trim() || 'Other'
     }
     return item.currency
+  }
+
+  /**
+   * Whether "Add Series" should be blocked for a share class.
+   * Preserves the existing rule (requires rights/restrictions) and additionally
+   * blocks new series under grandfathered OTHER-currency classes, which the
+   * legal-api rejects.
+   */
+  isAddSeriesDisabled (item: ShareClassIF): boolean {
+    return !item.hasRightsOrRestrictions || item.currency === OTHER_CURRENCY
   }
 
   /** Returns a par value formatted for display in the shares table. */

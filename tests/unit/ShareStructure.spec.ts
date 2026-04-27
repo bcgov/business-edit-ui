@@ -630,6 +630,35 @@ describe('formatCurrency()', () => {
   })
 })
 
+describe('isAddSeriesDisabled()', () => {
+  let wrapper: any
+
+  beforeAll(() => {
+    wrapper = shallowMount(ShareStructure)
+  })
+
+  afterAll(() => {
+    wrapper.destroy()
+  })
+
+  it('is disabled when the class has no rights or restrictions', () => {
+    expect(wrapper.vm.isAddSeriesDisabled({ hasRightsOrRestrictions: false, currency: 'CAD' })).toBe(true)
+  })
+
+  it('is enabled for a class with rights/restrictions and a standard currency', () => {
+    expect(wrapper.vm.isAddSeriesDisabled({ hasRightsOrRestrictions: true, currency: 'CAD' })).toBe(false)
+    expect(wrapper.vm.isAddSeriesDisabled({ hasRightsOrRestrictions: true, currency: 'USD' })).toBe(false)
+  })
+
+  it('is disabled when the class carries the grandfathered OTHER currency', () => {
+    expect(wrapper.vm.isAddSeriesDisabled({ hasRightsOrRestrictions: true, currency: 'OTHER' })).toBe(true)
+  })
+
+  it('is disabled when both conditions apply (no rights + OTHER)', () => {
+    expect(wrapper.vm.isAddSeriesDisabled({ hasRightsOrRestrictions: false, currency: 'OTHER' })).toBe(true)
+  })
+})
+
 describe('hasOtherCurrency notice', () => {
   const mountWith = (classes: any[], isEditMode = true) => mount(ShareStructure, {
     localVue,
