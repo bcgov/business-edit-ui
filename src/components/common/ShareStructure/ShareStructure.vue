@@ -35,6 +35,21 @@
         </p>
       </div>
 
+      <!-- OTHER-currency notice -->
+      <div
+        v-if="hasOtherCurrency"
+        id="other-currency-notice"
+        class="d-flex align-start px-7 pt-6"
+      >
+        <v-icon class="mr-2">
+          mdi-information-outline
+        </v-icon>
+        <p class="ma-0">
+          <strong>Important:</strong> Existing share classes may continue to use &ldquo;Other&rdquo;
+          but this option is not supported for new share classes.
+        </p>
+      </div>
+
       <!-- Add Buttons -->
       <div class="btn-container py-6 px-7">
         <v-btn
@@ -114,7 +129,7 @@
           <td class="text-right">
             {{ formatParValue(row.item) }}
           </td>
-          <td>{{ row.item.parValue ? row.item.currency : null }}</td>
+          <td>{{ row.item.parValue ? formatCurrency(row.item) : null }}</td>
           <td>{{ row.item.hasRightsOrRestrictions ? 'Yes' : 'No' }}</td>
 
           <!-- Share Class Action Btns -->
@@ -210,8 +225,8 @@
                     </v-list-item>
                     <v-list-item
                       class="actions-dropdown_item"
-                      :class="{ 'item-disabled': !row.item.hasRightsOrRestrictions }"
-                      :disabled="!row.item.hasRightsOrRestrictions"
+                      :class="{ 'item-disabled': isAddSeriesDisabled(row.item) }"
+                      :disabled="isAddSeriesDisabled(row.item)"
                       @click="initNewShareSeries(row.index)"
                     >
                       <v-list-item-subtitle>
@@ -320,7 +335,7 @@
             <td class="text-right">
               {{ formatParValue(row.item) }}
             </td>
-            <td>{{ row.item.parValue ? row.item.currency : null }}</td>
+            <td>{{ row.item.parValue ? formatCurrency(row.item) : null }}</td>
             <td>{{ seriesItem.hasRightsOrRestrictions ? 'Yes' : 'No' }}</td>
 
             <!-- Share Series Edit Btn -->
@@ -529,6 +544,7 @@ import { ConfirmDialog } from '@bcrs-shared-components/confirm-dialog'
 import EditShareStructure from './EditShareStructure.vue'
 import { ConfirmDialogType, ShareClassIF, ShareStructureIF } from '@bcrs-shared-components/interfaces'
 import { ActionTypes } from '@bcrs-shared-components/enums'
+import { OTHER_CURRENCY } from '@/constants'
 import { FormatDecimal } from '@/utils'
 
 @Component({
@@ -636,9 +652,43 @@ export default class ShareStructure extends Vue {
     return this.shareClasses.some(x => x.action)
   }
 
+  /**
+   * True if any share class or nested series carries the legacy "OTHER" currency
+   * (migrated from COLIN). Used to surface the section-level notice that OTHER is
+   * grandfathered but not supported for new share classes.
+   */
+  get hasOtherCurrency (): boolean {
+    return (this.shareClasses || []).some(c =>
+      c.currency === OTHER_CURRENCY ||
+      (c.series || []).some(s => s.currency === OTHER_CURRENCY)
+    )
+  }
+
   /** True if we have any changes (from original IA). */
   get hasSeriesChanges (): boolean {
     return !!this.shareClasses.find(shareClass => shareClass.series.some(x => x.action))
+  }
+
+  /**
+   * Returns a currency formatted for display in the shares table.
+   * For grandfathered "OTHER" currency (migrated from COLIN), shows the
+   * free-text `currencyAdditional` value, falling back to "Other" if blank.
+   */
+  formatCurrency (item: any): string {
+    if (item.currency === OTHER_CURRENCY) {
+      return item.currencyAdditional?.trim() || 'Other'
+    }
+    return item.currency
+  }
+
+  /**
+   * Whether "Add Series" should be blocked for a share class.
+   * Preserves the existing rule (requires rights/restrictions) and additionally
+   * blocks new series under grandfathered OTHER-currency classes, which the
+   * legal-api rejects.
+   */
+  isAddSeriesDisabled (item: ShareClassIF): boolean {
+    return !item.hasRightsOrRestrictions || item.currency === OTHER_CURRENCY
   }
 
   /** Returns a par value formatted for display in the shares table. */

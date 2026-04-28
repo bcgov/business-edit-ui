@@ -10,6 +10,7 @@ export interface ShareClassIF {
   hasParValue?: boolean
   parValue?: number
   currency?: string
+  currencyAdditional?: string
   hasRightsOrRestrictions: boolean
   series?: ShareClassIF[]
   action?: ActionTypes // Local state indicates corrected/added/removed
