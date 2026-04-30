@@ -450,6 +450,16 @@ export default class EditShareStructure extends Mixins(CurrencyLookupMixin) {
     }
   }
 
+  /** Called when component is mounted. */
+  mounted (): void {
+    // OTHER is not in the currency items list, so the dropdown renders empty when
+    // editing a grandfathered class. Trigger form validation so the field opens
+    // in its error state, prompting the user to pick a valid ISO currency.
+    if (this.isOtherCurrency) {
+      Vue.nextTick(() => this.$refs.shareStructureForm?.validate())
+    }
+  }
+
   /** Applies the Rules to the input fields and validate. */
   protected async validateForm (): Promise<void> {
     // Await the applied rules and validate form

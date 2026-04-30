@@ -41,7 +41,10 @@
         id="other-currency-notice"
         class="d-flex align-start px-7 pt-6"
       >
-        <v-icon class="mr-2">
+        <v-icon
+          color="primary"
+          class="mr-2"
+        >
           mdi-information-outline
         </v-icon>
         <p class="ma-0">
@@ -1158,7 +1161,7 @@ tbody {
   color: rgba(73, 80, 87, .40) !important;
 }
 
-.class-row-has-series td:not(:last-child) {
+.class-row-has-series td {
   // show dashed line between share and first series row
   border-bottom: thin dashed rgba(0, 0, 0, 0.12) !important;
 }
@@ -1169,9 +1172,6 @@ tbody {
     color: $gray9;
     font-weight: bold;
     padding: 10px;
-  }
-
-  td:not(:last-child) {
     // show dashed line between series rows
     border-bottom: thin dashed rgba(0, 0, 0, 0.12) !important;
   }
@@ -1189,7 +1189,7 @@ tbody {
 }
 
 .series-row-last {
-  td:not(:last-child) {
+  td {
     // show solid line after last series in a class
     border-bottom: thin solid rgba(0, 0, 0, 0.12) !important;
   }
@@ -1207,7 +1207,7 @@ tbody {
 
   .edit-action, .undo-action {
     // show vertical line between action and more
-    border-right: 1px solid $gray1;
+    border-right: 1px solid #D4D8DC;
   }
 
   .actions__more-actions__btn {
@@ -1245,14 +1245,8 @@ tbody {
   .v-data-table > .v-data-table__wrapper > table {
     table-layout: fixed; // for even column widths
 
-    thead > tr > th:not(:last-child) {
-      // show line on bottom and right sides of header cells (except last one)
-      box-shadow: 1px 2px 0 0 rgba(0,0,0,0.1);
-      border: none !important;
-    }
-
-    thead > tr > th:nth-child(5) {
-      // show line on bottom of last header cell
+    thead > tr > th {
+      // show line on bottom of every header cell (no vertical dividers between headers)
       box-shadow: 0 2px 0 0 rgba(0,0,0,0.1);
       border: none !important;
     }
@@ -1262,6 +1256,7 @@ tbody {
     font-size: .875rem;
     color: $gray9;
     line-height: 1.25;
+    padding-bottom: 1rem !important;
   }
 
   .theme--light.v-list-item .v-list-item__subtitle {

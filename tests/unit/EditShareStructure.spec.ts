@@ -605,6 +605,39 @@ describe('Edit Share Structure component', () => {
       wrapper.destroy()
     })
 
+    it('opens the currency dropdown in error state when editing an OTHER class', async () => {
+      const shareClass: ShareClassIF = {
+        id: '1',
+        priority: 1,
+        type: 'Class',
+        name: 'Class A',
+        hasMaximumShares: true,
+        maxNumberOfShares: 100,
+        hasParValue: true,
+        parValue: 1,
+        currency: 'OTHER',
+        currencyAdditional: 'Bitcoin',
+        hasRightsOrRestrictions: false,
+        series: []
+      }
+      const wrapper: Wrapper<EditShareStructure> = createComponent(shareClass, 0, 1, null, [shareClass])
+      await flushPromises()
+
+      // Currency rule fires eagerly via mounted() so the field surfaces its error message.
+      expect(wrapper.text()).toContain('Select a valid currency')
+      wrapper.destroy()
+    })
+
+    it('does not eagerly show currency error when editing a class with a valid currency', async () => {
+      const shareClass = createShareStructure('1', 1, 'Class', 'Class A', true, 100, true, 1, 'CAD', false)
+      shareClass.series = []
+      const wrapper: Wrapper<EditShareStructure> = createComponent(shareClass, 0, 1, null, [shareClass])
+      await flushPromises()
+
+      expect(wrapper.text()).not.toContain('Select a valid currency')
+      wrapper.destroy()
+    })
+
     it('currencyRules rejects OTHER and requires selection', () => {
       const shareClass = createShareStructure('1', 1, 'Class', 'Class A', true, 100, true, 1, 'CAD', false)
       shareClass.series = []
