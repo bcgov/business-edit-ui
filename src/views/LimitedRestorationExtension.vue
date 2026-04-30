@@ -43,15 +43,15 @@
         </div>
       </v-slide-x-transition>
 
-      <!-- Review and Certify page -->
+      <!-- Review and Confirm page -->
       <v-slide-x-reverse-transition hide-on-leave>
         <div v-if="isSummaryMode && showFeeSummary">
           <header>
-            <h1>Review and Certify</h1>
+            <h1>Review and Confirm</h1>
           </header>
 
           <div class="document-info py-4">
-            Review and certify the information in your application. If you need to change or complete anything,
+            Review and confirm the information in your application. If you need to change or complete anything,
             return to the previous step to make the necessary change.
           </div>
 

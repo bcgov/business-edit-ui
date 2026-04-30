@@ -108,6 +108,7 @@ export default class ViewWrapper extends Mixins(CommonMixin, FilingTemplateMixin
   @Getter(useStore) isCorrectionFiling!: boolean
   @Getter(useStore) isFirmChangeFiling!: boolean
   @Getter(useStore) isFirmConversionFiling!: boolean
+  @Getter(useStore) isLimitedRestorationExtension!: boolean
   @Getter(useStore) isNameChangedByType!: boolean
   @Getter(useStore) isRestorationFiling!: boolean
   @Getter(useStore) isSummaryMode!: boolean
@@ -144,7 +145,11 @@ export default class ViewWrapper extends Mixins(CommonMixin, FilingTemplateMixin
     if (this.isSummaryMode) {
       return (isNoFee && !this.getFilingData.some(fd => fd.priority)) ? 'File Now (No Fee)' : 'File and Pay'
     } else {
-      return isNoFee ? 'Review and Confirm' : 'Review and Certify'
+      if (this.isEntityCorp && (!this.isRestorationFiling || this.isLimitedRestorationExtension)) {
+        return 'Review and Confirm'
+      } else {
+        return isNoFee ? 'Review and Confirm' : 'Review and Certify'
+      }
     }
   }
 

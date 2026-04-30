@@ -419,7 +419,7 @@ describe('Limited Restoration Extension component - summary page (with filing ch
 
   it('renders the page correctly and mounted components', () => {
     expect(wrapper.findComponent(LimitedRestorationExtension).exists()).toBe(true)
-    expect(wrapper.find('section header').text()).toBe('Review and Certify')
+    expect(wrapper.find('section header').text()).toBe('Review and Confirm')
     expect(wrapper.findComponent(ListPeopleAndRoles).exists()).toBe(true)
     expect(wrapper.findComponent(YourCompanySummary).exists()).toBe(true)
     expect(wrapper.findComponent(DocumentsDelivery).exists()).toBe(true)

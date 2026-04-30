@@ -63,16 +63,16 @@
         </div>
       </v-slide-x-transition>
 
-      <!-- Review and Certify page -->
+      <!-- Review and Confirm page -->
       <v-slide-x-reverse-transition hide-on-leave>
         <div v-if="isSummaryMode && showFeeSummary">
           <header>
-            <h1>Review and Certify</h1>
+            <h1>Review and Confirm</h1>
           </header>
 
           <section class="mt-6">
             <p id="intro-text">
-              Review and certify the changes you are about to make to your company. Certain changes require
+              Review and confirm the changes you are about to make to your company. Certain changes require
               an Alteration Notice which will incur a {{ filingFeesPrice }} fee. Choosing an alteration date
               and time in the future will incur an additional {{ futureEffectiveFeesPrice }} fee.
             </p>
@@ -127,7 +127,7 @@
       <v-fade-transition>
         <div v-if="isSummaryMode && !showFeeSummary">
           <header>
-            <h1>Review and Certify</h1>
+            <h1>Review and Confirm</h1>
           </header>
 
           <section class="mt-6">
