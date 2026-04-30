@@ -138,7 +138,7 @@
           <!-- Share Class Action Btns -->
           <td
             v-if="isEditMode"
-            class="pt-4"
+            class="actions-cell pt-4"
           >
             <div class="actions">
               <!-- Share Class Correct Btn -->
@@ -344,7 +344,7 @@
             <!-- Share Series Edit Btn -->
             <td
               v-if="isEditMode"
-              class="pt-4"
+              class="actions-cell pt-4"
             >
               <div
                 v-if="row.item.action !== ActionTypes.REMOVED"
@@ -1195,6 +1195,12 @@ tbody {
   }
 }
 
+.actions-cell {
+  position: absolute;
+  right: 16px;
+  border-bottom: none !important;
+}
+
 .actions {
   display: flex;
   justify-content: flex-end;
@@ -1239,14 +1245,8 @@ tbody {
   .v-data-table > .v-data-table__wrapper > table {
     table-layout: fixed; // for even column widths
 
-    thead > tr > th:not(:last-child) {
-      // show line on bottom and right sides of header cells (except last one)
-      box-shadow: 1px 2px 0 0 rgba(0,0,0,0.1);
-      border: none !important;
-    }
-
-    thead > tr > th:nth-child(5) {
-      // show line on bottom of last header cell
+    thead > tr > th {
+      // show line on bottom of every header cell (no vertical dividers between headers)
       box-shadow: 0 2px 0 0 rgba(0,0,0,0.1);
       border: none !important;
     }
@@ -1256,6 +1256,7 @@ tbody {
     font-size: .875rem;
     color: $gray9;
     line-height: 1.25;
+    padding-bottom: 1rem !important;
   }
 
   .theme--light.v-list-item .v-list-item__subtitle {
