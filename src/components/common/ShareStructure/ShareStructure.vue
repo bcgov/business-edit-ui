@@ -41,7 +41,10 @@
         id="other-currency-notice"
         class="d-flex align-start px-7 pt-6"
       >
-        <v-icon class="mr-2">
+        <v-icon
+          color="primary"
+          class="mr-2"
+        >
           mdi-information-outline
         </v-icon>
         <p class="ma-0">
@@ -135,7 +138,7 @@
           <!-- Share Class Action Btns -->
           <td
             v-if="isEditMode"
-            class="actions-cell pt-4"
+            class="pt-4"
           >
             <div class="actions">
               <!-- Share Class Correct Btn -->
@@ -341,7 +344,7 @@
             <!-- Share Series Edit Btn -->
             <td
               v-if="isEditMode"
-              class="actions-cell pt-4"
+              class="pt-4"
             >
               <div
                 v-if="row.item.action !== ActionTypes.REMOVED"
@@ -1158,7 +1161,7 @@ tbody {
   color: rgba(73, 80, 87, .40) !important;
 }
 
-.class-row-has-series td:not(:last-child) {
+.class-row-has-series td {
   // show dashed line between share and first series row
   border-bottom: thin dashed rgba(0, 0, 0, 0.12) !important;
 }
@@ -1169,9 +1172,6 @@ tbody {
     color: $gray9;
     font-weight: bold;
     padding: 10px;
-  }
-
-  td:not(:last-child) {
     // show dashed line between series rows
     border-bottom: thin dashed rgba(0, 0, 0, 0.12) !important;
   }
@@ -1189,16 +1189,10 @@ tbody {
 }
 
 .series-row-last {
-  td:not(:last-child) {
+  td {
     // show solid line after last series in a class
     border-bottom: thin solid rgba(0, 0, 0, 0.12) !important;
   }
-}
-
-.actions-cell {
-  position: absolute;
-  right: 16px;
-  border-bottom: none !important;
 }
 
 .actions {
@@ -1207,7 +1201,7 @@ tbody {
 
   .edit-action, .undo-action {
     // show vertical line between action and more
-    border-right: 1px solid $gray1;
+    border-right: 1px solid #D4D8DC;
   }
 
   .actions__more-actions__btn {
