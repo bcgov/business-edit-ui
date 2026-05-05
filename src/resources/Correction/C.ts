@@ -30,6 +30,5 @@ export const CorrectionResourceC: ResourceIF = {
   },
   certifyClause: 'Note: It is an offence to make a false or misleading statement in respect ' +
     'of a material fact in a record submitted to the Corporate Registry for filing. ' +
-    'See section 427 of the Business Corporations Act.',
-  certifyText: 'business'
+    'See section 427 of the <em>Business Corporations Act.</em>'
 }
