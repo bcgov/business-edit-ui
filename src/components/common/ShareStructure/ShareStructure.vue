@@ -1242,14 +1242,11 @@ tbody {
 }
 
 :deep() {
-  .v-data-table > .v-data-table__wrapper > table {
-    table-layout: fixed; // for even column widths
-
-    thead > tr > th {
-      // show line on bottom of every header cell (no vertical dividers between headers)
-      box-shadow: 0 2px 0 0 rgba(0,0,0,0.1);
-      border: none !important;
-    }
+  /* Target every body row cell for a full-width divider */
+  .v-table .v-table__wrapper > table > tbody > tr > td {
+    /* Using inset box-shadow avoids adding 'extra height' to the row */
+    box-shadow: inset 0 -1px 0 0 rgba(0, 0, 0, 0.1) !important;
+    border: none !important;
   }
 
   .theme--light.v-data-table > .v-data-table__wrapper > table > thead > tr > th {
