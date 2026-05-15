@@ -8,6 +8,7 @@ import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
 import { FilingTypes } from '@/enums'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
+import { verifyAddressValidation } from 'tests/unit/utils'
 
 // mock the console.warn function to hide "[Vuetify] Unable to locate target XXX"
 console.warn = vi.fn()
@@ -744,6 +745,22 @@ describe('edit mode', () => {
     }
 
     wrapper.destroy()
+  })
+
+  it('validates address as expected', async () => {
+    store.stateModel.tombstone.filingType = FilingTypes.CORRECTION
+    // init original offices
+    store.stateModel.entitySnapshot = {
+      addresses: getIncorporationAddress(1, 1, 3, 3)
+    } as any
+    const wrapper = mount(OfficeAddresses, { vuetify, propsData: { componentEnabled: true } })
+
+    const correctBtn = wrapper.find('.actions #btn-correct-office-addresses')
+    await correctBtn.trigger('click')
+
+    const address = wrapper.find('#registered-mailing-address')
+    expect(address.exists()).toBe(true)
+    await verifyAddressValidation(address)
   })
 })
 

@@ -9,7 +9,7 @@ export const DefaultAddressSchema = {
     maxLength: maxLength(50)
   },
   streetAddressAdditional: {
-    maxLength: maxLength(50)
+    maxLength: maxLength(105)
   },
   addressCity: {
     required,
