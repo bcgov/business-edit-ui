@@ -138,7 +138,7 @@
           <!-- Share Class Action Btns -->
           <td
             v-if="isEditMode"
-            class="actions-cell pt-4"
+            class="actions-cell"
           >
             <div class="actions">
               <!-- Share Class Correct Btn -->
@@ -320,7 +320,7 @@
               <ul>
                 <li>
                   <span
-                    class="h3 ml-n2"
+                    class="h3"
                     :class="{'list-item__subtitle' : row.item.action === ActionTypes.REMOVED ||
                       seriesItem.action === ActionTypes.REMOVED }"
                   >{{ seriesItem.name }}</span>
@@ -330,6 +330,7 @@
                 v-if="row.item.action !== ActionTypes.REMOVED && seriesItem.action && isEditMode"
                 :actionable-item="seriesItem"
                 :edited-label="editedLabel"
+                class="pb-2"
               />
             </td>
             <td class="text-right">
@@ -344,7 +345,7 @@
             <!-- Share Series Edit Btn -->
             <td
               v-if="isEditMode"
-              class="actions-cell pt-4"
+              class="actions-cell"
             >
               <div
                 v-if="row.item.action !== ActionTypes.REMOVED"
@@ -608,18 +609,24 @@ export default class ShareStructure extends Vue {
   protected addEditInProgress = false
   protected currentShareStructure: ShareClassIF = null
 
-  readonly headers = [
-    {
-      text: 'Name of Share Class or Series',
-      align: 'start',
-      sortable: false,
-      value: 'name'
-    },
-    { text: 'Maximum Number of Shares', value: 'maxNumberOfShares' },
-    { text: 'Par Value', value: 'parValue' },
-    { text: 'Currency', value: 'currency' },
-    { text: 'Special Rights or Restrictions', value: 'hasRightsOrRestrictions' }
-  ]
+  get headers () {
+    const cols: Array<any> = [
+      {
+        text: 'Name of Share Class or Series',
+        align: 'start',
+        sortable: false,
+        value: 'name'
+      },
+      { text: 'Maximum Number of Shares', value: 'maxNumberOfShares', align: 'end' },
+      { text: 'Par Value', value: 'parValue', align: 'end' },
+      { text: 'Currency', value: 'currency' },
+      { text: 'Special Rights or Restrictions', value: 'hasRightsOrRestrictions' }
+    ]
+    if (this.isEditMode) {
+      cols.push({ text: '', value: 'actions', sortable: false, width: '150px' })
+    }
+    return cols
+  }
 
   readonly newShareClass: ShareClassIF = {
     id: null,
@@ -1150,6 +1157,7 @@ tbody {
   color: $gray9;
   font-size: 1rem !important;
   padding: 10px;
+  vertical-align: middle;
 }
 
 .class-row td:not(:first-child) {
@@ -1161,24 +1169,18 @@ tbody {
   color: rgba(73, 80, 87, .40) !important;
 }
 
-.class-row-has-series td {
-  // show dashed line between share and first series row
-  border-bottom: thin dashed rgba(0, 0, 0, 0.12) !important;
-}
-
 .series-row {
   td {
     height: 4rem !important;
     color: $gray9;
     font-weight: bold;
     padding: 10px;
-    // show dashed line between series rows
-    border-bottom: thin dashed rgba(0, 0, 0, 0.12) !important;
+    vertical-align: middle;
   }
 
   .series-name {
-    padding-left: 40px;
-    margin-left: 40px;
+    padding-left: 20px;
+    margin-left: 20px;
   }
 
   td:not(:first-child){
@@ -1188,22 +1190,18 @@ tbody {
   }
 }
 
-.series-row-last {
-  td {
-    // show solid line after last series in a class
-    border-bottom: thin solid rgba(0, 0, 0, 0.12) !important;
-  }
-}
-
 .actions-cell {
-  position: absolute;
-  right: 16px;
-  border-bottom: none !important;
+  position: relative;
 }
 
 .actions {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 10px;
   display: flex;
-  justify-content: flex-end;
+  align-items: center;
+  white-space: nowrap;
 
   .edit-action, .undo-action {
     // show vertical line between action and more
@@ -1243,12 +1241,24 @@ tbody {
 
 :deep() {
   .v-data-table > .v-data-table__wrapper > table {
-    table-layout: fixed; // for even column widths
+    table-layout: fixed;
 
-    thead > tr > th {
-      // show line on bottom of every header cell (no vertical dividers between headers)
-      box-shadow: 0 2px 0 0 rgba(0,0,0,0.1);
-      border: none !important;
+    > tbody > tr {
+      // Solid line under every row by default
+      > td {
+        border-bottom: 1px solid rgba(0, 0, 0, 0.1) !important;
+      }
+
+      // Dashed line for series rows
+      &.class-row-has-series > td,
+      &.series-row:not(.series-row-last) > td {
+        border-bottom: 1px dashed rgba(0, 0, 0, 0.3) !important;
+      }
+
+      // No line on the bottom-most row of the table
+      &:last-child > td {
+        border-bottom: none !important;
+      }
     }
   }
 
