@@ -356,6 +356,7 @@
                   <MailingAddress
                     ref="mailingAddress"
                     :editing="true"
+                    :require-latin1="true"
                     :schema="mailingAddressSchema"
                     :address="inProgressMailingAddress"
                     @update:address="updateAddress(inProgressMailingAddress, $event)"
@@ -387,6 +388,7 @@
                       <DeliveryAddress
                         ref="deliveryAddress"
                         :editing="true"
+                        :require-latin1="true"
                         :schema="deliveryAddressSchema"
                         :address="inProgressDeliveryAddress"
                         :noPoBox="noPoBoxDelivery"
