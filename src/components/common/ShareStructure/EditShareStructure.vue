@@ -35,6 +35,7 @@
               >
                 <v-text-field
                   id="txt-name"
+                  ref="shareNameInput"
                   v-model="shareStructure.name"
                   filled
                   :label="shareStructure.type + ' Name [Shares]'"
@@ -43,6 +44,7 @@
                   :rules="nameRules"
                   suffix="Shares"
                   persistent-hint
+                  @blur="onNameBlur()"
                 />
 
                 <v-divider class="separator" />
@@ -266,7 +268,8 @@ export default class EditShareStructure extends Mixins(CurrencyLookupMixin) {
   // Refs
   $refs!: Vue['$refs'] & {
     confirm: ConfirmDialogType,
-    shareStructureForm: FormIF
+    shareStructureForm: FormIF,
+    shareNameInput: any
   };
 
   // Props
@@ -288,6 +291,7 @@ export default class EditShareStructure extends Mixins(CurrencyLookupMixin) {
   private hasSeriesShares = false
   private maxNumberOfShares = '' // v-model, which is converted to number before saving
   private parValue = '' // v-model, which is converted to number before saving
+  private nameTouched = false // tracks whether the name field has lost focus at least once
 
   private excludedWordsListForClass: string [] = ['share', 'shares', 'value']
   private excludedWordsListForSeries: string [] = ['share', 'shares']
@@ -331,8 +335,8 @@ export default class EditShareStructure extends Mixins(CurrencyLookupMixin) {
   /** The rules applying to the Class/Series name input field. */
   get nameRules (): Array<VuetifyRuleFunction> {
     const rules: Array<VuetifyRuleFunction> = [
-      (v: string) => !/^\s/g.test(v) || 'Invalid spaces', // leading spaces
-      (v: string) => !/\s$/g.test(v) || 'Invalid spaces' // trailing spaces
+      (v: string) => !this.nameTouched || !/^\s/g.test(v) || 'Invalid spaces', // leading spaces
+      (v: string) => !this.nameTouched || !/\s$/g.test(v) || 'Invalid spaces' // trailing spaces
     ]
     if (this.isClass) {
       rules.push(
@@ -537,9 +541,15 @@ export default class EditShareStructure extends Mixins(CurrencyLookupMixin) {
   /** Reset the form validators. */
   protected resetFormAndData (emitEvent: boolean): void {
     this.$refs.shareStructureForm.reset()
+    this.nameTouched = false
     if (emitEvent) {
       this.emitResetEvent()
     }
+  }
+
+  protected onNameBlur (): void {
+    this.nameTouched = true
+    this.$nextTick(() => this.$refs.shareNameInput.validate())
   }
 
   /** Update the maximum share flag. */

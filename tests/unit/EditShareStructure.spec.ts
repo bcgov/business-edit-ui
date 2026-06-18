@@ -567,6 +567,32 @@ describe('Edit Share Structure component', () => {
     wrapper.destroy()
   })
 
+  it('Do not show error for invalid spaces before blur is triggered', async () => {
+    const shareClass = createShareStructure(null, 1, 'Class', 'Class A', true, 100, true, 0.5, 'CAD', true)
+    const wrapper = createComponent(shareClass, -1, 1, null, [])
+    const input = wrapper.find(nameSelector)
+
+    input.setValue('Class B ')
+    await Vue.nextTick()
+
+    expect(wrapper.text()).not.toContain('Invalid spaces')
+    wrapper.destroy()
+  })
+
+  it('Shows error for invalid spaces after blur is triggered', async () => {
+    const shareClass = createShareStructure(null, 1, 'Class', 'Class A', true, 100, true, 0.5, 'CAD', true)
+    const wrapper = createComponent(shareClass, -1, 1, null, [])
+    const input = wrapper.find(nameSelector)
+
+    input.setValue('Class B ')
+    input.trigger('blur')
+    await Vue.nextTick()
+    await Vue.nextTick()
+
+    expect(wrapper.text()).toContain('Invalid spaces')
+    wrapper.destroy()
+  })
+
   describe('OTHER currency handling', () => {
     it('shows the "Currency Update" alert when editing a class with OTHER currency', async () => {
       const shareClass: ShareClassIF = {
