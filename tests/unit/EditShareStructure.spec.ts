@@ -593,6 +593,27 @@ describe('Edit Share Structure component', () => {
     wrapper.destroy()
   })
 
+  it('Hides the invalid spaces error again when the name field is re-focused', async () => {
+    const shareClass = createShareStructure(null, 1, 'Class', 'Class A', true, 100, true, 0.5, 'CAD', true)
+    const wrapper = createComponent(shareClass, -1, 1, null, [])
+    const input = wrapper.find(nameSelector)
+
+    // first blur surfaces the trailing-space error
+    input.setValue('Class B ')
+    input.trigger('blur')
+    await Vue.nextTick()
+    await Vue.nextTick()
+    expect(wrapper.text()).toContain('Invalid spaces')
+
+    // re-focusing to edit clears it (the focus event does not propagate through Vuetify in jsdom,
+    // so invoke the handler directly to exercise the re-focus reset logic)
+    ;(wrapper.vm as any).onNameFocus()
+    await Vue.nextTick()
+    await Vue.nextTick()
+    expect(wrapper.text()).not.toContain('Invalid spaces')
+    wrapper.destroy()
+  })
+
   describe('OTHER currency handling', () => {
     it('shows the "Currency Update" alert when editing a class with OTHER currency', async () => {
       const shareClass: ShareClassIF = {

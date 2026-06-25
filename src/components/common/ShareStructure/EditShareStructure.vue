@@ -44,6 +44,7 @@
                   :rules="nameRules"
                   suffix="Shares"
                   persistent-hint
+                  @focus="onNameFocus()"
                   @blur="onNameBlur()"
                 />
 
@@ -291,7 +292,7 @@ export default class EditShareStructure extends Mixins(CurrencyLookupMixin) {
   private hasSeriesShares = false
   private maxNumberOfShares = '' // v-model, which is converted to number before saving
   private parValue = '' // v-model, which is converted to number before saving
-  private nameTouched = false // tracks whether the name field has lost focus at least once
+  private nameTouched = false // true once the name field has settled (blurred); reset while it has focus
 
   private excludedWordsListForClass: string [] = ['share', 'shares', 'value']
   private excludedWordsListForSeries: string [] = ['share', 'shares']
@@ -547,6 +548,13 @@ export default class EditShareStructure extends Mixins(CurrencyLookupMixin) {
     }
   }
 
+  /** While the name field has focus, suppress space validation and clear any space error shown. */
+  protected onNameFocus (): void {
+    this.nameTouched = false
+    this.$nextTick(() => this.$refs.shareNameInput.validate())
+  }
+
+  /** Once the name field loses focus, enable space validation so any space error is shown. */
   protected onNameBlur (): void {
     this.nameTouched = true
     this.$nextTick(() => this.$refs.shareNameInput.validate())
