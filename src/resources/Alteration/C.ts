@@ -49,10 +49,7 @@ export const AlterationResourceC: ResourceIF = {
         shortDesc: 'BC Community Contribution Company',
         text: 'BC Community Contribution Company'
       }
-    ],
-    articleTitle: 'Limited Company Articles',
-    articleInfo: `The company has completed a set of BC LTD Company Articles, and a copy of these articles has been
-      added to company's record book.`
+    ]
   },
   certifyClause: 'Note: It is an offence to make a false or misleading statement in respect ' +
     'of a material fact in a record submitted to the Corporate Registry for filing. ' +

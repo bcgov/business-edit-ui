@@ -72,23 +72,6 @@
             Business Types do not match. The Name Request type must match the business type before you can continue.
           </span>
         </v-tooltip>
-
-        <template v-if="hasBusinessTypeChanged">
-          <p class="subtitle mt-2 pt-2">
-            {{ updatedArticleTitle }}
-          </p>
-          <div class="confirmed-msg d-flex">
-            <v-icon
-              color="success"
-              class="confirmed-icon d-block"
-            >
-              mdi-check
-            </v-icon>
-            <span class="info-text text-body-3 confirmed-icon ml-2 d-block">
-              {{ updatedArticleInfo }}
-            </span>
-          </div>
-        </template>
       </v-col>
 
       <!-- Editing Mode -->
@@ -201,23 +184,12 @@
         <!-- BC Registry Contacts -->
         <BcRegContacts :direction="'col'" />
 
-        <BcRegEntityDetails
-          :isBenefitCompany="isBenefitCompany"
-          :isUnlimitedLiability="isUnlimitedLiability"
-          :isCommunityContribution="isCommunityContribution"
-          :isBcLimited="isBcLimited"
-          :selectedEntityType="selectedEntityType"
-          :confirmArticles="confirmArticles"
-          @update:confirmArticles="confirmArticles = $event"
-        />
-
         <!-- Done Actions -->
         <div class="action-btns">
           <v-btn
             id="done-btn"
             large
             color="primary"
-            :disabled="disableDoneButton"
             @click="submitTypeChange()"
           >
             <span>Done</span>
@@ -318,19 +290,17 @@
 <script lang="ts">
 import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
-import BcRegEntityDetails from '@/components/Alteration/BcRegEntityDetails.vue'
 import { BcRegContacts, MessageBox } from '@/components/common/'
 import { CommonMixin } from '@/mixins/'
 import { CorpTypeCd, GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module/'
 import { EntityTypeOption, ResourceIF } from '@/interfaces/'
 import { NameRequestIF } from '@bcrs-shared-components/interfaces'
-import { GetFeatureFlag, ResourceUtilities } from '@/utils'
+import { GetFeatureFlag } from '@/utils'
 import { useStore } from '@/store/store'
 
 @Component({
   components: {
     BcRegContacts,
-    BcRegEntityDetails,
     MessageBox
   }
 })
@@ -371,7 +341,6 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
   @Action(useStore) setEntityTypeChangedByName!: (x: boolean) => void
 
   selectedEntityType = null as CorpTypeCd
-  confirmArticles = false
   isEditingType = false
   dropdown = null as boolean
   supportedEntityTypes = [] as Array<string>
@@ -390,17 +359,16 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
     this.selectedEntityType = this.getEntityType
   }
 
-  /** Clear the articles confirm checkbox whenever the selected entity type changes. */
+  /** Keep the business type editor open when the selected type changes. */
   @Watch('selectedEntityType')
-  private clearConfirmArticles (): void {
-    this.confirmArticles = false
-    // Ensure when selected type changes by NR, show the error message and Articles
+  private onSelectedEntityTypeChanged (): void {
+    // Ensure when selected type changes by NR, show the error message.
     if (this.getOriginalLegalType && this.selectedEntityType !== this.getOriginalLegalType) {
       this.isEditingType = true
     }
   }
 
-  /** Display the edit, so the user has to reconfirm articles. */
+  /** Display the edit when the entity type changes by name request. */
   @Watch('isEntityTypeChangedByName')
   entityTypeChangedByName (val): void {
     this.isEditingType = val
@@ -491,7 +459,6 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
     this.setNameChangedByType(false)
     this.setEntityTypeChangedByName(false)
     this.isEditingType = false
-    this.confirmArticles = false
   }
 
   /** Submit new company type. */
@@ -560,18 +527,6 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
   get isBcLimited (): boolean {
     return (this.selectedEntityType === CorpTypeCd.BC_COMPANY ||
     this.selectedEntityType === CorpTypeCd.CONTINUE_IN)
-  }
-
-  get updatedArticleInfo (): string {
-    return ResourceUtilities.articleInfo(this.selectedEntityType)
-  }
-
-  get updatedArticleTitle (): string {
-    return ResourceUtilities.articleTitle(this.selectedEntityType)
-  }
-
-  get disableDoneButton (): boolean {
-    return !this.confirmArticles
   }
 
   get isShowingError () {

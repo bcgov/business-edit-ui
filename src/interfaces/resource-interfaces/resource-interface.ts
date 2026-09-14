@@ -27,9 +27,7 @@ export interface ResourceIF {
     }
     nameRequestTypes?: Array<NrRequestActionCodes>
     addressChangeInfo?: string,
-    entityTypeOptions?: Array<EntityTypeOption>,
-    articleTitle?: string,
-    articleInfo?: string
+    entityTypeOptions?: Array<EntityTypeOption>
   }
   certifyClause: string
   showEmailUnderName?: boolean

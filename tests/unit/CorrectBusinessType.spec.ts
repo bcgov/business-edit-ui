@@ -79,23 +79,15 @@ describe('ChangeBusinessType in an Alteration', () => {
     expect(wrapper.find('#business-type-selector').exists()).toBe(true)
   })
 
-  it('displays the confirm articles checkbox and enables Done btn when selected', async () => {
+  it('does not display the Company Articles section for alterations', async () => {
     // Set the selected entity to Benefit Company
     wrapper.setData({ selectedEntityType: 'BEN' })
-
-    // Verify checkbox is hidden until in display mode
-    expect(wrapper.find('#confirm-articles-checkbox').exists()).toBe(false)
 
     // Click edit btn and open edit mode
     await wrapper.find('#btn-correct-business-type').trigger('click')
 
-    // Verify checkbox is displayed in edit mode
-    expect(wrapper.find('#confirm-articles-checkbox').exists()).toBe(true)
-
-    // Select the Confirm Articles checkbox
-    await wrapper.find('#confirm-articles-checkbox').trigger('click')
-
-    // Verify DONE btn is enabled after selecting the checkbox
+    // Verify the Company Articles section is not rendered.
+    expect(wrapper.text()).not.toContain('Company Articles')
     expect(wrapper.find('#done-btn').attributes('disabled')).toBeUndefined()
   })
 

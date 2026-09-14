@@ -12,23 +12,6 @@
             Changing from a {{ GetCorpFullDescription(getOriginalLegalType) }} to a
             {{ GetCorpFullDescription(getEntityType) }}
           </span>
-
-          <div>
-            <p class="subtitle mt-2 pt-2">
-              {{ articleTitle }}
-            </p>
-            <div class="confirmed-msg d-flex">
-              <v-icon
-                color="success"
-                class="confirmed-icon d-block"
-              >
-                mdi-check
-              </v-icon>
-              <span class="info-text text-body-3 confirmed-icon ml-2 d-block">
-                {{ articleInfo }}
-              </span>
-            </div>
-          </div>
         </v-col>
       </v-row>
     </div>
@@ -39,22 +22,10 @@
 import { FilingTemplateMixin } from '@/mixins'
 import { Component, Mixins } from 'vue-property-decorator'
 import { GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module/'
-import { ResourceUtilities } from '@/utils/resource-utils'
 
 @Component({})
 export default class BusinessType extends Mixins(FilingTemplateMixin) {
   readonly GetCorpFullDescription = GetCorpFullDescription // for template
-
-  // Store getters
-  // @Getter(useStore) getOriginalLegalType!: CorpTypeCd
-
-  get articleInfo (): string {
-    return ResourceUtilities.articleInfo(this.getEntityType)
-  }
-
-  get articleTitle (): string {
-    return ResourceUtilities.articleTitle(this.getEntityType)
-  }
 }
 </script>
 

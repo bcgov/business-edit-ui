@@ -21,10 +21,7 @@ export const AlterationResourceCc: ResourceIF = {
     nameRequestTypes: [
       NrRequestActionCodes.CHANGE_NAME,
       NrRequestActionCodes.CONVERSION
-    ],
-    articleTitle: 'Community Contribution Company Articles',
-    articleInfo: `The company has completed a set of Community Contribution Company Articles
-      containing a community provision, and a copy of these articles has been added to company's record book.`
+    ]
   },
   certifyClause: 'Note: It is an offence to make a false or misleading statement in respect ' +
     'of a material fact in a record submitted to the Corporate Registry for filing. ' +

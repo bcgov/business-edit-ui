@@ -106,6 +106,7 @@ describe('Alteration Summary component', () => {
     expect(wrapper.find('.business-type-summary').exists()).toBe(true)
     expect(wrapper.find('.business-type-summary').text()).toContain('Changing from a BC Limited Company')
     expect(wrapper.find('.business-type-summary').text()).toContain('BC Benefit Company')
+    expect(wrapper.find('.business-type-summary').text()).not.toContain('Benefit Company Articles')
   })
 
   it('renders the default alteration date and time section', async () => {
