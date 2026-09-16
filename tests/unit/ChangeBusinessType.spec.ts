@@ -172,6 +172,43 @@ describe('Change Business Type component', () => {
     expect(wrapper.vm.getNameRequestLegalName).toBe('1234567 LTD.')
   })
 
+  it('should regenerate numbered name suffix when a named company changed to numbered then changes type', () => {
+    store.stateModel.tombstone.filingType = FilingTypes.ALTERATION
+    store.stateModel.tombstone.businessId = 'BC0894642'
+    store.stateModel.entitySnapshot = {
+      businessInfo: {
+        legalType: CorpTypeCd.BC_COMPANY,
+        legalName: 'HELLO LTD.'
+      }
+    } as EntitySnapshotIF
+    // name was already changed to numbered while the type was still BC
+    store.stateModel.nameRequest = { legalType: CorpTypeCd.BC_COMPANY, nrNum: undefined } as any
+    store.stateModel.nameRequestLegalName = '0894642 B.C. LTD.'
+    store.stateModel.tombstone.nameChangedToNumber = true
+    store.stateModel.tombstone.nameChangedByType = false
+    store.stateModel.tombstone.entityType = CorpTypeCd.BC_COMPANY
+
+    const wrapper: any = mount(ChangeBusinessType, { vuetify })
+
+    wrapper.vm.selectedEntityType = CorpTypeCd.BC_ULC_COMPANY
+    wrapper.vm.submitTypeChange()
+
+    expect(wrapper.vm.getNameRequestLegalName).toBe('0894642 B.C. UNLIMITED LIABILITY COMPANY')
+    expect(store.stateModel.nameRequest.legalType).toBe(CorpTypeCd.BC_ULC_COMPANY)
+    expect(store.stateModel.nameRequest.nrNum).toBeUndefined()
+    expect(store.stateModel.tombstone.nameChangedByType).toBe(false)
+
+    // and back to a limited company
+    wrapper.vm.selectedEntityType = CorpTypeCd.BC_COMPANY
+    wrapper.vm.submitTypeChange()
+
+    expect(wrapper.vm.getNameRequestLegalName).toBe('0894642 B.C. LTD.')
+    expect(store.stateModel.nameRequest.legalType).toBe(CorpTypeCd.BC_COMPANY)
+
+    store.stateModel.tombstone.nameChangedToNumber = false
+    wrapper.destroy()
+  })
+
   it('should have name request required error for business type change', async () => {
     store.stateModel.tombstone.filingType = FilingTypes.ALTERATION
     store.stateModel.entitySnapshot = {

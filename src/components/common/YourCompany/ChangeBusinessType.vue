@@ -318,6 +318,7 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
   @Getter(useStore) getEditLabel!: string
   @Getter(useStore) getEditedLabel!: string
   @Getter(useStore) getEntityType!: CorpTypeCd
+  @Getter(useStore) getNameRequest!: NameRequestIF
   @Getter(useStore) getNameRequestLegalName!: string
   @Getter(useStore) getNameRequestNumber!: string
   @Getter(useStore) getNumberOfDirectors!: number
@@ -467,7 +468,8 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
     if (this.minimumThreeDirectorError || this.nameRequestRequiredError) { return }
     this.setEntityType(this.selectedEntityType)
     this.isEditingType = false
-    if (this.isNumberedCompany && !this.hasNewNr) {
+    if (this.hasNewNr) return
+    if (this.isNumberedCompany) {
       const originalName = this.getOriginalLegalName
       const updatedName = this.getUpdatedName(originalName)
       this.setNameRequest({
@@ -480,6 +482,17 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
       } else {
         this.setNameChangedByType(false)
       }
+    } else if (this.isNameChangedToNumber) {
+      // named company was changed to numbered (using the incorporation number) before the type
+      // change, so the numbered name currently has the old type's suffix -- regenerate it with the
+      // new type's suffix and align the NR legal type, otherwise the Legal API rejects the filing
+      // with "Unexpected legal name"
+      const updatedName = this.getUpdatedName(this.getNameRequestLegalName)
+      this.setNameRequest({
+        ...this.getNameRequest,
+        legalType: this.selectedEntityType
+      } as any)
+      this.setNameRequestLegalName(updatedName)
     }
   }
 
