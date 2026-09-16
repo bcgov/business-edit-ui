@@ -128,10 +128,10 @@ describe('Share Structures component', () => {
       expect(wrapper.vm.resolutionsRequired).toBe(true)
     })
 
-    it('is true for corp correction filings with no resolution dates', async () => {
+    it('is false for corp correction filings with no resolution dates', async () => {
       store.stateModel.tombstone.filingType = FilingTypes.CORRECTION
 
-      expect(wrapper.vm.resolutionsRequired).toBe(true)
+      expect(wrapper.vm.resolutionsRequired).toBe(false)
     })
 
     it('is false for non-corp correction filings', async () => {

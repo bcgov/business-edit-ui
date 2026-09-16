@@ -82,7 +82,7 @@ export default class ShareStructures extends Mixins(CommonMixin) {
 
   /** True if changes to share structure rights will require a resolution date. */
   get resolutionsRequired (): boolean {
-    return (this.getNewResolutionDates.length === 0) && (this.isAlterationFiling || this.isCorpCorrectionFiling)
+    return (this.getNewResolutionDates.length === 0) && this.isAlterationFiling
   }
 
   /** Whether this component should be disabled. */

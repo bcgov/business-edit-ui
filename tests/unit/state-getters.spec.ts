@@ -173,9 +173,9 @@ describe('State Getters', () => {
     expect(vm.isCorrectionValid).toBe(false)
     store.setStaffPaymentValidity(true)
 
-    // check for resolution date flag alone affects validity
+    // resolution date validity does not affect correction validity
     store.setValidComponent({ key: 'isValidResolutionDate', value: false })
-    expect(vm.isCorrectionValid).toBe(false)
+    expect(vm.isCorrectionValid).toBe(true)
     store.setValidComponent({ key: 'isValidResolutionDate', value: true })
 
     // this getter should be true again

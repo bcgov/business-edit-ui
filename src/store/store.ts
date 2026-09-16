@@ -686,7 +686,6 @@ export const useStore = defineStore('store', {
             this.getFlagsCompanyInfo.isValidAddress &&
             this.getFlagsCompanyInfo.isValidOrgPersons &&
             this.getFlagsCompanyInfo.isValidShareStructure &&
-            this.getFlagsCompanyInfo.isValidResolutionDate &&
             this.getFlagsReviewCertify.isValidDetailComment &&
             this.getFlagsReviewCertify.isValidCertify &&
             this.getFlagsReviewCertify.isValidStaffPayment
@@ -698,7 +697,6 @@ export const useStore = defineStore('store', {
             this.getFlagsCompanyInfo.isValidOrgPersons &&
             this.getFlagsCompanyInfo.isValidAddress &&
             this.getFlagsCompanyInfo.isValidShareStructure &&
-            this.getFlagsCompanyInfo.isValidResolutionDate &&
             this.getFlagsReviewCertify.isValidDetailComment &&
             // don't check certify for staff correction
             this.getFlagsReviewCertify.isValidStaffPayment
@@ -1210,7 +1208,7 @@ export const useStore = defineStore('store', {
     /** True if resolution dates are valid. */
     getIsResolutionDatesValid (): boolean {
       if (
-        (this.isAlterationFiling || this.isCorpCorrectionFiling) &&
+        this.isAlterationFiling &&
         this.hasShareStructureChanged &&
         (this.getHasOriginalRightsOrRestrictions || this.getHasRightsOrRestrictions)
       ) {
