@@ -4,7 +4,7 @@ import { cloneDeep } from 'lodash'
 import { DateMixin } from '@/mixins/'
 import { AddressesIF, AlterationFilingIF, BusinessInformationIF, CertifyIF, CoopAlterationIF,
   CorrectionInformationIF, CorrectionFilingIF, CourtOrderIF, EffectiveDateTimeIF, EmptyBusinessInfo,
-  EntitySnapshotIF, ChgRegistrationFilingIF, ConversionFilingIF, NameTranslationIF, OrgPersonIF,
+  EntitySnapshotIF, ChgRegistrationFilingIF, ConversionFilingIF, NameTranslationIF, OrgPersonIF, ResolutionsIF,
   RestorationFilingIF, RestorationStateIF, SpecialResolutionFilingIF, StateFilingRestorationIF, RulesMemorandumIF }
   from '@/interfaces/'
 import { CompletingPartyIF, ContactPointIF, NaicsIF, NameRequestIF, ShareClassIF, SpecialResolutionIF,
@@ -13,7 +13,8 @@ import { ActionTypes, CoopTypes, CorrectionErrorTypes, EffectOfOrders, FilingTyp
   RestorationTypes, RoleTypes } from '@/enums/'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 import { StaffPaymentOptions } from '@bcrs-shared-components/enums/'
-import { FilingTypeToName } from '@/utils'
+import { ExistingToApiResolutionDates, FilingTypeToName, FromApiResolutionDates, ToApiResolutionDates }
+  from '@/utils'
 import { useStore } from '@/store/store'
 import DateUtilities from '@/services/date-utilities'
 
@@ -58,6 +59,7 @@ export default class FilingTemplateMixin extends DateMixin {
   @Getter(useStore) getOrgPeople!: OrgPersonIF[]
   @Getter(useStore) getOriginalBusinessInfo!: BusinessInformationIF
   @Getter(useStore) getOriginalLegalName!: string
+  @Getter(useStore) getOriginalResolutions!: ResolutionsIF[]
   @Getter(useStore) getOriginalLegalType!: CorpTypeCd
   @Getter(useStore) getOriginalNrNumber!: string
   @Getter(useStore) getRestoration!: RestorationStateIF
@@ -195,7 +197,11 @@ export default class FilingTemplateMixin extends DateMixin {
       if (this.hasShareStructureChanged || this.haveNewResolutionDates) {
         filing.correction.shareStructure = {
           shareClasses: isDraft ? this.getShareClasses : this.prepareShareClasses(),
-          resolutionDates: this.getNewResolutionDates
+          // existing resolutions (with ids) must be included or the API will remove them
+          resolutionDates: [
+            ...ExistingToApiResolutionDates(this.getOriginalResolutions),
+            ...ToApiResolutionDates(this.getNewResolutionDates)
+          ]
         }
       }
     }
@@ -326,12 +332,12 @@ export default class FilingTemplateMixin extends DateMixin {
     if (this.hasShareStructureChanged) {
       const shareClasses = isDraft ? this.getShareClasses : this.prepareShareClasses()
       filing.alteration.shareStructure = {
-        resolutionDates: this.getNewResolutionDates,
+        resolutionDates: ToApiResolutionDates(this.getNewResolutionDates),
         shareClasses
       }
     } else if (this.getNewResolutionDates) {
       filing.alteration.shareStructure = {
-        resolutionDates: this.getNewResolutionDates
+        resolutionDates: ToApiResolutionDates(this.getNewResolutionDates)
       }
     }
 
@@ -905,9 +911,9 @@ export default class FilingTemplateMixin extends DateMixin {
         entitySnapshot?.shareStructure?.shareClasses ||
         []
       ))
-      this.setNewResolutionDates(cloneDeep(
-        filing.correction.shareStructure?.resolutionDates || []
-      ))
+      this.setNewResolutionDates(
+        FromApiResolutionDates(filing.correction.shareStructure?.resolutionDates)
+      )
     }
 
     // store Certify State
@@ -1001,9 +1007,9 @@ export default class FilingTemplateMixin extends DateMixin {
       entitySnapshot?.shareStructure?.shareClasses ||
       []
     ))
-    this.setNewResolutionDates(cloneDeep(
-      filing.alteration.shareStructure?.resolutionDates || []
-    ))
+    this.setNewResolutionDates(
+      FromApiResolutionDates(filing.alteration.shareStructure?.resolutionDates)
+    )
 
     // store Certify State
     this.setCertifyState({
