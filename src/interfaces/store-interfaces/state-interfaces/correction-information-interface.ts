@@ -1,5 +1,5 @@
-import { AddressesIF, CoopAlterationIF, CourtOrderIF, NameTranslationIF, OrgPersonIF, ShareClassIF }
-  from '@/interfaces/'
+import { AddressesIF, CoopAlterationIF, CourtOrderIF, NameTranslationIF, OrgPersonIF, ResolutionDateIF,
+  ShareClassIF } from '@/interfaces/'
 import { CorrectionErrorTypes, FilingTypes } from '@/enums/'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 import { ContactPointIF, NaicsIF, NameRequestIF, SpecialResolutionIF } from '@bcrs-shared-components/interfaces/'
@@ -33,7 +33,7 @@ export interface CorrectionInformationIF extends CoopAlterationIF, SpecialResolu
   parties?: OrgPersonIF[]
   shareStructure?: {
     shareClasses: ShareClassIF[]
-    resolutionDates?: string[]
+    resolutionDates?: ResolutionDateIF[]
   }
   startDate?: string // YYYY-MM-DD (firms only)
   provisionsRemoved?: boolean

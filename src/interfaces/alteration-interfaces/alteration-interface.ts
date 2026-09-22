@@ -1,4 +1,4 @@
-import { CourtOrderIF, NameTranslationIF, ShareStructureIF } from '@/interfaces/'
+import { CourtOrderIF, NameTranslationIF, ShareStructureApiIF } from '@/interfaces/'
 import { CoopTypes } from '@/enums'
 import { ContactPointIF, NameRequestIF } from '@bcrs-shared-components/interfaces/'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
@@ -28,7 +28,7 @@ export interface AlterationIF extends CoopAlterationIF {
   // intersection type so we can save original NR + properties needed by Legal API:
   nameRequest?: NameRequestIF & { legalName: string, nrNumber?: string }
   nameTranslations?: NameTranslationIF[]
-  shareStructure?: ShareStructureIF
+  shareStructure?: ShareStructureApiIF
   contactPoint: ContactPointIF
   courtOrder?: CourtOrderIF
 }

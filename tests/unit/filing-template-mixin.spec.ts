@@ -239,7 +239,25 @@ describe('Correction Filing', () => {
     const filing = wrapper.vm.buildCorrectionFiling(true)
     expect(filing.correction.shareStructure).toEqual({
       shareClasses: [],
-      resolutionDates: ['2025-01-01']
+      resolutionDates: [{ date: '2025-01-01' }]
+    })
+  })
+
+  it('correctly builds a Correction filing with existing and new resolution dates', () => {
+    store.stateModel.entitySnapshot.resolutions = [
+      { id: 11, date: '2020-01-05', type: 'SPECIAL' },
+      { id: 12, date: '2021-02-06', type: 'SPECIAL' }
+    ] as any
+    store.stateModel.shareStructureStep.resolutionDates = ['2025-01-01']
+
+    const filing = wrapper.vm.buildCorrectionFiling(true)
+    expect(filing.correction.shareStructure).toEqual({
+      shareClasses: [],
+      resolutionDates: [
+        { id: 11, date: '2020-01-05' },
+        { id: 12, date: '2021-02-06' },
+        { date: '2025-01-01' }
+      ]
     })
   })
 
@@ -268,7 +286,7 @@ describe('Correction Filing', () => {
           hasRightsOrRestrictions: true
         }
       ],
-      resolutionDates: ['2025-01-01']
+      resolutionDates: [{ date: '2025-01-01' }]
     })
   })
 
