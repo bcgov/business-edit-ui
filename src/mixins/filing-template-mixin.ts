@@ -12,7 +12,7 @@ import { CompletingPartyIF, ContactPointIF, NaicsIF, NameRequestIF, ShareClassIF
 import { ActionTypes, CoopTypes, CorrectionErrorTypes, EffectOfOrders, FilingTypes, PartyTypes, RelationshipTypes,
   RestorationTypes, RoleTypes } from '@/enums/'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
-import { StaffPaymentOptions } from '@bcrs-shared-components/enums/'
+import { NrRequestActionCodes, StaffPaymentOptions } from '@bcrs-shared-components/enums/'
 import { ExistingToApiResolutionDates, FilingTypeToName, FromApiResolutionDates, ToApiResolutionDates }
   from '@/utils'
 import { useStore } from '@/store/store'
@@ -102,6 +102,7 @@ export default class FilingTemplateMixin extends DateMixin {
   @Action(useStore) setDocumentOptionalEmail!: (x: string) => void
   @Action(useStore) setEntitySnapshot!: (x: EntitySnapshotIF) => void
   @Action(useStore) setEntityType!: (x: CorpTypeCd) => void
+  @Action(useStore) setEntityTypeChangedByName!: (x: boolean) => void
   @Action(useStore) setFileNumber!: (x: string) => void
   @Action(useStore) setFolioNumber!: (x: string) => void
   @Action(useStore) setHasPlanOfArrangement!: (x: boolean) => void
@@ -973,6 +974,12 @@ export default class FilingTemplateMixin extends DateMixin {
     if (filing.alteration.nameRequest) {
       this.setNameRequest(filing.alteration.nameRequest)
       this.setNameRequestLegalName(filing.alteration.nameRequest.legalName || null)
+      // restore the "type changed by name request" flag for a conversion NR, otherwise the
+      // Business Type editor treats the type change as a manual selection and demands a new NR
+      // (see CorrectNameRequest.vue)
+      this.setEntityTypeChangedByName(
+        filing.alteration.nameRequest.request_action_cd === NrRequestActionCodes.CONVERSION
+      )
     } else {
       // store default data
       this.setNameRequest({
@@ -980,6 +987,7 @@ export default class FilingTemplateMixin extends DateMixin {
         nrNum: this.getOriginalNrNumber
       } as any)
       this.setNameRequestLegalName(this.getOriginalLegalName)
+      this.setEntityTypeChangedByName(false)
     }
 
     // store Name Translations
