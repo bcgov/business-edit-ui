@@ -4,6 +4,7 @@ import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
 import { CorrectionErrorTypes, FilingTypes, RestorationTypes } from '@/enums'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
+import { NrRequestActionCodes } from '@bcrs-shared-components/enums'
 import * as utils from '@/utils'
 
 setActivePinia(createPinia())
@@ -522,5 +523,98 @@ describe('Restoration Filing', () => {
     const filing = wrapper.vm.buildRestorationFiling(true)
 
     expect(filing.restoration.contactPoint).toBeDefined()
+  })
+})
+
+describe('Alteration Filing', () => {
+  let wrapper: any
+
+  const entitySnapshot = {
+    businessInfo: {
+      foundingDate: 'Jan 01, 2000',
+      legalType: CorpTypeCd.BENEFIT_COMPANY,
+      identifier: 'BC1234567',
+      legalName: 'SomeMockBusiness'
+    },
+    addresses: null,
+    orgPersons: [],
+    authInfo: { contact: {} }
+  } as any
+
+  const draftAlteration = {
+    header: { name: FilingTypes.ALTERATION, date: '2024-01-02', certifiedBy: '' },
+    business: {
+      foundingDate: 'Jan 01, 2000',
+      legalType: CorpTypeCd.BENEFIT_COMPANY,
+      identifier: 'BC1234567',
+      legalName: 'SomeMockBusiness'
+    },
+    alteration: {
+      business: { identifier: 'BC1234567', legalType: CorpTypeCd.BC_CCC },
+      provisionsRemoved: false,
+      contactPoint: {}
+    }
+  } as any
+
+  beforeEach(() => {
+    wrapper = shallowMount(MixinTester)
+
+    store.stateModel.tombstone.businessId = 'BC1234567'
+    store.stateModel.tombstone.filingType = FilingTypes.ALTERATION
+    store.stateModel.tombstone.entityType = CorpTypeCd.BENEFIT_COMPANY
+    store.stateModel.tombstone.entityTypeChangedByName = false
+  })
+
+  afterEach(() => {
+    wrapper.destroy()
+  })
+
+  it('restores entityTypeChangedByName when resuming a draft with a conversion name request', () => {
+    const filing = {
+      ...draftAlteration,
+      alteration: {
+        ...draftAlteration.alteration,
+        nameRequest: {
+          nrNum: 'NR 1234567',
+          legalName: 'New CCC Name',
+          legalType: CorpTypeCd.BC_CCC,
+          request_action_cd: NrRequestActionCodes.CONVERSION
+        }
+      }
+    }
+
+    wrapper.vm.parseAlterationFiling(filing, entitySnapshot)
+
+    expect(store.stateModel.tombstone.entityType).toBe(CorpTypeCd.BC_CCC)
+    expect(store.stateModel.nameRequestLegalName).toBe('New CCC Name')
+    expect(store.stateModel.tombstone.entityTypeChangedByName).toBe(true)
+  })
+
+  it('does not set entityTypeChangedByName when resuming a draft with a change-of-name name request', () => {
+    const filing = {
+      ...draftAlteration,
+      alteration: {
+        ...draftAlteration.alteration,
+        business: { identifier: 'BC1234567', legalType: CorpTypeCd.BENEFIT_COMPANY },
+        nameRequest: {
+          nrNum: 'NR 1234567',
+          legalName: 'New Name',
+          legalType: CorpTypeCd.BENEFIT_COMPANY,
+          request_action_cd: NrRequestActionCodes.CHANGE_NAME
+        }
+      }
+    }
+
+    wrapper.vm.parseAlterationFiling(filing, entitySnapshot)
+
+    expect(store.stateModel.tombstone.entityTypeChangedByName).toBe(false)
+  })
+
+  it('clears entityTypeChangedByName when resuming a draft without a name request', () => {
+    store.stateModel.tombstone.entityTypeChangedByName = true
+
+    wrapper.vm.parseAlterationFiling(draftAlteration, entitySnapshot)
+
+    expect(store.stateModel.tombstone.entityTypeChangedByName).toBe(false)
   })
 })
