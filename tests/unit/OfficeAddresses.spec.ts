@@ -1,12 +1,13 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
 import { mount } from '@vue/test-utils'
+import flushPromises from 'flush-promises'
 import OfficeAddresses from '@/components/common/YourCompany/OfficeAddresses.vue'
 import { AddressIF, AddressesIF } from '@/interfaces/stepper-interfaces/YourCompany/address-interfaces'
 import { AlterationResourceBen } from '@/resources/Alteration/BEN'
 import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
-import { FilingTypes } from '@/enums'
+import { AddressTypes, FilingTypes } from '@/enums'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 import { verifyAddressValidation } from 'tests/unit/utils'
 
@@ -1253,6 +1254,80 @@ describe('verify updateAddress()', () => {
       // verify changed address
       vm.updateAddress(test.address, getAddressX(5))
       verifyAddressChanges(test.expected)
+    })
+  }
+})
+
+describe('firm correction - changed badges', () => {
+  let wrapper: any
+
+  /** Returns a firm office address as returned by Legal API (ie, with empty optional fields). */
+  function getFirmAddress (id: number, addressType: string, optionalValue: string): AddressIF {
+    return {
+      id,
+      addressType,
+      addressCity: 'Victoria',
+      addressCountry: 'CA',
+      addressRegion: 'BC',
+      deliveryInstructions: optionalValue,
+      postalCode: 'V8V 1V1',
+      streetAddress: '123 Test St',
+      streetAddressAdditional: optionalValue
+    } as any
+  }
+
+  function getFirmAddresses (optionalValue: string): AddressesIF {
+    return {
+      businessOffice: {
+        mailingAddress: getFirmAddress(1, 'mailing', optionalValue),
+        deliveryAddress: getFirmAddress(2, 'delivery', optionalValue)
+      }
+    }
+  }
+
+  afterEach(() => {
+    wrapper.destroy()
+  })
+
+  for (const optionalValue of ['', null]) {
+    it(`shows badge only on corrected delivery address - optional fields: ${optionalValue}`, async () => {
+      store.stateModel.tombstone.entityType = CorpTypeCd.SOLE_PROP
+      store.stateModel.tombstone.filingType = FilingTypes.CORRECTION
+      store.stateModel.entitySnapshot = { addresses: getFirmAddresses(optionalValue) } as any
+
+      wrapper = mount(OfficeAddresses, { vuetify })
+
+      // set office addresses to trigger watcher
+      store.setOfficeAddresses(getFirmAddresses(optionalValue))
+      await Vue.nextTick()
+
+      // change to edit mode
+      await wrapper.find('#btn-correct-office-addresses').trigger('click')
+
+      // uncheck "same as mailing address" and enter a new delivery address
+      await wrapper.setData({ inheritMailingAddress: false })
+      wrapper.vm.setDeliveryAddressToMailingAddress()
+      await Vue.nextTick()
+      wrapper.vm.updateAddress(
+        AddressTypes.DELIVERY_ADDRESS,
+        { ...getFirmAddress(2, 'delivery', ''), streetAddress: '456 Other St' }
+      )
+      await flushPromises()
+      wrapper.vm.onAddressValid(AddressTypes.DELIVERY_ADDRESS, true)
+      await Vue.nextTick()
+
+      // click Done button
+      await wrapper.find('#done-btn').trigger('click')
+
+      // verify state
+      expect(store.getOfficeAddresses.businessOffice.deliveryAddress.streetAddress).toBe('456 Other St')
+      expect(store.hasDeliveryChanged).toBe(true)
+      expect(store.hasMailingChanged).toBe(false)
+
+      // verify badges
+      const chips = wrapper.findAll('#summary-registered-address .v-chip')
+      expect(chips.length).toBe(1)
+      expect(wrapper.findAll('#summary-registered-address .col-4').at(1).find('.v-chip').exists()).toBe(true)
     })
   }
 })

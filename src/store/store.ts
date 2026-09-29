@@ -17,6 +17,7 @@ import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 import {
   ActionKvIF,
   AccountInformationIF,
+  AddressIF,
   AddressesIF,
   BusinessInformationIF,
   CertifyIF,
@@ -54,6 +55,22 @@ import { LegalServices } from '@/services'
 import { RulesMemorandumIF } from '@/interfaces/rules-memorandum-interfaces'
 import { isEmpty, isEqual } from 'lodash'
 import { IsAuthorized } from '@/utils'
+
+/**
+ * Compares two office addresses, treating empty optional fields ('', null or undefined) as equal.
+ * Ignores Address Country Description since it's not always present, and ID since it's different.
+ */
+function isSameOfficeAddress (addressA: AddressIF, addressB: AddressIF): boolean {
+  function normalize (address: AddressIF): AddressIF {
+    if (isEmpty(address)) return address
+    return {
+      ...address,
+      deliveryInstructions: address.deliveryInstructions || '',
+      streetAddressAdditional: address.streetAddressAdditional || ''
+    }
+  }
+  return IsSame(normalize(addressA), normalize(addressB), ['addressCountryDescription', 'id'])
+}
 
 // Possible to move getters / actions into seperate files:
 // https://github.com/vuejs/pinia/issues/802#issuecomment-1018780409
@@ -956,10 +973,9 @@ export const useStore = defineStore('store', {
         this.isCorpCorrectionFiling ||
         this.isRestorationFiling
       ) {
-        return !IsSame(
+        return !isSameOfficeAddress(
           this.getOfficeAddresses?.registeredOffice?.mailingAddress,
-          this.getOriginalOfficeAddresses?.registeredOffice?.mailingAddress,
-          ['addressCountryDescription', 'id']
+          this.getOriginalOfficeAddresses?.registeredOffice?.mailingAddress
         )
       }
       if (
@@ -967,19 +983,17 @@ export const useStore = defineStore('store', {
         this.isFirmConversionFiling ||
         this.isFirmCorrectionFiling
       ) {
-        return !IsSame(
+        return !isSameOfficeAddress(
           this.getOfficeAddresses?.businessOffice?.mailingAddress,
-          this.getOriginalOfficeAddresses?.businessOffice?.mailingAddress,
-          ['addressCountryDescription', 'id']
+          this.getOriginalOfficeAddresses?.businessOffice?.mailingAddress
         )
       }
       if (
         this.isCoopCorrectionFiling
       ) {
-        return !IsSame(
+        return !isSameOfficeAddress(
           this.getOfficeAddresses?.registeredOffice?.mailingAddress,
-          this.getOriginalOfficeAddresses?.registeredOffice?.mailingAddress,
-          ['addressCountryDescription', 'id']
+          this.getOriginalOfficeAddresses?.registeredOffice?.mailingAddress
         )
       }
       return false // should never happen
@@ -992,10 +1006,9 @@ export const useStore = defineStore('store', {
         this.isCorpCorrectionFiling ||
         this.isRestorationFiling
       ) {
-        return !IsSame(
+        return !isSameOfficeAddress(
           this.getOfficeAddresses?.registeredOffice?.deliveryAddress,
-          this.getOriginalOfficeAddresses?.registeredOffice?.deliveryAddress,
-          ['addressCountryDescription', 'id']
+          this.getOriginalOfficeAddresses?.registeredOffice?.deliveryAddress
         )
       }
       if (
@@ -1004,10 +1017,9 @@ export const useStore = defineStore('store', {
         this.isFirmCorrectionFiling ||
         this.isCoopCorrectionFiling
       ) {
-        return !IsSame(
+        return !isSameOfficeAddress(
           this.getOfficeAddresses?.businessOffice?.deliveryAddress,
-          this.getOriginalOfficeAddresses?.businessOffice?.deliveryAddress,
-          ['addressCountryDescription', 'id']
+          this.getOriginalOfficeAddresses?.businessOffice?.deliveryAddress
         )
       }
       return false // should never happen
@@ -1015,19 +1027,17 @@ export const useStore = defineStore('store', {
 
     /** True if records mailing address has changed. */
     hasRecMailingChanged (): boolean {
-      return !IsSame(
+      return !isSameOfficeAddress(
         this.getOfficeAddresses?.recordsOffice?.mailingAddress,
-        this.getOriginalOfficeAddresses?.recordsOffice?.mailingAddress,
-        ['addressCountryDescription', 'id']
+        this.getOriginalOfficeAddresses?.recordsOffice?.mailingAddress
       )
     },
 
     /** True if records delivery address has changed. */
     hasRecDeliveryChanged (): boolean {
-      return !IsSame(
+      return !isSameOfficeAddress(
         this.getOfficeAddresses?.recordsOffice?.deliveryAddress,
-        this.getOriginalOfficeAddresses?.recordsOffice?.deliveryAddress,
-        ['addressCountryDescription', 'id']
+        this.getOriginalOfficeAddresses?.recordsOffice?.deliveryAddress
       )
     },
 
