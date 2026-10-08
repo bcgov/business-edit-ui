@@ -1,6 +1,6 @@
 {
   "name": "business-edit-ui",
-  "version": "4.17.27",
+  "version": "4.17.28",
   "private": true,
   "appName": "Business Edit UI",
   "sbcName": "SBC Common Components",
@@ -38,7 +38,7 @@
     "@bcrs-shared-components/limited-restoration-panel": "2.0.1",
     "@bcrs-shared-components/nature-of-business": "1.2.4",
     "@bcrs-shared-components/relationships-panel": "1.0.14",
-    "@bcrs-shared-components/staff-payment": "2.1.4",
+    "@bcrs-shared-components/staff-payment": "2.1.77",
     "@bcrs-shared-components/validators": "1.0.2",
     "@mdi/font": "^5.9.55",
     "array-move": "^4.0.0",
