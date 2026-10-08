@@ -1,6 +1,6 @@
 <template>
   <section id="document-delivery-section">
-    <h2>{{ sectionNumber }} Documents Delivery</h2>
+    <h2>{{ sectionNumber }} Document Delivery</h2>
 
     <div class="document-info py-4">
       Copies of the {{ getFilingName.toLowerCase() }} documents will be sent
