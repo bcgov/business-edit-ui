@@ -38,8 +38,9 @@ export default class DateUtilities {
   static createUtcDate (
     year: number, month: number, day: number, hours = 0, minutes = 0, milliseconds = 0
   ): Date {
-    // BC is permanently UTC-7 (no DST) — shift 7 hours to convert Pacific time to UTC
-    return new Date(Date.UTC(year, month, day, hours + 7, minutes, milliseconds))
+    // Use PST offset (UTC-8) as the conservative shift so Pacific dates always display correctly.
+    // PDT (UTC-7) is an hour ahead but shifting by 8 still lands on the correct calendar day.
+    return new Date(Date.UTC(year, month, day, hours + 8, minutes, milliseconds))
   }
 
   /**
