@@ -25,21 +25,21 @@ describe('Date Mixin', () => {
 
   // FUTURE: this works locally but not in GHA; fix later
   it('returns correct values for createUtcDate()', () => {
-    expect(vm.createUtcDate(2021, 0, 1, 0, 0).toISOString()).toBe('2021-01-01T08:00:00.000Z') // PST
-    expect(vm.createUtcDate(2021, 6, 1, 0, 0).toISOString()).toBe('2021-07-01T07:00:00.000Z') // PDT
+    expect(vm.createUtcDate(2021, 0, 1, 0, 0).toISOString()).toBe('2021-01-01T07:00:00.000Z') // BC Pacific Time (UTC-7)
+    expect(vm.createUtcDate(2021, 6, 1, 0, 0).toISOString()).toBe('2021-07-01T07:00:00.000Z') // BC Pacific Time (UTC-7)
   })
 
   it('returns correct values for yyyyMmDdToDate()', () => {
     expect(vm.yyyyMmDdToDate(null)).toBeNull()
     expect(vm.yyyyMmDdToDate('12345678901')).toBeNull()
-    expect(vm.yyyyMmDdToDate('2021-01-01').toISOString()).toEqual('2021-01-01T08:00:00.000Z') // PST
-    expect(vm.yyyyMmDdToDate('2021-07-01').toISOString()).toEqual('2021-07-01T07:00:00.000Z') // PDT
+    expect(vm.yyyyMmDdToDate('2021-01-01').toISOString()).toEqual('2021-01-01T07:00:00.000Z') // BC Pacific Time (UTC-7)
+    expect(vm.yyyyMmDdToDate('2021-07-01').toISOString()).toEqual('2021-07-01T07:00:00.000Z') // BC Pacific Time (UTC-7)
   })
 
   it('returns correct values for mmmDdYyyyToDate()', () => {
     expect(vm.mmmDdYyyyToDate(null)).toBeNull()
-    expect(vm.mmmDdYyyyToDate('January 1, 2021').toISOString()).toEqual('2021-01-01T08:00:00.000Z') // PST
-    expect(vm.mmmDdYyyyToDate('July 1, 2021').toISOString()).toEqual('2021-07-01T07:00:00.000Z') // PDT
+    expect(vm.mmmDdYyyyToDate('January 1, 2021').toISOString()).toEqual('2021-01-01T07:00:00.000Z') // BC Pacific Time (UTC-7)
+    expect(vm.mmmDdYyyyToDate('July 1, 2021').toISOString()).toEqual('2021-07-01T07:00:00.000Z') // BC Pacific Time (UTC-7)
   })
 
   // FUTURE: this works locally but not in GHA; fix later

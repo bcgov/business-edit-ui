@@ -31,23 +31,15 @@ export default class DateUtilities {
   /**
    * Creates and returns a new Date object in UTC, given parameters in Pacific timezone.
    * (This works regardless of user's local clock/timezone.)
-   * @example "2021, 0, 1, 0, 0" -> "2021-01-01T08:00:00.000Z" (Pacific Standard Time)
-   * @example "2021, 6, 1, 0, 0" -> "2021-07-01T07:00:00.000Z" (Pacific Daylight Time)
+   * BC is permanently UTC-7 (no DST).
+   * @example "2021, 0, 1, 0, 0" -> "2021-01-01T07:00:00.000Z" (BC Pacific Time, UTC-7)
+   * @example "2021, 6, 1, 0, 0" -> "2021-07-01T07:00:00.000Z" (BC Pacific Time, UTC-7)
    */
   static createUtcDate (
     year: number, month: number, day: number, hours = 0, minutes = 0, milliseconds = 0
   ): Date {
-    // 1. create the new date in UTC
-    // 2. compute the offset between UTC and Pacific timezone
-    // 3. add the offset to convert the date to Pacific timezone
-    // Ref: https://stackoverflow.com/questions/15141762/
-    const date = new Date(Date.UTC(year, month, day, hours, minutes, milliseconds))
-    const utcDate = new Date(date.toLocaleString('en-US', { timeZone: 'UTC' }))
-    const tzDate = new Date(date.toLocaleString('en-US', { timeZone: 'America/Vancouver' }))
-    const offset = utcDate.getTime() - tzDate.getTime()
-    date.setTime(date.getTime() + offset)
-
-    return date
+    // BC is permanently UTC-7 (no DST) — shift 7 hours to convert Pacific time to UTC
+    return new Date(Date.UTC(year, month, day, hours + 7, minutes, milliseconds))
   }
 
   /**
