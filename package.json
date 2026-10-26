@@ -1,6 +1,6 @@
 {
   "name": "business-edit-ui",
-  "version": "4.17.29",
+  "version": "4.17.30",
   "private": true,
   "appName": "Business Edit UI",
   "sbcName": "SBC Common Components",
@@ -103,5 +103,6 @@
   },
   "engines": {
     "node": ">=24"
-  }
+  },
+  "packageManager": "pnpm@8.15.4+sha1.c85a4305534f76d461407b59277b954bac97b5c4"
 }
