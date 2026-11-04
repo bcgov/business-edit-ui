@@ -43,7 +43,7 @@ export default class CorrectNameToNumber extends Vue {
   correctToNumbered = false
 
   get businessId (): string {
-    return this.getBusinessId && this.getBusinessId.substring(2)
+    return this.getBusinessId && this.getBusinessId.replace(/^[A-Z]+/, '')
   }
 
   /** Watch for form submission and emit results. */

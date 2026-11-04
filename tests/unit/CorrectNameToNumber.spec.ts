@@ -46,6 +46,24 @@ describe('CorrectNameToNumber', () => {
     wrapper.destroy()
   })
 
+  it('displays the numbered name for a single-character business ID prefix', () => {
+    store.stateModel.tombstone.businessId = 'C1234567'
+    const wrapper = wrapperFactory()
+
+    expect(wrapper.text()).toContain('1234567 B.C. LTD.')
+
+    wrapper.destroy()
+  })
+
+  it('displays the numbered name for a two-character business ID prefix', () => {
+    store.stateModel.tombstone.businessId = 'BC1234567'
+    const wrapper = wrapperFactory()
+
+    expect(wrapper.text()).toContain('1234567 B.C. LTD.')
+
+    wrapper.destroy()
+  })
+
   it('verifies the checkbox default state', async () => {
     const wrapper = wrapperFactory()
     const nameToNumberInput = wrapper.find('#correct-name-to-number-checkbox')
