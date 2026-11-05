@@ -234,6 +234,15 @@ describe('Correction Filing', () => {
     )
   })
 
+  it('includes the numbered legal name in a correction filing payload', () => {
+    store.stateModel.tombstone.businessId = 'C1234567'
+    store.stateModel.nameRequestLegalName = `${store.getBusinessNumber} B.C. LTD.`
+
+    const filing = wrapper.vm.buildCorrectionFiling(true)
+
+    expect(filing.correction.nameRequest.legalName).toBe('1234567 B.C. LTD.')
+  })
+
   it('correctly builds a Correction filing with new resolution dates', () => {
     store.stateModel.shareStructureStep.resolutionDates = ['2025-01-01']
 

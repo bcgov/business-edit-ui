@@ -35,6 +35,14 @@ describe('State Getters', () => {
     wrapper.destroy()
   })
 
+  it('returns the business number after removing the identifier prefix', () => {
+    store.stateModel.tombstone.businessId = 'C1234567'
+    expect(store.getBusinessNumber).toBe('1234567')
+
+    store.stateModel.tombstone.businessId = 'BC1234567'
+    expect(store.getBusinessNumber).toBe('1234567')
+  })
+
   it('returns correct values for "Is Busy Saving" et al getters', async () => {
     // initially, these getters should be false
     expect(vm.isSaving).toBe(false)

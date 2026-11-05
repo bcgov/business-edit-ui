@@ -453,4 +453,13 @@ describe('Name Changes for Limited Restoration to Full', () => {
     expect(button.text()).toBe('Undo')
     expect(wrapper.vm.shouldShowUndoButton).toBe(true)
   })
+
+  it('sets the complete numbered legal name when saving a single-character-prefix business ID', async () => {
+    store.stateModel.tombstone.businessId = 'C1234567'
+    store.stateModel.nameRequestLegalName = null
+
+    await wrapper.vm.nameChangeHandler(true)
+
+    expect(store.stateModel.nameRequestLegalName).toBe('1234567 B.C. LTD.')
+  })
 })
