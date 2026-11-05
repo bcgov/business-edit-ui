@@ -35,7 +35,7 @@ export default class CorrectNameToNumber extends Vue {
   @Action(useStore) setNameRequestLegalName!: (x: string) => void
 
   @Getter(useStore) getNameRequest!: NameRequestIF
-  @Getter(useStore) getBusinessId!: string
+  @Getter(useStore) getBusinessNumber!: string
   @Getter(useStore) getOriginalLegalType!: CorpTypeCd
   @Getter(useStore) getUpdatedName!: string
 
@@ -43,7 +43,7 @@ export default class CorrectNameToNumber extends Vue {
   correctToNumbered = false
 
   get businessId (): string {
-    return this.getBusinessId && this.getBusinessId.replace(/^[A-Z]+/, '')
+    return this.getBusinessNumber || ''
   }
 
   /** Watch for form submission and emit results. */

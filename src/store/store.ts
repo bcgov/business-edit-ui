@@ -398,8 +398,8 @@ export const useStore = defineStore('store', {
 
     /** The business number. */
     getBusinessNumber (): string {
-      // remove first 2 chars from Business ID
-      return this.stateModel.tombstone.businessId?.substring(2)
+      // Remove the alphabetic prefix from the Business ID.
+      return this.stateModel.tombstone.businessId?.replace(/^[A-Z]+/, '')
     },
 
     /** The user's authorized actions (aka permissions). */
