@@ -8,6 +8,7 @@
     >
       <!-- FUTURE: update this component so it doesn't set flag until user changes something -->
       <CompletingPartyShared
+        ref="completingPartyShared"
         class="section-container py-6"
         :completingParty="getCompletingParty"
         :enableAddEdit="IsAuthorized(AuthorizedActions.EDITABLE_COMPLETING_PARTY)"
@@ -73,6 +74,24 @@ export default class CompletingParty extends Vue {
   protected onValid (valid: boolean): void {
     this.completingPartyValid = valid
     this.setCompletingPartyValidity(valid)
+  }
+
+  /**
+   * BaseAddress only emits valid when its validity changes, so a pre-filled valid address
+   * (from a resumed draft) never reports itself as valid and the section shows as incomplete.
+   * Validate a pre-filled address once on mount to sync its initial validity.
+   */
+  async mounted (): Promise<void> {
+    const address = this.getCompletingParty?.mailingAddress
+    if (!IsAuthorized(AuthorizedActions.EDITABLE_COMPLETING_PARTY) || !address) return
+    if (!Object.values(address).some(v => !!v)) return
+
+    await this.$nextTick()
+    const shared = this.$refs.completingPartyShared as any
+    const mailingAddress = shared?.$refs?.mailingAddress
+    if (mailingAddress) {
+      shared.mailingAddressValid = await mailingAddress.validate()
+    }
   }
 }
 </script>

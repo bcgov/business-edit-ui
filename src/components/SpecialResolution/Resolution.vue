@@ -119,7 +119,7 @@
                   id="btn-change-resolution"
                   text
                   color="primary"
-                  @click="isEditing = true"
+                  @click="onChangeClick()"
                 >
                   <v-icon small>
                     mdi-pencil
@@ -226,6 +226,7 @@ import HelpResolution from './HelpResolution.vue'
 import InstructionalText from './InstructionalText.vue'
 import { DatePicker as DatePickerShared } from '@bcrs-shared-components/date-picker/'
 import { FormIF, SpecialResolutionIF } from '@bcrs-shared-components/interfaces/'
+import { SpecialResolutionDraftIF } from '@/interfaces/'
 import { useStore } from '@/store/store'
 import ResolutionEditor from './ResolutionEditor.vue'
 import SigningParty from './SigningParty.vue'
@@ -285,6 +286,20 @@ export default class Resolution extends Vue {
       this.hasChanged = true
       await this.$refs.resolutionEditor.saveToStore()
       await this.$refs.signingParty.saveToStore()
+      this.setIsDone(true)
+    }
+  }
+
+  /** For change button, re-opens the form for editing. */
+  onChangeClick (): void {
+    this.isEditing = true
+    this.setIsDone(false)
+  }
+
+  /** Remembers (in the draft) whether the user clicked "Done". */
+  setIsDone (isDone: boolean): void {
+    if (this.isSpecialResolutionFiling) {
+      this.setSpecialResolution({ ...this.getSpecialResolution, isDone } as SpecialResolutionDraftIF)
     }
   }
 
@@ -321,6 +336,25 @@ export default class Resolution extends Vue {
 
   onResolutionDate (date: string) {
     this.changedResolutionDate = date
+  }
+
+  /** When resuming a draft where the user had clicked "Done" (and it's still valid), start in the "done" state. */
+  @Watch('showSpecialResolutionResolution')
+  async restoreDoneState (): Promise<void> {
+    const isDone = (this.getSpecialResolution as SpecialResolutionDraftIF)?.isDone
+    if (!this.isSpecialResolutionFiling || !isDone || this.hasChanged) return
+    await this.$nextTick()
+    if (!this.$refs.resolutionEditor || !this.$refs.signingParty) return
+    await this.$refs.resolutionEditor.onValidate(false)
+    await this.$refs.signingParty.onValidate(false)
+    if (this.getSpecialResolutionFormValid) {
+      this.isEditing = false
+      this.hasChanged = true
+    }
+  }
+
+  async mounted (): Promise<void> {
+    await this.restoreDoneState()
   }
 
   async onResolutionCorrectionChk (isChecked) {

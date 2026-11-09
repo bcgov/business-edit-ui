@@ -5,16 +5,17 @@ import { DateMixin } from '@/mixins/'
 import { AddressesIF, AlterationFilingIF, BusinessInformationIF, CertifyIF, CoopAlterationIF,
   CorrectionInformationIF, CorrectionFilingIF, CourtOrderIF, EffectiveDateTimeIF, EmptyBusinessInfo,
   EntitySnapshotIF, ChgRegistrationFilingIF, ConversionFilingIF, NameTranslationIF, OrgPersonIF, ResolutionsIF,
-  RestorationFilingIF, RestorationStateIF, SpecialResolutionFilingIF, StateFilingRestorationIF, RulesMemorandumIF }
+  RestorationFilingIF, RestorationStateIF, SpecialResolutionDraftIF, SpecialResolutionFilingIF,
+  StateFilingRestorationIF, RulesMemorandumIF }
   from '@/interfaces/'
 import { CompletingPartyIF, ContactPointIF, NaicsIF, NameRequestIF, ShareClassIF, SpecialResolutionIF,
   StaffPaymentIF } from '@bcrs-shared-components/interfaces/'
-import { ActionTypes, CoopTypes, CorrectionErrorTypes, EffectOfOrders, FilingTypes, PartyTypes, RelationshipTypes,
-  RestorationTypes, RoleTypes } from '@/enums/'
+import { ActionTypes, AuthorizedActions, CoopTypes, CorrectionErrorTypes, EffectOfOrders, FilingTypes, PartyTypes,
+  RelationshipTypes, RestorationTypes, RoleTypes } from '@/enums/'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 import { NrRequestActionCodes, StaffPaymentOptions } from '@bcrs-shared-components/enums/'
-import { ExistingToApiResolutionDates, FilingTypeToName, FromApiResolutionDates, ToApiResolutionDates }
-  from '@/utils'
+import { ExistingToApiResolutionDates, FilingTypeToName, FromApiResolutionDates, IsAuthorized,
+  ToApiResolutionDates } from '@/utils'
 import { useStore } from '@/store/store'
 import DateUtilities from '@/services/date-utilities'
 
@@ -118,6 +119,7 @@ export default class FilingTemplateMixin extends DateMixin {
   @Action(useStore) setRestorationCourtOrder!: (x: CourtOrderIF) => void
   @Action(useStore) setRestorationExpiryDate!: (x: string) => void
   @Action(useStore) setRestorationRelationships!: (x: RelationshipTypes[]) => void
+  @Action(useStore) setCompletingParty!: (x: CompletingPartyIF) => void
   @Action(useStore) setShareClasses!: (x: ShareClassIF[]) => void
   @Action(useStore) setSpecialResolution!: (x: SpecialResolutionIF) => void
   @Action(useStore) setSpecialResolutionMemorandum!: (x: RulesMemorandumIF) => void
@@ -493,7 +495,8 @@ export default class FilingTemplateMixin extends DateMixin {
     // const shareClasses = isDraft ? this.getShareClasses : this.prepareShareClasses()
     // const nameTranslations = isDraft ? this.getNameTranslations : this.prepareNameTranslations()
 
-    // Build special resolution filing
+    // Build special resolution filing (UI only "done" flag is kept only in drafts)
+    const { isDone, ...specialResolution } = this.getSpecialResolution as SpecialResolutionDraftIF
     let filing: SpecialResolutionFilingIF = {
       header: {
         name: FilingTypes.SPECIAL_RESOLUTION,
@@ -509,9 +512,9 @@ export default class FilingTemplateMixin extends DateMixin {
         legalType: this.getOriginalBusinessInfo?.legalType,
         nrNumber: this.getOriginalBusinessInfo?.nrNumber
       },
-      specialResolution: {
-        ...this.getSpecialResolution
-      }
+      specialResolution: isDraft
+        ? { ...specialResolution, isDone } as SpecialResolutionDraftIF
+        : { ...specialResolution }
     }
 
     // Only add alteration if the association type or rules or memorandum have changed
@@ -572,6 +575,11 @@ export default class FilingTemplateMixin extends DateMixin {
 
     if (this.getDocumentOptionalEmail) {
       filing.header.documentOptionalEmail = this.getDocumentOptionalEmail
+    }
+
+    // save Completing Party in drafts so it can be restored on resume
+    if (isDraft && this.getCompletingParty) {
+      filing.completingParty = cloneDeep(this.getCompletingParty)
     }
 
     // build Staff Payment into the filing
@@ -1210,6 +1218,12 @@ export default class FilingTemplateMixin extends DateMixin {
     this.storeSpecialResolutionRulesAndMemorandum(filing.alteration, entitySnapshot)
 
     this.setSpecialResolution(cloneDeep(filing.specialResolution))
+
+    // store Completing Party from draft (otherwise it keeps the default loaded in App.vue)
+    // only restore if the user can edit it, since the default is the current user's info
+    if (filing.completingParty && IsAuthorized(AuthorizedActions.EDITABLE_COMPLETING_PARTY)) {
+      this.setCompletingParty(cloneDeep(filing.completingParty))
+    }
 
     // store Office Addresses **from snapshot** (because we don't change office addresses in an special resolution)
     this.setOfficeAddresses(cloneDeep(entitySnapshot?.addresses || null))

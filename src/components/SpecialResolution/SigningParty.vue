@@ -218,6 +218,7 @@ export default class SigningParty extends Vue {
   /** called to add new signature date  */
   async onSigningDate (val: string): Promise<void> {
     this.signingDate = val
+    await this.syncToStore()
     if (this.getComponentValidate) {
       await this.onValidate()
     }
@@ -226,6 +227,7 @@ export default class SigningParty extends Vue {
   /** called to store signing party. */
   @Watch('signatory', { deep: true })
   async onSignatoryChanged (): Promise<void> {
+    await this.syncToStore()
     if (this.getComponentValidate) {
       await this.onValidate()
     }
@@ -238,6 +240,13 @@ export default class SigningParty extends Vue {
       signatory: this.signatory,
       signingDate: this.signingDate
     })
+  }
+
+  /** Keeps the store in sync while editing so that "Save and Resume Later" captures in progress values. */
+  async syncToStore (): Promise<void> {
+    if (this.isSpecialResolutionFiling) {
+      await this.saveToStore()
+    }
   }
 
   /* Undo event called from parent via ref. */

@@ -271,6 +271,7 @@ export default class ResolutionEditor extends Vue {
     }
     this.resolutionDateText = val
     this.emitDate(this.resolutionDateText)
+    await this.syncToStore()
     if (this.getComponentValidate) {
       await this.onValidate()
     }
@@ -283,6 +284,13 @@ export default class ResolutionEditor extends Vue {
       resolutionDate: this.resolutionDateText,
       resolution: this.resolution
     })
+  }
+
+  /** Keeps the store in sync while editing so that "Save and Resume Later" captures in progress values. */
+  async syncToStore (): Promise<void> {
+    if (this.isSpecialResolutionFiling) {
+      await this.saveToStore()
+    }
   }
 
   /* Undo event called from parent via ref. */
@@ -300,6 +308,7 @@ export default class ResolutionEditor extends Vue {
 
   @Watch('resolution')
   async onResolutionChange () : Promise<void> {
+    await this.syncToStore()
     if (this.getComponentValidate) {
       await this.onValidate()
     }
